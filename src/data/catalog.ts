@@ -1,6 +1,7 @@
 import { CLASSES as CL5, CONDITIONS as COND5, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
 import { LORE } from "./lore";
+import pfCorePack from "./generated/pf-core.json";
 import srd2014Pack from "./generated/srd-2014.json";
 import srd2024Pack from "./generated/srd-2024.json";
 import { DND_2014, DND_2024_MORE, PF_LEGACY, PF_ORC_MORE, type PackedEntry } from "./packs-extra";
@@ -162,6 +163,13 @@ function rulesEntries(): RuleEntry[] {
   for (const item of ITEMS2) list.push(make(pf, "item", "Предмет", item.id, item.name, item.short, item.info));
   for (const extra of PF_ORC_MORE) list.push(fromPacked(extra, "pf2e", "pf-remaster"));
   for (const extra of PF_LEGACY) list.push(fromPacked(extra, "pf2e", "pf-legacy"));
+  const seen = new Set(list.map((entry) => entry.token));
+  for (const extra of pfCorePack as PackedEntry[]) {
+    const entry = fromPacked(extra, "pf2e", "pf-remaster");
+    if (seen.has(entry.token)) continue;
+    seen.add(entry.token);
+    list.push(entry);
+  }
   return list;
 }
 

@@ -134,7 +134,7 @@ export function Library() {
             const row = packs.find((item) => item.id === pack.id);
             return (
               <p key={pack.id} className="tiny">
-                {pack.title}: {row?.entered ?? 0} записей, сверено {row?.verified ?? 0}. {pack.removable ? "Пакет можно не подключать, пока он пуст." : "Пакет уже внутри сборки."} {pack.bytes === null ? "Отдельный размер не измерялся." : `Размер данных пакета: ${pack.bytes} байт.`}
+                {pack.title}: {row?.entered ?? 0} записей, сверено {row?.verified ?? 0}. {pack.removable ? ((row?.entered ?? 0) > 0 ? "Пакет отдельный: его можно не включать в источники листа." : "Пакет можно не подключать, пока он пуст.") : "Пакет уже внутри сборки."} {pack.bytes === null ? "Отдельный размер не измерялся." : `Размер данных пакета: ${pack.bytes} байт.`}
               </p>
             );
           })}

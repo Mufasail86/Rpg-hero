@@ -13,7 +13,7 @@
   "columnMeaning": {
     "inSource": "Сколько таких записей в книге. null — с книги не снимали, число не выдумано.",
     "entered": "Сколько записей лежит в коде.",
-    "verified": "Сколько карточек сверено с PDF справочника. Для новых заклинаний сверены шапка и кости из их собственного текста. Для магических предметов сверены редкость и числа, не весь абзац. Следопыт и предания по-прежнему 0.",
+    "verified": "Сколько карточек сверено с источником. Для справочников 5.1 и 5.2.1 это шапка и кости из PDF. Для ремастера это поля JSON Foundry по лицензии ORC: круг, традиции, время, дистанция, область, спасбросок и кости заклинания; хиты, скорость и повышения народа; ранги владения класса; числа состояний и универсальных наследий. Абзац книги не переписан и в расчёт не входит. Предания по-прежнему 0.",
     "inLibrary": "Сколько из введённых попадает на экран справочника.",
     "inBuilder": "Сколько можно выбрать при создании или на открытом слоте развития.",
     "implemented": "full — число считается; partial — считается часть; reference — только текст; none — нет в коде.",
@@ -22,8 +22,8 @@
   "packs": [
     {"id": "srd-5.2", "edition": "dnd-2024", "entered": 783, "verified": 555},
     {"id": "srd-5.1", "edition": "dnd-2014", "entered": 572, "verified": 572},
-    {"id": "pf-player-core", "edition": "pf-remaster", "entered": 266, "verified": 0},
-    {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 5, "verified": 0},
+    {"id": "pf-player-core", "edition": "pf-remaster", "entered": 749, "verified": 483},
+    {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 191, "verified": 191},
     {"id": "pf-ogl", "edition": "pf-legacy", "entered": 0, "verified": 0},
     {"id": "lore-golarion", "edition": "lore", "entered": 5, "verified": 0},
     {"id": "lore-forgotten-realms", "edition": "lore", "entered": 3, "verified": 0}
@@ -50,20 +50,20 @@
     },
     {
       "id": "pf2e",
-      "editionInApp": "пересказ открытого ядра игрока ремастера; правила до ремастера — отдельный пустой пакет",
+      "editionInApp": "ремастер: ядро игрока и отдельно ядро игрока 2 с ядром ведущего; правила до ремастера — пустой пакет",
       "categories": [
-        {"id": "ancestry", "title": "Народы", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "partial", "tested": "повышения и хиты в контрольном воине и в тесте друида"},
-        {"id": "heritage", "title": "Наследия", "inSource": null, "entered": 30, "verified": 0, "inLibrary": 30, "inBuilder": 30, "implemented": "partial", "tested": "умелое наследие в тесте"},
-        {"id": "versatile-heritage", "title": "Универсальные наследия", "inSource": null, "entered": 5, "verified": 0, "inLibrary": 5, "inBuilder": 5, "implemented": "none", "tested": "не меняют хиты контрольного воина", "note": "Айуварин, дромар, нефилим, подменыш, дхампир. Числа с книги не сняты. Идентификатор dhampir не занимает гномье umbral."},
+        {"id": "ancestry", "title": "Народы", "inSource": 16, "entered": 16, "verified": 8, "inLibrary": 16, "inBuilder": 8, "implemented": "partial", "tested": "повышения и хиты в контрольном воине; кошачий народ только текст", "note": "В данных ядра игрока и ядра игрока 2 по 8 народов. Восемь новых сверены по хитам, размеру, скорости, зрению, повышениям и изъяну. В конструктор они не входят."},
+        {"id": "heritage", "title": "Наследия", "inSource": null, "entered": 30, "verified": 0, "inLibrary": 30, "inBuilder": 30, "implemented": "partial", "tested": "умелое наследие в тесте", "note": "Наследия внутри народов из данных не разложены: у многих польза сидит в отдельной черте, а не в поле наследия."},
+        {"id": "versatile-heritage", "title": "Универсальные наследия", "inSource": 7, "entered": 7, "verified": 7, "inLibrary": 7, "inBuilder": 7, "implemented": "none", "tested": "не меняют хиты контрольного воина; дхампир и драконья кровь в тексте", "note": "Айуварин, дромар, нефилим, подменыш, дхампир, драконья кровь, сумеречный странник. Сняты чувства и правило страха у драконьей крови. В расчёт не входят. Идентификатор dhampir не занимает гномье umbral."},
         {"id": "background", "title": "Происхождения", "inSource": null, "entered": 17, "verified": 0, "inLibrary": 17, "inBuilder": 17, "implemented": "partial", "tested": "нет отдельного теста на каждое"},
-        {"id": "class", "title": "Классы", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "partial", "tested": "воин до 20; друид на 1 уровне"},
+        {"id": "class", "title": "Классы", "inSource": 16, "entered": 16, "verified": 8, "inLibrary": 16, "inBuilder": 8, "implemented": "partial", "tested": "воин до 20; алхимик только текст", "note": "Восемь классов ядра игрока 2 сверены по хитам, ключу, восприятию, испытаниям, оружию, доспехам и навыкам. Конструктор их не предлагает. Ячейки заклинаний в карточку не переносились."},
         {"id": "class-choice", "title": "Выборы класса", "inSource": null, "entered": 37, "verified": 0, "inLibrary": 37, "inBuilder": 37, "implemented": "partial", "tested": "нет на каждый выбор"},
         {"id": "class-feat", "title": "Черты класса в карточках", "inSource": null, "entered": 12, "verified": 0, "inLibrary": 12, "inBuilder": 12, "implemented": "reference", "tested": "нет"},
         {"id": "engine-feat", "title": "Черты в расчёте развития", "inSource": null, "entered": 43, "verified": 0, "inLibrary": 0, "inBuilder": 43, "implemented": "partial", "tested": "11 черт, которые двигают числа контрольного воина", "note": "Число 43 снято с объекта черт в расчёте, не с карточек справочника. В постоянные числа входят 11."},
         {"id": "skill", "title": "Навыки", "inSource": null, "entered": 16, "verified": 0, "inLibrary": 16, "inBuilder": 16, "implemented": "full", "tested": "атлетика контрольного воина"},
         {"id": "skill-feat", "title": "Черты навыков и общие в справочнике", "inSource": null, "entered": 19, "verified": 0, "inLibrary": 19, "inBuilder": 19, "implemented": "partial", "tested": "тяжёлая ноша, живучесть, боевая медицина"},
-        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 38, "verified": 0, "inLibrary": 38, "inBuilder": 38, "implemented": "reference", "tested": "нет", "note": "Только заговоры и 1-й круг."},
-        {"id": "condition", "title": "Состояния", "inSource": null, "entered": 22, "verified": 0, "inLibrary": 22, "inBuilder": 22, "implemented": "partial", "tested": "нет отдельного набора на каждое состояние"},
+        {"id": "spell", "title": "Заклинания", "inSource": 660, "entered": 668, "verified": 630, "inLibrary": 668, "inBuilder": 38, "implemented": "reference", "tested": "огненный шар ремастера 6d6, не 8d6", "note": "660 — записи ORC в данных Foundry для ядра игрока, ядра игрока 2 и ядра ведущего. 630 новых карточек: круг, традиции, черты, время, дистанция, область, спасбросок, длительность и кости. 30 из этих 660 уже были в старом пересказе и не переписывались. Ещё 8 старых карточек в этих трёх книгах не нашлись и остались как были. Конструктор по-прежнему предлагает только прежние 38."},
+        {"id": "condition", "title": "Состояния", "inSource": 43, "entered": 43, "verified": 21, "inLibrary": 43, "inBuilder": 22, "implemented": "partial", "tested": "скрыт пеленой СЛ 5, спрятан СЛ 11, длящийся урон СЛ 15", "note": "21 новое состояние сверено по тексту правил в данных и по числам чистых проверок. Старые 22 не переписывались. Лист новые состояния к числам не прибавляет."},
         {"id": "item", "title": "Предметы", "inSource": null, "entered": 43, "verified": 0, "inLibrary": 43, "inBuilder": 43, "implemented": "partial", "tested": "чешуйчатый доспех и меч контрольного воина"},
         {"id": "lore", "title": "Предания Голариона", "inSource": null, "entered": 5, "verified": 0, "inLibrary": 5, "inBuilder": 0, "implemented": "reference", "tested": "режим игрока скрывает карточку ведущего", "note": "Свой пересказ и ссылка. Забытые королевства — ещё 3 карточки в отдельном пакете."}
       ]
