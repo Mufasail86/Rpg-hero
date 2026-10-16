@@ -976,10 +976,11 @@ function spellcasting2(d: Draft): Character["spellcasting"] {
   if (!cls?.spell) return null;
   const spontaneous = cls.id === "bard" || cls.id === "sorcerer" || cls.id === "oracle";
   const kind = spontaneous ? "known" : cls.id === "wizard" ? "book" : "prepared";
+  const bloodline = cls.id === "sorcerer" ? d.choices.bloodline : "";
   return {
     kind,
     ability: classKey(d) ?? cls.key[0],
-    listName: cls.spell.tradition,
+    listName: bloodline || cls.spell.tradition,
     cantripLimit: cls.spell.cantrips,
     prepareLimit: cls.spell.slots,
     knownLimit: cls.id === "wizard" ? 10 : spontaneous ? cls.spell.slots : 99,

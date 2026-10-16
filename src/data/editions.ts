@@ -125,6 +125,17 @@ export const PACKS: SourcePack[] = [
     bytes: 0,
     removable: true,
   },
+  {
+    id: "lore-srd-settings",
+    edition: "lore",
+    settingId: "srd",
+    title: "Открытый справочник, не сеттинг",
+    license: "summary-only",
+    link: "https://www.dndbeyond.com/srd",
+    note: "Страница справочника 5.2 говорит, что это правила для публикаций, а не описание мира. Забытые королевства в таблицу справочника не входят. Карточка — свой пересказ и ссылка.",
+    bytes: 0,
+    removable: true,
+  },
 ];
 
 const PACK_BY_ID = new Map(PACKS.map((pack) => [pack.id, pack]));

@@ -289,7 +289,7 @@ export function countBy(pick: (entry: RuleEntry) => string, entries = rulesCatal
 
 export function packCounts(): { id: string; entered: number; verified: number }[] {
   const entries = allEntries();
-  return ["srd-5.2", "srd-5.1", "pf-player-core", "pf-orc-more", "pf-ogl", "lore-golarion", "lore-forgotten-realms"].map((id) => ({
+  return ["srd-5.2", "srd-5.1", "pf-player-core", "pf-orc-more", "pf-ogl", "lore-golarion", "lore-forgotten-realms", "lore-srd-settings"].map((id) => ({
     id,
     entered: entries.filter((entry) => entry.sourceId === id).length,
     verified: entries.filter((entry) => entry.sourceId === id && entry.status.startsWith("verified")).length,

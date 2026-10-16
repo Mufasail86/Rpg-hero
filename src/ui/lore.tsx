@@ -6,6 +6,13 @@ import { go, useHash } from "./common";
 
 const MODE_KEY = "rpg-spoiler";
 
+function worldName(id: string): string {
+  if (id === "golarion") return "Голарион";
+  if (id === "forgotten-realms") return "Забытые королевства";
+  if (id === "srd") return "Открытый справочник";
+  return "Отдельный мир";
+}
+
 function readMode(): "player" | "gm" {
   try {
     return sessionStorage.getItem(MODE_KEY) === "gm" ? "gm" : "player";
@@ -79,7 +86,7 @@ export function Lore() {
               {cards.map((card) => (
                 <article key={card.token} className="card stack">
                   <b>{card.name}</b>
-                  <p className="tiny">{card.settingId === "golarion" ? "Голарион" : "Забытые королевства"} · {card.spoiler === "gm" ? "для ведущего" : card.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
+                  <p className="tiny">{worldName(card.settingId)} · {card.spoiler === "gm" ? "для ведущего" : card.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
                   {card.short && <p>{card.short}</p>}
                   <button type="button" className="btn" onClick={() => go(`#/lore/${encodeURIComponent(card.token)}`)}>Открыть</button>
                 </article>

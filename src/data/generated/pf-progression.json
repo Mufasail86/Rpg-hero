@@ -1,0 +1,2364 @@
+{
+  "source": "Foundry pf2e class and class-feature packs, ORC. Ranks are taken from the class-scoped sentence. The spells-per-day table is cited and not present, so only the written 1st-rank count is stored.",
+  "classes": {
+    "alchemist": {
+      "name": "Alchemist",
+      "hp": 8,
+      "spellcasting": 0,
+      "start": {
+        "fort": "expert",
+        "ref": "expert",
+        "will": "trained",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "trained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "trained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Chemical Hardiness"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed",
+            "bomb"
+          ],
+          "feature": "Alchemical Weapon Mastery"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Explosion Dodger"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Medium Armor Mastery"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Will Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Medium Armor Expertise"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed",
+            "bomb"
+          ],
+          "feature": "Alchemical Weapon Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Alchemical Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Alchemical Mastery"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [
+        "13 (Choice) Greater Field Discovery: файла особенности нет"
+      ],
+      "notes": []
+    },
+    "barbarian": {
+      "name": "Barbarian",
+      "hp": 12,
+      "spellcasting": 0,
+      "start": {
+        "fort": "expert",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "trained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 13,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Greater Juggernaut"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Brutality"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Medium Armor Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Mastery"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Mastery"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Indomitable Will"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Juggernaut"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Devastator"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Mighty Rage"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Armor Mastery"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": []
+    },
+    "bard": {
+      "name": "Bard",
+      "hp": 8,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Expert Spellcaster"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Master Spellcaster"
+        },
+        {
+          "level": 19,
+          "rank": "legendary",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Legendary Spellcaster"
+        },
+        {
+          "level": 9,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Performer's Heart"
+        },
+        {
+          "level": 3,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Mastery"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Fortitude Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Greater Performer's Heart"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Bard Weapon Expertise"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 2,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": []
+    },
+    "champion": {
+      "name": "Champion",
+      "hp": 10,
+      "spellcasting": 1,
+      "start": {
+        "fort": "expert",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "trained",
+          "heavy": "trained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium",
+            "heavy"
+          ],
+          "feature": "Armor Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Champion Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Champion Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Champion Mastery"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Champion Mastery"
+        },
+        {
+          "level": 17,
+          "rank": "legendary",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium",
+            "heavy"
+          ],
+          "feature": "Legendary Armor"
+        },
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Divine Will"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium",
+            "heavy"
+          ],
+          "feature": "Armor Mastery"
+        },
+        {
+          "level": 9,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Sacred Body"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [
+        "13 Weapon Mastery: в тексте нет фразы для этого класса"
+      ],
+      "notes": []
+    },
+    "cleric": {
+      "name": "Cleric",
+      "hp": 8,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "untrained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Resolute Faith"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored"
+          ],
+          "feature": "Divine Defense"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 2,
+        "cantrips": 5,
+        "tenthAt": null
+      },
+      "gaps": [
+        "1 Deity: файла особенности нет"
+      ],
+      "notes": [
+        "1 Doctrine: доктрина выбирается, ранги сами не включаются",
+        "1 First Doctrine: доктрина выбирается, ранги сами не включаются",
+        "3 Second Doctrine: доктрина выбирается, ранги сами не включаются",
+        "7 Third Doctrine: доктрина выбирается, ранги сами не включаются",
+        "11 Fourth Doctrine: доктрина выбирается, ранги сами не включаются",
+        "15 Fifth Doctrine: доктрина выбирается, ранги сами не включаются",
+        "19 Final Doctrine: доктрина выбирается, ранги сами не включаются"
+      ],
+      "doctrine": {
+        "cloistered": [
+          {
+            "level": 3,
+            "rank": "expert",
+            "kind": "save",
+            "keys": [
+              "fort"
+            ],
+            "feature": "Second Doctrine (Cloistered Cleric)"
+          },
+          {
+            "level": 7,
+            "rank": "expert",
+            "kind": "spell",
+            "keys": [
+              "spell"
+            ],
+            "feature": "Third Doctrine (Cloistered Cleric)"
+          },
+          {
+            "level": 11,
+            "rank": "expert",
+            "kind": "weapon",
+            "keys": [
+              "simple",
+              "unarmed"
+            ],
+            "feature": "Fourth Doctrine (Cloistered Cleric)"
+          },
+          {
+            "level": 15,
+            "rank": "master",
+            "kind": "spell",
+            "keys": [
+              "spell"
+            ],
+            "feature": "Fifth Doctrine (Cloistered Cleric)"
+          },
+          {
+            "level": 19,
+            "rank": "legendary",
+            "kind": "spell",
+            "keys": [
+              "spell"
+            ],
+            "feature": "Final Doctrine (Cloistered Cleric)"
+          }
+        ],
+        "warpriest": [
+          {
+            "level": 1,
+            "rank": "trained",
+            "kind": "armor",
+            "keys": [
+              "light",
+              "medium"
+            ],
+            "feature": "First Doctrine (Warpriest)"
+          },
+          {
+            "level": 1,
+            "rank": "expert",
+            "kind": "save",
+            "keys": [
+              "fort"
+            ],
+            "feature": "First Doctrine (Warpriest)"
+          },
+          {
+            "level": 13,
+            "rank": "expert",
+            "kind": "armor",
+            "keys": [
+              "light",
+              "medium"
+            ],
+            "feature": "First Doctrine (Warpriest)"
+          },
+          {
+            "level": 7,
+            "rank": "expert",
+            "kind": "weapon",
+            "keys": [
+              "simple",
+              "martial",
+              "unarmed"
+            ],
+            "feature": "Third Doctrine (Warpriest)"
+          },
+          {
+            "level": 11,
+            "rank": "expert",
+            "kind": "spell",
+            "keys": [
+              "spell"
+            ],
+            "feature": "Fourth Doctrine (Warpriest)"
+          },
+          {
+            "level": 15,
+            "rank": "master",
+            "kind": "save",
+            "keys": [
+              "fort"
+            ],
+            "feature": "Fifth Doctrine (Warpriest)"
+          },
+          {
+            "level": 19,
+            "rank": "master",
+            "kind": "spell",
+            "keys": [
+              "spell"
+            ],
+            "feature": "Final Doctrine (Warpriest)"
+          }
+        ]
+      }
+    },
+    "druid": {
+      "name": "Druid",
+      "hp": 8,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "trained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Medium Armor Expertise"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Wild Willpower"
+        },
+        {
+          "level": 3,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 3,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Fortitude Expertise"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Master Spellcaster"
+        },
+        {
+          "level": 19,
+          "rank": "legendary",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Legendary Spellcaster"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Expert Spellcaster"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 2,
+        "cantrips": 5,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": []
+    },
+    "fighter": {
+      "name": "Fighter",
+      "hp": 10,
+      "spellcasting": 0,
+      "start": {
+        "fort": "expert",
+        "ref": "expert",
+        "will": "trained",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "trained",
+          "heavy": "trained"
+        },
+        "weapon": {
+          "simple": "expert",
+          "martial": "expert",
+          "unarmed": "expert",
+          "advanced": "trained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Fighter Expertise"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium",
+            "heavy"
+          ],
+          "feature": "Armor Expertise"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Tempered Reflexes"
+        },
+        {
+          "level": 9,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Battle Hardened"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Battlefield Surveyor"
+        },
+        {
+          "level": 3,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Bravery"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium",
+            "heavy"
+          ],
+          "feature": "Armor Mastery"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Versatile Legend"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "fighter",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": [
+        "13 Weapon Legend: оружие воина считается по выбранной группе",
+        "5 Fighter Weapon Mastery: оружие воина считается по выбранной группе",
+        "19 Versatile Legend: оружие воина считается по выбранной группе"
+      ]
+    },
+    "investigator": {
+      "name": "Investigator",
+      "hp": 8,
+      "spellcasting": 0,
+      "start": {
+        "fort": "trained",
+        "ref": "expert",
+        "will": "expert",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Fortitude Expertise"
+        },
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Dogged Will"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Mastery"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Investigator Expertise"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Savvy Reflexes"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Master Detective"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Greater Dogged Will"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [
+        "13 Incredible Senses: файла особенности нет",
+        "13 Weapon Mastery: в тексте нет фразы для этого класса",
+        "7 Vigilant Senses: файла особенности нет"
+      ],
+      "notes": []
+    },
+    "monk": {
+      "name": "Monk",
+      "hp": 10,
+      "spellcasting": 0,
+      "start": {
+        "fort": "expert",
+        "ref": "expert",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "expert",
+          "light": "untrained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "save-choice",
+          "keys": [
+            "fort",
+            "ref",
+            "will"
+          ],
+          "feature": "Second Path to Perfection"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Expert Strikes"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "legendary",
+          "kind": "armor",
+          "keys": [
+            "unarmored"
+          ],
+          "feature": "Graceful Legend"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Graceful Legend"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Graceful Legend",
+          "when": "qi"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored"
+          ],
+          "feature": "Graceful Mastery"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Monk Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Monk Expertise",
+          "when": "qi"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "save-choice",
+          "keys": [
+            "fort",
+            "ref",
+            "will"
+          ],
+          "feature": "Path to Perfection"
+        },
+        {
+          "level": 15,
+          "rank": "legendary",
+          "kind": "save-choice",
+          "keys": [
+            "fort",
+            "ref",
+            "will"
+          ],
+          "feature": "Third Path to Perfection"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Master Strikes"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": [
+        "11 Second Path to Perfection: испытание выбирает игрок",
+        "7 Path to Perfection: испытание выбирает игрок",
+        "15 Third Path to Perfection: испытание выбирает игрок"
+      ]
+    },
+    "oracle": {
+      "name": "Oracle",
+      "hp": 8,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Mysterious Resolve"
+        },
+        {
+          "level": 19,
+          "rank": "legendary",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Legendary Spellcaster"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Premonition Reflexes"
+        },
+        {
+          "level": 17,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Greater Mysterious Resolve"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Magical Fortitude"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Expert Spellcaster"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Master Spellcaster"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Oracular Senses"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 3,
+        "cantrips": null,
+        "tenthAt": 19
+      },
+      "gaps": [],
+      "notes": []
+    },
+    "ranger": {
+      "name": "Ranger",
+      "hp": 10,
+      "spellcasting": 0,
+      "start": {
+        "fort": "expert",
+        "ref": "expert",
+        "will": "trained",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "trained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Masterful Hunter"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Masterful Hunter",
+          "when": "warden"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Medium Armor Expertise"
+        },
+        {
+          "level": 15,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Greater Natural Reflexes"
+        },
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Warden's Endurance"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Natural Reflexes"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light",
+            "medium"
+          ],
+          "feature": "Medium Armor Mastery"
+        },
+        {
+          "level": 15,
+          "rank": "legendary",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Legend"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Ranger Weapon Expertise"
+        },
+        {
+          "level": 3,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Will Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Ranger Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Ranger Expertise",
+          "when": "warden"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Mastery"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [
+        "13 Weapon Mastery: в тексте нет фразы для этого класса"
+      ],
+      "notes": []
+    },
+    "rogue": {
+      "name": "Rogue",
+      "hp": 8,
+      "spellcasting": 0,
+      "start": {
+        "fort": "trained",
+        "ref": "expert",
+        "will": "expert",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Tricks"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Mastery"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Master Tricks"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Mastery"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Expertise"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Evasive Reflexes"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Rogue Resilience"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Agile Mind"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Rogue Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Greater Rogue Reflexes"
+        },
+        {
+          "level": 13,
+          "rank": "legendary",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Legend"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Master Strike"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [
+        "9 Debilitating Strikes: файла особенности нет"
+      ],
+      "notes": []
+    },
+    "sorcerer": {
+      "name": "Sorcerer",
+      "hp": 6,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "untrained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Majestic Will"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Expert Spellcaster"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored"
+          ],
+          "feature": "Defensive Robes"
+        },
+        {
+          "level": 19,
+          "rank": "legendary",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Legendary Spellcaster"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Magical Fortitude"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Master Spellcaster"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 3,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": []
+    },
+    "swashbuckler": {
+      "name": "Swashbuckler",
+      "hp": 10,
+      "spellcasting": 0,
+      "start": {
+        "fort": "trained",
+        "ref": "expert",
+        "will": "expert",
+        "perception": "expert",
+        "classDc": "trained",
+        "spell": "untrained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "trained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "trained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Eternal Confidence"
+        },
+        {
+          "level": 13,
+          "rank": "legendary",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Assured Evasion"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Reinforced Ego"
+        },
+        {
+          "level": 19,
+          "rank": "master",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Mastery"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored",
+            "light"
+          ],
+          "feature": "Light Armor Expertise"
+        },
+        {
+          "level": 3,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Fortitude Expertise"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Confident Evasion"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "classDc",
+          "keys": [
+            "classDc"
+          ],
+          "feature": "Swashbuckler Expertise"
+        }
+      ],
+      "weaponSpec": 7,
+      "greaterWeaponSpec": 15,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": null,
+        "cantrips": null,
+        "tenthAt": null
+      },
+      "gaps": [
+        "11 Vigilant Senses: файла особенности нет",
+        "13 Weapon Mastery: в тексте нет фразы для этого класса"
+      ],
+      "notes": []
+    },
+    "witch": {
+      "name": "Witch",
+      "hp": 6,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "untrained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Master Spellcaster"
+        },
+        {
+          "level": 19,
+          "rank": "legendary",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Legendary Spellcaster"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Will of the Pupil"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored"
+          ],
+          "feature": "Defensive Robes"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Magical Fortitude"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Expert Spellcaster"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 2,
+        "cantrips": 5,
+        "tenthAt": null
+      },
+      "gaps": [
+        "1 Hexes: файла особенности нет"
+      ],
+      "notes": []
+    },
+    "wizard": {
+      "name": "Wizard",
+      "hp": 6,
+      "spellcasting": 1,
+      "start": {
+        "fort": "trained",
+        "ref": "trained",
+        "will": "expert",
+        "perception": "trained",
+        "classDc": "trained",
+        "spell": "trained",
+        "armor": {
+          "unarmored": "trained",
+          "light": "untrained",
+          "medium": "untrained",
+          "heavy": "untrained"
+        },
+        "weapon": {
+          "simple": "trained",
+          "martial": "untrained",
+          "unarmed": "trained",
+          "advanced": "untrained",
+          "bomb": "untrained"
+        }
+      },
+      "bumps": [
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Expertise"
+        },
+        {
+          "level": 7,
+          "rank": "expert",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Expert Spellcaster"
+        },
+        {
+          "level": 11,
+          "rank": "expert",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "unarmed"
+          ],
+          "feature": "Weapon Expertise"
+        },
+        {
+          "level": 19,
+          "rank": "legendary",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Legendary Spellcaster"
+        },
+        {
+          "level": 17,
+          "rank": "master",
+          "kind": "save",
+          "keys": [
+            "will"
+          ],
+          "feature": "Prodigious Will"
+        },
+        {
+          "level": 15,
+          "rank": "master",
+          "kind": "spell",
+          "keys": [
+            "spell"
+          ],
+          "feature": "Master Spellcaster"
+        },
+        {
+          "level": 5,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "ref"
+          ],
+          "feature": "Reflex Expertise"
+        },
+        {
+          "level": 9,
+          "rank": "expert",
+          "kind": "save",
+          "keys": [
+            "fort"
+          ],
+          "feature": "Magical Fortitude"
+        },
+        {
+          "level": 13,
+          "rank": "expert",
+          "kind": "armor",
+          "keys": [
+            "unarmored"
+          ],
+          "feature": "Defensive Robes"
+        }
+      ],
+      "weaponSpec": 13,
+      "greaterWeaponSpec": null,
+      "weaponTrack": "category",
+      "spell": {
+        "rank1": 2,
+        "cantrips": 5,
+        "tenthAt": null
+      },
+      "gaps": [],
+      "notes": []
+    }
+  },
+  "curse": {
+    "max": [
+      {
+        "level": 1,
+        "value": 2
+      },
+      {
+        "level": 11,
+        "value": 3
+      },
+      {
+        "level": 17,
+        "value": 4
+      }
+    ],
+    "mysteries": {
+      "cosmos": {
+        "name": "Зов неба",
+        "file": "curse-of-the-skys-call"
+      },
+      "lore": {
+        "name": "Поток знания",
+        "file": "curse-of-torrential-knowledge"
+      },
+      "flames": {
+        "name": "Пожирающее пламя",
+        "file": "curse-of-engulfing-flames"
+      },
+      "bones": {
+        "name": "Живая смерть",
+        "file": "curse-of-the-living-death"
+      },
+      "life": {
+        "name": "Изливающаяся жизнь",
+        "file": "curse-of-outpouring-life"
+      },
+      "battle": {
+        "name": "Смертный воин",
+        "file": "curse-of-the-mortal-warrior"
+      },
+      "ancestors": {
+        "name": "Предки",
+        "file": "curse-of-ancestral-meddling"
+      },
+      "tempest": {
+        "name": "Встречный ветер",
+        "file": "curse-of-inclement-headwinds"
+      }
+    }
+  },
+  "runes": {
+    "weaponPotency": [
+      {
+        "id": "weapon-potency-1",
+        "value": 1,
+        "propertySlots": 1
+      },
+      {
+        "id": "weapon-potency-2",
+        "value": 2,
+        "propertySlots": 2
+      },
+      {
+        "id": "weapon-potency-3",
+        "value": 3,
+        "propertySlots": 3
+      }
+    ],
+    "striking": [
+      {
+        "id": "striking",
+        "extraDice": 1,
+        "totalDice": 2
+      },
+      {
+        "id": "striking-greater",
+        "extraDice": 2,
+        "totalDice": 3
+      },
+      {
+        "id": "striking-major",
+        "extraDice": 3,
+        "totalDice": 4
+      }
+    ],
+    "armorPotency": [
+      {
+        "id": "armor-potency-1",
+        "value": 1,
+        "propertySlots": 1
+      },
+      {
+        "id": "armor-potency-2",
+        "value": 2,
+        "propertySlots": 2
+      },
+      {
+        "id": "armor-potency-3",
+        "value": 3,
+        "propertySlots": 3
+      }
+    ],
+    "resilient": [
+      {
+        "id": "resilient",
+        "value": 1
+      },
+      {
+        "id": "resilient-greater",
+        "value": 2
+      },
+      {
+        "id": "resilient-major",
+        "value": 3
+      }
+    ]
+  }
+}
