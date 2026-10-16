@@ -88,4 +88,22 @@ describe("готовый персонаж", () => {
     expect(hero.spellcasting?.listName).toBe("primal");
     expect(hero.speed).toBe(20);
   });
+
+  it("на шаге черт выбирается не только Общая подготовка", () => {
+    const draft = blankDraft();
+    draft.system = "pf2e";
+    draft.ancestryId = "human";
+    draft.heritageId = "skilled";
+    draft.choices.humanSkill = "society";
+    draft.classId = "wizard";
+    draft.choices.ancestryFeat = "natural-ambition";
+    draft.choices.skillFeat = "hefty";
+    expect(validateStep(draft, "feats")).toMatch(/Атлетика/);
+    draft.multi.skills = ["athletics"];
+    expect(validateStep(draft, "feats")).toBeNull();
+    draft.choices.ancestryFeat = "general-training";
+    expect(validateStep(draft, "feats")).toMatch(/общую черту/);
+    draft.choices.generalFeat = "fleet";
+    expect(validateStep(draft, "feats")).toBeNull();
+  });
 });

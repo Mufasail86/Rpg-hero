@@ -1,13 +1,15 @@
 import { useState } from "react";
 import type { Character } from "./types";
-import { loadCharacters, mergeImport, saveCharacters } from "./storage";
+import { loadCharacters, saveCharacters } from "./storage";
 import { go, InfoProvider, useHash } from "./ui/common";
 import { Home } from "./ui/home";
 import { Builder } from "./ui/builder";
 import { Sheet } from "./ui/sheet";
+import { Library } from "./ui/library";
 
-function routeOf(hash: string): { page: "home" | "new" | "sheet"; id?: string; panel?: string | null } {
+function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
+  if (parts[0] === "library") return { page: "library" };
   if (parts[0] === "new") return { page: "new" };
   if (parts[0] === "c" && parts[1]) return { page: "sheet", id: decodeURIComponent(parts[1]), panel: parts[2] ? decodeURIComponent(parts[2]) : null };
   return { page: "home" };
@@ -37,15 +39,11 @@ export function App() {
       {route.page === "home" && (
         <Home
           characters={characters}
-          onImport={(text) => {
-            const result = mergeImport(characters, text);
-            if ("error" in result) return result.error;
-            write(result.characters);
-            return null;
-          }}
+          onCommit={write}
           onDelete={(id) => write(characters.filter((item) => item.id !== id))}
         />
       )}
+      {route.page === "library" && <Library />}
       {route.page === "new" && (
         <Builder
           onDone={(character) => {

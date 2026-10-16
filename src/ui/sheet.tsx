@@ -35,6 +35,9 @@ import {
 } from "../types";
 import { go, Info } from "./common";
 import { DicePanel, queueRoll } from "./dice";
+import { AdvancePanel, sheetDerived, WarningBanner } from "./remaster";
+import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
+import { sheetDnd } from "../dnd/build";
 
 const PANELS = [
   ["abilities", "Характеристики", "Сил", "teal"],
@@ -60,11 +63,25 @@ export function Sheet({
   onChange: (character: Character) => void;
   onDelete: () => void;
 }) {
-  const max = hpMax(character);
-  const ac = armorClass(character);
-  const init = initiativeOf(character);
-  const speed = speedOf(character);
-  const title = PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
+  const derived = sheetDerived(character);
+  const dnd = sheetDnd(character);
+  const max = derived?.hp.value ?? dnd?.hp.value ?? hpMax(character);
+  const ac = derived
+    ? { value: derived.ac.value, text: [derived.ac.formula, ...derived.ac.aside].join("\n") }
+    : dnd
+      ? { value: dnd.ac.value, text: [dnd.ac.formula, ...dnd.ac.aside].join("\n") }
+      : armorClass(character);
+  const init = derived
+    ? { value: derived.initiative.value, text: derived.initiative.formula }
+    : dnd
+      ? { value: dnd.initiative.value, text: [dnd.initiative.formula, ...dnd.initiative.aside].join("\n") }
+      : initiativeOf(character);
+  const speed = derived
+    ? { value: derived.speed.value, text: derived.speed.formula }
+    : dnd
+      ? { value: dnd.speed.value, text: dnd.speed.formula }
+      : speedOf(character);
+  const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   function commit(next: Character) {
@@ -104,12 +121,16 @@ export function Sheet({
               </div>
             </div>
           </section>
+          <WarningBanner character={character} />
+          {character.system === "dnd5e" && <DndBanner character={character} />}
           <div className="quick">
             <Stat label="КБ" value={String(ac.value)} info={ac.text} />
             <Stat label="Скорость" value={String(speed.value)} info={speed.text} />
             <Stat label="Инициатива" value={fmt(init.value)} info={init.text} />
-            <Stat label="Хиты" value={`${character.hpCurrent}/${max}`} info={`Временные ${character.hpTemp}. Максимум считается из кости, Телосложения и черт.`} />
+            <Stat label="Хиты" value={`${character.hpCurrent}/${max}`} info={derived?.hp.formula ?? `Временные ${character.hpTemp}. Максимум считается из кости, Телосложения и черт.`} />
           </div>
+          {derived && <p className="tiny">{derived.attacks.find((attack) => attack.equipped)?.attack.formula}</p>}
+          {dnd && <p className="tiny">{dnd.attacks.find((attack) => attack.equipped)?.attack.formula} · {dnd.attacks.find((attack) => attack.equipped)?.damage} · крит {dnd.crit}</p>}
           <div className="stack">
             {PANELS.map(([id, name, mark, tone]) => (
               <button key={id} type="button" className={`big ${tone === "teal" ? "" : tone}`} data-testid={`open-${id}`} onClick={() => go(`#/c/${character.id}/${id}`)}>
@@ -120,6 +141,24 @@ export function Sheet({
                 </span>
               </button>
             ))}
+            {(character.progress || character.dnd) && (
+              <button type="button" className="big" data-testid="open-growth" onClick={() => go(`#/c/${character.id}/growth`)}>
+                <span className="mark">↑</span>
+                <span>
+                  <b>Развитие</b>
+                  <span>Уровни 1–20, разбор и условные эффекты</span>
+                </span>
+              </button>
+            )}
+            {character.system === "dnd5e" && (
+              <button type="button" className="big" data-testid="open-combat" onClick={() => go(`#/c/${character.id}/combat`)}>
+                <span className="mark">⚔</span>
+                <span>
+                  <b>Бой</b>
+                  <span>Действие, бонус, реакция, атаки и ячейки</span>
+                </span>
+              </button>
+            )}
             <button type="button" className="big" data-testid="open-notes" onClick={() => go(`#/c/${character.id}/notes`)}>
               <span className="mark">✎</span>
               <span>
@@ -151,7 +190,9 @@ export function Sheet({
           {panel === "spells" && <Spells character={character} commit={commit} />}
           {panel === "dice" && <DicePanel />}
           {panel === "notes" && <Notes character={character} commit={commit} />}
-          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "dice", "notes"].includes(panel) && <p>Такого раздела нет.</p>}
+          {panel === "growth" && (character.dnd ? <DndAdvance character={character} onChange={commit} /> : <AdvancePanel character={character} onChange={commit} />)}
+          {panel === "combat" && <DndCombatPanel character={character} onChange={commit} />}
+          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "dice", "notes", "growth", "combat"].includes(panel) && <p>Такого раздела нет.</p>}
         </main>
       )}
     </div>
@@ -185,6 +226,53 @@ function rollTo(character: Character, label: string, modifier: number, die = 20)
 }
 
 function Abilities({ character, commit }: { character: Character; commit: (next: Character) => void }) {
+  const derived = sheetDerived(character);
+  if (derived) {
+    return (
+      <>
+        <p className="tiny">Числа собраны из повышений. Нажмите модификатор, чтобы увидеть формулу и бросить.</p>
+        {ABILITIES.map((ability) => {
+          const row = derived.abilities[ability];
+          return (
+            <div key={ability} className="ability">
+              <div>
+                <b>{ABILITY_NAME[ability]}</b>
+                <div className="tiny">{row.score}{row.partial ? " · частичное повышение" : ""}</div>
+              </div>
+              <button type="button" className="mod" onClick={() => rollTo(character, ABILITY_NAME[ability], row.mod)}>{fmt(row.mod)}</button>
+              <Info title={ABILITY_NAME[ability]} text={row.formula} />
+            </div>
+          );
+        })}
+        <h2>Испытания</h2>
+        {(["fort", "ref", "will"] as const).map((key) => {
+          const save = derived.saves[key];
+          const name = key === "fort" ? "Стойкость" : key === "ref" ? "Рефлексы" : "Воля";
+          return (
+            <div key={key} className="skill">
+              <div>
+                <b>{name}</b>
+                <span className="tiny">{save.rank}</span>
+              </div>
+              <button type="button" className="mod" onClick={() => rollTo(character, name, save.value)}>{fmt(save.value)}</button>
+              <Info title={name} text={[save.formula, ...save.aside].join("\n")} />
+            </div>
+          );
+        })}
+        <div className="skill">
+          <div><b>Восприятие</b></div>
+          <button type="button" className="mod" onClick={() => rollTo(character, "Восприятие", derived.perception.value)}>{fmt(derived.perception.value)}</button>
+          <Info title="Восприятие" text={derived.perception.formula} />
+        </div>
+        <div className="skill">
+          <div><b>Инициатива</b></div>
+          <button type="button" className="mod" onClick={() => rollTo(character, "Инициатива", derived.initiative.value)}>{fmt(derived.initiative.value)}</button>
+          <Info title="Инициатива" text={[derived.initiative.formula, ...derived.initiative.aside].join("\n")} />
+        </div>
+        {derived.classDc && <p className="tiny">{derived.classDc.formula}</p>}
+      </>
+    );
+  }
   function setAbility(ability: Ability, value: number) {
     const abilities = { ...character.abilities, [ability]: Math.max(1, Math.min(30, value)) };
     const next = { ...character, abilities };
@@ -215,7 +303,7 @@ function Abilities({ character, commit }: { character: Character; commit: (next:
           <button type="button" className="mod" onClick={() => rollTo(character, ABILITY_NAME[ability], mod(character.abilities[ability]))}>
             {fmt(mod(character.abilities[ability]))}
           </button>
-          <Info title={ABILITY_NAME[ability]} text={ABILITY_INFO[ability]} />
+          <Info title={ABILITY_NAME[ability]} text={sheetDnd(character)?.abilities[ability].formula ?? ABILITY_INFO[ability]} />
         </div>
       ))}
       <h2>Спасброски</h2>
@@ -228,7 +316,7 @@ function Abilities({ character, commit }: { character: Character; commit: (next:
               <span className="tiny">{rankLabel(character.system, character.saves[save.key] ?? "untrained")}</span>
             </div>
             <button type="button" className="mod" onClick={() => rollTo(character, save.name, value)}>{fmt(value)}</button>
-            <Info title={save.name} text={save.info} />
+            <Info title={save.name} text={character.system === "dnd5e" ? (sheetDnd(character)?.saves[save.ability].formula ?? save.info) : save.info} />
           </div>
         );
       })}
@@ -247,6 +335,25 @@ function Abilities({ character, commit }: { character: Character; commit: (next:
 }
 
 function Skills({ character, commit }: { character: Character; commit: (next: Character) => void }) {
+  const derived = sheetDerived(character);
+  if (derived) {
+    const rows = Object.entries(derived.skills).filter(([, skill]) => skill.rank !== "untrained");
+    return (
+      <>
+        <p className="tiny">Ранг берётся из истории развития. Модификатор открывает формулу и бросок.</p>
+        {rows.map(([id, skill]) => (
+          <div key={id} className="skill">
+            <div>
+              <b>{skill.formula.split(" ")[0]}</b>
+              <span className="tiny">{ABILITY_SHORT[skill.ability]} · {skill.rank}</span>
+            </div>
+            <button type="button" className="mod" onClick={() => rollTo(character, skill.formula.split(" ")[0], skill.value)}>{fmt(skill.value)}</button>
+            <Info title={skill.formula.split(" ")[0]} text={skill.formula} />
+          </div>
+        ))}
+      </>
+    );
+  }
   const cycle = character.system === "dnd5e" ? ["untrained", "proficient", "expertise"] : ["untrained", "trained", "expert", "master", "legendary"];
   function bump(id: string) {
     const current = character.skillRanks[id] ?? "untrained";
@@ -263,7 +370,7 @@ function Skills({ character, commit }: { character: Character; commit: (next: Ch
             <span className="tiny">{ABILITY_SHORT[skill.ability]} · {rankLabel(character.system, skill.rank)}</span>
           </button>
           <button type="button" className="mod" data-testid={`roll-${skill.id}`} onClick={() => rollTo(character, skill.name, skill.mod)}>{fmt(skill.mod)}</button>
-          <Info title={skill.name} text={skill.info} />
+          <Info title={skill.name} text={sheetDnd(character)?.skills[skill.id]?.formula ?? skill.info} />
         </div>
       ))}
     </>
@@ -271,7 +378,9 @@ function Skills({ character, commit }: { character: Character; commit: (next: Ch
 }
 
 function Health({ character, commit }: { character: Character; commit: (next: Character) => void }) {
-  const max = hpMax(character);
+  const derived = sheetDerived(character);
+  const dnd = sheetDnd(character);
+  const max = derived?.hp.value ?? dnd?.hp.value ?? hpMax(character);
   const [amount, setAmount] = useState(1);
   function setCurrent(value: number) {
     commit({ ...character, hpCurrent: Math.max(0, Math.min(max, value)) });
@@ -286,7 +395,7 @@ function Health({ character, commit }: { character: Character; commit: (next: Ch
       conditionValues: { ...character.conditionValues },
     };
     if (kind === "long" || character.system === "pf2e") {
-      next.hpCurrent = hpMax(next);
+      next.hpCurrent = sheetDerived(next)?.hp.value ?? sheetDnd(next)?.hp.value ?? hpMax(next);
       next.hpTemp = 0;
       next.slots = next.slots.map((slot) => ({ ...slot, used: 0 }));
       next.resources = next.resources.map((resource) => ({ ...resource, current: resource.max }));
@@ -323,6 +432,8 @@ function Health({ character, commit }: { character: Character; commit: (next: Ch
         <div className="tiny">сейчас</div>
         <strong>{character.hpCurrent}</strong>
         <div>из {max}{character.hpTemp ? ` + ${character.hpTemp} врем.` : ""}</div>
+        {derived && <p className="tiny">{derived.hp.formula}</p>}
+        {dnd && <p className="tiny">{dnd.hp.formula}</p>}
       </div>
       <div className="hp-actions">
         <button type="button" onClick={() => setCurrent(character.hpCurrent + amount)}>+</button>
@@ -379,7 +490,10 @@ function Health({ character, commit }: { character: Character; commit: (next: Ch
 }
 
 function Inventory({ character, commit }: { character: Character; commit: (next: Character) => void }) {
-  const load = loadOf(character);
+  const derived = sheetDerived(character);
+  const load = derived
+    ? { current: derived.load.bulk, cap: derived.load.max, enc: derived.load.limit, unit: "объёма", text: `Объём ${derived.load.bulk}. Перегруз после ${derived.load.limit}, максимум ${derived.load.max}.` }
+    : loadOf(character);
   const [name, setName] = useState("");
   const [weight, setWeight] = useState("1");
   function patchItem(uidValue: string, partial: Partial<ItemInst>) {
@@ -407,13 +521,21 @@ function Inventory({ character, commit }: { character: Character; commit: (next:
       <p className="tiny">{load.text}</p>
       <p><b>{load.current}</b> из {load.cap} {load.unit}{load.enc != null ? `, перегруз после ${load.enc}` : ""}</p>
       {character.items.map((item) => {
-        const attack = attackFor(character, item);
+        const derivedAttack = derived?.attacks.find((row) => row.name === item.name);
+        const dndAttack = sheetDnd(character)?.attacks.find((row) => row.name === item.name);
+        const attack = derivedAttack
+          ? { attack: derivedAttack.attack.value, damage: derivedAttack.damage, text: derivedAttack.attack.formula }
+          : dndAttack
+            ? { attack: dndAttack.attack.value, damage: dndAttack.damage, text: dndAttack.attack.formula }
+            : attackFor(character, item);
         return (
           <div key={item.uid} className="card">
             <div className="row-between">
               <b>{item.name}</b>
               <Info title={item.name} text={item.notes || "Предмет в сумке."} />
             </div>
+            {item.custom && <p className="tiny">Собственная запись{item.source ? ` · ${item.source}` : ""}{item.placement === "held" ? " · в руках" : item.placement === "worn" ? " · надето" : item.placement === "stowed" ? " · убрано" : ""}</p>}
+            {item.shield && <p className="tiny">КБ +{item.shield.acBonus}, твёрдость {item.shield.hardness}, ПЗ {item.shield.hp}, порог поломки {item.shield.bt}.</p>}
             <div className="row">
               <span className="tiny">×</span>
               <div className="stepper">
@@ -523,7 +645,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
           <button type="button" className={`pill ${mode === "roll" ? "on" : ""}`} onClick={() => setMode("roll")}>Бросок кости</button>
         </div>
       )}
-      {wantsBoosts && (
+      {wantsBoosts && !character.progress && (
         <div className="wrap">
           {ABILITIES.map((ability) => (
             <button key={ability} type="button" className={`pill ${boosts.includes(ability) ? "on" : ""}`} onClick={() => setBoosts((prev) => prev.includes(ability) ? prev.filter((item) => item !== ability) : prev.length >= 4 ? prev : [...prev, ability])}>
@@ -532,9 +654,13 @@ function Experience({ character, commit }: { character: Character; commit: (next
           ))}
         </div>
       )}
+      {character.progress ? (
+        <p className="tiny">Уровень и выборы ремастера открываются в разделе «Развитие». Эта кнопка не прибавляет характеристики вторым способом.</p>
+      ) : (
       <button type="button" className="btn primary" disabled={!canLevel(character) || (wantsBoosts && boosts.length !== 4)} onClick={level}>
         Получить уровень
       </button>
+      )}
       {character.pendingAsi && (
         <div className="card stack">
           <b>Прибавка или черта</b>

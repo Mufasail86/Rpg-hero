@@ -45,7 +45,12 @@ export interface ArmorStat {
   dexCap: number | null;
   category: "unarmored" | "light" | "medium" | "heavy";
   stealth?: boolean;
+  /** Минимальное значение Силы, чтобы не получить штраф проверки и скорости. */
   strReq?: number;
+  /** Штраф проверки доспеха, положительное число. */
+  checkPenalty?: number;
+  /** Штраф скорости в футах, если Сила ниже порога. */
+  speedPenalty?: number;
 }
 
 export interface WeaponStat {
@@ -58,6 +63,31 @@ export interface WeaponStat {
   thrown?: boolean;
   twoHanded?: boolean;
   mastery?: string;
+  /** Группа оружия ремастера: sword, bow, brawling… */
+  group?: string;
+  hands?: 1 | 2;
+  /** Подпись свойств. Текст не разбирается в механику. */
+  traits?: string;
+  range?: number;
+  reach?: number;
+}
+
+export type Placement = "worn" | "held" | "stowed";
+
+export interface ShieldStat {
+  acBonus: number;
+  hardness: number;
+  hp: number;
+  bt: number;
+}
+
+export interface StructuredEffect {
+  label: string;
+  target: "ac" | "speed" | "hp";
+  type: "item" | "status" | "circumstance" | "untyped";
+  value: number;
+  /** Выключено — описание остаётся справкой, число не меняется. */
+  implemented: boolean;
 }
 
 export interface ItemInst {
@@ -67,10 +97,20 @@ export interface ItemInst {
   qty: number;
   weight: number;
   equipped: boolean;
-  kind: "armor" | "shield" | "weapon" | "gear";
+  kind: "armor" | "shield" | "weapon" | "gear" | "tool";
   notes?: string;
   armor?: ArmorStat;
   weapon?: WeaponStat;
+  /** Руны предмета. Бонус предмета не складывается с другой руной того же типа. */
+  runes?: { potency?: number; striking?: number; resilient?: number };
+  /** Плоский бонус магического предмета, +1 оружие или +1 доспех. */
+  magicBonus?: number;
+  /** Своя запись игрока, не из справочника. */
+  custom?: boolean;
+  priceCp?: number;
+  placement?: Placement;
+  source?: string;
+  shield?: ShieldStat;
 }
 
 export interface SpellInst {
@@ -103,11 +143,17 @@ export interface FeatInst {
   id: string;
   name: string;
   info: string;
+  custom?: boolean;
+  source?: string;
+  effects?: StructuredEffect[];
 }
 
 export interface FeatureInst {
   name: string;
   info: string;
+  custom?: boolean;
+  source?: string;
+  effects?: StructuredEffect[];
 }
 
 export interface ExtraSkill {
@@ -198,6 +244,70 @@ export interface Character {
   pendingAsi: boolean;
   createdAt: number;
   updatedAt: number;
+  /** 2 — лист с историей развития PF2e. Старые сохранения без поля остаются работоспособными. */
+  formatVersion?: number;
+  /** Источник правды для персонажа Pathfinder на расчёте ремастера. */
+  progress?: Pf2eProgress;
+  /** Источник правды для персонажа D&D, у которого уровни 1–20 записаны выборами. */
+  dnd?: DndProgress;
+  /** Боевой трекер Pathfinder. Не влияет на постоянный лист. */
+  combat?: CombatState;
+  /** Боевой трекер D&D. Не меняет постоянные характеристики. */
+  dndCombat?: DndCombat;
+}
+
+export interface DndProgress {
+  speciesId: string;
+  backgroundId: string;
+  classId: string;
+  subclassId: string;
+  /** Значения после народа и происхождения, до классовых повышений. */
+  base: Record<Ability, number>;
+  speed: number;
+  choices: BuildChoice[];
+  toggles: string[];
+}
+
+export interface DndCombat {
+  action: boolean;
+  bonus: boolean;
+  reaction: boolean;
+  attacks: number;
+  extraAction: boolean;
+  resources: Record<string, number>;
+  slotsUsed: Record<string, number>;
+}
+
+export interface BuildChoice {
+  /** Совпадает с id слота, который этот выбор закрывает. */
+  id: string;
+  level: number;
+  source: string;
+  pick: string;
+  detail?: Record<string, string>;
+}
+
+export interface Pf2eProgress {
+  freeArchetype: boolean;
+  ancestryId: string;
+  heritageId: string;
+  backgroundId: string;
+  classId: string;
+  keyAbility: Ability;
+  choices: BuildChoice[];
+  /** Условные эффекты, которые игрок включил. Дуэльное парирование сюда входит, в обычный КБ — нет. */
+  toggles: string[];
+  /** Боевая гибкость воина: черты на день, не часть постоянного плана. */
+  dailyFeats: string[];
+}
+
+export interface CombatState {
+  actions: number;
+  reaction: boolean;
+  map: number;
+  flourish: boolean;
+  immunity: { target: string; effect: string }[];
+  defense?: string | null;
 }
 
 export interface CatalogItem {
