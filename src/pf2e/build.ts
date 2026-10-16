@@ -222,6 +222,13 @@ export function derive(input: DeriveInput): Derived {
     }
   }
 
+  if (progress.versatileHeritageId) {
+    issues.push({
+      kind: "limit",
+      message: "Универсальное наследие записано вместе с народом. Его эффект приложение к числам не прибавляет.",
+    });
+  }
+
   if (progress.classId !== "fighter") {
     issues.push({
       kind: "limit",

@@ -39,7 +39,9 @@ import { AdvancePanel, CombatTracker, sheetDerived, WarningBanner } from "./rema
 import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
 import { sheetDnd } from "../dnd/build";
 import { systemTitle } from "../labels";
+import { EDITION_NAME, rulesOf } from "../data/editions";
 import { portraitSrc } from "./art";
+import { RulesPanel } from "./rules";
 
 const PANELS = [
   ["abilities", "Характеристики", "Сил", "teal"],
@@ -83,7 +85,7 @@ export function Sheet({
     : dnd
       ? { value: dnd.speed.value, text: dnd.speed.formula }
       : speedOf(character);
-  const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
+  const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   function commit(next: Character) {
@@ -117,9 +119,11 @@ export function Sheet({
               <input data-testid="sheet-name" value={character.name} onChange={(event) => commit({ ...character, name: event.target.value })} />
               <div className="chips">
                 <span className="chip">{systemTitle(character.system)}</span>
+                <span className="chip">{EDITION_NAME[rulesOf(character).edition]}</span>
                 <span className="chip">{character.ancestryName}</span>
                 <span className="chip">{character.className}</span>
                 <span className="chip">{character.level} ур.</span>
+                {character.versatileHeritageId && <span className="chip">Универсальное наследие</span>}
               </div>
             </div>
           </section>
@@ -161,6 +165,13 @@ export function Sheet({
                 </span>
               </button>
             )}
+            <button type="button" className="big" data-testid="open-rules" onClick={() => go(`#/c/${character.id}/rules`)}>
+              <span className="mark">§</span>
+              <span>
+                <b>Редакция</b>
+                <span>{EDITION_NAME[rulesOf(character).edition]}. Пакеты и домашние правила</span>
+              </span>
+            </button>
             <button type="button" className="big" data-testid="open-notes" onClick={() => go(`#/c/${character.id}/notes`)}>
               <span className="mark">✎</span>
               <span>
@@ -192,9 +203,10 @@ export function Sheet({
           {panel === "spells" && <Spells character={character} commit={commit} />}
           {panel === "dice" && <DicePanel />}
           {panel === "notes" && <Notes character={character} commit={commit} />}
+          {panel === "rules" && <RulesPanel character={character} commit={commit} />}
           {panel === "growth" && (character.dnd ? <DndAdvance character={character} onChange={commit} /> : <AdvancePanel character={character} onChange={commit} />)}
           {panel === "combat" && (character.system === "dnd5e" ? <DndCombatPanel character={character} onChange={commit} /> : <CombatTracker character={character} onChange={commit} />)}
-          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "dice", "notes", "growth", "combat"].includes(panel) && <p>Такого раздела нет.</p>}
+          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "dice", "notes", "growth", "combat", "rules"].includes(panel) && <p>Такого раздела нет.</p>}
         </main>
       )}
     </div>
