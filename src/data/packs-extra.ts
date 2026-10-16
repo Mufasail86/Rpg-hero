@@ -1,3 +1,5 @@
+import type { ReviewStatus } from "./editions";
+
 /**
  * Записи, которые не живут в основных массивах правил 2024 года и ремастера.
  * Пустые массивы держат редакции раздельно, пока пакет не заполнен.
@@ -16,6 +18,9 @@ export interface PackedEntry {
   prereq: string;
   location: string;
   link: string;
+  status?: ReviewStatus;
+  checkedOn?: string;
+  sourceVersion?: string;
 }
 
 export const DND_2014: PackedEntry[] = [];

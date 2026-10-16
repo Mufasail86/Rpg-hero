@@ -1,6 +1,8 @@
 import { CLASSES as CL5, CONDITIONS as COND5, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
 import { LORE } from "./lore";
+import srd2014Pack from "./generated/srd-2014.json";
+import srd2024Pack from "./generated/srd-2024.json";
 import { DND_2014, DND_2024_MORE, PF_LEGACY, PF_ORC_MORE, type PackedEntry } from "./packs-extra";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, CONDITIONS as COND2, ITEMS as ITEMS2, SKILL_FEATS, SKILLS as SK2, SPELLS as SP2 } from "./pf2e";
 import { LINKS, REVIEW } from "./review";
@@ -97,6 +99,9 @@ function fromPacked(entry: PackedEntry, system: "dnd5e" | "pf2e", edition: Rules
     prereq: entry.prereq,
     location: entry.location || base.location,
     link: entry.link || base.link,
+    status: base.checkedOn ? base.status : (entry.status ?? base.status),
+    checkedOn: base.checkedOn || entry.checkedOn || "",
+    sourceVersion: base.sourceVersion || entry.sourceVersion || "",
   };
 }
 
@@ -122,7 +127,9 @@ function rulesEntries(): RuleEntry[] {
   for (const item of SP5) list.push(make(dnd, "spell", "Заклинание", item.id, item.name, item.short, item.info, item.level));
   for (const item of ITEMS5) list.push(make(dnd, "item", "Предмет", item.id, item.name, item.short, item.info));
   for (const extra of DND_2024_MORE) list.push(fromPacked(extra, "dnd5e", "dnd-2024"));
+  for (const extra of srd2024Pack as PackedEntry[]) list.push(fromPacked(extra, "dnd5e", "dnd-2024"));
   for (const extra of DND_2014) list.push(fromPacked(extra, "dnd5e", "dnd-2014"));
+  for (const extra of srd2014Pack as PackedEntry[]) list.push(fromPacked(extra, "dnd5e", "dnd-2014"));
 
   for (const item of ANCESTRIES) {
     list.push(make(pf, "ancestry", "Народ", item.id, item.name, item.short, item.info));

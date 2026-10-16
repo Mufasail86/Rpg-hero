@@ -1,4 +1,5 @@
 import type { ReviewStatus } from "./editions";
+import extraLinks from "./generated/links.json";
 
 /**
  * Построчная сверка с открытым справочником 5.2.1, 16 октября 2026.
@@ -33,4 +34,4 @@ export const REVIEW: Record<string, { status: ReviewStatus; checkedOn: string; s
 };
 
 /** Связь между записями разных редакций. Оба конца должны уже лежать в каталоге. */
-export const LINKS: { from: string; to: string; note: string }[] = [];
+export const LINKS: { from: string; to: string; note: string }[] = extraLinks;

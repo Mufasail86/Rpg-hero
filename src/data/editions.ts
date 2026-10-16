@@ -66,9 +66,9 @@ export const PACKS: SourcePack[] = [
     title: "Открытый справочник 5.1",
     license: "cc-by-4.0",
     link: "https://media.wizards.com/2023/downloads/dnd/SRD_CC_v5.1.pdf",
-    note: "Редакция 2014 года хранится отдельно от 5.2. Эта сборка берёт выпуск CC-BY-4.0, не OGL. Пока записей нет, конструктор не подставляет правила 2024 года.",
-    bytes: 0,
-    removable: true,
+    note: "Редакция 2014 года хранится отдельно от 5.2. Эта сборка берёт выпуск CC-BY-4.0, не OGL. Карточки лежат в справочнике. Конструктор их в расчёт не подставляет.",
+    bytes: null,
+    removable: false,
   },
   {
     id: "pf-player-core",
