@@ -98,7 +98,7 @@ describe("приёмка D&D", () => {
     const progress = guardProgress();
     progress.subclassId = "";
     const sheet = at(20, progress);
-    expect(sheet.issues.some((issue) => issue.kind === "build" && issue.message.includes("dueling"))).toBe(true);
+    expect(sheet.issues.some((issue) => issue.kind === "build" && issue.message.includes("Дуэль"))).toBe(true);
     expect(sheet.attacks.find((attack) => attack.name.includes("Длинный"))?.damage).toBe("1d8 рубящего+5");
   });
 

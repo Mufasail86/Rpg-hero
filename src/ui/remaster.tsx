@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, newRound, openHelp, parry, reactiveStrike, strike } from "../pf2e/combat";
-import { derive, effectsFrom, optionsForSlot, slotsForProgress, snapshot } from "../pf2e/build";
+import { choiceCaption, derive, effectsFrom, optionsForSlot, slotsForProgress, snapshot } from "../pf2e/build";
 import { SKILLS } from "../data/pf2e";
 import type { Character, CombatState, ItemInst, Placement, StructuredEffect } from "../types";
 import { fmt, uid } from "../types";
@@ -213,7 +213,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {progress.choices.slice().sort((a, b) => a.level - b.level || a.source.localeCompare(b.source)).map((choice) => (
         <div key={choice.id} className="card stack">
           <div className="row-between">
-            <span>{choice.level}. {choice.pick}{choice.detail ? ` (${Object.values(choice.detail).join(", ")})` : ""}</span>
+            <span>{choice.level}. {choiceCaption(choice)}</span>
             <button type="button" className="text-btn" onClick={() => remove(choice.id)}>Убрать</button>
           </div>
           {choice.pick === "canny-acumen" && (

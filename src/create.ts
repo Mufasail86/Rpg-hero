@@ -301,7 +301,7 @@ function scores2(d: Draft, method: string): { ok: true; scores: Record<Ability, 
     if (!sameMultiset(ABILITIES.map((id) => d.scores[id]), d.pool)) return { ok: false, error: "Назначьте каждый бросок." };
     return { ok: true, scores: { ...d.scores } };
   }
-  if (method !== "boost") return { ok: false, error: "Для Pathfinder выберите повышения, набор или бросок." };
+  if (method !== "boost") return { ok: false, error: "Для Следопыта выберите повышения, набор или бросок." };
   const scores = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
   const boost = (ability: Ability) => {
     scores[ability] += scores[ability] >= 18 ? 1 : 2;

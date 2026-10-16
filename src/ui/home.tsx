@@ -4,6 +4,7 @@ import { artefolCharacter } from "../pf2e/artefol";
 import type { Character } from "../types";
 import { loadDraft } from "../storage";
 import { applySave, previewSave, serialize } from "../transfer";
+import { systemTitle } from "../labels";
 import { go } from "./common";
 import { LegalText } from "./legal";
 
@@ -67,7 +68,7 @@ export function Home({
       <main className="screen stack">
         <div>
           <h1 className="display">Лист в кармане</h1>
-          <p className="lead">D&D 5e и Pathfinder 2e. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
+          <p className="lead">Подземелья и драконы и Следопыт. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
         </div>
         <button type="button" className="btn primary" data-testid="new-character" onClick={() => go("#/new")}>
           Новый персонаж
@@ -99,7 +100,7 @@ export function Home({
                 <b>{hero.name}</b>
               </button>
               <div className="tiny">
-                {hero.system === "dnd5e" ? "D&D 5e" : "Pathfinder 2e"} · {hero.ancestryName} · {hero.className} · {hero.level} ур.
+                {systemTitle(hero.system)} · {hero.ancestryName} · {hero.className} · {hero.level} ур.
               </div>
               {pendingDelete === hero.id ? (
                 <div className="row">
@@ -120,10 +121,10 @@ export function Home({
         ))}
         <div className="grid-2">
           <button type="button" className="btn" onClick={exportAll} disabled={characters.length === 0}>
-            Экспорт JSON
+            Выгрузить файл
           </button>
           <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
-            Импорт JSON
+            Загрузить файл
           </button>
         </div>
         <input
@@ -141,7 +142,7 @@ export function Home({
           <div className="card stack">
             <b>Что в файле</b>
             {preview.rows.map((row) => (
-              <p key={row.id}>{row.name} · {row.system === "dnd5e" ? "D&D 5e" : "Pathfinder 2e"} · {row.level} ур.</p>
+              <p key={row.id}>{row.name} · {systemTitle(row.system)} · {row.level} ур.</p>
             ))}
             <div className="row">
               <button type="button" className="btn" onClick={() => finishImport("copy")}>Добавить копию</button>
@@ -151,7 +152,7 @@ export function Home({
           </div>
         )}
         {message && <p className="warn">{message}</p>}
-        <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, экспортируйте JSON и импортируйте его там.</p>
+        <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, выгрузите файл и загрузите его там.</p>
         <button type="button" className="text-btn" onClick={() => setAbout((value) => !value)}>
           {about ? "Скрыть лицензии" : "Об игре и лицензиях"}
         </button>

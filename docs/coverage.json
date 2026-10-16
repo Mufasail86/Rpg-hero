@@ -1,0 +1,61 @@
+{
+  "stage": 1,
+  "takenFrom": "src/data/dnd5e.ts, src/data/pf2e.ts, каталог черт в src/pf2e/build.ts",
+  "takenOn": "2026-10-16",
+  "columns": ["inSource", "entered", "verified", "inLibrary", "inBuilder", "implemented", "tested"],
+  "columnMeaning": {
+    "inSource": "Сколько таких записей в книге. null — с книги не снимали, число не выдумано.",
+    "entered": "Сколько записей лежит в коде.",
+    "verified": "Сколько построчно сверено с книгой. Сейчас 0: тексты — свой русский пересказ.",
+    "inLibrary": "Сколько из введённых попадает на экран справочника.",
+    "inBuilder": "Сколько можно выбрать при создании или на открытом слоте развития.",
+    "implemented": "full — число считается; partial — считается часть; reference — только текст; none — нет в коде.",
+    "tested": "Есть автотест, который проверяет именно эту группу, а не соседнюю."
+  },
+  "systems": [
+    {
+      "id": "dnd5e",
+      "editionInApp": "пересказ открытого справочника 5.2, правила 2024 года",
+      "categories": [
+        {"id": "species", "title": "Народы", "inSource": null, "entered": 9, "verified": 0, "inLibrary": 9, "inBuilder": 9, "implemented": "partial", "tested": "частично, через контрольного воина", "note": "Плюс 19 наследий внутри карточек народов. В справочнике наследия отдельной строкой не идут."},
+        {"id": "background", "title": "Происхождения", "inSource": null, "entered": 4, "verified": 0, "inLibrary": 0, "inBuilder": 4, "implemented": "partial", "tested": "навыки солдата в контрольном воине", "note": "В справочник происхождения не выведены."},
+        {"id": "class", "title": "Классы", "inSource": null, "entered": 12, "verified": 0, "inLibrary": 12, "inBuilder": 12, "implemented": "partial", "tested": "воин"},
+        {"id": "subclass", "title": "Подклассы", "inSource": null, "entered": 12, "verified": 0, "inLibrary": 0, "inBuilder": 0, "implemented": "reference", "tested": "только чемпион", "note": "У каждого класса один подкласс справочника, он вшит в карточку и не выбирается. Числа подкласса, кроме чемпиона, лист помечает как несведённые."},
+        {"id": "skill", "title": "Навыки", "inSource": null, "entered": 18, "verified": 0, "inLibrary": 0, "inBuilder": 18, "implemented": "full", "tested": "атлетика контрольного воина"},
+        {"id": "origin-feat", "title": "Черты происхождения", "inSource": null, "entered": 6, "verified": 0, "inLibrary": 6, "inBuilder": 6, "implemented": "partial", "tested": "бдительный и дикий натиск у контрольного воина", "note": "Посвящения в магию в постоянные числа не входят."},
+        {"id": "style", "title": "Боевые стили", "inSource": null, "entered": 6, "verified": 0, "inLibrary": 4, "inBuilder": 6, "implemented": "partial", "tested": "оборона и дуэль", "note": "В каталоге справочника четыре стиля. Дуэль и защита есть на экране развития и в расчёте дуэли, в массив справочника не входят. Двуручное, парное и защита в постоянные числа не входят."},
+        {"id": "general-feat", "title": "Общие черты", "inSource": null, "entered": 3, "verified": 0, "inLibrary": 2, "inBuilder": 3, "implemented": "partial", "tested": "живучесть и борец", "note": "В массиве справочника увеличение характеристик и борец. Живучесть считается движком и есть на экране развития, в массив справочника не входит."},
+        {"id": "mastery", "title": "Свойства мастерства оружия", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 0, "inBuilder": 8, "implemented": "reference", "tested": "нет", "note": "Названия есть, в модификатор атаки не входят. Лист об этом пишет."},
+        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 59, "verified": 0, "inLibrary": 59, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня, не текст заклинаний", "note": "Только заговоры и 1-й круг. Круги выше 1-го не заведены. Точное число в справочнике с книги не снималось."},
+        {"id": "condition", "title": "Состояния", "inSource": null, "entered": 16, "verified": 0, "inLibrary": 16, "inBuilder": 16, "implemented": "partial", "tested": "истощение", "note": "Истощение режет проверки и скорость. Остальные состояния в основном текст."},
+        {"id": "item", "title": "Предметы", "inSource": null, "entered": 71, "verified": 0, "inLibrary": 71, "inBuilder": 71, "implemented": "partial", "tested": "доспех, щит и меч контрольного воина", "note": "Оружие 24, доспехи 11, щит 1, снаряжение 35. Магические бонусы предмета считаются, если их вписали."}
+      ]
+    },
+    {
+      "id": "pf2e",
+      "editionInApp": "пересказ открытого ядра игрока ремастера",
+      "categories": [
+        {"id": "ancestry", "title": "Народы", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "partial", "tested": "повышения и хиты в контрольном воине и в тесте друида", "note": "Внутри: 30 наследий и 16 черт народа 1-го уровня. В справочник они отдельной карточкой не выведены."},
+        {"id": "versatile-heritage", "title": "Универсальные наследия", "inSource": null, "entered": 0, "verified": 0, "inLibrary": 0, "inBuilder": 0, "implemented": "none", "tested": "нет", "note": "Айуварин, дромар, нефилим, подменыш, сумеречный, кровь дракона и остальные в базе отсутствуют."},
+        {"id": "background", "title": "Происхождения", "inSource": null, "entered": 17, "verified": 0, "inLibrary": 0, "inBuilder": 17, "implemented": "partial", "tested": "нет отдельного теста на каждое"},
+        {"id": "class", "title": "Классы", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "partial", "tested": "воин до 20; друид на 1 уровне", "note": "Автоматическая прогрессия владения до 20 сделана для воина. У остальных классов лист прямо пишет, что ранги выше 1 уровня надо сверять вручную."},
+        {"id": "class-feat", "title": "Черты класса в карточках", "inSource": null, "entered": 12, "verified": 0, "inLibrary": 0, "inBuilder": 12, "implemented": "reference", "tested": "нет"},
+        {"id": "engine-feat", "title": "Черты в расчёте развития", "inSource": null, "entered": 43, "verified": 0, "inLibrary": 0, "inBuilder": 43, "implemented": "partial", "tested": "11 черт, которые двигают числа контрольного воина", "note": "Из 43 в постоянные числа входят 11: нокдаун, дуэльное парирование, живучесть, быстроногий, дальновидность, тяжёлая ноша, боевая медицина, посвящение медика, визит доктора, посвящение плута, мастерство навыка. Быстроногий, дальновидность и контроль дыхания есть в расчёте, но не в массиве справочника."},
+        {"id": "skill", "title": "Навыки", "inSource": null, "entered": 16, "verified": 0, "inLibrary": 0, "inBuilder": 16, "implemented": "full", "tested": "атлетика контрольного воина"},
+        {"id": "skill-feat", "title": "Черты навыков и общие в справочнике", "inSource": null, "entered": 19, "verified": 0, "inLibrary": 19, "inBuilder": 19, "implemented": "partial", "tested": "тяжёлая ноша, живучесть, боевая медицина"},
+        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 38, "verified": 0, "inLibrary": 38, "inBuilder": 38, "implemented": "reference", "tested": "нет", "note": "Только заговоры и 1-й круг. Точное число в ядре игрока с книги не снималось."},
+        {"id": "condition", "title": "Состояния", "inSource": null, "entered": 22, "verified": 0, "inLibrary": 22, "inBuilder": 22, "implemented": "partial", "tested": "нет отдельного набора на каждое состояние"},
+        {"id": "item", "title": "Предметы", "inSource": null, "entered": 43, "verified": 0, "inLibrary": 43, "inBuilder": 43, "implemented": "partial", "tested": "чешуйчатый доспех и меч контрольного воина", "note": "Оружие 15, доспехи 10, щиты 2, снаряжение 16."},
+        {"id": "lore", "title": "Предания Голариона", "inSource": null, "entered": 0, "verified": 0, "inLibrary": 0, "inBuilder": 0, "implemented": "none", "tested": "нет"}
+      ]
+    }
+  ],
+  "notInApp": [
+    {"id": "srd-5.1", "title": "Открытый справочник 5.1, редакция 2014", "entered": 0},
+    {"id": "phb-non-srd", "title": "Книга игрока вне открытого справочника", "entered": 0},
+    {"id": "forgotten-realms", "title": "Забытые королевства и прочие сеттинги", "entered": 0},
+    {"id": "pf-preremaster", "title": "Следопыт до ремастера", "entered": 0},
+    {"id": "pf-other-orc-books", "title": "Другие книги ремастера, кроме уже пересказанного куска ядра игрока", "entered": 0},
+    {"id": "golarion", "title": "Сеттинг Голарион", "entered": 0}
+  ]
+}

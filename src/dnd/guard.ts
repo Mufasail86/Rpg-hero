@@ -93,7 +93,7 @@ export function guardCharacter(): Character {
     conditions: [],
     conditionValues: {},
     languages: "Общий",
-    notes: "Контрольный персонаж D&D. Числа считает лист из выборов, не из этого текста.",
+    notes: "Контрольный персонаж правил 2024 года. Числа считает лист из выборов, не из этого текста.",
     shieldRaised: false,
     weaponRules: { simple: true, martial: true, martialFinesseOrLight: true, martialLight: true, unarmed: true },
     armorTraining: ["light", "medium", "heavy", "shield"],

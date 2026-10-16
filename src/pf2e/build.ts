@@ -1,5 +1,6 @@
 import { ANCESTRIES, BACKGROUNDS, CLASSES, SKILLS } from "../data/pf2e";
 import {
+  ABILITIES,
   ABILITY_NAME,
   type Ability,
   type BuildChoice,
@@ -124,7 +125,6 @@ const FEATS: Record<string, FeatDef> = {
 };
 
 const KNOWLEDGE = new Set(["arcana", "crafting", "medicine", "nature", "occultism", "religion", "society"]);
-const ABILITIES: Ability[] = ["str", "dex", "con", "int", "wis", "cha"];
 
 const GROUPS: Record<string, string> = {
   longsword: "sword",
@@ -161,7 +161,7 @@ export function derive(input: DeriveInput): Derived {
   const byId = new Map<string, BuildChoice>();
   for (const choice of progress.choices) {
     if (choice.level > level) continue;
-    if (byId.has(choice.id)) issues.push({ kind: "build", message: `Выбор «${choice.id}» записан дважды.` });
+    if (byId.has(choice.id)) issues.push({ kind: "build", message: "Один и тот же выбор записан дважды." });
     byId.set(choice.id, choice);
   }
   for (const slot of slots) {
@@ -169,7 +169,7 @@ export function derive(input: DeriveInput): Derived {
   }
   for (const choice of byId.values()) {
     if (!slots.some((slot) => slot.id === choice.id)) {
-      issues.push({ kind: "build", message: `Лишний выбор «${choice.pick}» на уровне ${choice.level}: для него нет положенного слота.` });
+      issues.push({ kind: "build", message: `Лишний выбор «${choiceCaption(choice)}» на уровне ${choice.level}: для него нет положенного слота.` });
     }
   }
 
@@ -492,12 +492,12 @@ function abilityScores(progress: Pf2eProgress, level: number, issues: Issue[]): 
   for (const pool of pools) {
     if (pool.level > level) continue;
     const picks = progress.choices.filter((choice) => choice.source === pool.source && choice.level === pool.level);
-    if (picks.length < pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} не хватает повышений (${pool.source}): нужно ${pool.count}.` });
-    if (picks.length > pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} лишние повышения (${pool.source}).` });
+    if (picks.length < pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} не хватает повышений (${poolLabel(pool.source)}): нужно ${pool.count}.` });
+    if (picks.length > pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} лишние повышения (${poolLabel(pool.source)}).` });
     const seen = new Set<string>();
     for (const choice of picks) {
       if (!ABILITIES.includes(choice.pick as Ability)) {
-        issues.push({ kind: "build", message: `Повышение ${choice.id} указывает не на характеристику.` });
+        issues.push({ kind: "build", message: "Одно повышение указано не на характеристику." });
         continue;
       }
       if (seen.has(choice.pick)) {
@@ -577,7 +577,45 @@ function isSkillId(id: string): boolean {
 }
 
 function skillName(id: string, lore: Map<string, string>): string {
-  return SKILLS.find((skill) => skill.id === id)?.name ?? lore.get(id) ?? id;
+  return SKILLS.find((skill) => skill.id === id)?.name ?? lore.get(id) ?? (id.startsWith("lore:") ? "знание" : "неизвестный навык");
+}
+
+const POOL_LABEL: Record<string, string> = {
+  "ancestry-boost": "повышения народа",
+  "background-boost": "повышения происхождения",
+  "class-boost": "классовое повышение",
+  "free-boost": "свободные повышения",
+};
+
+function poolLabel(source: string): string {
+  return POOL_LABEL[source] ?? "повышения";
+}
+
+const DETAIL_NAME: Record<string, string> = {
+  fort: "Стойкость",
+  ref: "Рефлексы",
+  will: "Воля",
+  perception: "Восприятие",
+};
+
+function detailWord(value: string): string {
+  if (DETAIL_NAME[value]) return DETAIL_NAME[value];
+  if (ABILITIES.includes(value as Ability)) return ABILITY_NAME[value as Ability];
+  const skill = SKILLS.find((item) => item.id === value);
+  if (skill) return skill.name;
+  if (FEATS[value]) return FEATS[value].name;
+  if (value.startsWith("lore:")) return "знание";
+  return "";
+}
+
+/** Русская подпись выбора. Код выбора на экран не выводится. */
+export function choiceCaption(choice: { pick: string; source: string; detail?: Record<string, string> }): string {
+  const named = optionsForSlot(choice.source).find((option) => option.pick === choice.pick)?.name
+    ?? FEATS[choice.pick]?.name
+    ?? (choice.pick.startsWith("lore:") ? "знание" : "выбор");
+  if (!choice.detail) return named;
+  const bits = Object.values(choice.detail).map(detailWord).filter((word) => word.length > 0);
+  return bits.length ? `${named} (${bits.join(", ")})` : named;
 }
 
 function skillAbility(id: string): Ability {
@@ -588,9 +626,9 @@ function grantFeat(id: string, feats: { id: string; name: string; modeled: boole
   if (!id || taken.has(id)) return;
   const def = FEATS[id];
   if (!def) {
-    issues.push({ kind: "limit", message: `Черта «${id}» есть в листе, но справочник приложения её не знает.` });
+    issues.push({ kind: "limit", message: "Черта есть в листе, но справочник приложения её не знает." });
     taken.add(id);
-    feats.push({ id, name: id, modeled: false });
+    feats.push({ id, name: "черта без имени", modeled: false });
     return;
   }
   if (def.skill && (ranks.get(def.skill) ?? "untrained") === "untrained") {
@@ -626,7 +664,7 @@ function applyFeatChoice(
   const def = FEATS[choice.pick];
   if (choice.source === "weapon-group") return;
   if (!def) {
-    issues.push({ kind: "build", message: `Неизвестная черта «${choice.pick}» в слоте ${choice.id}.` });
+    issues.push({ kind: "build", message: `Неизвестная черта на уровне ${choice.level}.` });
     return;
   }
   if (def.level > choice.level) issues.push({ kind: "build", message: `«${def.name}» уровня ${def.level}, слот только ${choice.level}.` });
@@ -636,7 +674,7 @@ function applyFeatChoice(
     (choice.source === "skill-feat" && def.kind === "skill") ||
     (choice.source === "general-feat" && def.kind === "general") ||
     (choice.source === "free-archetype" && def.kind === "archetype");
-  if (!kindOk) issues.push({ kind: "build", message: `«${def.name}» не подходит слоту «${choice.source}».` });
+  if (!kindOk) issues.push({ kind: "build", message: `«${def.name}» не подходит этому слоту.` });
   if (progress.classId === "fighter" && def.kind === "class" && choice.source === "class-feat" && progress.classId !== "fighter") {
     issues.push({ kind: "build", message: `«${def.name}» — черта другого класса.` });
   }
@@ -920,14 +958,14 @@ function actionsFor(taken: Set<string>, classId: string): Derived["actions"] {
       id: "doctors-visitation-1",
       name: "Визит доктора",
       cost: "1 действие",
-      traits: "архетип, усилие (flourish)",
+      traits: "архетип, усилие",
       effect: "Шаг на Скорость, затем Боевая медицина или Лечение яда. За раунд только одно действие с чертой «усилие».",
     });
     actions.push({
       id: "doctors-visitation-2",
       name: "Визит доктора",
       cost: "2 действия",
-      traits: "архетип, усилие (flourish)",
+      traits: "архетип, усилие",
       effect: "Шаг на Скорость, затем Первая помощь или Лечение состояния, если черта есть. Та же черта «усилие»: второй визит в этот раунд нельзя.",
     });
   }

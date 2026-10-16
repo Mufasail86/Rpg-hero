@@ -38,6 +38,7 @@ import { DicePanel, queueRoll } from "./dice";
 import { AdvancePanel, sheetDerived, WarningBanner } from "./remaster";
 import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
 import { sheetDnd } from "../dnd/build";
+import { systemTitle } from "../labels";
 
 const PANELS = [
   ["abilities", "Характеристики", "Сил", "teal"],
@@ -114,7 +115,7 @@ export function Sheet({
             <div className="grow">
               <input data-testid="sheet-name" value={character.name} onChange={(event) => commit({ ...character, name: event.target.value })} />
               <div className="chips">
-                <span className="chip">{character.system === "dnd5e" ? "D&D 5e" : "Pathfinder 2e"}</span>
+                <span className="chip">{systemTitle(character.system)}</span>
                 <span className="chip">{character.ancestryName}</span>
                 <span className="chip">{character.className}</span>
                 <span className="chip">{character.level} ур.</span>
@@ -638,7 +639,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
         <input inputMode="numeric" value={character.xp} onChange={(event) => commit({ ...character, xp: Math.max(0, Number(event.target.value) || 0) })} />
       </label>
       <p>{need == null ? "Дальше 20-го уровня лист не ведёт." : `До следующего уровня: ${need}. Сейчас ${character.level}.`}</p>
-      <Info title="Опыт" text={character.system === "pf2e" ? "В Pathfinder 2e уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения характеристик: +2, либо +1 если значение уже 18 или выше." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
+      <Info title="Опыт" text={character.system === "pf2e" ? "У Следопыта уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения характеристик: +2, либо +1 если значение уже 18 или выше." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
       {character.system === "dnd5e" && (
         <div className="seg">
           <button type="button" className={`pill ${mode === "average" ? "on" : ""}`} onClick={() => setMode("average")}>Средние хиты</button>

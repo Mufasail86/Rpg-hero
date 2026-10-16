@@ -1,4 +1,4 @@
-import { fullSlots, halfSlots, pactSlots, SKILLS } from "../data/dnd5e";
+import { fullSlots, GENERAL_FEATS, halfSlots, ITEMS, ORIGIN_FEATS, pactSlots, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import {
   ABILITY_NAME,
   type Ability,
@@ -106,7 +106,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
   const byId = new Map<string, BuildChoice>();
   for (const choice of progress.choices) {
     if (choice.level > level) continue;
-    if (byId.has(choice.id)) issues.push({ kind: "build", message: `Выбор «${choice.id}» записан дважды.` });
+    if (byId.has(choice.id)) issues.push({ kind: "build", message: "Один и тот же выбор записан дважды." });
     byId.set(choice.id, choice);
   }
   for (const slot of slots) {
@@ -114,7 +114,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
   }
   for (const choice of byId.values()) {
     if (!slots.some((slot) => slot.id === choice.id)) {
-      issues.push({ kind: "build", message: `Лишний выбор «${choice.pick}» на уровне ${choice.level}: для него нет слота.` });
+      issues.push({ kind: "build", message: `Лишний выбор «${describeDndChoice(choice)}» на уровне ${choice.level}: для него нет слота.` });
     }
   }
   if (level >= 3 && !progress.subclassId) issues.push({ kind: "build", message: "С 3 уровня нужен подкласс." });
@@ -123,7 +123,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
     const slot = slots.find((item) => item.id === choice.id);
     if (!slot) continue;
     if (choice.source === "skill") {
-      if (!SKILLS.some((skill) => skill.id === choice.pick)) issues.push({ kind: "build", message: `Неизвестный навык «${choice.pick}».` });
+      if (!SKILLS.some((skill) => skill.id === choice.pick)) issues.push({ kind: "build", message: "Неизвестный навык." });
       else if (skills.get(choice.pick) === "proficient" || skills.get(choice.pick) === "expertise") {
         issues.push({ kind: "build", message: `${skillName(choice.pick)} уже есть. Повторный выбор его не удваивает.` });
       } else skills.set(choice.pick, "proficient");
@@ -131,7 +131,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
     if (choice.source === "style") {
       styles.push(choice.pick);
       if (!["defense", "dueling", "archery"].includes(choice.pick)) {
-        issues.push({ kind: "limit", message: `Боевой стиль «${choice.pick}» записан, но в постоянные числа его нет.` });
+        issues.push({ kind: "limit", message: `Боевой стиль «${STYLE_NAMES[choice.pick] ?? "без русского имени"}» записан, но в постоянные числа его нет.` });
       }
     }
     if (choice.source === "asi" || choice.source === "feat") applyAsi(choice, scores, feats, issues, false);
@@ -174,7 +174,7 @@ function applyAsi(choice: BuildChoice, scores: Record<Ability, number>, feats: S
     }
     feats.add(id);
     if (!["tough", "alert", "savage", "grappler"].includes(id)) {
-      issues.push({ kind: "limit", message: `Черта «${id}» записана, но её эффект приложение не прибавляет к числам.` });
+      issues.push({ kind: "limit", message: `Черта «${featLabel(id)}» записана, но её эффект приложение не прибавляет к числам.` });
     }
     return;
   }
@@ -195,7 +195,7 @@ function applyAsi(choice: BuildChoice, scores: Record<Ability, number>, feats: S
     const [ability, raw] = part.split("+");
     const delta = Number(raw);
     if (!ABILITIES.includes(ability as Ability) || (delta !== 1 && delta !== 2)) {
-      issues.push({ kind: "build", message: `Непонятное повышение «${part}».` });
+      issues.push({ kind: "build", message: "Непонятное повышение." });
       continue;
     }
     if (seen.has(ability)) issues.push({ kind: "build", message: "В одном повышении характеристика указана дважды." });
@@ -556,7 +556,56 @@ function duelingReady(items: ItemInst[]): boolean {
 }
 
 function skillName(id: string): string {
-  return SKILLS.find((skill) => skill.id === id)?.name ?? id;
+  return SKILLS.find((skill) => skill.id === id)?.name ?? "неизвестный навык";
+}
+
+const STYLE_NAMES: Record<string, string> = {
+  defense: "Оборона",
+  dueling: "Дуэль",
+  archery: "Стрельба",
+  gwf: "Двуручное оружие",
+  twf: "Парное оружие",
+  protection: "Защита",
+};
+
+const EXTRA_FEAT_NAMES: Record<string, string> = {
+  tough: "Живучесть",
+  alert: "Бдительный",
+  savage: "Дикий натиск",
+  grappler: "Борец",
+};
+
+function featLabel(id: string): string {
+  return ORIGIN_FEATS.find((feat) => feat.id === id)?.name
+    ?? GENERAL_FEATS.find((feat) => feat.id === id)?.name
+    ?? STYLE_FEATS.find((feat) => feat.id === id)?.name
+    ?? EXTRA_FEAT_NAMES[id]
+    ?? "черта";
+}
+
+/** Русская подпись выбора. Код выбора на экран не выводится. */
+export function describeDndChoice(choice: { pick: string; source: string; detail?: Record<string, string> }): string {
+  const pick = choice.pick;
+  if (choice.source === "skill") return skillName(pick);
+  if (choice.source === "style") return STYLE_NAMES[pick] ?? "боевой стиль без русского имени";
+  if (choice.source === "mastery") return ITEMS.find((item) => item.id === pick)?.name ?? "оружие";
+  if (pick.startsWith("feat:")) {
+    const name = featLabel(pick.slice(5));
+    const ability = choice.detail?.ability;
+    if (ability && ABILITIES.includes(ability as Ability)) return `${name}, ${ABILITY_NAME[ability as Ability]}`;
+    return name;
+  }
+  if (pick.startsWith("boon:") || choice.source === "epic") {
+    const ability = choice.detail?.ability;
+    if (ability && ABILITIES.includes(ability as Ability)) return `эпический дар, +1 к ${ABILITY_NAME[ability as Ability]}`;
+    return "эпический дар";
+  }
+  const bits = pick.split(",").filter(Boolean).map((part) => {
+    const [ability, raw] = part.split("+");
+    if (!ABILITIES.includes(ability as Ability) || !raw) return "";
+    return `${ABILITY_NAME[ability as Ability]} +${raw}`;
+  }).filter(Boolean);
+  return bits.join(", ") || "повышение";
 }
 
 export function effectsFrom(character: { feats: FeatInst[]; features: FeatureInst[] }): StructuredEffect[] {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
-import { sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
+import { describeDndChoice, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
 
@@ -130,7 +130,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
       <h2>Сделанные выборы</h2>
       {progress.choices.slice().sort((a, b) => a.level - b.level).map((choice) => (
         <div key={choice.id} className="row-between">
-          <span>{choice.level}. {choice.pick}</span>
+          <span>{choice.level}. {describeDndChoice(choice)}</span>
           <button type="button" className="text-btn" onClick={() => commit({ ...character, dnd: { ...progress, choices: progress.choices.filter((item) => item.id !== choice.id) } })}>Убрать</button>
         </div>
       ))}

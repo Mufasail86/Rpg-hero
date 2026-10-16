@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>Макеты «Атлас приключений» — не экран приложения</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #2a241c; }
+  body { font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif; }
+  .stage { display: flex; flex-direction: column; gap: 28px; padding: 28px; align-items: flex-start; }
+  .phone, .desk { overflow: hidden; position: relative; }
+  .phone { width: 390px; height: 844px; }
+  .desk { width: 1280px; height: 800px; }
+  button, .hit { font: inherit; color: inherit; appearance: none; margin: 0; cursor: default; }
+  .atlas {
+    --bg: #f3ecdf;
+    --paper: #fffaf3;
+    --ink: #1c2430;
+    --muted: #5c5348;
+    --line: #e4d3b8;
+    --emerald: #1b6b4a;
+    --blue: #1d4e7a;
+    --gold: #8d6420;
+    --burg: #7a2e3b;
+    --soft: #e7f3ec;
+    --chip: #f6efe2;
+    background:
+      radial-gradient(1200px 400px at 10% -10%, rgba(29, 78, 122, 0.08), transparent 50%),
+      linear-gradient(180deg, #f7f1e6, var(--bg));
+    color: var(--ink);
+  }
+  .tavern {
+    --bg: #121820;
+    --paper: #1c2530;
+    --ink: #f4efe6;
+    --muted: #c3b8a6;
+    --line: #31404f;
+    --emerald: #3aa89a;
+    --blue: #8b78c8;
+    --gold: #e0a15a;
+    --burg: #d47a86;
+    --soft: #24343a;
+    --chip: #24303c;
+    background:
+      radial-gradient(900px 420px at 100% 0%, rgba(139, 120, 200, 0.18), transparent 46%),
+      linear-gradient(180deg, #182230, var(--bg));
+    color: var(--ink);
+  }
+  .pad { padding: 22px 18px 96px; height: 100%; display: flex; flex-direction: column; gap: 14px; }
+  .kicker { letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; color: var(--gold); margin: 0; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  h1 { font-size: 40px; line-height: 1.05; margin: 0; font-weight: 600; }
+  h2 { font-size: 26px; margin: 0; font-weight: 600; }
+  .lead { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.4; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip, .tile, .card, .dock button, .big {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 16px;
+  }
+  .chip { padding: 8px 12px; font-size: 14px; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  .chip.on { background: var(--emerald); color: #fffaf3; border-color: transparent; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { padding: 14px; min-height: 92px; }
+  .tile b { display: block; font-size: 18px; }
+  .tile span { color: var(--muted); font-size: 13px; }
+  .card { padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .card p, .reason { margin: 0; font-size: 15px; line-height: 1.45; }
+  .meta { color: var(--muted); font-size: 13px; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  .status { color: var(--burg); font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 13px; }
+  .dock {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 8px;
+  }
+  .dock button, .big {
+    min-height: 52px; border-radius: 16px; font-size: 16px;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+  }
+  .dock button.primary, .big.primary { background: var(--burg); color: #fffaf3; border-color: transparent; }
+  .search {
+    width: 100%; border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+    border-radius: 14px; min-height: 48px; padding: 0 14px; font: inherit; font-size: 16px;
+  }
+  .option { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--paper); }
+  .option.on { outline: 2px solid var(--emerald); }
+  .option small { color: var(--muted); }
+  .option.locked { opacity: 0.72; }
+  .reason { background: var(--soft); border-radius: 12px; padding: 10px 12px; }
+  .stat { display: flex; justify-content: space-between; align-items: baseline; }
+  .stat b { font-size: 28px; }
+  .formula { font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 13px; color: var(--muted); line-height: 1.45; }
+  .bar { display: flex; gap: 6px; }
+  .bar i { height: 8px; flex: 1; border-radius: 99px; background: var(--line); display: block; }
+  .bar i.on { background: var(--gold); }
+  .linkrow { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 14px; }
+  .linkrow em { font-style: normal; color: var(--gold); }
+  .desk .pad { padding: 28px 32px; display: grid; grid-template-columns: 280px 1fr; gap: 28px; height: 100%; }
+  .side { display: flex; flex-direction: column; gap: 12px; }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; align-content: start; }
+  .wide { grid-column: 1 / -1; }
+  .mark { width: 54px; height: 54px; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+<section class="phone atlas" id="home-light">
+  <div class="pad">
+    <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="#8d6420" stroke-width="2"/>
+      <path d="M32 8 L36 28 L32 24 L28 28 Z M32 56 L28 36 L32 40 L36 36 Z M8 32 L28 28 L24 32 L28 36 Z M56 32 L36 36 L40 32 L36 28 Z" fill="#1b6b4a"/>
+    </svg>
+    <p class="kicker">Атлас приключений</p>
+    <h1>Герой</h1>
+    <p class="lead">Правила, предания и лист читают одну базу. Редакции не смешиваются.</p>
+    <div class="row">
+      <span class="chip on">Следопыт · ремастер</span>
+      <span class="chip">Подземелья и драконы · 2024</span>
+    </div>
+    <div class="tiles">
+      <div class="tile"><b>Справочник</b><span>сверено частично</span></div>
+      <div class="tile"><b>Конструктор</b><span>с нуля или с уровня</span></div>
+      <div class="tile"><b>Лист</b><span>каждое число с разбором</span></div>
+      <div class="tile"><b>Предания</b><span>пока только карточка</span></div>
+    </div>
+    <article class="card">
+      <b>Продолжить</b>
+      <p>Артефол Побочка · воин 20 · ремастер</p>
+      <p class="meta">Источники кампании: открытое ядро игрока. Своих правок нет.</p>
+    </article>
+  </div>
+  <div class="dock">
+    <button>Поиск</button>
+    <button class="primary">Новый герой</button>
+    <button>Лист</button>
+  </div>
+</section>
+
+<section class="phone tavern" id="home-dark">
+  <div class="pad">
+    <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="14" y="18" width="36" height="30" rx="3" fill="none" stroke="#e0a15a" stroke-width="2"/>
+      <path d="M18 18 V14 H46 V18 M24 32 H40" stroke="#3aa89a" stroke-width="2" fill="none"/>
+    </svg>
+    <p class="kicker">Ночная таверна</p>
+    <h1>Герой</h1>
+    <p class="lead">Тот же атлас, тёмная комната. Крупные кнопки под большой палец.</p>
+    <div class="row">
+      <span class="chip">Следопыт · ремастер</span>
+      <span class="chip on">Подземелья и драконы · 2024</span>
+    </div>
+    <div class="tiles">
+      <div class="tile"><b>Справочник</b><span>открытый справочник 5.2</span></div>
+      <div class="tile"><b>Конструктор</b><span>объясняет каждый шаг</span></div>
+      <div class="tile"><b>Бой</b><span>сжатый режим стола</span></div>
+      <div class="tile"><b>Права</b><span>что можно хранить</span></div>
+    </div>
+    <article class="card">
+      <b>Не включено</b>
+      <p>Редакция 2014 и правила до ремастера в этой версии пустые. Сюда они не подмешиваются.</p>
+    </article>
+  </div>
+  <div class="dock">
+    <button>Поиск</button>
+    <button class="primary">К листу</button>
+    <button>Кости</button>
+  </div>
+</section>
+
+<section class="phone atlas" id="ancestry">
+  <div class="pad">
+    <p class="kicker">Следопыт · ремастер · народ</p>
+    <h2>Эльф</h2>
+    <p class="status">Сверено частично · в конструкторе · в расчёте только хиты, скорость и повышения</p>
+    <p class="meta">Источник: открытое ядро игрока, ремастер. Полный текст книги не хранится.</p>
+    <article class="card">
+      <b>Коротко</b>
+      <p>6 хитов, скорость 30 футов, сумеречное зрение. Повышения: Ловкость, Интеллект и свободное. Изъян: Телосложение.</p>
+    </article>
+    <p class="meta">Наследие народа</p>
+    <div class="option on"><span>Лесной</span><small>в базе</small></div>
+    <p class="meta">Универсальное наследие, складывается с народом</p>
+    <div class="option locked"><span>Айуварин</span><small>нет в базе</small></div>
+    <p class="reason">Недоступно: универсальные наследия ещё не заведены. Эльфа с айуварином сейчас собрать нельзя, причина показана, а не спрятана.</p>
+  </div>
+  <div class="dock">
+    <button>Назад</button>
+    <button class="primary">Взять лесное</button>
+    <button>Связи</button>
+  </div>
+</section>
+
+<section class="phone tavern" id="knowledge">
+  <div class="pad">
+    <p class="kicker">Предание · Голарион · черновик карточки</p>
+    <h2>Талдор</h2>
+    <div class="row">
+      <span class="chip on">Игрок</span>
+      <span class="chip">Ведущий</span>
+      <span class="chip">Без спойлеров</span>
+    </div>
+    <p class="status">Только метаданные и свой пересказ. Это не текст книги и не чужой перевод.</p>
+    <article class="card">
+      <p>Черновик в одну фразу: старое государство людей на востоке внутреннего моря. Подробности кампании мастер рассказывает сам.</p>
+      <p class="meta">Канон или толкование здесь не утверждается. Права: политика сообщества, не открытая лицензия. Ждёт решения владельца.</p>
+    </article>
+    <p class="meta">Связи, без обрезки имён</p>
+    <div class="linkrow"><span>Талдор</span><em>→</em><span>Оппара</span><em>→</em><span>Львиные клинки</span></div>
+    <article class="card">
+      <b>Оппара</b>
+      <p class="meta">Столица · карточка ещё не заведена · ссылка на источник будет, когда владелец разрешит режим преданий.</p>
+    </article>
+  </div>
+  <div class="dock">
+    <button>Назад</button>
+    <button class="primary">К Оппаре</button>
+    <button>Источник</button>
+  </div>
+</section>
+
+<section class="phone atlas" id="builder">
+  <div class="pad">
+    <p class="kicker">Конструктор · шаг 3 из 11 · Следопыт</p>
+    <h2>Народ</h2>
+    <p class="lead">Показано 8 из 8. Поиск понимает русское имя. Оригинал и другие переводы появятся, когда у записи будут эти поля.</p>
+    <input class="search" value="эльф" aria-label="Поиск народа" />
+    <div class="option on"><div><b>Эльф</b><br><small>почему: Ловкость и Интеллект, изъян Телосложения</small></div></div>
+    <div class="option locked"><div><b>Эльф и айуварин</b><br><small>недоступно</small></div></div>
+    <p class="reason">Причина: универсальное наследие не заведено. Базовый эльф доступен. Смешивать с правилами до ремастера этот шаг не будет.</p>
+    <p class="meta">Дальше можно создать на 1 уровне или сразу на выбранном, не стирая план до 20.</p>
+  </div>
+  <div class="dock">
+    <button>Назад</button>
+    <button class="primary">Дальше</button>
+    <button>Почему</button>
+  </div>
+</section>
+
+<section class="phone tavern" id="combat">
+  <div class="pad">
+    <p class="kicker">Бой · сжатый · учебные числа макета</p>
+    <div class="stat"><h2>Образец</h2><b>КБ 21</b></div>
+    <p class="formula">10 + чешуя 5 + Ловкость +2, не выше предела доспеха + обучен +2. Предметный бонус 0. Обстоятельство «парирование» выключено и в сумму не вошло.</p>
+    <div class="bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    <article class="card">
+      <div class="stat"><span>Хиты</span><b>48 / 48</b></div>
+      <p class="formula">Типы бонусов: предмет и обстоятельство не складываются сами с собой. Журнал: доспех надет. Отмена вернёт прошлый класс брони.</p>
+    </article>
+    <article class="card">
+      <div class="stat"><span>Меч</span><b>+7</b></div>
+      <p class="formula">1d8+4 · действие есть · повторная атака ещё не тратилась</p>
+    </article>
+  </div>
+  <div class="dock">
+    <button>Отмена</button>
+    <button class="primary">Удар</button>
+    <button>Парирование</button>
+  </div>
+</section>
+
+<section class="desk atlas" id="desktop">
+  <div class="pad">
+    <div class="side">
+      <p class="kicker">Атлас приключений</p>
+      <h1>Герой</h1>
+      <p class="lead">Широкий стол. На телефоне те же разделы уходят в одну колонку и нижнюю полку.</p>
+      <span class="chip on">Следопыт · ремастер</span>
+      <span class="chip">Подземелья и драконы · 2024</span>
+      <span class="chip">Предания выключены</span>
+    </div>
+    <div class="hero-grid">
+      <article class="card wide">
+        <b>Одна база</b>
+        <p>Справочник, конструктор, уровни и лист смотрят в одни записи. Чего нет в базе, на экране видно с причиной, а не тихим пропуском.</p>
+      </article>
+      <article class="card">
+        <b>Эльф</b>
+        <p>Народ ремастера. Лесное наследие в базе. Айуварин показан закрытым.</p>
+      </article>
+      <article class="card">
+        <b>Лист боя</b>
+        <p>Класс брони разобран по слагаемым. Отмена последнего изменения под большим пальцем.</p>
+      </article>
+      <article class="card wide">
+        <p class="meta">Макет, не рабочий экран. Рисунки свои, линейные. Чужие карты и обложки не используются. Светлая тема — изумруд, синий, золото и бордо. Тёмная — на соседних макетах телефона.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

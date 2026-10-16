@@ -168,8 +168,8 @@ function SystemStep({ system, onPick }: { system: Draft["system"]; onPick: (syst
       <Choice
         id="dnd5e"
         testId="system-dnd5e"
-        name="D&D 5e"
-        hint="SRD 5.2, правила 2024 года"
+        name="Подземелья и драконы"
+        hint="открытый справочник 5.2, правила 2024 года"
         info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Характеристики на старте задаёт происхождение, а не народ. В приложении только открытый справочник: девять народов, четыре происхождения, двенадцать классов и по одному подклассу."
         on={system === "dnd5e"}
         onPick={() => onPick("dnd5e")}
@@ -177,8 +177,8 @@ function SystemStep({ system, onPick }: { system: Draft["system"]; onPick: (syst
       <Choice
         id="pf2e"
         testId="system-pf2e"
-        name="Pathfinder 2e"
-        hint="Ремастер, лицензия ORC"
+        name="Следопыт"
+        hint="ремастер, открытая игровая лицензия"
         info="Три действия в ход, четыре ступени успеха и владение от необученного до легенды. Характеристики собираются повышениями от 10. В приложении народы, классы и навыки из открытого ядра игрока, без имён сеттинга."
         on={system === "pf2e"}
         onPick={() => onPick("pf2e")}
@@ -205,7 +205,7 @@ function AncestryStep({
         {SPECIES.map((item) => (
           <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
-        <Choice id="custom" name="Своя запись" hint="Народ, которого нет в SRD" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
+        <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
         {species?.lineage && (
           <>
             <p className="kicker">Наследие</p>
@@ -316,7 +316,7 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
       {list.map((item) => (
         <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
       ))}
-      <Choice id="custom" name="Своя запись" info="Своё происхождение. Для D&D укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для Pathfinder — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
+      <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для Следопыта — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
       {draft.backgroundId === "custom" && draft.system === "dnd5e" && (
         <div className="card stack">
           <label className="field"><span>Название</span><input value={draft.customBackground.name} onChange={(event) => update({ customBackground: { ...draft.customBackground, name: event.target.value } })} /></label>
@@ -720,7 +720,7 @@ function FeatStep({
             {proficient.map((id) => {
               const skill = SK5.find((item) => item.id === id);
               return (
-                <Choice key={id} id={`exp-${id}`} name={skill?.name ?? id} info={skill?.info ?? "Навык, которым вы владеете."} on={(draft.multi.expertise ?? []).includes(id)} onPick={() => toggleMulti("expertise", id, 2)} />
+                <Choice key={id} id={`exp-${id}`} name={skill?.name ?? "неизвестный навык"} info={skill?.info ?? "Навык, которым вы владеете."} on={(draft.multi.expertise ?? []).includes(id)} onPick={() => toggleMulti("expertise", id, 2)} />
               );
             })}
           </>
@@ -1014,7 +1014,7 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
         </div>
       </div>
       <div className="card">
-        <p>{draft.system === "dnd5e" ? "D&D 5e" : "Pathfinder 2e"}</p>
+        <p>{draft.system === "dnd5e" ? "Подземелья и драконы" : "Следопыт"}</p>
         <p>{draft.ancestryId === "custom" ? draft.customAncestry.name : draft.ancestryId}</p>
         <p>{draft.backgroundId === "custom" ? draft.customBackground.name : draft.backgroundId}</p>
         <p>{draft.classId === "custom" ? draft.customClass.name : draft.classId}</p>
