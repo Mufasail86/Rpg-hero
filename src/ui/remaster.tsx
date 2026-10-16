@@ -196,6 +196,11 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       <button type="button" className={`pill ${progress.toggles.includes("dueling-parry") ? "on" : ""}`} onClick={() => toggle("dueling-parry")}>
         Дуэльное парирование {progress.toggles.includes("dueling-parry") ? "включено" : "выключено"}
       </button>
+      {progress.classId === "barbarian" && (
+        <button type="button" className={`pill ${progress.toggles.includes("rage") ? "on" : ""}`} data-testid="toggle-rage" onClick={() => toggle("rage")}>
+          Ярость {progress.toggles.includes("rage") ? "включена" : "выключена"}
+        </button>
+      )}
       <p className="tiny">{live.ac.formula}</p>
       {live.ac.aside.map((line) => <p key={line} className="tiny">{line}</p>)}
       <h2>Открытые выборы</h2>
@@ -203,9 +208,9 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {open.map((slot) => (
         <label key={slot.id} className="field">
           <span>{slot.label}, уровень {slot.level}</span>
-          <select value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
+          <select data-testid={`slot-${slot.id}`} value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
             <option value="">Выбрать</option>
-            {optionsForSlot(slot.source).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            {optionsForSlot(slot.source, { classId: progress.classId, ancestryId: progress.ancestryId, level: slot.level }).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
           </select>
         </label>
       ))}
@@ -251,7 +256,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
           <span>Боевая гибкость на сегодня</span>
           <select value={progress.dailyFeats[0] ?? ""} onChange={(event) => onChange({ ...character, progress: { ...progress, dailyFeats: event.target.value ? [event.target.value] : [] } })}>
             <option value="">Не выбрана</option>
-            {optionsForSlot("class-feat").map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            {optionsForSlot("class-feat", { classId: progress.classId, level: character.level }).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
           </select>
         </label>
       )}
