@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ItemInst } from "../types";
-import { deriveProgress, sheetDnd, slotsForProgress, subclassIdOf } from "./build";
+import { slotsFor } from "../rules";
+import { deriveProgress, proficiencyBonus, sheetDnd, slotsForProgress, subclassIdOf } from "./build";
 import { guardCharacter, guardItems, guardProgress } from "./guard";
 
 function at(level: number, progress = guardProgress(), items = guardItems(), conditions: Record<string, number> = {}) {
@@ -207,6 +208,32 @@ describe("приёмка D&D", () => {
     expect(raging.attacks[0].attack.aside.join(" ")).toMatch(/берсерка/);
     expect(subclassIdOf("Путь берсерка")).toBe("berserker");
     expect(subclassIdOf("Чемпион")).toBe("champion");
+  });
+
+  it("бонус мастерства и ячейки идут по таблице у всех двенадцати классов", () => {
+    expect([1, 4, 5, 8, 9, 12, 13, 16, 17, 20].map(proficiencyBonus)).toEqual([2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
+    const ids = ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"];
+    for (const classId of ids) {
+      const progress = guardProgress();
+      progress.classId = classId;
+      progress.subclassId = "";
+      expect(at(9, progress).pb).toBe(4);
+      expect(at(5, progress).attacksPerAction).toBe(classId === "fighter" || classId === "barbarian" || classId === "monk" || classId === "paladin" || classId === "ranger" ? 2 : 1);
+    }
+    const cast = (classId: string, level: number) => slotsFor({
+      system: "dnd5e",
+      classId,
+      level,
+      spellcasting: { kind: classId === "warlock" ? "pact" : "prepared", ability: "cha", listName: classId, cantripLimit: 0, prepareLimit: 0, knownLimit: 0 },
+    } as never);
+    expect(cast("wizard", 1).map((slot) => slot.max)).toEqual([2]);
+    expect(cast("sorcerer", 20).map((slot) => slot.max)).toEqual([4, 3, 3, 3, 3, 2, 2, 1, 1]);
+    expect(cast("paladin", 5).map((slot) => slot.max)).toEqual([4, 2]);
+    expect(cast("ranger", 1).map((slot) => slot.max)).toEqual([2]);
+    expect(cast("warlock", 11).map((slot) => slot.max)).toEqual([3]);
+    expect(cast("warlock", 11)[0].rank).toBe(5);
+    expect(slotsFor({ system: "dnd5e", classId: "fighter", level: 5, spellcasting: null } as never)).toEqual([]);
+    expect(slotsFor({ system: "dnd5e", classId: "rogue", level: 5, spellcasting: null } as never)).toEqual([]);
   });
 
   it("снимок кладёт посчитанные характеристики и не читает заметку", () => {

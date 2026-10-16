@@ -102,7 +102,7 @@ export interface ItemInst {
   armor?: ArmorStat;
   weapon?: WeaponStat;
   /** Руны предмета. Бонус предмета не складывается с другой руной того же типа. */
-  runes?: { potency?: number; striking?: number; resilient?: number };
+  runes?: { potency?: number; striking?: number; resilient?: number; property?: { id: string; name: string }[] };
   /** Плоский бонус магического предмета, +1 оружие или +1 доспех. */
   magicBonus?: number;
   /** Своя запись игрока, не из справочника. */
@@ -369,6 +369,8 @@ export interface Pf2eProgress {
   dailyFeats: string[];
   /** Пусто — универсального наследия нет. Не заменяет heritageId. */
   versatileHeritageId?: string;
+  /** Ступень проклятия оракула. Выше предела уровня не держится. */
+  cursebound?: number;
 }
 
 export interface CombatState {

@@ -2,6 +2,8 @@ import { dndCoinPounds, pfCoinBulk } from "./play/wallet";
 import { ABILITIES, ABILITY_NAME, type Ability, type Character, type ItemInst, mod } from "./types";
 import { SKILLS as SKILLS5, skillById as skill5, XP_THRESHOLDS, fullSlots, halfSlots, pactSlots } from "./data/dnd5e";
 import { SKILLS as SKILLS2, skillById as skill2, RANK_NAME } from "./data/pf2e";
+import { derive } from "./pf2e/build";
+import { spellSlotFacts } from "./pf2e/progression";
 
 export const POINT_BUY_BUDGET = 27;
 export const PF_STANDARD = [18, 14, 14, 12, 10, 10];
@@ -229,6 +231,19 @@ export function spellNumbers(c: Character): { attack: number; dc: number; text: 
       text: `бонус мастерства ${fmt(pb)} и ${ABILITY_NAME[c.spellcasting.ability]} ${fmt(ability)}`,
     };
   }
+  if (c.progress) {
+    const derived = derive({
+      progress: c.progress,
+      items: c.items,
+      conditions: c.conditionValues,
+      level: c.level,
+      toggles: c.progress.toggles,
+      shieldRaised: c.shieldRaised,
+    });
+    if (derived.spell) {
+      return { attack: derived.spell.value - 10, dc: derived.spell.value, text: derived.spell.formula };
+    }
+  }
   const prof = rankBonus(c.spellRank, c.level);
   return {
     attack: ability + prof,
@@ -330,18 +345,25 @@ export function refreshSlots(c: Character): Character {
   return next;
 }
 
+function pfSpellSlots(c: Character): Character["slots"] {
+  const facts = spellSlotFacts(c.classId);
+  const slots: Character["slots"] = [];
+  if (c.level === 1 && facts.rank1) slots.push({ rank: 1, max: facts.rank1, used: 0, note: "1 круг" });
+  if (c.classId === "cleric") {
+    const font = c.level >= 15 ? 6 : c.level >= 5 ? 5 : 4;
+    if (c.level === 1) slots.push({ rank: 1, max: font, used: 0, note: "шрифт" });
+    else slots.push({ rank: 0, max: font, used: 0, note: `шрифт: ${font} ячеек высшего круга, сам круг в выгрузке не указан` });
+  }
+  if (facts.tenthAt && c.level >= facts.tenthAt) slots.push({ rank: 10, max: 1, used: 0, note: "ясность оракула" });
+  if (c.level > 1 && facts.rank1) {
+    slots.push({ rank: 0, max: 0, used: 0, note: `таблица ячеек по дням в выгрузке не лежит. На 1 уровне было ${facts.rank1}` });
+  }
+  return slots;
+}
+
 export function slotsFor(c: Character): Character["slots"] {
   if (!c.spellcasting) return [];
-  if (c.system === "pf2e") {
-    const rank = Math.min(10, Math.ceil(c.level / 2));
-    const count = c.level === 1 ? 2 : c.level === 2 ? 3 : 3 + Math.floor((c.level - 1) / 2);
-    const slots = [{ rank: Math.max(1, rank), max: Math.min(4, count), used: 0, note: "обычные" }];
-    if (c.classId === "cleric") {
-      const font = Math.max(1, 1 + abilityMod(c, "cha"));
-      slots.push({ rank: Math.max(1, rank), max: font, used: 0, note: "шрифт" });
-    }
-    return slots;
-  }
+  if (c.system === "pf2e") return pfSpellSlots(c);
   if (c.spellcasting.kind === "pact") {
     const pact = pactSlots(c.level);
     return [{ rank: pact.rank, max: pact.n, used: 0, note: "пакт" }];

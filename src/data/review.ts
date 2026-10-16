@@ -12,6 +12,13 @@ function row(status: ReviewStatus, originalName: string, location: string) {
   return { status, checkedOn: on, sourceVersion: version, originalName, location };
 }
 
+function pfPartial(originalName: string, location: string) {
+  return { status: "verified-partial" as const, checkedOn: on, sourceVersion: "Player Core", originalName, location };
+}
+
+const hpOnly = "Поля Foundry: хиты. Остальной пересказ карточки не сверялся.";
+const hpSpeed = "Поля Foundry: хиты и скорость. Остальной пересказ карточки не сверялся.";
+
 export const REVIEW: Record<string, { status: ReviewStatus; checkedOn: string; sourceVersion: string; originalName?: string; location?: string }> = {
   "dnd-2024~spell~cure-wounds": row("verified-reference", "Cure Wounds", "SRD 5.2.1, заклинание 1-го круга"),
   "dnd-2024~spell~false-life": row("verified-reference", "False Life", "SRD 5.2.1, заклинание 1-го круга"),
@@ -38,6 +45,25 @@ export const REVIEW: Record<string, { status: ReviewStatus; checkedOn: string; s
   "pf-remaster~versatile-heritage~dhampir": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core 2", originalName: "Dhampir", location: "Ядро игрока 2, универсальное наследие" },
   "pf-remaster~versatile-heritage~dragonblood": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core 2", originalName: "Dragonblood", location: "Ядро игрока 2, универсальное наследие" },
   "pf-remaster~versatile-heritage~duskwalker": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core 2", originalName: "Duskwalker", location: "Ядро игрока 2, универсальное наследие" },
+  "pf-remaster~ancestry~dwarf": pfPartial("Dwarf", hpSpeed),
+  "pf-remaster~ancestry~elf": pfPartial("Elf", hpSpeed),
+  "pf-remaster~ancestry~gnome": pfPartial("Gnome", hpSpeed),
+  "pf-remaster~ancestry~goblin": pfPartial("Goblin", hpSpeed),
+  "pf-remaster~ancestry~halfling": pfPartial("Halfling", hpSpeed),
+  "pf-remaster~ancestry~human": pfPartial("Human", hpSpeed),
+  "pf-remaster~ancestry~leshy": pfPartial("Leshy", hpSpeed),
+  "pf-remaster~ancestry~orc": pfPartial("Orc", hpSpeed),
+  "pf-remaster~class~bard": pfPartial("Bard", hpOnly),
+  "pf-remaster~class~cleric": pfPartial("Cleric", hpOnly),
+  "pf-remaster~class~druid": pfPartial("Druid", hpOnly),
+  "pf-remaster~class~fighter": pfPartial("Fighter", hpOnly),
+  "pf-remaster~class~ranger": pfPartial("Ranger", hpOnly),
+  "pf-remaster~class~rogue": pfPartial("Rogue", hpOnly),
+  "pf-remaster~class~witch": pfPartial("Witch", hpOnly),
+  "pf-remaster~class~wizard": pfPartial("Wizard", hpOnly),
+  "lore~golarion~absalom": { status: "verified-reference", checkedOn: on, sourceVersion: "pathfinderwiki", originalName: "Absalom", location: "https://pathfinderwiki.com/wiki/Absalom, сверка 2026-10-16: южный берег острова Кортос, крупнейший город края Внутреннего моря" },
+  "lore~forgotten-realms~waterdeep": { status: "verified-reference", checkedOn: on, sourceVersion: "forgottenrealms.fandom", originalName: "Waterdeep", location: "https://forgottenrealms.fandom.com/wiki/Waterdeep, сверка 2026-10-16: север побережья мечей, северо-запад Фаэруна, глубокая гавань" },
+  "lore~srd~open-srd": { status: "verified-reference", checkedOn: on, sourceVersion: "SRD page", originalName: "System Reference Document", location: "https://www.dndbeyond.com/srd, сверка 2026-10-16: справочник — правила; Забытые королевства в таблицу справочника не входят; приложение про планы убрано как не правила" },
 };
 
 /** Связь между записями разных редакций. Оба конца должны уже лежать в каталоге. */

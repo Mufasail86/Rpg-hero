@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CLASSES as CL5, GENERAL_FEATS, SKILLS as SK5 } from "../data/dnd5e";
+import { rulesCatalog } from "../data/catalog";
 import { RANK_NAME } from "../data/pf2e";
 import { conditionList } from "../create";
 import { dndCoinPounds, exchange, formatCoins, parsePurse, pay, pfCoinBulk, totalCopper } from "../play/wallet";
@@ -37,9 +38,9 @@ import {
 } from "../types";
 import { go, Info } from "./common";
 import { DicePanel, queueRoll } from "./dice";
-import { AdvancePanel, CombatTracker, sheetDerived, WarningBanner } from "./remaster";
+import { AdvancePanel, CombatTracker, Etch, sheetDerived, WarningBanner } from "./remaster";
 import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
-import { sheetDnd, subclassIdOf } from "../dnd/build";
+import { KNOWN_SUBCLASSES, sheetDnd, subclassIdOf } from "../dnd/build";
 import { systemTitle } from "../labels";
 import { EDITION_NAME, rulesOf } from "../data/editions";
 import { portraitSrc } from "./art";
@@ -287,6 +288,7 @@ function Abilities({ character, commit }: { character: Character; commit: (next:
           <Info title="Инициатива" text={[derived.initiative.formula, ...derived.initiative.aside].join("\n")} />
         </div>
         {derived.classDc && <p className="tiny">{derived.classDc.formula}</p>}
+        {derived.spell && <p className="tiny">{derived.spell.formula}. Атака заклинанием {fmt(derived.spell.value - 10)}.</p>}
       </>
     );
   }
@@ -744,10 +746,10 @@ function Inventory({ character, commit }: { character: Character; commit: (next:
       <p className="tiny">{load.text}</p>
       <p><b>{load.current}</b> из {load.cap} {load.unit}{load.enc != null ? `, перегруз после ${load.enc}` : ""}</p>
       {character.items.map((item) => {
-        const derivedAttack = derived?.attacks.find((row) => row.name === item.name);
+          const derivedAttack = derived?.attacks.find((row) => row.name === item.name);
         const dndAttack = sheetDnd(character)?.attacks.find((row) => row.name === item.name);
         const attack = derivedAttack
-          ? { attack: derivedAttack.attack.value, damage: derivedAttack.damage, text: derivedAttack.attack.formula }
+          ? { attack: derivedAttack.attack.value, damage: derivedAttack.damage, text: [derivedAttack.attack.formula, ...derivedAttack.attack.aside].filter(Boolean).join(" ") }
           : dndAttack
             ? { attack: dndAttack.attack.value, damage: dndAttack.damage, text: dndAttack.attack.formula }
             : attackFor(character, item);
@@ -768,6 +770,9 @@ function Inventory({ character, commit }: { character: Character; commit: (next:
               </div>
               <span className="tiny">{item.weight} {character.system === "pf2e" ? "об." : "фнт"}</span>
             </div>
+            {character.system === "pf2e" && (item.kind === "weapon" || item.kind === "armor") && (
+              <Etch item={item} onChange={(runes) => patchItem(item.uid, { runes })} />
+            )}
             {(item.kind === "armor" || item.kind === "shield" || item.kind === "weapon") && (
               <button type="button" className={`pill ${item.equipped ? "on" : ""}`} onClick={() => equip(item)}>
                 {item.equipped ? "Надето" : "Надеть"}
@@ -792,6 +797,32 @@ function Inventory({ character, commit }: { character: Character; commit: (next:
         <input inputMode="decimal" value={weight} onChange={(event) => setWeight(event.target.value)} />
         <button type="button" className="btn" onClick={addCustom}>Положить</button>
       </div>
+      {character.system === "dnd5e" && (
+        <label className="field">
+          <span>Магический предмет справочника</span>
+          <select data-testid="add-magic-item" value="" onChange={(event) => {
+            const entry = rulesCatalog().find((row) => row.token === event.target.value);
+            if (!entry) return;
+            const item: ItemInst = {
+              uid: uid(),
+              catalogId: entry.localId,
+              name: entry.name,
+              qty: 1,
+              weight: 0,
+              equipped: false,
+              kind: "gear",
+              notes: entry.text,
+              source: entry.location,
+            };
+            commit({ ...character, items: [...character.items, item] });
+          }}>
+            <option value="">Положить карточку</option>
+            {rulesCatalog().filter((entry) => entry.category === "item" && entry.edition === rulesOf(character).edition && entry.localId.startsWith("magic-")).map((entry) => (
+              <option key={entry.token} value={entry.token}>{entry.name}</option>
+            ))}
+          </select>
+        </label>
+      )}
       {character.system === "pf2e" && (
         <button type="button" className={`pill ${character.shieldRaised ? "on" : ""}`} onClick={() => commit({ ...character, shieldRaised: !character.shieldRaised })}>
           Щит {character.shieldRaised ? "поднят" : "опущен"}
@@ -843,7 +874,9 @@ function Experience({ character, commit }: { character: Character; commit: (next
     }
     if (asiMode === "feat") {
       const feat = GENERAL_FEATS.find((item) => item.id === featId);
+      const card = rulesCatalog().find((entry) => entry.localId === featId && entry.edition === rulesOf(character).edition);
       if (feat) feats.push({ id: `${feat.id}-${character.level}`, name: feat.name, info: feat.info });
+      else if (card) feats.push({ id: `${card.localId}-${character.level}`, name: card.name, info: card.text });
     }
     const next = { ...character, abilities, feats, pendingAsi: false };
     const max = hpMax(next);
@@ -858,6 +891,23 @@ function Experience({ character, commit }: { character: Character; commit: (next
       </label>
       <p>{need == null ? "Дальше 20-го уровня лист не ведёт." : `До следующего уровня: ${need}. Сейчас ${character.level}.`}</p>
       <Info title="Опыт" text={character.system === "pf2e" ? "В Pathfinder уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения. До +4 это +1 к модификатору. На +4 первое повышение частичное: броски и хиты не меняются, пока следующее отдельное повышение той же характеристики не закроет его." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
+      {character.system === "dnd5e" && (
+        <label className="field">
+          <span>Подкласс открытого справочника</span>
+          <select data-testid="sheet-subclass" value={character.dnd?.subclassId || subclassIdOf(character.subclassName)} onChange={(event) => {
+            const id = event.target.value;
+            const known = KNOWN_SUBCLASSES.find((row) => row.id === id);
+            const next = { ...character, subclassName: known?.name ?? "" };
+            if (next.dnd) next.dnd = { ...next.dnd, subclassId: id };
+            commit(next);
+          }}>
+            <option value="">Не выбран</option>
+            {KNOWN_SUBCLASSES.filter((row) => row.classId === character.classId).map((row) => (
+              <option key={row.id} value={row.id}>{row.name}</option>
+            ))}
+          </select>
+        </label>
+      )}
       {character.system === "dnd5e" && (
         <div className="seg">
           <button type="button" className={`pill ${mode === "average" ? "on" : ""}`} onClick={() => setMode("average")}>Средние хиты</button>
@@ -902,7 +952,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
               ))}
             </div>
           )}
-          {asiMode === "feat" && GENERAL_FEATS.map((feat) => (
+          {asiMode === "feat" && [...GENERAL_FEATS.map((feat) => ({ id: feat.id, name: feat.name })), ...rulesCatalog().filter((entry) => entry.edition === rulesOf(character).edition && (entry.category === "origin-feat" || entry.category === "general-feat" || entry.category === "style") && !GENERAL_FEATS.some((feat) => feat.id === entry.localId)).map((entry) => ({ id: entry.localId, name: entry.name }))].map((feat) => (
             <button key={feat.id} type="button" className={`pill ${featId === feat.id ? "on" : ""}`} onClick={() => setFeatId(feat.id)}>{feat.name}</button>
           ))}
           <button type="button" className="btn primary" onClick={applyAsi}>Записать</button>
@@ -965,14 +1015,16 @@ function Spells({ character, commit }: { character: Character; commit: (next: Ch
       {character.slots.map((slot, index) => (
         <div key={`${slot.rank}-${slot.note ?? index}`} className="skill">
           <div>
-            <b>{slot.rank} круг{slot.note ? ` · ${slot.note}` : ""}</b>
-            <span className="tiny">потрачено {slot.used} из {slot.max}</span>
+            <b>{slot.rank > 0 ? `${slot.rank} круг` : "Ячейки"}{slot.note ? ` · ${slot.note}` : ""}</b>
+            {slot.rank > 0 && <span className="tiny">потрачено {slot.used} из {slot.max}</span>}
           </div>
-          <div className="stepper">
-            <button type="button" onClick={() => useSlot(index, -1)}>−</button>
-            <button type="button" onClick={() => useSlot(index, 1)}>+</button>
-          </div>
-          <Info title={`Ячейки ${slot.rank} круга`} text="Ячейка тратится, когда вы творите заклинание этого круга. Отдых возвращает их. Заговор ячейку не тратит." />
+          {slot.rank > 0 && (
+            <div className="stepper">
+              <button type="button" onClick={() => useSlot(index, -1)}>−</button>
+              <button type="button" onClick={() => useSlot(index, 1)}>+</button>
+            </div>
+          )}
+          <Info title={slot.rank > 0 ? `Ячейки ${slot.rank} круга` : "Ячейки"} text={slot.rank > 0 ? "Ячейка тратится, когда вы творите заклинание этого круга. Отдых возвращает их. Заговор ячейку не тратит." : "Число этого круга в выгрузке класса не лежало, поэтому лист его не подставляет."} />
         </div>
       ))}
       {character.focus && (
