@@ -180,6 +180,8 @@ export interface Spellcasting {
   knownLimit: number;
 }
 
+import type { RulesEdition, RulesProfile } from "./data/editions";
+
 export interface Character {
   id: string;
   system: SystemId;
@@ -254,6 +256,10 @@ export interface Character {
   combat?: CombatState;
   /** Боевой трекер D&D. Не меняет постоянные характеристики. */
   dndCombat?: DndCombat;
+  /** Редакция, разрешённые пакеты и домашние правила. В формулы сами не входят. */
+  rules?: RulesProfile;
+  /** Универсальное наследие Следопыта. Складывается с народом, не заменяет его. */
+  versatileHeritageId?: string;
 }
 
 export interface DndProgress {
@@ -299,6 +305,8 @@ export interface Pf2eProgress {
   toggles: string[];
   /** Боевая гибкость воина: черты на день, не часть постоянного плана. */
   dailyFeats: string[];
+  /** Пусто — универсального наследия нет. Не заменяет heritageId. */
+  versatileHeritageId?: string;
 }
 
 export interface CombatState {
@@ -340,9 +348,13 @@ export function describe(entry: { short?: string; info: string }): string {
 
 export interface Draft {
   system: SystemId | null;
+  /** Пустая строка — редакция по умолчанию для выбранной игры. */
+  edition: RulesEdition | "";
   name: string;
   ancestryId: string;
   heritageId: string;
+  /** Пусто — без универсального наследия. */
+  versatileHeritageId: string;
   backgroundId: string;
   classId: string;
   choices: Record<string, string>;
@@ -372,9 +384,11 @@ export function emptyScores(n = 8): Record<Ability, number> {
 export function blankDraft(): Draft {
   return {
     system: null,
+    edition: "",
     name: "",
     ancestryId: "",
     heritageId: "",
+    versatileHeritageId: "",
     backgroundId: "",
     classId: "",
     choices: {},

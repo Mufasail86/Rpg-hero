@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { VERSATILE } from "../data/versatile";
+import { EDITION_NAME, editionsFor, filledEdition, resolveEdition, type RulesEdition } from "../data/editions";
 import { portraitSrc } from "./art";
 import { BACKGROUNDS as BG5, CLASSES as CL5, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, SPELLS as SP2, TRADITION_NAME } from "../data/pf2e";
@@ -104,9 +106,19 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
     if (draft.system === system) return;
     const next = blankDraft();
     next.system = system;
+    next.edition = system === "dnd5e" ? "dnd-2024" : "pf-remaster";
     next.name = draft.name;
     setDraft(next);
     setStepIndex(0);
+  }
+
+  function chooseEdition(edition: RulesEdition) {
+    if (!draft.system || resolveEdition(draft.system, draft.edition) === edition) return;
+    const next = blankDraft();
+    next.system = draft.system;
+    next.edition = edition;
+    next.name = draft.name;
+    setDraft(next);
   }
 
   function goNext() {
@@ -142,7 +154,14 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
         <i style={{ width: `${((index + 1) / steps.length) * 100}%` }} />
       </div>
       <main className="screen pad-dock stack">
-        {step === "system" && <SystemStep system={draft.system} onPick={chooseSystem} />}
+        {step === "system" && (
+          <SystemStep
+            system={draft.system}
+            edition={draft.system ? resolveEdition(draft.system, draft.edition) : ""}
+            onPick={chooseSystem}
+            onEdition={chooseEdition}
+          />
+        )}
         {step === "name" && (
           <label className="field">
             <span>Как зовут героя</span>
@@ -182,16 +201,26 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
   );
 }
 
-function SystemStep({ system, onPick }: { system: Draft["system"]; onPick: (system: "dnd5e" | "pf2e") => void }) {
+function SystemStep({
+  system,
+  edition,
+  onPick,
+  onEdition,
+}: {
+  system: Draft["system"];
+  edition: RulesEdition | "";
+  onPick: (system: "dnd5e" | "pf2e") => void;
+  onEdition: (edition: RulesEdition) => void;
+}) {
   return (
     <>
-      <p className="lead">Выберите открытые правила. Позже в каждом списке будет «Своя запись», если домашнего варианта нет в справочнике.</p>
+      <p className="lead">Выберите игру и редакцию. Списки разных редакций не смешиваются. Если пакет ещё пуст, остаётся только своя запись.</p>
       <Choice
         id="dnd5e"
         testId="system-dnd5e"
         name="Подземелья и драконы"
-        hint="открытый справочник 5.2, правила 2024 года"
-        info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Характеристики на старте задаёт происхождение, а не народ. В приложении только открытый справочник: девять народов, четыре происхождения, двенадцать классов и по одному подклассу."
+        hint="открытый справочник, две редакции отдельно"
+        info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Сейчас заполнен справочник 5.2, правила 2024 года. Справочник 5.1, правила 2014 года, лежит отдельным пакетом и в этой сборке ещё без записей."
         on={system === "dnd5e"}
         onPick={() => onPick("dnd5e")}
       />
@@ -199,12 +228,33 @@ function SystemStep({ system, onPick }: { system: Draft["system"]; onPick: (syst
         id="pf2e"
         testId="system-pf2e"
         name="Следопыт"
-        hint="ремастер, открытая игровая лицензия"
-        info="Три действия в ход, четыре ступени успеха и владение от необученного до легенды. Характеристики собираются повышениями от 10. В приложении народы, классы и навыки из открытого ядра игрока, без имён сеттинга."
+        hint="ремастер и отдельно правила до него"
+        info="Три действия в ход, четыре ступени успеха и владение от необученного до легенды. Заполнен кусок открытого ядра игрока ремастера. Правила до ремастера — другой пакет и другая лицензия, их сюда не подмешивают. Предания мира — на своём экране, не в правилах."
         on={system === "pf2e"}
         onPick={() => onPick("pf2e")}
       />
+      {system && (
+        <>
+          <p className="kicker">Редакция</p>
+          <div className="seg" role="group" aria-label="Редакция">
+            {editionsFor(system).map((id) => (
+              <button key={id} type="button" className={`pill ${edition === id ? "on" : ""}`} aria-pressed={edition === id} data-testid={`edition-${id}`} onClick={() => onEdition(id)}>
+                {EDITION_NAME[id]}
+              </button>
+            ))}
+          </div>
+          {edition && !filledEdition(edition) && <p className="tiny">Эта редакция в сборке ещё без записей. Конструктор не покажет чужой список.</p>}
+        </>
+      )}
     </>
+  );
+}
+
+function UnfilledNote({ edition }: { edition: RulesEdition }) {
+  return (
+    <p className="lead" data-testid="edition-empty">
+      «{EDITION_NAME[edition]}» хранится отдельно. Записей этого пакета в сборке ноль, поэтому список другой редакции здесь не показан. Можно завести свою запись.
+    </p>
   );
 }
 
@@ -220,6 +270,16 @@ function AncestryStep({
   toggleMulti: (key: string, id: string, max: number) => void;
 }) {
   if (draft.system === "dnd5e") {
+    const edition = resolveEdition("dnd5e", draft.edition);
+    if (!filledEdition(edition)) {
+      return (
+        <>
+          <UnfilledNote edition={edition} />
+          <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
+          {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
+        </>
+      );
+    }
     const species = SPECIES.find((item) => item.id === draft.ancestryId);
     return (
       <>
@@ -269,6 +329,17 @@ function AncestryStep({
     );
   }
 
+  const edition = resolveEdition("pf2e", draft.edition);
+  if (!filledEdition(edition)) {
+    return (
+      <>
+        <UnfilledNote edition={edition} />
+        <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
+        {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
+      </>
+    );
+  }
+
   const ancestry = ANCESTRIES.find((item) => item.id === draft.ancestryId);
   const free = !ancestry || ancestry.boosts.length === 0 || draft.choices.ancestryMode === "free" || draft.ancestryId === "custom";
   return (
@@ -299,6 +370,13 @@ function AncestryStep({
           {free && draft.ancestryId !== "custom" && (
             <MultiAbilities group="anc" label="Два свободных повышения" picked={draft.multi.ancestryBoosts ?? []} max={2} onToggle={(ability) => toggleMulti("ancestryBoosts", ability, 2)} />
           )}
+          <p className="kicker">Универсальное наследие</p>
+          <p className="tiny">Оно складывается с народом и обычным наследием и не заменяет их. Наследие гнома «Сумеречный» — это тёмное зрение, сюда оно не подставляется.</p>
+          <Choice id="versatile-none" name="Без универсального наследия" info="Народ и его обычное наследие остаются единственными. Универсальный слой не выбран." on={draft.versatileHeritageId === ""} onPick={() => update({ versatileHeritageId: "" })} />
+          {VERSATILE.length === 0 && <p data-testid="versatile-empty">В открытых книгах ремастера, которые уже заведены, универсальных наследий ещё нет. Выбрать нечего, и чужой список не подмешивается.</p>}
+          {VERSATILE.map((item) => (
+            <Choice key={item.id} id={item.id} name={item.name} hint={item.originalName} info={item.info} short={item.short} on={draft.versatileHeritageId === item.id} onPick={() => update({ versatileHeritageId: item.id })} />
+          ))}
           {draft.heritageId === "skilled" && (
             <>
               <p className="kicker">Навык умелого наследия</p>
@@ -331,9 +409,12 @@ function CustomAncestry({ draft, update, speedLabel }: { draft: Draft; update: (
 }
 
 function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (partial: Partial<Draft>) => void; setChoice: (key: string, value: string) => void }) {
-  const list = draft.system === "pf2e" ? BG2 : BG5;
+  const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
+  const unfilled = Boolean(draft.system && !filledEdition(edition));
+  const list = unfilled ? [] : draft.system === "pf2e" ? BG2 : BG5;
   return (
     <>
+      {unfilled && <UnfilledNote edition={edition} />}
       {list.map((item) => (
         <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
       ))}
@@ -359,10 +440,14 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
           <label className="field"><span>Название</span><input value={draft.customBackground.name} onChange={(event) => update({ customBackground: { ...draft.customBackground, name: event.target.value } })} /></label>
           <AbilityRow label="Первая характеристика" value={draft.choices.cba ?? ""} onPick={(ability) => setChoice("cba", ability)} />
           <AbilityRow label="Вторая характеристика" value={draft.choices.cbb ?? ""} onPick={(ability) => setChoice("cbb", ability)} />
-          <p className="kicker">Навык</p>
-          {SK2.map((skill) => (
-            <Choice key={skill.id} id={`bg-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.customSkill === skill.id} onPick={() => setChoice("customSkill", skill.id)} />
-          ))}
+          {!unfilled && (
+            <>
+              <p className="kicker">Навык</p>
+              {SK2.map((skill) => (
+                <Choice key={skill.id} id={`bg-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.customSkill === skill.id} onPick={() => setChoice("customSkill", skill.id)} />
+              ))}
+            </>
+          )}
           <label className="field"><span>Описание</span><textarea value={draft.customBackground.info} onChange={(event) => update({ customBackground: { ...draft.customBackground, info: event.target.value } })} /></label>
         </div>
       )}
@@ -371,6 +456,15 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
 }
 
 function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partial: Partial<Draft>) => void; setChoice: (key: string, value: string) => void }) {
+  const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
+  if (draft.system && !filledEdition(edition)) {
+    return (
+      <>
+        <UnfilledNote edition={edition} />
+        <CustomClassCard draft={draft} update={update} />
+      </>
+    );
+  }
   if (draft.system === "dnd5e") {
     const orders = ORDER5[draft.classId as keyof typeof ORDER5];
     return (
@@ -653,6 +747,8 @@ function BackgroundBoosts({ draft, setChoice }: { draft: Draft; setChoice: (key:
 }
 
 function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: string, id: string, max: number) => void }) {
+  const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
+  if (draft.system && !filledEdition(edition)) return <UnfilledNote edition={edition} />;
   const scored = scoresOf(draft);
   const need = scored.ok ? skillNeed(draft, scored.scores) : 0;
   const fixed = new Set(fixedSkills(draft));
@@ -692,6 +788,8 @@ function FeatStep({
   setChoice: (key: string, value: string) => void;
   toggleMulti: (key: string, id: string, max: number) => void;
 }) {
+  const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
+  if (draft.system && !filledEdition(edition)) return <UnfilledNote edition={edition} />;
   if (draft.system === "dnd5e") {
     const cls = CL5.find((item) => item.id === draft.classId);
     const bg = BG5.find((item) => item.id === draft.backgroundId);
@@ -864,6 +962,16 @@ function FeatForm({ onAdd }: { onAdd: (feat: { name: string; info: string }) => 
 
 function GearStep({ draft, update }: { draft: Draft; update: (partial: Partial<Draft>) => void }) {
   const [query, setQuery] = useState("");
+  const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
+  if (draft.system && !filledEdition(edition)) {
+    return (
+      <>
+        <UnfilledNote edition={edition} />
+        <Choice id="gold" name="Без лавки другой редакции" info="Снаряжение этого пакета ещё не заведено. Чужой список вещей не предлагается. Свои предметы можно дописать ниже." on={draft.gearMode === "gold" || draft.gearMode === "shop"} onPick={() => update({ gearMode: draft.system === "pf2e" ? "shop" : "gold" })} />
+        <CustomItems draft={draft} update={update} />
+      </>
+    );
+  }
   const preview = gearPreview(draft);
   const cls5 = CL5.find((item) => item.id === draft.classId);
   const items = catalog(draft.system).filter((item) => item.name.toLowerCase().includes(query.trim().toLowerCase()));
@@ -945,13 +1053,15 @@ function CustomItems({ draft, update }: { draft: Draft; update: (partial: Partia
 }
 
 function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<Draft>) => void }) {
+  const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
   const budget = spellBudget(draft);
   const [name, setName] = useState("");
   const [level, setLevel] = useState("0");
   const [info, setInfo] = useState("");
   const cls2 = CL2.find((item) => item.id === draft.classId);
   const tradition = cls2?.spell?.tradition ?? "arcane";
-  const catalogSpells = draft.system === "pf2e"
+  const unfilled = draft.system ? !filledEdition(edition) : false;
+  const catalogSpells = unfilled ? [] : draft.system === "pf2e"
     ? SP2.filter((spell) => draft.classId === "custom" || spell.traditions.includes(tradition)).map((spell) => ({ id: spell.id, name: spell.name, level: spell.level, info: `${spell.time}. ${spell.info}` }))
     : SP5.filter((spell) => draft.classId === "custom" || spell.classes.includes(draft.classId)).map((spell) => ({ id: spell.id, name: spell.name, level: spell.level, info: spell.info }));
   const custom = draft.customSpells.map((spell, index) => ({ id: `custom:${index}`, name: spell.name, level: Number(spell.level) || 0, info: spell.info }));
@@ -965,6 +1075,7 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
   const prepared = draft.preparedSpells.length;
   return (
     <>
+      {unfilled && <UnfilledNote edition={edition} />}
       {budget && (
         <p className="lead">
           Заговоры {cantrips} из {budget.cantrips}. Заклинания 1-го круга в запасе {leveled}

@@ -1,3 +1,5 @@
+import { versatileIds } from "./data/catalog";
+import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
 import {
   ABILITIES,
@@ -101,7 +103,22 @@ export function validateStep(d: Draft, step: StepId): string | null {
   return null;
 }
 
+function activeEdition(d: Draft) {
+  return d.system ? resolveEdition(d.system, d.edition) : "dnd-2024";
+}
+
+function editionOpen(d: Draft): boolean {
+  return d.system ? filledEdition(activeEdition(d)) : true;
+}
+
 function validateAncestry(d: Draft): string | null {
+  if (!editionOpen(d)) {
+    if (d.ancestryId !== "custom") return "В этой редакции готовых народов нет. Выберите свою запись или другую редакцию.";
+  }
+  if (d.versatileHeritageId) {
+    if (d.versatileHeritageId === "umbral") return "«Сумеречный» — наследие гнома, не универсальное.";
+    if (!versatileIds().includes(d.versatileHeritageId)) return "Такого универсального наследия в пакете нет.";
+  }
   if (!d.ancestryId) return "Выберите народ или свою запись.";
   if (d.ancestryId === "custom") {
     if (!d.customAncestry.name.trim()) return "Назовите свой народ.";
@@ -125,6 +142,7 @@ function validateAncestry(d: Draft): string | null {
 }
 
 function validateBackground(d: Draft): string | null {
+  if (!editionOpen(d) && d.backgroundId !== "custom") return "В этой редакции готовых происхождений нет. Выберите свою запись или другую редакцию.";
   if (!d.backgroundId) return "Выберите происхождение или свою запись.";
   if (d.backgroundId === "custom") {
     if (!d.customBackground.name.trim()) return "Назовите своё происхождение.";
@@ -134,7 +152,7 @@ function validateBackground(d: Draft): string | null {
     }
     if (d.system === "pf2e") {
       if (!c(d, "cba") || !c(d, "cbb") || c(d, "cba") === c(d, "cbb")) return "Выберите две разные характеристики происхождения.";
-      if (!c(d, "customSkill")) return "Выберите навык происхождения.";
+      if (editionOpen(d) && !c(d, "customSkill")) return "Выберите навык происхождения.";
     }
     return null;
   }
@@ -144,6 +162,7 @@ function validateBackground(d: Draft): string | null {
 }
 
 function validateClass(d: Draft): string | null {
+  if (!editionOpen(d) && d.classId !== "custom") return "В этой редакции готовых классов нет. Выберите свою запись или другую редакцию.";
   if (!d.classId) return "Выберите класс или свою запись.";
   if (d.classId === "custom") {
     if (!d.customClass.name.trim()) return "Назовите свой класс.";
@@ -168,6 +187,7 @@ function validateClass(d: Draft): string | null {
 }
 
 function validateSkills(d: Draft): string | null {
+  if (!editionOpen(d)) return null;
   const scores = scoresOf(d);
   if (!scores.ok) return "Сначала закончите характеристики.";
   const need = skillNeed(d, scores.scores);
@@ -180,6 +200,7 @@ function validateSkills(d: Draft): string | null {
 }
 
 function validateFeats(d: Draft): string | null {
+  if (!editionOpen(d)) return null;
   if (d.system === "dnd5e") {
     const cls = CL5.find((x) => x.id === d.classId);
     if (cls?.fightingStyle && !c(d, "style")) return "Выберите боевой стиль.";
@@ -226,6 +247,7 @@ function magicPicks(d: Draft, feat: string, prefix: string): string | null {
 }
 
 function validateGear(d: Draft): string | null {
+  if (!editionOpen(d)) return d.gearMode ? null : "Отметьте, что снаряжение этой редакции ещё не заведено.";
   if (!d.gearMode) return "Выберите набор или покупку за золото.";
   const purse = purseOf(d);
   if (!purse.ok) return purse.error;
@@ -527,6 +549,11 @@ export function createCharacter(d: Draft): { ok: true; character: Character } | 
   const withSlots = refreshSlots(character);
   withSlots.hpCurrent = hpMax(withSlots);
   withSlots.hpTemp = 0;
+  if (d.system) {
+    const edition = activeEdition(d);
+    withSlots.rules = { edition, sources: defaultSources(edition), houseRules: "" };
+  }
+  if (d.versatileHeritageId) withSlots.versatileHeritageId = d.versatileHeritageId;
   return { ok: true, character: withSlots };
 }
 
