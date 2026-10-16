@@ -158,7 +158,7 @@ export function DndCombatPanel({ character, onChange }: { character: Character; 
       {derived.resources.length > 0 && (
         <p>{derived.resources.map((resource) => `${resource.name} ${combat.resources[resource.id] ?? 0} из ${resource.max}`).join(" · ")}</p>
       )}
-      {sword && <p data-testid="dnd-preview">{attackPreview(sword.attack.value)}. Урон {sword.damage}. Крит {derived.crit}.</p>}
+      {sword && <p data-testid="dnd-preview">{attackPreview(sword.attack.value)} Урон {sword.damage}. Крит {derived.crit}.</p>}
       <div className="row">
         <button type="button" className="btn" data-testid="dnd-attack" onClick={() => apply(spendAttack(combat, derived.attacksPerAction))}>Атака</button>
         <button type="button" className="btn" onClick={() => apply(useReaction(combat))}>Реакция</button>
