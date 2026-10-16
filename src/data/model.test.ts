@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { artefolCharacter } from "../pf2e/artefol";
 import { guardCharacter } from "../dnd/guard";
@@ -81,14 +80,28 @@ describe("единая модель редакций", () => {
     expect(counts["lore-golarion"]).toBe(0);
     expect(counts["lore-forgotten-realms"]).toBe(0);
     expect(loreCatalog()).toHaveLength(0);
-    expect(rulesCatalog().every((entry) => entry.status === "pending")).toBe(true);
+    const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
+    expect(verified.length).toBe(12);
+    const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
+    expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
+    expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
+    expect(byToken["dnd-2024~spell~false-life"].text).toContain("мгновенн");
+    expect(byToken["dnd-2024~condition~exhaustion"].status).toBe("verified-partial");
+    expect(byToken["dnd-2024~condition~exhaustion"].text).toContain("6");
+    expect(byToken["dnd-2024~item~rope"].text).toContain("СЛ 10");
+    expect(byToken["dnd-2024~item~rope"].text).toContain("СЛ 20");
+    expect(byToken["dnd-2024~item~rope"].text).toContain("СЛ 15");
+    expect(byToken["dnd-2024~mastery~topple"].text).toContain("8 +");
+    expect(verified.every((entry) => entry.sourceVersion === "5.2.1" && entry.checkedOn === "2026-10-16")).toBe(true);
     expect(rulesCatalog().filter((entry) => entry.edition === "dnd-2024" || entry.edition === "pf-remaster").length).toBe(rulesCatalog().length);
-    const matrix = JSON.parse(readFileSync(new URL("../../docs/coverage.json", import.meta.url), "utf8")) as { packs: { id: string; entered: number; verified: number }[] };
-    const live = packCounts();
-    for (const pack of matrix.packs) {
-      const row = live.find((item) => item.id === pack.id);
-      expect(row?.entered).toBe(pack.entered);
-      expect(row?.verified).toBe(pack.verified);
-    }
+    expect(packCounts()).toEqual([
+      { id: "srd-5.2", entered: 240, verified: 12 },
+      { id: "srd-5.1", entered: 0, verified: 0 },
+      { id: "pf-player-core", entered: 266, verified: 0 },
+      { id: "pf-orc-more", entered: 0, verified: 0 },
+      { id: "pf-ogl", entered: 0, verified: 0 },
+      { id: "lore-golarion", entered: 0, verified: 0 },
+      { id: "lore-forgotten-realms", entered: 0, verified: 0 },
+    ]);
   });
 });
