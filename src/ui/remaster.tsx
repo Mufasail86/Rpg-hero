@@ -4,6 +4,7 @@ import { choiceCaption, derive, effectsFrom, optionsForSlot, slotsForProgress, s
 import { SKILLS } from "../data/pf2e";
 import type { Character, CombatState, ItemInst, Placement, StructuredEffect } from "../types";
 import { fmt, uid } from "../types";
+import { useCompact } from "./common";
 
 function detailFor(pick: string): Record<string, string> | undefined {
   if (pick === "canny-acumen") return { defense: "will" };
@@ -460,9 +461,10 @@ function Field({ label, value, onChange }: { label: string; value: string; onCha
   );
 }
 
-function CombatTracker({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
+export function CombatTracker({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
   const [target, setTarget] = useState("");
   const [note, setNote] = useState("");
+  const [compact, toggleCompact] = useCompact();
   const combat: CombatState = { ...emptyCombat(), ...character.combat, immunity: character.combat?.immunity ?? [] };
   const derived = sheetDerived(character);
   const sword = derived?.attacks.find((attack) => attack.equipped) ?? derived?.attacks[0];
@@ -479,11 +481,16 @@ function CombatTracker({ character, onChange }: { character: Character; onChange
     return { ...character.progress, toggles };
   }
   return (
-    <div className="card stack" data-testid="combat-screen">
-      <b>Боевой экран</b>
+    <div className={`card stack combat-board ${compact ? "compact" : ""}`} data-testid="combat-screen">
+      <div className="row-between">
+        <b>Боевой экран</b>
+        <button type="button" className={`pill ${compact ? "on" : ""}`} aria-pressed={compact} onClick={toggleCompact}>
+          {compact ? "Компактно" : "Обычный вид"}
+        </button>
+      </div>
       <p>Действия {combat.actions}/3 · реакция {combat.reaction ? "есть" : "нет"} · штраф повторной атаки {combat.map} · усилие {combat.flourish ? "потрачено" : "свободно"}</p>
       <p className="tiny">{handsLine(character.items)}</p>
-      {sword && <p data-testid="attack-preview">{attackPreview(sword.attack.value, combat.map)}</p>}
+      {sword && <p className="combat-figure" data-testid="attack-preview">{attackPreview(sword.attack.value, combat.map)}</p>}
       <div className="row">
         <button type="button" className="btn" data-testid="combat-strike" onClick={() => apply(strike(combat))}>Удар</button>
         <button type="button" className="btn" data-testid="combat-reactive" disabled={!combat.reaction} onClick={() => apply(reactiveStrike(combat))}>Внеочередная атака</button>

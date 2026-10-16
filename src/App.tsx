@@ -6,10 +6,12 @@ import { Home } from "./ui/home";
 import { Builder } from "./ui/builder";
 import { Sheet } from "./ui/sheet";
 import { Library } from "./ui/library";
+import { Lore } from "./ui/lore";
 
-function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library"; id?: string; panel?: string | null } {
+function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library" | "lore"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
   if (parts[0] === "library") return { page: "library" };
+  if (parts[0] === "lore") return { page: "lore" };
   if (parts[0] === "new") return { page: "new" };
   if (parts[0] === "c" && parts[1]) return { page: "sheet", id: decodeURIComponent(parts[1]), panel: parts[2] ? decodeURIComponent(parts[2]) : null };
   return { page: "home" };
@@ -44,6 +46,7 @@ export function App() {
         />
       )}
       {route.page === "library" && <Library />}
+      {route.page === "lore" && <Lore />}
       {route.page === "new" && (
         <Builder
           onDone={(character) => {

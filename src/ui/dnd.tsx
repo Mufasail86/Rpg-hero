@@ -4,6 +4,7 @@ import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, open
 import { describeDndChoice, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
+import { useCompact } from "./common";
 
 export function DndBanner({ character }: { character: Character }) {
   const derived = sheetDnd(character);
@@ -143,6 +144,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
 export function DndCombatPanel({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
   const derived = sheetDnd(character);
   const [note, setNote] = useState("");
+  const [compact, toggleCompact] = useCompact();
   if (!derived) return null;
   const combat: DndCombat = { ...emptyDndCombat(derived.resources, derived.slots), ...character.dndCombat };
   const sword = derived.attacks.find((attack) => attack.equipped) ?? derived.attacks[0];
@@ -152,13 +154,18 @@ export function DndCombatPanel({ character, onChange }: { character: Character; 
     onChange({ ...character, dndCombat: step.state });
   }
   return (
-    <div className="card stack" data-testid="dnd-combat">
-      <b>Боевой экран</b>
+    <div className={`card stack combat-board ${compact ? "compact" : ""}`} data-testid="dnd-combat">
+      <div className="row-between">
+        <b>Боевой экран</b>
+        <button type="button" className={`pill ${compact ? "on" : ""}`} aria-pressed={compact} onClick={toggleCompact}>
+          {compact ? "Компактно" : "Обычный вид"}
+        </button>
+      </div>
       <p>Действие {combat.action ? "есть" : "нет"} · бонусное {combat.bonus ? "есть" : "нет"} · реакция {combat.reaction ? "есть" : "нет"} · атак {combat.attacks}/{derived.attacksPerAction}{combat.extraAction ? " и ещё действие" : ""}</p>
       {derived.resources.length > 0 && (
         <p>{derived.resources.map((resource) => `${resource.name} ${combat.resources[resource.id] ?? 0} из ${resource.max}`).join(" · ")}</p>
       )}
-      {sword && <p data-testid="dnd-preview">{attackPreview(sword.attack.value)} Урон {sword.damage}. Крит {derived.crit}.</p>}
+      {sword && <p className="combat-figure" data-testid="dnd-preview">{attackPreview(sword.attack.value)} Урон {sword.damage}. Крит {derived.crit}.</p>}
       <div className="row">
         <button type="button" className="btn" data-testid="dnd-attack" onClick={() => apply(spendAttack(combat, derived.attacksPerAction))}>Атака</button>
         <button type="button" className="btn" onClick={() => apply(useReaction(combat))}>Реакция</button>

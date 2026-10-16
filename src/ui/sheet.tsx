@@ -35,10 +35,11 @@ import {
 } from "../types";
 import { go, Info } from "./common";
 import { DicePanel, queueRoll } from "./dice";
-import { AdvancePanel, sheetDerived, WarningBanner } from "./remaster";
+import { AdvancePanel, CombatTracker, sheetDerived, WarningBanner } from "./remaster";
 import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
 import { sheetDnd } from "../dnd/build";
 import { systemTitle } from "../labels";
+import { portraitSrc } from "./art";
 
 const PANELS = [
   ["abilities", "Характеристики", "Сил", "teal"],
@@ -109,7 +110,7 @@ export function Sheet({
         <main className="screen stack">
           <section className="card hero-card">
             <label className="avatar-btn">
-              {character.photo ? <img src={character.photo} alt="" /> : <span>⚔</span>}
+              {character.photo ? <img src={character.photo} alt="" /> : portraitSrc(character.ancestryId, character.classId) ? <img src={portraitSrc(character.ancestryId, character.classId) ?? ""} alt="" /> : <span>⚔</span>}
               <input hidden type="file" accept="image/*" onChange={(event) => { const file = event.target.files?.[0]; if (file) void photo(file); }} />
             </label>
             <div className="grow">
@@ -151,12 +152,12 @@ export function Sheet({
                 </span>
               </button>
             )}
-            {character.system === "dnd5e" && (
+            {(character.dnd || character.progress) && (
               <button type="button" className="big" data-testid="open-combat" onClick={() => go(`#/c/${character.id}/combat`)}>
                 <span className="mark">⚔</span>
                 <span>
                   <b>Бой</b>
-                  <span>Действие, бонус, реакция, атаки и ячейки</span>
+                  <span>{character.system === "dnd5e" ? "Действие, бонус, реакция, атаки и ячейки" : "Три действия, реакция и повторные атаки"}</span>
                 </span>
               </button>
             )}
@@ -192,7 +193,7 @@ export function Sheet({
           {panel === "dice" && <DicePanel />}
           {panel === "notes" && <Notes character={character} commit={commit} />}
           {panel === "growth" && (character.dnd ? <DndAdvance character={character} onChange={commit} /> : <AdvancePanel character={character} onChange={commit} />)}
-          {panel === "combat" && <DndCombatPanel character={character} onChange={commit} />}
+          {panel === "combat" && (character.system === "dnd5e" ? <DndCombatPanel character={character} onChange={commit} /> : <CombatTracker character={character} onChange={commit} />)}
           {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "dice", "notes", "growth", "combat"].includes(panel) && <p>Такого раздела нет.</p>}
         </main>
       )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { portraitSrc } from "./art";
 import { BACKGROUNDS as BG5, CLASSES as CL5, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, SPELLS as SP2, TRADITION_NAME } from "../data/pf2e";
 import {
@@ -37,14 +38,34 @@ import { Choice, go, Info, money } from "./common";
 
 const ORDER5 = {
   cleric: [
-    { id: "protector", name: "Защитник", info: "Владение воинским оружием и тяжёлыми доспехами. Заклинаний столько же, сколько у обычного жреца." },
-    { id: "thaumaturge", name: "Чудотворец", info: "Ещё один заговор жреца и владение навыком Магия. Доспехи остаются лёгкими и средними." },
+    {
+      id: "protector",
+      name: "Защитник",
+      short: "Жрец в тяжёлом доспехе и с воинским оружием, число заклинаний то же.",
+      info: "Божественный порядок защитника. Вы владеете воинским оружием и тяжёлыми доспехами. Число заговоров и подготовленных заклинаний остаётся таким же, как у обычного жреца: порядок не отнимает магию ради брони. На старте это выбор вместо чудотворца, не вместо домена.",
+    },
+    {
+      id: "thaumaturge",
+      name: "Чудотворец",
+      short: "Лишний заговор жреца и навык Магия, доспех не тяжелее среднего.",
+      info: "Божественный порядок чудотворца. Вы знаете ещё один заговор из списка жреца и владеете навыком Магия. Доспехи остаются лёгкими и средними, тяжёлых порядок не даёт. Заклинаний 1-го круга от этого выбора не прибавляется.",
+    },
   ],
   druid: [
-    { id: "magician", name: "Маг", info: "Ещё один заговор друида. Доспехи остаются лёгкими." },
-    { id: "warden", name: "Страж", info: "Владение воинским оружием и средними доспехами." },
+    {
+      id: "magician",
+      name: "Маг",
+      short: "Лишний заговор друида. Доспех остаётся лёгким.",
+      info: "Первозданный порядок мага. Вы знаете ещё один заговор из списка друида. Владение доспехами остаётся лёгким, средние и тяжёлые этот порядок не открывает. Оружие тоже не расширяется до всего воинского списка.",
+    },
+    {
+      id: "warden",
+      name: "Страж",
+      short: "Воинское оружие и средние доспехи вместо лишнего заговора.",
+      info: "Первозданный порядок стража. Вы владеете воинским оружием и средними доспехами. Лишнего заговора, как у мага, нет. Тяжёлые доспехи порядок не даёт. Металл в ремастере «Следопыта» тут ни при чём: это порядок правил 2024 года.",
+    },
   ],
-} as const;
+};
 
 export function Builder({ onDone }: { onDone: (character: Character) => void }) {
   const [draft, setDraft] = useState<Draft>(() => loadDraft() ?? blankDraft());
@@ -203,14 +224,14 @@ function AncestryStep({
     return (
       <>
         {SPECIES.map((item) => (
-          <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
+          <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
         <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
         {species?.lineage && (
           <>
             <p className="kicker">Наследие</p>
             {species.lineage.map((item) => (
-              <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.choices.lineage === item.id} onPick={() => setChoice("lineage", item.id)} />
+              <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.choices.lineage === item.id} onPick={() => setChoice("lineage", item.id)} />
             ))}
           </>
         )}
@@ -231,7 +252,7 @@ function AncestryStep({
             <p className="kicker">Острые чувства</p>
             {species.skillChoice.map((id) => {
               const skill = SK5.find((item) => item.id === id);
-              return skill ? <Choice key={id} id={id} name={skill.name} info={skill.info} on={draft.choices.elfSkill === id} onPick={() => setChoice("elfSkill", id)} /> : null;
+              return skill ? <Choice key={id} id={id} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.elfSkill === id} onPick={() => setChoice("elfSkill", id)} /> : null;
             })}
           </>
         )}
@@ -239,7 +260,7 @@ function AncestryStep({
           <>
             <p className="kicker">Навык человека</p>
             {SK5.map((skill) => (
-              <Choice key={skill.id} id={`human-${skill.id}`} name={skill.name} hint={ABILITY_SHORT[skill.ability]} info={skill.info} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
+              <Choice key={skill.id} id={`human-${skill.id}`} name={skill.name} hint={ABILITY_SHORT[skill.ability]} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
             ))}
           </>
         )}
@@ -253,14 +274,14 @@ function AncestryStep({
   return (
     <>
       {ANCESTRIES.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
       {ancestry && (
         <>
           <p className="kicker">Наследие</p>
           {ancestry.heritages.map((item) => (
-            <Choice key={item.id} id={item.id} name={item.name} info={item.info} on={draft.heritageId === item.id} onPick={() => update({ heritageId: item.id })} />
+            <Choice key={item.id} id={item.id} name={item.name} info={item.info} short={item.short} on={draft.heritageId === item.id} onPick={() => update({ heritageId: item.id })} />
           ))}
           {ancestry.boosts.length > 0 && (
             <div className="seg">
@@ -282,7 +303,7 @@ function AncestryStep({
             <>
               <p className="kicker">Навык умелого наследия</p>
               {SK2.map((skill) => (
-                <Choice key={skill.id} id={`h2-${skill.id}`} name={skill.name} info={skill.info} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
+                <Choice key={skill.id} id={`h2-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
               ))}
             </>
           )}
@@ -314,7 +335,7 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
   return (
     <>
       {list.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
       ))}
       <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для Следопыта — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
       {draft.backgroundId === "custom" && draft.system === "dnd5e" && (
@@ -340,7 +361,7 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
           <AbilityRow label="Вторая характеристика" value={draft.choices.cbb ?? ""} onPick={(ability) => setChoice("cbb", ability)} />
           <p className="kicker">Навык</p>
           {SK2.map((skill) => (
-            <Choice key={skill.id} id={`bg-${skill.id}`} name={skill.name} info={skill.info} on={draft.choices.customSkill === skill.id} onPick={() => setChoice("customSkill", skill.id)} />
+            <Choice key={skill.id} id={`bg-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.customSkill === skill.id} onPick={() => setChoice("customSkill", skill.id)} />
           ))}
           <label className="field"><span>Описание</span><textarea value={draft.customBackground.info} onChange={(event) => update({ customBackground: { ...draft.customBackground, info: event.target.value } })} /></label>
         </div>
@@ -355,14 +376,14 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
     return (
       <>
         {CL5.map((item) => (
-          <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} />
+          <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} />
         ))}
         <CustomClassCard draft={draft} update={update} />
         {orders && (
           <>
             <p className="kicker">Порядок</p>
             {orders.map((item) => (
-              <Choice key={item.id} id={item.id} name={item.name} info={item.info} on={draft.choices.order === item.id} onPick={() => setChoice("order", item.id)} />
+              <Choice key={item.id} id={item.id} name={item.name} info={item.info} short={item.short} on={draft.choices.order === item.id} onPick={() => setChoice("order", item.id)} />
             ))}
           </>
         )}
@@ -373,14 +394,14 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
   return (
     <>
       {CL2.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} />
       ))}
       <CustomClassCard draft={draft} update={update} />
       {cls?.choices.map((choice) => (
         <div key={choice.id} className="stack">
           <p className="kicker">{choice.title}</p>
           {choice.options.map((item) => (
-            <Choice key={item.id} id={`${choice.id}-${item.id}`} name={item.name} hint={item.hint} info={item.info} on={draft.choices[choice.id] === item.id} onPick={() => setChoice(choice.id, item.id)} />
+            <Choice key={item.id} id={`${choice.id}-${item.id}`} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.choices[choice.id] === item.id} onPick={() => setChoice(choice.id, item.id)} />
           ))}
         </div>
       ))}
@@ -389,7 +410,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
           <p className="kicker">Навык воина</p>
           {["acrobatics", "athletics"].map((id) => {
             const skill = SK2.find((item) => item.id === id);
-            return skill ? <Choice key={id} id={`fight-${id}`} name={skill.name} info={skill.info} on={draft.choices.fighterSkill === id} onPick={() => setChoice("fighterSkill", id)} /> : null;
+            return skill ? <Choice key={id} id={`fight-${id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.fighterSkill === id} onPick={() => setChoice("fighterSkill", id)} /> : null;
           })}
         </>
       )}
@@ -397,7 +418,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
         <>
           <p className="kicker">Навык покровителя</p>
           {SK2.map((skill) => (
-            <Choice key={skill.id} id={`deity-${skill.id}`} name={skill.name} info={skill.info} on={draft.choices.deitySkill === skill.id} onPick={() => setChoice("deitySkill", skill.id)} />
+            <Choice key={skill.id} id={`deity-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.deitySkill === skill.id} onPick={() => setChoice("deitySkill", skill.id)} />
           ))}
         </>
       )}
@@ -648,7 +669,7 @@ function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: st
           id={skill.id}
           name={skill.name}
           hint={fixed.has(skill.id) ? "уже есть" : ABILITY_SHORT[skill.ability]}
-          info={skill.info}
+          info={skill.info} short={skill.short}
           on={picked.includes(skill.id)}
           onPick={() => {
             if (fixed.has(skill.id)) return;
@@ -682,13 +703,13 @@ function FeatStep({
           <>
             <p className="kicker">Вторая черта происхождения</p>
             {ORIGIN_FEATS.map((feat) => (
-              <Choice key={feat.id} id={feat.id} name={feat.name} hint={feat.hint} info={feat.info} on={draft.choices.humanFeat === feat.id} onPick={() => setChoice("humanFeat", feat.id)} />
+              <Choice key={feat.id} id={feat.id} name={feat.name} hint={feat.hint} info={feat.info} short={feat.short} on={draft.choices.humanFeat === feat.id} onPick={() => setChoice("humanFeat", feat.id)} />
             ))}
             {draft.choices.humanFeat === "skilled" && (
               <>
                 <p className="kicker">Три навыка одарённого</p>
                 {SK5.filter((skill) => !new Set([...fixedSkills({ ...draft, choices: { ...draft.choices, humanFeat: "" } }), ...(draft.multi.skills ?? [])]).has(skill.id)).map((skill) => (
-                  <Choice key={skill.id} id={`gift-${skill.id}`} name={skill.name} info={skill.info} on={(draft.multi.hskilled ?? []).includes(skill.id)} onPick={() => toggleMulti("hskilled", skill.id, 3)} />
+                  <Choice key={skill.id} id={`gift-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={(draft.multi.hskilled ?? []).includes(skill.id)} onPick={() => toggleMulti("hskilled", skill.id, 3)} />
                 ))}
               </>
             )}
@@ -700,7 +721,7 @@ function FeatStep({
           <>
             <p className="kicker">Боевой стиль</p>
             {STYLE_FEATS.map((feat) => (
-              <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.style === feat.id} onPick={() => setChoice("style", feat.id)} />
+              <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.style === feat.id} onPick={() => setChoice("style", feat.id)} />
             ))}
           </>
         )}
@@ -710,7 +731,7 @@ function FeatStep({
             {catalog("dnd5e")
               .filter((item) => item.kind === "weapon" && item.weapon?.mastery && (cls.id !== "rogue" || item.weapon.category === "simple" || (item.weapon.category === "martial" && (item.weapon.finesse || item.weapon.light))))
               .map((item) => (
-                <Choice key={item.id} id={item.id} name={item.name} hint={MASTERY[item.weapon?.mastery ?? ""]?.name} info={`${item.info} ${MASTERY[item.weapon?.mastery ?? ""]?.info ?? ""}`} on={(draft.multi.mastery ?? []).includes(item.id)} onPick={() => toggleMulti("mastery", item.id, cls.mastery ?? 0)} />
+                <Choice key={item.id} id={item.id} name={item.name} hint={MASTERY[item.weapon?.mastery ?? ""]?.name} info={`${item.info} ${MASTERY[item.weapon?.mastery ?? ""]?.info ?? ""}`} short={item.short ?? MASTERY[item.weapon?.mastery ?? ""]?.short} on={(draft.multi.mastery ?? []).includes(item.id)} onPick={() => toggleMulti("mastery", item.id, cls.mastery ?? 0)} />
               ))}
           </>
         )}
@@ -720,7 +741,7 @@ function FeatStep({
             {proficient.map((id) => {
               const skill = SK5.find((item) => item.id === id);
               return (
-                <Choice key={id} id={`exp-${id}`} name={skill?.name ?? "неизвестный навык"} info={skill?.info ?? "Навык, которым вы владеете."} on={(draft.multi.expertise ?? []).includes(id)} onPick={() => toggleMulti("expertise", id, 2)} />
+                <Choice key={id} id={`exp-${id}`} name={skill?.name ?? "неизвестный навык"} info={skill?.info ?? "Навык, которым вы владеете."} short={skill?.short} on={(draft.multi.expertise ?? []).includes(id)} onPick={() => toggleMulti("expertise", id, 2)} />
               );
             })}
           </>
@@ -748,7 +769,7 @@ function FeatStep({
         <>
           <p className="kicker">Черта народа</p>
           {ancestry.feats.map((feat) => (
-            <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.ancestryFeat === feat.id} onPick={() => setChoice("ancestryFeat", feat.id)} />
+            <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.ancestryFeat === feat.id} onPick={() => setChoice("ancestryFeat", feat.id)} />
           ))}
         </>
       )}
@@ -757,21 +778,21 @@ function FeatStep({
       {skillFeats.map((feat) => {
         const reason = skillFeatBlock(feat.id, trained) ?? undefined;
         return (
-          <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.skillFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("skillFeat", feat.id)} />
+          <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.skillFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("skillFeat", feat.id)} />
         );
       })}
       <p className="kicker">Общие черты</p>
       {generalFeats.map((feat) => {
         const reason = generalSlot ? undefined : "Нет общего слота. Его даёт универсальное наследие или черта народа «Общая подготовка».";
         return (
-          <Choice key={feat.id} id={`general-${feat.id}`} name={feat.name} info={feat.info} on={draft.choices.generalFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("generalFeat", feat.id)} />
+          <Choice key={feat.id} id={`general-${feat.id}`} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.generalFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("generalFeat", feat.id)} />
         );
       })}
       {(cls?.featLevel1 || ambition) && cls && cls.feats.length > 0 && (
         <>
           <p className="kicker">Черта класса</p>
           {cls.feats.map((feat) => (
-            <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.classFeat === feat.id} onPick={() => setChoice("classFeat", feat.id)} />
+            <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.classFeat === feat.id} onPick={() => setChoice("classFeat", feat.id)} />
           ))}
         </>
       )}
@@ -808,7 +829,7 @@ function MagicPicks({ draft, featId, prefix, setChoice }: { draft: Draft; featId
       ))}
       <p className="kicker">Заклинание 1-го круга</p>
       {spells.map((spell) => (
-        <Choice key={spell.id} id={`${prefix}-${spell.id}`} name={spell.name} info={spell.info} on={draft.choices[`${prefix}Spell`] === spell.id} onPick={() => setChoice(`${prefix}Spell`, spell.id)} />
+        <Choice key={spell.id} id={`${prefix}-${spell.id}`} name={spell.name} info={spell.info} short={spell.short} on={draft.choices[`${prefix}Spell`] === spell.id} onPick={() => setChoice(`${prefix}Spell`, spell.id)} />
       ))}
       <AbilityRow label="Характеристика" value={draft.choices[`${prefix}Ability`] ?? ""} allowed={["int", "wis", "cha"]} onPick={(ability) => setChoice(`${prefix}Ability`, ability)} />
     </div>

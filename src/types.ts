@@ -317,6 +317,7 @@ export interface CatalogItem {
   weight: number;
   costCp: number;
   info: string;
+  short?: string;
   armor?: ArmorStat;
   weapon?: WeaponStat;
   notes?: string;
@@ -327,6 +328,14 @@ export interface Opt {
   name: string;
   hint?: string;
   info: string;
+  /** Короткая русская строка: вкус и суть правила. Подробности остаются в info. */
+  short?: string;
+}
+
+export function describe(entry: { short?: string; info: string }): string {
+  if (!entry.short) return entry.info;
+  if (entry.info.startsWith(entry.short)) return entry.info;
+  return `${entry.short}\n\n${entry.info}`;
 }
 
 export interface Draft {
