@@ -31,6 +31,13 @@ export const REVIEW: Record<string, { status: ReviewStatus; checkedOn: string; s
   "dnd-2024~spell~misty-step": row("verified-reference", "Misty Step", "SRD 5.2.1, заклинание 2-го круга"),
   "dnd-2024~spell~fireball": row("verified-reference", "Fireball", "SRD 5.2.1, заклинание 3-го круга"),
   "dnd-2024~spell~revivify": row("verified-reference", "Revivify", "SRD 5.2.1, заклинание 3-го круга"),
+  "pf-remaster~versatile-heritage~aiuvarin": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core", originalName: "Aiuvarin", location: "Ядро игрока, универсальное наследие" },
+  "pf-remaster~versatile-heritage~dromaar": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core", originalName: "Dromaar", location: "Ядро игрока, универсальное наследие" },
+  "pf-remaster~versatile-heritage~nephilim": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core", originalName: "Nephilim", location: "Ядро игрока, универсальное наследие" },
+  "pf-remaster~versatile-heritage~changeling": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core", originalName: "Changeling", location: "Ядро игрока, универсальное наследие" },
+  "pf-remaster~versatile-heritage~dhampir": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core 2", originalName: "Dhampir", location: "Ядро игрока 2, универсальное наследие" },
+  "pf-remaster~versatile-heritage~dragonblood": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core 2", originalName: "Dragonblood", location: "Ядро игрока 2, универсальное наследие" },
+  "pf-remaster~versatile-heritage~duskwalker": { status: "verified-reference", checkedOn: on, sourceVersion: "Player Core 2", originalName: "Duskwalker", location: "Ядро игрока 2, универсальное наследие" },
 };
 
 /** Связь между записями разных редакций. Оба конца должны уже лежать в каталоге. */

@@ -70,7 +70,9 @@ describe("единая модель редакций", () => {
     expect(ANCESTRIES.find((ancestry) => ancestry.id === "gnome")?.heritages.find((heritage) => heritage.id === "umbral")?.name).toBe("Сумеречный");
     for (const id of versatileIds()) expect(heritageIds.has(id)).toBe(false);
     expect(VERSATILE.find((item) => item.id === "dhampir")?.name).toBe("Дхампир");
-    expect(VERSATILE.every((item) => item.info.includes("не перенесены"))).toBe(true);
+    expect(VERSATILE.find((item) => item.id === "dhampir")?.info).toContain("отрицательное лечение");
+    expect(VERSATILE.find((item) => item.id === "dragonblood")?.info).toContain("на одну ступень лучше");
+    expect(VERSATILE.every((item) => item.info.includes("к числам не прибавляет"))).toBe(true);
   });
 
   it("пустые пакеты не притворяются заполненными", () => {
@@ -79,7 +81,7 @@ describe("единая модель редакций", () => {
     expect(counts["pf-player-core"]).toBeGreaterThan(0);
     expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(0);
-    expect(counts["pf-orc-more"]).toBe(5);
+    expect(counts["pf-orc-more"]).toBe(191);
     expect(counts["lore-golarion"]).toBe(5);
     expect(counts["lore-forgotten-realms"]).toBe(3);
     expect(loreCatalog()).toHaveLength(8);
@@ -87,7 +89,7 @@ describe("единая модель редакций", () => {
     expect(loreCatalog().some((entry) => entry.localId === "oppara-court" && entry.spoiler === "gm")).toBe(true);
     expect(loreCatalog().every((entry) => entry.settingId === "golarion" || entry.settingId === "forgotten-realms")).toBe(true);
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(1127);
+    expect(verified.length).toBe(1801);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -110,14 +112,26 @@ describe("единая модель редакций", () => {
     expect(byToken["dnd-2014~spell~fireball"].rank).toBe(3);
     expect(byToken["dnd-2014~spell~fireball"].text).toContain("8d6");
     expect(byToken["dnd-2014~class~fighter"].text).toContain("1d10");
-    expect(verified.every((entry) => entry.checkedOn === "2026-10-16" && (entry.sourceVersion === "5.2.1" || entry.sourceVersion === "5.1"))).toBe(true);
+    const dndVerified = verified.filter((entry) => entry.edition === "dnd-2024" || entry.edition === "dnd-2014");
+    expect(dndVerified.every((entry) => entry.checkedOn === "2026-10-16" && (entry.sourceVersion === "5.2.1" || entry.sourceVersion === "5.1"))).toBe(true);
+    const pfVerified = verified.filter((entry) => entry.edition === "pf-remaster");
+    expect(pfVerified.every((entry) => entry.checkedOn === "2026-10-16" && (entry.sourceVersion === "Player Core" || entry.sourceVersion === "Player Core 2" || entry.sourceVersion === "GM Core"))).toBe(true);
+    expect(byToken["pf-remaster~spell~fireball"].text).toContain("6d6");
+    expect(byToken["pf-remaster~spell~fireball"].text).toContain("взрыв 20 футов");
+    expect(byToken["pf-remaster~spell~fireball"].text).not.toContain("8d6");
+    expect(byToken["pf-remaster~class~alchemist"].text).toContain("8 хитов");
+    expect(byToken["pf-remaster~class~alchemist"].text).toContain("Алхимические бомбы");
+    expect(byToken["pf-remaster~ancestry~catfolk"].text).toContain("8 хитов");
+    expect(byToken["pf-remaster~condition~concealed"].text).toContain("СЛ 5");
+    expect(byToken["pf-remaster~condition~hidden"].text).toContain("СЛ 11");
+    expect(byToken["pf-remaster~condition~persistent-damage"].text).toContain("СЛ 15");
     expect(rulesCatalog().every((entry) => entry.edition === "dnd-2024" || entry.edition === "dnd-2014" || entry.edition === "pf-remaster")).toBe(true);
     expect(rulesCatalog().some((entry) => entry.edition === "dnd-2014")).toBe(true);
     expect(packCounts()).toEqual([
       { id: "srd-5.2", entered: 783, verified: 555 },
       { id: "srd-5.1", entered: 572, verified: 572 },
-      { id: "pf-player-core", entered: 266, verified: 0 },
-      { id: "pf-orc-more", entered: 5, verified: 0 },
+      { id: "pf-player-core", entered: 749, verified: 483 },
+      { id: "pf-orc-more", entered: 191, verified: 191 },
       { id: "pf-ogl", entered: 0, verified: 0 },
       { id: "lore-golarion", entered: 5, verified: 0 },
       { id: "lore-forgotten-realms", entered: 3, verified: 0 },
