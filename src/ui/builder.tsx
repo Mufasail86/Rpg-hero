@@ -1076,6 +1076,7 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
   return (
     <>
       {unfilled && <UnfilledNote edition={edition} />}
+      {draft.system === "dnd5e" && edition === "dnd-2024" && <p className="tiny">Круги выше первого уже есть в справочнике. В этот стартовый выбор они не входят: здесь заговоры и 1-й круг.</p>}
       {budget && (
         <p className="lead">
           Заговоры {cantrips} из {budget.cantrips}. Заклинания 1-го круга в запасе {leveled}

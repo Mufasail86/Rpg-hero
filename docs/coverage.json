@@ -13,20 +13,20 @@
   "columnMeaning": {
     "inSource": "Сколько таких записей в книге. null — с книги не снимали, число не выдумано.",
     "entered": "Сколько записей лежит в коде.",
-    "verified": "Сколько построчно сверено с книгой. Сейчас 0: тексты — свой русский пересказ.",
+    "verified": "Сколько построчно сверено с книгой. Сейчас 18 записей справочника 5.2 и ни одной другой.",
     "inLibrary": "Сколько из введённых попадает на экран справочника.",
     "inBuilder": "Сколько можно выбрать при создании или на открытом слоте развития.",
     "implemented": "full — число считается; partial — считается часть; reference — только текст; none — нет в коде.",
     "tested": "Есть автотест, который проверяет именно эту группу, а не соседнюю."
   },
   "packs": [
-    {"id": "srd-5.2", "edition": "dnd-2024", "entered": 240, "verified": 12},
+    {"id": "srd-5.2", "edition": "dnd-2024", "entered": 246, "verified": 18},
     {"id": "srd-5.1", "edition": "dnd-2014", "entered": 0, "verified": 0},
     {"id": "pf-player-core", "edition": "pf-remaster", "entered": 266, "verified": 0},
-    {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 0, "verified": 0},
+    {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 5, "verified": 0},
     {"id": "pf-ogl", "edition": "pf-legacy", "entered": 0, "verified": 0},
-    {"id": "lore-golarion", "edition": "lore", "entered": 0, "verified": 0},
-    {"id": "lore-forgotten-realms", "edition": "lore", "entered": 0, "verified": 0}
+    {"id": "lore-golarion", "edition": "lore", "entered": 5, "verified": 0},
+    {"id": "lore-forgotten-realms", "edition": "lore", "entered": 3, "verified": 0}
   ],
   "systems": [
     {
@@ -43,7 +43,7 @@
         {"id": "style", "title": "Боевые стили", "inSource": null, "entered": 4, "verified": 0, "inLibrary": 4, "inBuilder": 6, "implemented": "partial", "tested": "оборона и дуэль", "note": "В карточках справочника четыре стиля. Дуэль и защита есть на экране развития и в расчёте, отдельной карточкой справочника не заведены."},
         {"id": "general-feat", "title": "Общие черты", "inSource": null, "entered": 2, "verified": 0, "inLibrary": 2, "inBuilder": 3, "implemented": "partial", "tested": "живучесть и борец", "note": "Живучесть считается движком и есть на экране развития, отдельной карточкой справочника не заведена."},
         {"id": "mastery", "title": "Свойства мастерства оружия", "inSource": null, "entered": 8, "verified": 8, "inLibrary": 8, "inBuilder": 8, "implemented": "reference", "tested": "текст сверен, в атаку не входит", "note": "Все восемь свойств сверены со справочником 5.2.1. В модификатор атаки не входят. Лист об этом пишет."},
-        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 59, "verified": 2, "inLibrary": 59, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня; тексты лечения ран и ложной жизни", "note": "Сверены только «Лечение ран» и «Ложная жизнь». Остальные 57 ждут сверки. Круги выше 1-го не заведены."},
+        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 65, "verified": 8, "inLibrary": 65, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня; восемь текстов заклинаний", "note": "Сверены лечение ран, ложная жизнь и шесть заклинаний 2–3 круга. Остальные 57 заклинаний 0–1 круга ждут сверки. Круги выше 3-го не заведены. Конструктор на 1 уровне по-прежнему предлагает только 0–1 круг."},
         {"id": "condition", "title": "Состояния", "inSource": null, "entered": 16, "verified": 1, "inLibrary": 16, "inBuilder": 16, "implemented": "partial", "tested": "истощение"},
         {"id": "item", "title": "Предметы", "inSource": null, "entered": 71, "verified": 1, "inLibrary": 71, "inBuilder": 71, "implemented": "partial", "tested": "доспех, щит и меч контрольного воина; текст верёвки", "note": "Сверена только верёвка. Остальные предметы ждут сверки."}
       ]
@@ -54,7 +54,7 @@
       "categories": [
         {"id": "ancestry", "title": "Народы", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "partial", "tested": "повышения и хиты в контрольном воине и в тесте друида"},
         {"id": "heritage", "title": "Наследия", "inSource": null, "entered": 30, "verified": 0, "inLibrary": 30, "inBuilder": 30, "implemented": "partial", "tested": "умелое наследие в тесте"},
-        {"id": "versatile-heritage", "title": "Универсальные наследия", "inSource": null, "entered": 0, "verified": 0, "inLibrary": 0, "inBuilder": 0, "implemented": "none", "tested": "модель есть, записей нет", "note": "Слой складывается с народом. Идентификатор не может совпасть с наследием гнома umbral."},
+        {"id": "versatile-heritage", "title": "Универсальные наследия", "inSource": null, "entered": 5, "verified": 0, "inLibrary": 5, "inBuilder": 5, "implemented": "none", "tested": "не меняют хиты контрольного воина", "note": "Айуварин, дромар, нефилим, подменыш, дхампир. Числа с книги не сняты. Идентификатор dhampir не занимает гномье umbral."},
         {"id": "background", "title": "Происхождения", "inSource": null, "entered": 17, "verified": 0, "inLibrary": 17, "inBuilder": 17, "implemented": "partial", "tested": "нет отдельного теста на каждое"},
         {"id": "class", "title": "Классы", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "partial", "tested": "воин до 20; друид на 1 уровне"},
         {"id": "class-choice", "title": "Выборы класса", "inSource": null, "entered": 37, "verified": 0, "inLibrary": 37, "inBuilder": 37, "implemented": "partial", "tested": "нет на каждый выбор"},
@@ -65,7 +65,7 @@
         {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 38, "verified": 0, "inLibrary": 38, "inBuilder": 38, "implemented": "reference", "tested": "нет", "note": "Только заговоры и 1-й круг."},
         {"id": "condition", "title": "Состояния", "inSource": null, "entered": 22, "verified": 0, "inLibrary": 22, "inBuilder": 22, "implemented": "partial", "tested": "нет отдельного набора на каждое состояние"},
         {"id": "item", "title": "Предметы", "inSource": null, "entered": 43, "verified": 0, "inLibrary": 43, "inBuilder": 43, "implemented": "partial", "tested": "чешуйчатый доспех и меч контрольного воина"},
-        {"id": "lore", "title": "Предания", "inSource": null, "entered": 0, "verified": 0, "inLibrary": 0, "inBuilder": 0, "implemented": "none", "tested": "экран есть, карточек нет"}
+        {"id": "lore", "title": "Предания Голариона", "inSource": null, "entered": 5, "verified": 0, "inLibrary": 5, "inBuilder": 0, "implemented": "reference", "tested": "режим игрока скрывает карточку ведущего", "note": "Свой пересказ и ссылка. Забытые королевства — ещё 3 карточки в отдельном пакете."}
       ]
     }
   ]

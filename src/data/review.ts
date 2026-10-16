@@ -24,6 +24,12 @@ export const REVIEW: Record<string, { status: ReviewStatus; checkedOn: string; s
   "dnd-2024~mastery~slow": row("verified-reference", "Slow", "SRD 5.2.1, свойства мастерства"),
   "dnd-2024~mastery~topple": row("verified-reference", "Topple", "SRD 5.2.1, свойства мастерства"),
   "dnd-2024~mastery~vex": row("verified-reference", "Vex", "SRD 5.2.1, свойства мастерства"),
+  "dnd-2024~spell~aid": row("verified-reference", "Aid", "SRD 5.2.1, заклинание 2-го круга"),
+  "dnd-2024~spell~hold-person": row("verified-reference", "Hold Person", "SRD 5.2.1, заклинание 2-го круга"),
+  "dnd-2024~spell~lesser-restoration": row("verified-reference", "Lesser Restoration", "SRD 5.2.1, заклинание 2-го круга"),
+  "dnd-2024~spell~misty-step": row("verified-reference", "Misty Step", "SRD 5.2.1, заклинание 2-го круга"),
+  "dnd-2024~spell~fireball": row("verified-reference", "Fireball", "SRD 5.2.1, заклинание 3-го круга"),
+  "dnd-2024~spell~revivify": row("verified-reference", "Revivify", "SRD 5.2.1, заклинание 3-го круга"),
 };
 
 /** Связь между записями разных редакций. Оба конца должны уже лежать в каталоге. */

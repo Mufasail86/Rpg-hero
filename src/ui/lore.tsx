@@ -54,7 +54,10 @@ export function Lore() {
         {PACKS.filter((pack) => pack.edition === "lore").map((pack) => (
           <p key={pack.id} className="tiny">{pack.title}: {loreCatalog().filter((card) => card.sourceId === pack.id).length} карточек. {pack.note}</p>
         ))}
-        {focus && focus.edition === "lore" ? (
+        {focus && focus.edition === "lore" && mode === "player" && focus.spoiler === "gm" && (
+          <p data-testid="lore-hidden">Эта карточка для ведущего. В режиме игрока текст не показывается.</p>
+        )}
+        {focus && focus.edition === "lore" && (mode === "gm" || focus.spoiler !== "gm") ? (
           <article className="card stack">
             <b>{focus.name}</b>
             <p className="tiny">{focus.era || "Эпоха не указана"} · {focus.spoiler === "gm" ? "для ведущего" : focus.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
@@ -63,7 +66,7 @@ export function Lore() {
             {focus.link && <p className="tiny">Источник: {focus.link}</p>}
             {focus.relations.length > 0 && (
               <div className="wrap">
-                {focus.relations.map((id) => (
+                {focus.relations.filter((id) => mode === "gm" || entryByToken(id)?.spoiler !== "gm").map((id) => (
                   <button key={id} type="button" className="pill" onClick={() => go(`#/lore/${encodeURIComponent(id)}`)}>{entryByToken(id)?.name ?? id}</button>
                 ))}
               </div>
