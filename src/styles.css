@@ -90,7 +90,9 @@ h1.display { font-size: 2rem; line-height: 1.05; margin: 0 0 8px; letter-spacing
 .big.copper .mark { background: var(--copper-2); color: var(--copper); }
 .big.gold .mark { background: var(--gold-2); color: var(--gold); }
 
-.option { display: flex; align-items: stretch; overflow: hidden; }
+.option { display: flex; align-items: stretch; overflow: hidden; position: relative; z-index: 1; }
+.option.locked { opacity: 0.72; }
+.option-main:disabled { cursor: not-allowed; }
 .option.on { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(27, 107, 99, 0.18); }
 .option-main {
   flex: 1; text-align: left; background: transparent; border: 0; padding: 12px 8px 12px 14px;

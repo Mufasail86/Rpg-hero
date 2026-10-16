@@ -1,3 +1,4 @@
+import { skillFeatBlock } from "./pf2e/eligibility";
 import {
   ABILITIES,
   ABILITY_NAME,
@@ -195,10 +196,19 @@ function validateFeats(d: Draft): string | null {
   if (d.heritageId === "skilled" && !c(d, "humanSkill")) return "Умелое наследие: выберите дополнительный навык.";
   if (d.ancestryId !== "custom" && !c(d, "ancestryFeat")) return "Выберите черту народа.";
   if (!c(d, "skillFeat")) return "Выберите черту навыка.";
+  const skillBlock = skillFeatBlock(c(d, "skillFeat"), trainedOf(d));
+  if (skillBlock) return skillBlock;
+  const generalSlot = d.heritageId === "versatile" || c(d, "ancestryFeat") === "general-training";
+  if (generalSlot && !c(d, "generalFeat")) return "Выберите общую черту: её даёт универсальное наследие или «Общая подготовка».";
   const cls = CL2.find((x) => x.id === d.classId);
   const ambition = c(d, "ancestryFeat") === "natural-ambition";
-  if ((cls?.featLevel1 || ambition) && d.classId !== "custom" && !c(d, "classFeat")) return "Выберите классовую черту.";
+  const listed = cls?.feats.length ?? 0;
+  if ((cls?.featLevel1 || ambition) && d.classId !== "custom" && listed > 0 && !c(d, "classFeat")) return "Выберите классовую черту.";
   return null;
+}
+
+function trainedOf(d: Draft): Set<string> {
+  return new Set([...fixedSkills(d), ...m(d, "skills")]);
 }
 
 function magicPicks(d: Draft, feat: string, prefix: string): string | null {
@@ -671,6 +681,8 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
   if (ancFeat) feats.push({ id: ancFeat.id, name: ancFeat.name, info: ancFeat.info });
   const skillFeat = SKILL_FEATS.find((f) => f.id === c(d, "skillFeat"));
   if (skillFeat) feats.push({ id: skillFeat.id, name: skillFeat.name, info: skillFeat.info });
+  const generalFeat = SKILL_FEATS.find((f) => f.id === c(d, "generalFeat")) ?? (c(d, "generalFeat") === "fleet" ? { id: "fleet", name: "Быстроногий", info: "Скорость +5 футов." } : c(d, "generalFeat") === "canny-acumen" ? { id: "canny-acumen", name: "Дальновидность", info: "Эксперт в выбранном испытании или Восприятии, мастер с 17 уровня." } : c(d, "generalFeat") === "breath-control" ? { id: "breath-control", name: "Контроль дыхания", info: "Дольше задерживаете дыхание." } : null);
+  if (generalFeat) feats.push({ id: generalFeat.id, name: generalFeat.name, info: generalFeat.info });
   const classFeat = cls?.feats.find((f) => f.id === c(d, "classFeat"));
   if (classFeat) feats.push({ id: classFeat.id, name: classFeat.name, info: classFeat.info });
   if (c(d, "doctrine") === "war") feats.push({ id: "shield-block", name: "Блок щитом", info: SKILL_FEATS.find((f) => f.id === "shield-block")?.info ?? "" });
@@ -729,7 +741,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     ancestryName: custom ? d.customAncestry.name.trim() : ancestry?.name ?? "Народ",
     ancestryInfo: custom ? d.customAncestry.info || "Своя запись народа." : ancestry?.info ?? "",
     size: custom ? d.customAncestry.size || "Средний" : ancestry?.size ?? "Средний",
-    speed: custom ? Number(d.customAncestry.speed) || 25 : ancestry?.speed ?? 25,
+    speed: (custom ? Number(d.customAncestry.speed) || 25 : ancestry?.speed ?? 25) + (c(d, "generalFeat") === "fleet" ? 5 : 0),
     senses: ancestry?.senses ?? "Обычное зрение",
     ancestryHp,
     tough: false,

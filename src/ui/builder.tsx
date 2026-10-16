@@ -32,6 +32,7 @@ import {
   type Character,
   type Draft,
 } from "../types";
+import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { Choice, go, Info, money } from "./common";
 
 const ORDER5 = {
@@ -731,6 +732,15 @@ function FeatStep({
   const ancestry = ANCESTRIES.find((item) => item.id === draft.ancestryId);
   const cls = CL2.find((item) => item.id === draft.classId);
   const ambition = draft.choices.ancestryFeat === "natural-ambition";
+  const trained = new Set([...fixedSkills(draft), ...(draft.multi.skills ?? [])]);
+  const generalSlot = draft.heritageId === "versatile" || draft.choices.ancestryFeat === "general-training";
+  const skillFeats = SKILL_FEATS.filter((feat) => !GENERAL_FEAT_IDS.has(feat.id));
+  const generalFeats = [
+    ...SKILL_FEATS.filter((feat) => GENERAL_FEAT_IDS.has(feat.id)),
+    { id: "fleet", name: "Быстроногий", info: "Скорость +5 футов." },
+    { id: "canny-acumen", name: "Дальновидность", info: "Выбранное испытание или Восприятие становится экспертом, а с 17 уровня — мастером." },
+    { id: "breath-control", name: "Контроль дыхания", info: "Вы дольше задерживаете дыхание и легче переносите вдыхаемые угрозы." },
+  ];
   return (
     <>
       {draft.heritageId === "skilled" && <p className="tiny">Навык умелого наследия выбирается на шаге народа.</p>}
@@ -743,9 +753,20 @@ function FeatStep({
         </>
       )}
       <p className="kicker">Черта навыка</p>
-      {SKILL_FEATS.map((feat) => (
-        <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.skillFeat === feat.id} onPick={() => setChoice("skillFeat", feat.id)} />
-      ))}
+      <p className="tiny">Подходящие черты нажимаются. Если черта серая, подпись говорит, какого навыка или слота не хватает.</p>
+      {skillFeats.map((feat) => {
+        const reason = skillFeatBlock(feat.id, trained) ?? undefined;
+        return (
+          <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.skillFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("skillFeat", feat.id)} />
+        );
+      })}
+      <p className="kicker">Общие черты</p>
+      {generalFeats.map((feat) => {
+        const reason = generalSlot ? undefined : "Нет общего слота. Его даёт универсальное наследие или черта народа «Общая подготовка».";
+        return (
+          <Choice key={feat.id} id={`general-${feat.id}`} name={feat.name} info={feat.info} on={draft.choices.generalFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("generalFeat", feat.id)} />
+        );
+      })}
       {(cls?.featLevel1 || ambition) && cls && cls.feats.length > 0 && (
         <>
           <p className="kicker">Черта класса</p>
@@ -753,6 +774,9 @@ function FeatStep({
             <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} on={draft.choices.classFeat === feat.id} onPick={() => setChoice("classFeat", feat.id)} />
           ))}
         </>
+      )}
+      {(cls?.featLevel1 || ambition) && cls && cls.feats.length === 0 && (
+        <p className="tiny">Ограничение приложения: у этого класса в справочнике нет черт 1 уровня, поэтому шаг не требует выбора из пустого списка. Запишите классовую черту своей записью ниже. «Общая подготовка» тут ни при чём — остальные черты народа тоже выбираются.</p>
       )}
       <CustomFeats draft={draft} update={update} />
     </>

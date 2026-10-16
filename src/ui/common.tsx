@@ -71,6 +71,8 @@ export function Choice({
   on,
   onPick,
   testId,
+  disabled,
+  reason,
 }: {
   id: string;
   name: string;
@@ -79,12 +81,14 @@ export function Choice({
   on: boolean;
   onPick: () => void;
   testId?: string;
+  disabled?: boolean;
+  reason?: string;
 }) {
   return (
-    <div className={`option ${on ? "on" : ""}`}>
-      <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} onClick={onPick}>
+    <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
+      <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
-        {hint ? <small>{hint}</small> : null}
+        {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}
       </button>
       <Info title={name} text={info} />
     </div>
