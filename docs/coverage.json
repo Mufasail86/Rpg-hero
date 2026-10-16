@@ -13,15 +13,15 @@
   "columnMeaning": {
     "inSource": "Сколько таких записей в книге. null — с книги не снимали, число не выдумано.",
     "entered": "Сколько записей лежит в коде.",
-    "verified": "Сколько построчно сверено с книгой. Сейчас 18 записей справочника 5.2 и ни одной другой.",
+    "verified": "Сколько карточек сверено с PDF справочника. Для новых заклинаний сверены шапка и кости из их собственного текста. Для магических предметов сверены редкость и числа, не весь абзац. Следопыт и предания по-прежнему 0.",
     "inLibrary": "Сколько из введённых попадает на экран справочника.",
     "inBuilder": "Сколько можно выбрать при создании или на открытом слоте развития.",
     "implemented": "full — число считается; partial — считается часть; reference — только текст; none — нет в коде.",
     "tested": "Есть автотест, который проверяет именно эту группу, а не соседнюю."
   },
   "packs": [
-    {"id": "srd-5.2", "edition": "dnd-2024", "entered": 246, "verified": 18},
-    {"id": "srd-5.1", "edition": "dnd-2014", "entered": 0, "verified": 0},
+    {"id": "srd-5.2", "edition": "dnd-2024", "entered": 783, "verified": 555},
+    {"id": "srd-5.1", "edition": "dnd-2014", "entered": 572, "verified": 572},
     {"id": "pf-player-core", "edition": "pf-remaster", "entered": 266, "verified": 0},
     {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 5, "verified": 0},
     {"id": "pf-ogl", "edition": "pf-legacy", "entered": 0, "verified": 0},
@@ -31,21 +31,21 @@
   "systems": [
     {
       "id": "dnd5e",
-      "editionInApp": "пересказ открытого справочника 5.2, правила 2024 года; справочник 5.1 заведён отдельным пустым пакетом",
+      "editionInApp": "справочник 5.2 и отдельно справочник 5.1; конструктор считает только правила 2024 года",
       "categories": [
         {"id": "species", "title": "Народы", "inSource": null, "entered": 9, "verified": 0, "inLibrary": 9, "inBuilder": 9, "implemented": "partial", "tested": "частично, через контрольного воина"},
         {"id": "lineage", "title": "Наследия внутри народов", "inSource": null, "entered": 19, "verified": 0, "inLibrary": 19, "inBuilder": 19, "implemented": "partial", "tested": "нет отдельного"},
         {"id": "background", "title": "Происхождения", "inSource": null, "entered": 4, "verified": 0, "inLibrary": 4, "inBuilder": 4, "implemented": "partial", "tested": "навыки солдата в контрольном воине"},
-        {"id": "class", "title": "Классы", "inSource": null, "entered": 12, "verified": 0, "inLibrary": 12, "inBuilder": 12, "implemented": "partial", "tested": "воин"},
-        {"id": "subclass", "title": "Подклассы", "inSource": null, "entered": 12, "verified": 0, "inLibrary": 12, "inBuilder": 0, "implemented": "reference", "tested": "только чемпион", "note": "У каждого класса один подкласс справочника. В конструкторе он не выбирается отдельно. Числа подкласса, кроме чемпиона, лист помечает как несведённые."},
+        {"id": "class", "title": "Классы", "inSource": null, "entered": 24, "verified": 12, "inLibrary": 24, "inBuilder": 12, "implemented": "partial", "tested": "воин 2024; кость хитов воина 2014", "note": "12 классов правил 2024 года в конструкторе. 12 классов 2014 года только в справочнике: сверена кость хитов, подкласс назван, в расчёт не входят."},
+        {"id": "subclass", "title": "Подклассы", "inSource": null, "entered": 24, "verified": 12, "inLibrary": 24, "inBuilder": 0, "implemented": "reference", "tested": "только чемпион", "note": "По одному подклассу на класс в каждом справочнике. В конструкторе подкласс не выбирается. У 2014 сверено имя. Числа, кроме чемпиона 2024, лист не считает."},
         {"id": "skill", "title": "Навыки", "inSource": null, "entered": 18, "verified": 0, "inLibrary": 18, "inBuilder": 18, "implemented": "full", "tested": "атлетика контрольного воина"},
         {"id": "origin-feat", "title": "Черты происхождения", "inSource": null, "entered": 6, "verified": 0, "inLibrary": 6, "inBuilder": 6, "implemented": "partial", "tested": "бдительный и дикий натиск у контрольного воина"},
         {"id": "style", "title": "Боевые стили", "inSource": null, "entered": 4, "verified": 0, "inLibrary": 4, "inBuilder": 6, "implemented": "partial", "tested": "оборона и дуэль", "note": "В карточках справочника четыре стиля. Дуэль и защита есть на экране развития и в расчёте, отдельной карточкой справочника не заведены."},
         {"id": "general-feat", "title": "Общие черты", "inSource": null, "entered": 2, "verified": 0, "inLibrary": 2, "inBuilder": 3, "implemented": "partial", "tested": "живучесть и борец", "note": "Живучесть считается движком и есть на экране развития, отдельной карточкой справочника не заведена."},
         {"id": "mastery", "title": "Свойства мастерства оружия", "inSource": null, "entered": 8, "verified": 8, "inLibrary": 8, "inBuilder": 8, "implemented": "reference", "tested": "текст сверен, в атаку не входит", "note": "Все восемь свойств сверены со справочником 5.2.1. В модификатор атаки не входят. Лист об этом пишет."},
-        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 65, "verified": 8, "inLibrary": 65, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня; восемь текстов заклинаний", "note": "Сверены лечение ран, ложная жизнь и шесть заклинаний 2–3 круга. Остальные 57 заклинаний 0–1 круга ждут сверки. Круги выше 3-го не заведены. Конструктор на 1 уровне по-прежнему предлагает только 0–1 круг."},
+        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 658, "verified": 601, "inLibrary": 658, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня; ложная жизнь 2014 отличается от 2024; огненный шар 8d6", "note": "В PDF 5.2.1 разобрано 339 заклинаний, в PDF 5.1 — 319. Новые карточки — свой русский текст по шапке и костям, без абзаца книги. Конструктор на 1 уровне по-прежнему предлагает только 0–1 круг правил 2024 года. 57 старых заклинаний 0–1 круга 2024 года по-прежнему ждут отдельной вычитки, кроме восьми уже сверенных."},
         {"id": "condition", "title": "Состояния", "inSource": null, "entered": 16, "verified": 1, "inLibrary": 16, "inBuilder": 16, "implemented": "partial", "tested": "истощение"},
-        {"id": "item", "title": "Предметы", "inSource": null, "entered": 71, "verified": 1, "inLibrary": 71, "inBuilder": 71, "implemented": "partial", "tested": "доспех, щит и меч контрольного воина; текст верёвки", "note": "Сверена только верёвка. Остальные предметы ждут сверки."}
+        {"id": "item", "title": "Предметы", "inSource": null, "entered": 563, "verified": 493, "inLibrary": 563, "inBuilder": 71, "implemented": "partial", "tested": "доспех, щит и меч контрольного воина; текст верёвки", "note": "71 обычный предмет правил 2024 года по-прежнему в конструкторе, сверена только верёвка. Добавлены 263 магических предмета из перечня 5.2.1 и 229 из перечня 5.1: редкость, настройка и кости. Полный эффект предмета в карточку не переписан. В покупку конструктора они не входят."}
       ]
     },
     {

@@ -77,7 +77,7 @@ describe("единая модель редакций", () => {
     const counts = Object.fromEntries(packCounts().map((row) => [row.id, row.entered]));
     expect(counts["srd-5.2"]).toBeGreaterThan(0);
     expect(counts["pf-player-core"]).toBeGreaterThan(0);
-    expect(counts["srd-5.1"]).toBe(0);
+    expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(0);
     expect(counts["pf-orc-more"]).toBe(5);
     expect(counts["lore-golarion"]).toBe(5);
@@ -87,7 +87,7 @@ describe("единая модель редакций", () => {
     expect(loreCatalog().some((entry) => entry.localId === "oppara-court" && entry.spoiler === "gm")).toBe(true);
     expect(loreCatalog().every((entry) => entry.settingId === "golarion" || entry.settingId === "forgotten-realms")).toBe(true);
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(18);
+    expect(verified.length).toBe(1127);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -102,11 +102,20 @@ describe("единая модель редакций", () => {
     expect(byToken["dnd-2024~spell~fireball"].rank).toBe(3);
     expect(byToken["dnd-2024~spell~aid"].text).toContain("на 5");
     expect(byToken["dnd-2024~spell~revivify"].text).toContain("300");
-    expect(verified.every((entry) => entry.sourceVersion === "5.2.1" && entry.checkedOn === "2026-10-16")).toBe(true);
-    expect(rulesCatalog().filter((entry) => entry.edition === "dnd-2024" || entry.edition === "pf-remaster").length).toBe(rulesCatalog().length);
+    expect(byToken["dnd-2014~spell~false-life"].text).toContain("1d4+4");
+    expect(byToken["dnd-2014~spell~false-life"].text).toContain("1 час");
+    expect(byToken["dnd-2014~spell~false-life"].text).not.toContain("2d4");
+    expect(byToken["dnd-2014~spell~cure-wounds"].text).toContain("1d8");
+    expect(byToken["dnd-2014~spell~cure-wounds"].text).not.toContain("2d8");
+    expect(byToken["dnd-2014~spell~fireball"].rank).toBe(3);
+    expect(byToken["dnd-2014~spell~fireball"].text).toContain("8d6");
+    expect(byToken["dnd-2014~class~fighter"].text).toContain("1d10");
+    expect(verified.every((entry) => entry.checkedOn === "2026-10-16" && (entry.sourceVersion === "5.2.1" || entry.sourceVersion === "5.1"))).toBe(true);
+    expect(rulesCatalog().every((entry) => entry.edition === "dnd-2024" || entry.edition === "dnd-2014" || entry.edition === "pf-remaster")).toBe(true);
+    expect(rulesCatalog().some((entry) => entry.edition === "dnd-2014")).toBe(true);
     expect(packCounts()).toEqual([
-      { id: "srd-5.2", entered: 246, verified: 18 },
-      { id: "srd-5.1", entered: 0, verified: 0 },
+      { id: "srd-5.2", entered: 783, verified: 555 },
+      { id: "srd-5.1", entered: 572, verified: 572 },
       { id: "pf-player-core", entered: 266, verified: 0 },
       { id: "pf-orc-more", entered: 5, verified: 0 },
       { id: "pf-ogl", entered: 0, verified: 0 },
