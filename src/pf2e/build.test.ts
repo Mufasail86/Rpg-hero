@@ -166,6 +166,15 @@ describe("приёмка расчёта", () => {
     const stronger = derive(input({ items: structuredClone(items) }));
     expect(stronger.attacks.find((attack) => attack.group === "sword")?.attack.value).toBe((plain.attacks.find((attack) => attack.group === "sword")?.attack.value ?? 0) + 2);
   });
+
+  it("универсальное наследие не меняет хиты и пишет, что число не прибавлено", () => {
+    const progress = structuredClone(artefolInput().progress);
+    progress.versatileHeritageId = "dhampir";
+    const sheet = derive(input({ progress }));
+    expect(sheet.hp.value).toBe(328);
+    expect(sheet.speed.value).toBe(30);
+    expect(sheet.issues.some((issue) => issue.kind === "limit" && issue.message.includes("Универсальное наследие"))).toBe(true);
+  });
 });
 
 describe("снимок персонажа", () => {

@@ -1,4 +1,5 @@
 import { versatileIds } from "./data/catalog";
+import { VERSATILE } from "./data/versatile";
 import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
 import {
@@ -746,6 +747,8 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     if (opt) features.push({ name: `${choice.title}: ${opt.name}`, info: opt.info });
   }
   if (heritage) features.push({ name: heritage.name, info: heritage.info });
+  const versatile = VERSATILE.find((item) => item.id === d.versatileHeritageId);
+  if (versatile) features.push({ name: versatile.name, info: `${versatile.info} В авторасчёт не входит.` });
   const classHp = cls?.hp ?? (Number(d.customClass.hp) || Number(d.customClass.hit) || 8);
   const ancestryHp = heritage?.hp ?? (custom ? Number(d.customAncestry.hp) || 8 : ancestry?.hp ?? 8);
   const key = classKey(d) ?? "str";

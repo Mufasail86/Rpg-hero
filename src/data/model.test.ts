@@ -5,6 +5,7 @@ import { migrateCharacter } from "../transfer";
 import { allEntries, loreCatalog, packCounts, rulesCatalog, versatileIds } from "./catalog";
 import { applyEdition, editionPreview, fold, rulesOf, sanitizeSources } from "./editions";
 import { ANCESTRIES } from "./pf2e";
+import { VERSATILE } from "./versatile";
 import { LINKS } from "./review";
 
 describe("единая модель редакций", () => {
@@ -68,6 +69,8 @@ describe("единая модель редакций", () => {
     expect(heritageIds.has("umbral")).toBe(true);
     expect(ANCESTRIES.find((ancestry) => ancestry.id === "gnome")?.heritages.find((heritage) => heritage.id === "umbral")?.name).toBe("Сумеречный");
     for (const id of versatileIds()) expect(heritageIds.has(id)).toBe(false);
+    expect(VERSATILE.find((item) => item.id === "dhampir")?.name).toBe("Дхампир");
+    expect(VERSATILE.every((item) => item.info.includes("не перенесены"))).toBe(true);
   });
 
   it("пустые пакеты не притворяются заполненными", () => {
@@ -76,12 +79,15 @@ describe("единая модель редакций", () => {
     expect(counts["pf-player-core"]).toBeGreaterThan(0);
     expect(counts["srd-5.1"]).toBe(0);
     expect(counts["pf-ogl"]).toBe(0);
-    expect(counts["pf-orc-more"]).toBe(0);
-    expect(counts["lore-golarion"]).toBe(0);
-    expect(counts["lore-forgotten-realms"]).toBe(0);
-    expect(loreCatalog()).toHaveLength(0);
+    expect(counts["pf-orc-more"]).toBe(5);
+    expect(counts["lore-golarion"]).toBe(5);
+    expect(counts["lore-forgotten-realms"]).toBe(3);
+    expect(loreCatalog()).toHaveLength(8);
+    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(7);
+    expect(loreCatalog().some((entry) => entry.localId === "oppara-court" && entry.spoiler === "gm")).toBe(true);
+    expect(loreCatalog().every((entry) => entry.settingId === "golarion" || entry.settingId === "forgotten-realms")).toBe(true);
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(12);
+    expect(verified.length).toBe(18);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -92,16 +98,20 @@ describe("единая модель редакций", () => {
     expect(byToken["dnd-2024~item~rope"].text).toContain("СЛ 20");
     expect(byToken["dnd-2024~item~rope"].text).toContain("СЛ 15");
     expect(byToken["dnd-2024~mastery~topple"].text).toContain("8 +");
+    expect(byToken["dnd-2024~spell~fireball"].text).toContain("8d6");
+    expect(byToken["dnd-2024~spell~fireball"].rank).toBe(3);
+    expect(byToken["dnd-2024~spell~aid"].text).toContain("на 5");
+    expect(byToken["dnd-2024~spell~revivify"].text).toContain("300");
     expect(verified.every((entry) => entry.sourceVersion === "5.2.1" && entry.checkedOn === "2026-10-16")).toBe(true);
     expect(rulesCatalog().filter((entry) => entry.edition === "dnd-2024" || entry.edition === "pf-remaster").length).toBe(rulesCatalog().length);
     expect(packCounts()).toEqual([
-      { id: "srd-5.2", entered: 240, verified: 12 },
+      { id: "srd-5.2", entered: 246, verified: 18 },
       { id: "srd-5.1", entered: 0, verified: 0 },
       { id: "pf-player-core", entered: 266, verified: 0 },
-      { id: "pf-orc-more", entered: 0, verified: 0 },
+      { id: "pf-orc-more", entered: 5, verified: 0 },
       { id: "pf-ogl", entered: 0, verified: 0 },
-      { id: "lore-golarion", entered: 0, verified: 0 },
-      { id: "lore-forgotten-realms", entered: 0, verified: 0 },
+      { id: "lore-golarion", entered: 5, verified: 0 },
+      { id: "lore-forgotten-realms", entered: 3, verified: 0 },
     ]);
   });
 });
