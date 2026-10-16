@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, newRound, openHelp, parry, reactiveStrike, strike } from "../pf2e/combat";
+import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, mapPenalty, newRound, openHelp, parry, reactiveStrike, strike, strikeCount } from "../pf2e/combat";
 import { choiceCaption, derive, effectsFrom, optionsForSlot, slotsForProgress, snapshot } from "../pf2e/build";
 import { SKILLS } from "../data/pf2e";
 import type { Character, CombatState, ItemInst, Placement, StructuredEffect } from "../types";
@@ -488,11 +488,12 @@ export function CombatTracker({ character, onChange }: { character: Character; o
           {compact ? "Компактно" : "Обычный вид"}
         </button>
       </div>
-      <p>Действия {combat.actions}/3 · реакция {combat.reaction ? "есть" : "нет"} · штраф повторной атаки {combat.map} · усилие {combat.flourish ? "потрачено" : "свободно"}</p>
+      <p data-testid="map-line">Действия {combat.actions}/3 · реакция {combat.reaction ? "есть" : "нет"} · атак в ход {strikeCount(combat)} · обычный штраф {combat.map} · быстрый {mapPenalty(strikeCount(combat), true)} · усилие {combat.flourish ? "потрачено" : "свободно"}</p>
       <p className="tiny">{handsLine(character.items)}</p>
       {sword && <p className="combat-figure" data-testid="attack-preview">{attackPreview(sword.attack.value, combat.map)}</p>}
       <div className="row">
         <button type="button" className="btn" data-testid="combat-strike" onClick={() => apply(strike(combat))}>Удар</button>
+        <button type="button" className="btn" data-testid="combat-agile" onClick={() => apply(strike(combat, { agile: true }))}>Быстрый удар</button>
         <button type="button" className="btn" data-testid="combat-reactive" disabled={!combat.reaction} onClick={() => apply(reactiveStrike(combat))}>Внеочередная атака</button>
       </div>
       <div className="row">

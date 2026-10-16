@@ -1,3 +1,4 @@
+import { MORE_ANCESTRIES, MORE_CLASSES } from "./pf2e-more";
 import { ABILITY_NAME, type Ability, type CatalogItem, type Opt } from "../types";
 import { voiceItem, voiceNamed, voiceOpt, voiceSkill, voiceSpell } from "./voice";
 
@@ -241,6 +242,8 @@ export const ANCESTRIES: AncestryDef[] = [
     ],
   },
 ];
+
+ANCESTRIES.push(...MORE_ANCESTRIES);
 
 export interface BackgroundDef extends Opt {
   abilities: Ability[];
@@ -638,6 +641,8 @@ export const CLASSES: ClassDef[] = [
     kit: ["staff", "dagger", "spellbook", "writing", "backpack", "rations"],
   },
 ];
+
+CLASSES.push(...MORE_CLASSES);
 
 export const SKILL_FEATS: Opt[] = [
   { id: "cat-fall", name: "Мягкое падение", info: "Нужна обученная Акробатика. Падая, считаете дистанцию на 10 футов меньше, на экспертном ранге — на 25. Урон от падения считается по уменьшенной высоте." },

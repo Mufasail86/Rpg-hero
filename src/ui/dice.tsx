@@ -209,7 +209,7 @@ export function DicePanel() {
         <input type="number" inputMode="numeric" value={dc} placeholder="пусто" onChange={(event) => setDc(event.target.value)} />
       </label>
       <button type="button" className={`pill ${pf ? "on" : ""}`} onClick={() => setPf((value) => !value)}>
-        Ступени успеха Следопыта {pf ? "включены" : "выключены"}
+        Ступени успеха Pathfinder {pf ? "включены" : "выключены"}
       </button>
       <button type="button" className="btn primary" data-testid="roll-dice" onClick={roll}>
         Бросить
@@ -217,7 +217,7 @@ export function DicePanel() {
       <button type="button" className="btn" onClick={enableShake}>
         {armed ? "Встряхивание включено" : "Разрешить встряхивание"}
       </button>
-      <p className="tiny">{shakeNote} Преимущество и помеха бросают два к20 и берут больший или меньший, затем прибавляют модификатор. У Следопыта натуральная 20 поднимает ступень успеха, натуральная 1 опускает.</p>
+      <p className="tiny">{shakeNote} Преимущество и помеха бросают два к20 и берут больший или меньший, затем прибавляют модификатор. В Pathfinder натуральная 20 поднимает ступень успеха, натуральная 1 опускает.</p>
       {history.length > 0 && (
         <div className="card history">
           {history.map((line, index) => (

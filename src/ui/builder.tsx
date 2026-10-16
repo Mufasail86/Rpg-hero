@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { VERSATILE } from "../data/versatile";
-import { EDITION_NAME, editionsFor, filledEdition, resolveEdition, type RulesEdition } from "../data/editions";
+import { EDITION_NAME, PACKS, editionsFor, filledEdition, resolveEdition, type RulesEdition } from "../data/editions";
 import { portraitSrc } from "./art";
 import { BACKGROUNDS as BG5, CLASSES as CL5, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, SPELLS as SP2, TRADITION_NAME } from "../data/pf2e";
@@ -9,6 +9,7 @@ import {
   catalog,
   classKey,
   createCharacter,
+  creationMeters,
   fixedSkills,
   gearPreview,
   originAbilities,
@@ -36,6 +37,7 @@ import {
   type Draft,
 } from "../types";
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
+import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
 
 const ORDER5 = {
@@ -64,7 +66,7 @@ const ORDER5 = {
       id: "warden",
       name: "Страж",
       short: "Воинское оружие и средние доспехи вместо лишнего заговора.",
-      info: "Первозданный порядок стража. Вы владеете воинским оружием и средними доспехами. Лишнего заговора, как у мага, нет. Тяжёлые доспехи порядок не даёт. Металл в ремастере «Следопыта» тут ни при чём: это порядок правил 2024 года.",
+      info: "Первозданный порядок стража. Вы владеете воинским оружием и средними доспехами. Лишнего заговора, как у мага, нет. Тяжёлые доспехи порядок не даёт. Металл в ремастере Pathfinder тут ни при чём: это порядок правил 2024 года.",
     },
   ],
 };
@@ -133,6 +135,18 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
       setFinishError(made.error);
       return;
     }
+    made.character.readiness = "built";
+    saveDraft(null);
+    onDone(made.character);
+  }
+
+  function keepDraft() {
+    const made = createCharacter(draft);
+    if (!made.ok) {
+      setFinishError("Черновик шагов остаётся в браузере. Лист появится, когда обязательные выборы закрыты. Это не проверенный лист.");
+      return;
+    }
+    made.character.readiness = "draft";
     saveDraft(null);
     onDone(made.character);
   }
@@ -176,6 +190,7 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
         {step === "feats" && <FeatStep draft={draft} update={update} setChoice={setChoice} toggleMulti={toggleMulti} />}
         {step === "gear" && <GearStep draft={draft} update={update} />}
         {step === "spells" && <SpellStep draft={draft} update={update} />}
+        {(step === "abilities" || step === "skills" || step === "feats" || step === "spells") && <Meters draft={draft} />}
         {step === "review" && <ReviewStep draft={draft} update={update} error={finishError} />}
         {error && step !== "review" && (
           <p className="warn" data-testid="step-error">
@@ -188,9 +203,14 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
           Назад
         </button>
         {step === "review" ? (
-          <button type="button" className="btn primary" data-testid="finish" disabled={Boolean(error)} onClick={finish}>
-            Создать лист
-          </button>
+          <>
+            <button type="button" className="btn" data-testid="save-draft" onClick={keepDraft}>
+              Черновик
+            </button>
+            <button type="button" className="btn primary" data-testid="finish" disabled={Boolean(error)} onClick={finish}>
+              Создать лист
+            </button>
+          </>
         ) : (
           <button type="button" className="btn primary" data-testid="next" disabled={Boolean(error)} onClick={goNext}>
             Дальше
@@ -219,7 +239,7 @@ function SystemStep({
       <Choice
         id="dnd5e"
         testId="system-dnd5e"
-        name="Подземелья и драконы"
+        name="D&D"
         hint="открытый справочник, две редакции отдельно"
         info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Сейчас заполнен справочник 5.2, правила 2024 года. Справочник 5.1, правила 2014 года, лежит отдельным пакетом и в этой сборке ещё без записей."
         on={system === "dnd5e"}
@@ -228,7 +248,7 @@ function SystemStep({
       <Choice
         id="pf2e"
         testId="system-pf2e"
-        name="Следопыт"
+        name="Pathfinder"
         hint="ремастер и отдельно правила до него"
         info="Три действия в ход, четыре ступени успеха и владение от необученного до легенды. Заполнен кусок открытого ядра игрока ремастера. Правила до ремастера — другой пакет и другая лицензия, их сюда не подмешивают. Предания мира — на своём экране, не в правилах."
         on={system === "pf2e"}
@@ -245,9 +265,33 @@ function SystemStep({
             ))}
           </div>
           {edition && !filledEdition(edition) && <p className="tiny">Эта редакция в сборке ещё без записей. Конструктор не покажет чужой список.</p>}
+          {edition && <BookLine edition={edition} />}
         </>
       )}
     </>
+  );
+}
+
+function BookLine({ edition }: { edition: RulesEdition }) {
+  const books = PACKS.filter((pack) => pack.edition === edition);
+  return (
+    <p className="tiny" data-testid="book-count">
+      Книг этой редакции: {books.length}. {books.map((pack) => pack.title).join(" · ") || "Список пуст."}
+    </p>
+  );
+}
+
+function Meters({ draft }: { draft: Draft }) {
+  const rows = creationMeters(draft);
+  if (!rows.length) return null;
+  return (
+    <div className="chips" data-testid="choice-meters">
+      {rows.map((row) => (
+        <span key={row.id} className={`chip ${row.have === row.need ? "on" : ""}`} data-testid={`meter-${row.id}`}>
+          {row.label}: {row.have} из {row.need}
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -422,7 +466,7 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
       {list.map((item) => (
         <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
       ))}
-      <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для Следопыта — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
+      <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для Pathfinder — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
       {draft.backgroundId === "custom" && draft.system === "dnd5e" && (
         <div className="card stack">
           <label className="field"><span>Название</span><input value={draft.customBackground.name} onChange={(event) => update({ customBackground: { ...draft.customBackground, name: event.target.value } })} /></label>
@@ -1151,7 +1195,8 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
         </div>
       </div>
       <div className="card">
-        <p>{draft.system === "dnd5e" ? "Подземелья и драконы" : "Следопыт"}</p>
+        <p>{draft.system ? systemTitle(draft.system) : "Своя игра"}</p>
+        <p className="tiny">Готовый лист не называется полностью проверенным: черта без расчёта в развитии всё ещё требует руки.</p>
         <p>{draft.ancestryId === "custom" ? draft.customAncestry.name : draft.ancestryId}</p>
         <p>{draft.backgroundId === "custom" ? draft.customBackground.name : draft.backgroundId}</p>
         <p>{draft.classId === "custom" ? draft.customClass.name : draft.classId}</p>

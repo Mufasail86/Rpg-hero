@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { artefolInput } from "./artefol";
 import { derive } from "./build";
-import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, newRound, openHelp, parry, reactiveStrike, strike } from "./combat";
+import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, mapPenalty, newRound, openHelp, parry, reactiveStrike, strike } from "./combat";
 
 describe("боевой экран", () => {
   it("показывает модификатор до броска и не тратит ресурс справкой", () => {
@@ -51,6 +51,15 @@ describe("боевой экран", () => {
     const reaction = reactiveStrike(emptyCombat());
     expect(reaction.state.reaction).toBe(false);
     expect(reaction.state.actions).toBe(3);
+    expect(reaction.state.map).toBe(0);
+    expect(reaction.state.strikes).toBe(0);
+    const agile = strike(emptyCombat(), { agile: true });
+    expect(agile.state.strikes).toBe(1);
+    expect(mapPenalty(1, true)).toBe(-4);
+    expect(agile.state.map).toBe(-5);
+    const again = strike(agile.state, { agile: true });
+    expect(mapPenalty(again.state.strikes, true)).toBe(-8);
+    expect(again.state.map).toBe(-10);
     const guard = parry(emptyCombat());
     expect(guard.state.defense).toBe("dueling-parry");
     expect(guard.state.actions).toBe(2);

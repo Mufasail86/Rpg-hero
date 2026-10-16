@@ -132,7 +132,11 @@ function rulesEntries(): RuleEntry[] {
   for (const extra of DND_2014) list.push(fromPacked(extra, "dnd5e", "dnd-2014"));
   for (const extra of srd2014Pack as PackedEntry[]) list.push(fromPacked(extra, "dnd5e", "dnd-2014"));
 
+  const heldByPack = new Set(
+    (pfCorePack as PackedEntry[]).filter((entry) => entry.category === "ancestry" || entry.category === "class").map((entry) => `${entry.category}:${entry.id}`),
+  );
   for (const item of ANCESTRIES) {
+    if (heldByPack.has(`ancestry:${item.id}`)) continue;
     list.push(make(pf, "ancestry", "Народ", item.id, item.name, item.short, item.info));
     for (const line of item.heritages) list.push(make(pf, "heritage", "Наследие", `${item.id}:${line.id}`, line.name, line.short, line.info));
     for (const feat of item.feats) list.push(make(pf, "ancestry-feat", "Черта народа", feat.id, feat.name, feat.short, feat.info, feat.level));
@@ -148,6 +152,7 @@ function rulesEntries(): RuleEntry[] {
   }
   for (const item of BG2) list.push(make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info));
   for (const item of CL2) {
+    if (heldByPack.has(`class:${item.id}`)) continue;
     list.push(make(pf, "class", "Класс", item.id, item.name, item.short, item.info));
     for (const choice of item.choices) {
       for (const option of choice.options) {

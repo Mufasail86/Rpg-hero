@@ -325,10 +325,16 @@ function scores2(d: Draft, method: string): { ok: true; scores: Record<Ability, 
     if (!sameMultiset(ABILITIES.map((id) => d.scores[id]), d.pool)) return { ok: false, error: "Назначьте каждый бросок." };
     return { ok: true, scores: { ...d.scores } };
   }
-  if (method !== "boost") return { ok: false, error: "Для Следопыта выберите повышения, набор или бросок." };
+  if (method !== "boost") return { ok: false, error: "Для Pathfinder выберите повышения, набор или бросок." };
   const scores = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+  const partial: Record<Ability, boolean> = { str: false, dex: false, con: false, int: false, wis: false, cha: false };
   const boost = (ability: Ability) => {
-    scores[ability] += scores[ability] >= 18 ? 1 : 2;
+    if (scores[ability] >= 18) {
+      if (partial[ability]) {
+        scores[ability] += 2;
+        partial[ability] = false;
+      } else partial[ability] = true;
+    } else scores[ability] += 2;
   };
   const ancestry = ANCESTRIES.find((a) => a.id === d.ancestryId);
   const freeMode = d.ancestryId === "custom" || c(d, "ancestryMode") === "free" || (ancestry && ancestry.boosts.length === 0);
@@ -390,6 +396,54 @@ export function classKey(d: Draft): Ability | null {
     return (key as Ability) || null;
   }
   return CL5.find((x) => x.id === d.classId)?.primary[0] ?? "str";
+}
+
+export interface ChoiceMeter {
+  id: string;
+  label: string;
+  have: number;
+  need: number;
+}
+
+/** Отдельные счётчики шага: навыки, повышения, черты и заклинания не складываются в одну цифру. */
+export function creationMeters(d: Draft): ChoiceMeter[] {
+  const meters: ChoiceMeter[] = [];
+  if (d.system === "pf2e" && (d.choices.abilityMethod ?? "boost") === "boost" && d.ancestryId) {
+    const ancestry = ANCESTRIES.find((item) => item.id === d.ancestryId);
+    const free = d.ancestryId === "custom" || c(d, "ancestryMode") === "free" || Boolean(ancestry && ancestry.boosts.length === 0);
+    if (free) meters.push({ id: "ancestry-boost", label: "Повышения народа", have: m(d, "ancestryBoosts").length, need: 2 });
+    meters.push({
+      id: "background-boost",
+      label: "Повышения происхождения",
+      have: (c(d, "backgroundBoost") ? 1 : 0) + (c(d, "backgroundFree") ? 1 : 0),
+      need: 2,
+    });
+    meters.push({ id: "free-boost", label: "Свободные повышения", have: m(d, "freeBoosts").length, need: 4 });
+  }
+  const scored = scoresOf(d);
+  if (scored.ok && d.classId) {
+    meters.push({ id: "skills", label: "Свободные навыки", have: m(d, "skills").length, need: skillNeed(d, scored.scores) });
+  }
+  if (d.system === "pf2e" && d.classId) {
+    meters.push({ id: "ancestry-feat", label: "Черта народа", have: c(d, "ancestryFeat") ? 1 : 0, need: 1 });
+    meters.push({ id: "skill-feat", label: "Черта навыка", have: c(d, "skillFeat") ? 1 : 0, need: 1 });
+    const cls = CL2.find((item) => item.id === d.classId);
+    if (cls?.featLevel1) meters.push({ id: "class-feat", label: "Черта класса", have: c(d, "classFeat") ? 1 : 0, need: 1 });
+  }
+  if (d.system === "dnd5e" && d.ancestryId === "human") {
+    meters.push({ id: "origin-feat", label: "Черта происхождения", have: c(d, "humanFeat") ? 1 : 0, need: 1 });
+  }
+  const budget = spellBudget(d);
+  if (budget && budget.cantrips > 0) {
+    const extra = budget.kind === "known" || budget.kind === "pact" ? budget.known : budget.kind === "book" ? budget.known : budget.prepare;
+    meters.push({
+      id: "spells",
+      label: budget.kind === "prepared" ? "Подготовленные и заговоры" : "Известные заклинания",
+      have: d.knownSpells.length,
+      need: budget.cantrips + extra,
+    });
+  }
+  return meters;
 }
 
 export function skillNeed(d: Draft, scores: Record<Ability, number>): number {
@@ -456,10 +510,11 @@ function spellLimits(d: Draft, scores: Record<Ability, number>) {
   }
   if (d.system === "pf2e") {
     const cls = CL2.find((x) => x.id === d.classId);
-    const kind = cls?.id === "bard" ? "known" : cls?.id === "wizard" ? "book" : "prepared";
+    const spontaneous = cls?.id === "bard" || cls?.id === "sorcerer" || cls?.id === "oracle";
+    const kind = spontaneous ? "known" : cls?.id === "wizard" ? "book" : "prepared";
     return {
       cantrips: cls?.spell?.cantrips ?? 0,
-      known: cls?.id === "bard" ? 2 : cls?.id === "wizard" ? 10 : 99,
+      known: cls?.id === "bard" ? 2 : spontaneous ? (cls?.spell?.slots ?? 2) : cls?.id === "wizard" ? 10 : 99,
       prepare: cls?.spell?.slots ?? 2,
       kind,
     };
@@ -870,14 +925,15 @@ function spellcasting2(d: Draft): Character["spellcasting"] {
   }
   const cls = CL2.find((x) => x.id === d.classId);
   if (!cls?.spell) return null;
-  const kind = cls.id === "bard" ? "known" : cls.id === "wizard" ? "book" : "prepared";
+  const spontaneous = cls.id === "bard" || cls.id === "sorcerer" || cls.id === "oracle";
+  const kind = spontaneous ? "known" : cls.id === "wizard" ? "book" : "prepared";
   return {
     kind,
     ability: classKey(d) ?? cls.key[0],
     listName: cls.spell.tradition,
     cantripLimit: cls.spell.cantrips,
     prepareLimit: cls.spell.slots,
-    knownLimit: cls.id === "wizard" ? 10 : cls.id === "bard" ? 2 : 99,
+    knownLimit: cls.id === "wizard" ? 10 : spontaneous ? cls.spell.slots : 99,
   };
 }
 
