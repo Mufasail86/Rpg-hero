@@ -20,7 +20,7 @@
     "tested": "Есть автотест, который проверяет именно эту группу, а не соседнюю."
   },
   "packs": [
-    {"id": "srd-5.2", "edition": "dnd-2024", "entered": 240, "verified": 0},
+    {"id": "srd-5.2", "edition": "dnd-2024", "entered": 240, "verified": 12},
     {"id": "srd-5.1", "edition": "dnd-2014", "entered": 0, "verified": 0},
     {"id": "pf-player-core", "edition": "pf-remaster", "entered": 266, "verified": 0},
     {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 0, "verified": 0},
@@ -42,10 +42,10 @@
         {"id": "origin-feat", "title": "Черты происхождения", "inSource": null, "entered": 6, "verified": 0, "inLibrary": 6, "inBuilder": 6, "implemented": "partial", "tested": "бдительный и дикий натиск у контрольного воина"},
         {"id": "style", "title": "Боевые стили", "inSource": null, "entered": 4, "verified": 0, "inLibrary": 4, "inBuilder": 6, "implemented": "partial", "tested": "оборона и дуэль", "note": "В карточках справочника четыре стиля. Дуэль и защита есть на экране развития и в расчёте, отдельной карточкой справочника не заведены."},
         {"id": "general-feat", "title": "Общие черты", "inSource": null, "entered": 2, "verified": 0, "inLibrary": 2, "inBuilder": 3, "implemented": "partial", "tested": "живучесть и борец", "note": "Живучесть считается движком и есть на экране развития, отдельной карточкой справочника не заведена."},
-        {"id": "mastery", "title": "Свойства мастерства оружия", "inSource": null, "entered": 8, "verified": 0, "inLibrary": 8, "inBuilder": 8, "implemented": "reference", "tested": "нет", "note": "Названия есть, в модификатор атаки не входят. Лист об этом пишет."},
-        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 59, "verified": 0, "inLibrary": 59, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня, не текст заклинаний", "note": "Только заговоры и 1-й круг. Круги выше 1-го не заведены."},
-        {"id": "condition", "title": "Состояния", "inSource": null, "entered": 16, "verified": 0, "inLibrary": 16, "inBuilder": 16, "implemented": "partial", "tested": "истощение"},
-        {"id": "item", "title": "Предметы", "inSource": null, "entered": 71, "verified": 0, "inLibrary": 71, "inBuilder": 71, "implemented": "partial", "tested": "доспех, щит и меч контрольного воина"}
+        {"id": "mastery", "title": "Свойства мастерства оружия", "inSource": null, "entered": 8, "verified": 8, "inLibrary": 8, "inBuilder": 8, "implemented": "reference", "tested": "текст сверен, в атаку не входит", "note": "Все восемь свойств сверены со справочником 5.2.1. В модификатор атаки не входят. Лист об этом пишет."},
+        {"id": "spell", "title": "Заклинания", "inSource": null, "entered": 59, "verified": 2, "inLibrary": 59, "inBuilder": 59, "implemented": "reference", "tested": "ячейки волшебника 5 уровня; тексты лечения ран и ложной жизни", "note": "Сверены только «Лечение ран» и «Ложная жизнь». Остальные 57 ждут сверки. Круги выше 1-го не заведены."},
+        {"id": "condition", "title": "Состояния", "inSource": null, "entered": 16, "verified": 1, "inLibrary": 16, "inBuilder": 16, "implemented": "partial", "tested": "истощение"},
+        {"id": "item", "title": "Предметы", "inSource": null, "entered": 71, "verified": 1, "inLibrary": 71, "inBuilder": 71, "implemented": "partial", "tested": "доспех, щит и меч контрольного воина; текст верёвки", "note": "Сверена только верёвка. Остальные предметы ждут сверки."}
       ]
     },
     {
