@@ -260,6 +260,31 @@ export interface Character {
   rules?: RulesProfile;
   /** Универсальное наследие Следопыта. Складывается с народом, не заменяет его. */
   versatileHeritageId?: string;
+  /** Памятка игрока: наказы, биография, божество. В формулы не входит. */
+  reminder?: CharacterReminder;
+}
+
+export type VowKind = "taboo" | "vow" | "duty" | "note";
+
+export interface VowEntry {
+  id: string;
+  kind: VowKind;
+  text: string;
+}
+
+export interface DeityCard {
+  name: string;
+  domains: string;
+  symbol: string;
+  weapon: string;
+  edicts: string;
+  anathema: string;
+}
+
+export interface CharacterReminder {
+  backstory: string;
+  deity: DeityCard;
+  vows: VowEntry[];
 }
 
 export interface DndProgress {

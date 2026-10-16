@@ -1,4 +1,5 @@
 import { versatileIds } from "./data/catalog";
+import { reminderFromClass } from "./reminder";
 import { VERSATILE } from "./data/versatile";
 import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
@@ -802,6 +803,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     conditionValues: {},
     languages: ancestry?.languages ?? "Всеобщий",
     notes: "",
+    reminder: reminderFromClass("pf2e", d.classId, c(d, "deity")),
     shieldRaised: false,
     weaponRules: { simple: true, martial: attacks.martial !== "untrained", martialFinesseOrLight: false, martialLight: false, unarmed: true },
     armorTraining: Object.entries(armorRanks).filter(([, rank]) => rank !== "untrained").map(([id]) => id),

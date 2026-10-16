@@ -7,6 +7,7 @@ import { Builder } from "./ui/builder";
 import { Sheet } from "./ui/sheet";
 import { Library } from "./ui/library";
 import { Lore } from "./ui/lore";
+import { QuickBar } from "./ui/quickbar";
 
 function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library" | "lore"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
@@ -35,9 +36,12 @@ export function App() {
   }
 
   const hero = characters.find((item) => item.id === route.id);
+  const latest = [...characters].sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  const active = route.page === "sheet" ? hero : latest;
 
   return (
     <InfoProvider>
+      <div className={active ? (route.page === "new" ? "has-quickbar creating" : "has-quickbar") : undefined}>
       {route.page === "home" && (
         <Home
           characters={characters}
@@ -71,6 +75,16 @@ export function App() {
           <p>Этого персонажа на телефоне нет.</p>
           <button type="button" className="btn" onClick={() => go("#/")}>На главную</button>
         </div>
+      )}
+      </div>
+      {active && (
+        <QuickBar
+          character={active}
+          roster={characters}
+          allowSwitch={route.page !== "sheet"}
+          raised={route.page === "new"}
+          onChange={upsert}
+        />
       )}
     </InfoProvider>
   );
