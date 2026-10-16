@@ -40,7 +40,7 @@ export const EDITION_NAME: Record<RulesEdition, string> = {
 };
 
 export const STATUS_NAME: Record<ReviewStatus, string> = {
-  pending: "ждёт сверки",
+  pending: "черновик, не сверено",
   "verified-partial": "сверено частично",
   "verified-reference": "сверено, только текст",
   "verified-implemented": "сверено и в расчёте",

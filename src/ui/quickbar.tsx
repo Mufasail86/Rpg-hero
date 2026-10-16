@@ -10,6 +10,8 @@ import {
   type CheckMode,
   type SkillLine,
 } from "../skills/guide";
+import { rulesOf } from "../data/editions";
+import { appendRoll } from "../play/log";
 import { type Character, type VowKind, fmt, uid } from "../types";
 
 type Tab = "skills" | "reminder";
@@ -74,7 +76,7 @@ export function QuickBar({
                 ))}
               </div>
             )}
-            {open === "skills" ? <SkillsPane character={current} /> : <ReminderPane character={current} onChange={onChange} />}
+            {open === "skills" ? <SkillsPane character={current} onChange={onChange} /> : <ReminderPane character={current} onChange={onChange} />}
           </div>
         </div>
       )}
@@ -90,7 +92,7 @@ export function QuickBar({
   );
 }
 
-function SkillsPane({ character }: { character: Character }) {
+function SkillsPane({ character, onChange }: { character: Character; onChange: (character: Character) => void }) {
   const lines = skillSnapshot(character);
   const [showRest, setShowRest] = useState(false);
   const [opened, setOpened] = useState<string | null>(lines.find((line) => line.pinned || line.trained)?.id ?? null);
@@ -124,6 +126,23 @@ function SkillsPane({ character }: { character: Character }) {
     const verdict = target == null ? "СЛ не названа, успех не объявляю." : check.verdict;
     setOpened(line.id);
     setResult(`${line.name}: ${dice} К ней только ${fmt(line.modifier)}. Итог ${check.total}. ${verdict}`);
+    const action = actionId ? line.card.actions.find((item) => item.id === actionId)?.name ?? line.name : line.name;
+    onChange({
+      ...character,
+      rolls: appendRoll(character.rolls, {
+        id: uid(),
+        at: Date.now(),
+        system: character.system,
+        edition: rulesOf(character).edition,
+        action,
+        dice: entered || mode === "normal" ? [kept] : [first, second],
+        kept,
+        modifier: line.modifier,
+        total: check.total,
+        dc: target,
+        verdict,
+      }),
+    });
   }
 
   return (
@@ -145,6 +164,15 @@ function SkillsPane({ character }: { character: Character }) {
         <input inputMode="numeric" data-testid="skill-manual" value={manual} onChange={(event) => setManual(event.target.value)} />
       </label>
       {result && <p className="card" data-testid="skill-result">{result}</p>}
+      {(character.rolls ?? []).length > 0 && (
+        <div className="card stack" data-testid="roll-log">
+          <b>Журнал</b>
+          <p className="tiny">Старая строка не меняется, если потом поменять лист.</p>
+          {(character.rolls ?? []).slice(-5).reverse().map((entry) => (
+            <p key={entry.id} className="tiny">{entry.action}: кость {entry.kept} {fmt(entry.modifier)} = {entry.total}. {entry.verdict}</p>
+          ))}
+        </div>
+      )}
       {shown.map((line) => (
         <SkillRow key={line.id} line={line} character={character} open={opened === line.id} onToggle={() => setOpened(opened === line.id ? null : line.id)} onRoll={(actionId) => roll(line, actionId)} />
       ))}

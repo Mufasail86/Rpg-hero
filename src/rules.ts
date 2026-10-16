@@ -1,3 +1,4 @@
+import { dndCoinPounds, pfCoinBulk } from "./play/wallet";
 import { ABILITIES, ABILITY_NAME, type Ability, type Character, type ItemInst, mod } from "./types";
 import { SKILLS as SKILLS5, skillById as skill5, XP_THRESHOLDS, fullSlots, halfSlots, pactSlots } from "./data/dnd5e";
 import { SKILLS as SKILLS2, skillById as skill2, RANK_NAME } from "./data/pf2e";
@@ -242,30 +243,29 @@ export function classDc(c: Character): number | null {
 }
 
 export function loadOf(c: Character): { current: number; cap: number; enc?: number; unit: string; text: string } {
-  const coins = c.coins.cp + c.coins.sp + c.coins.ep + c.coins.gp + c.coins.pp;
   if (c.system === "dnd5e") {
     const items = c.items.reduce((sum, item) => sum + item.weight * item.qty, 0);
-    const current = Math.round((items + coins / 50) * 10) / 10;
+    const money = dndCoinPounds(c.coins);
     const cap = c.abilities.str * 15;
     return {
-      current,
+      current: items + money.pounds,
       cap,
       unit: "фунтов",
-      text: `Грузоподъёмность равна Силе × 15. Монеты: 50 штук весят фунт. Сейчас ${current} из ${cap}.`,
+      text: `Вещи ${items} фунтов. Монеты: ${money.pounds} фунтов и ещё ${money.leftover} штук. 50 монет = 1 фунт, остаток фунтом не считается. Предел ${cap} — Сила × 15.`,
     };
   }
   const items = c.items.reduce((sum, item) => sum + item.weight * item.qty, 0);
-  const current = Math.round((items + coins / 1000) * 10) / 10;
+  const bulk = pfCoinBulk(c.coins);
   const str = abilityMod(c, "str");
   const extra = c.feats.some((f) => f.id === "hefty") ? 2 : 0;
   const enc = 5 + str + extra;
   const cap = 10 + str + extra;
   return {
-    current,
+    current: items + bulk,
     cap,
     enc,
     unit: "объема",
-    text: `Объём. Перегруз после ${enc}, максимум ${cap}. Лёгкий предмет — 0,1. 1000 монет — 1 объём. Первая сумка на вас объёма не занимает, это уже учтено в карточке рюкзака.`,
+    text: `Вещи ${items} объёма, монеты ${bulk}. 1000 монет = 1 объём, 999 ещё ничего не весят. Перегруз после ${enc}, максимум ${cap}.`,
   };
 }
 

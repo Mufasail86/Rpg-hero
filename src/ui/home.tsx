@@ -81,7 +81,7 @@ export function Home({
           </div>
         </figure>
         <p className="caption">{ART_CAPTION}</p>
-        <p className="lead">Подземелья и драконы и Следопыт. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
+        <p className="lead">D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
         <div className="cast">
           {[
             [ART.elf, "Эльф"],
@@ -119,7 +119,7 @@ export function Home({
         </div>
         {hasDraft && (
           <button type="button" className="btn" onClick={() => go("#/new")}>
-            Продолжить создание{draft?.name ? `: ${draft.name}` : ""}
+            Черновик, не проверенный лист{draft?.name ? `: ${draft.name}` : ""}
           </button>
         )}
         </div>
@@ -131,6 +131,7 @@ export function Home({
           <div key={hero.id} className="card portrait-home">
             {drawn ? <img className="avatar" src={drawn} alt="" /> : <div className="avatar" aria-hidden>⚔</div>}
             <div className="grow">
+              {hero.readiness === "draft" && <span className="chip">Черновик, не проверен</span>}
               <button type="button" className="text-btn" onClick={() => go(`#/c/${hero.id}`)}>
                 <b>{hero.name}</b>
               </button>
