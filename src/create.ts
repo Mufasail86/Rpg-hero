@@ -3,6 +3,8 @@ import { reminderFromClass } from "./reminder";
 import { VERSATILE } from "./data/versatile";
 import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
+import { levelOneClassFeats } from "./data/pf-index";
+import { derive } from "./pf2e/build";
 import {
   ABILITIES,
   ABILITY_NAME,
@@ -11,6 +13,7 @@ import {
   type Draft,
   type FeatInst,
   type ItemInst,
+  type Pf2eProgress,
   type SpellInst,
   emptyCoins,
   mod,
@@ -225,8 +228,10 @@ function validateFeats(d: Draft): string | null {
   if (generalSlot && !c(d, "generalFeat")) return "Выберите общую черту: её даёт универсальное наследие или «Общая подготовка».";
   const cls = CL2.find((x) => x.id === d.classId);
   const ambition = c(d, "ancestryFeat") === "natural-ambition";
-  const listed = cls?.feats.length ?? 0;
-  if ((cls?.featLevel1 || ambition) && d.classId !== "custom" && listed > 0 && !c(d, "classFeat")) return "Выберите классовую черту.";
+  const listed = d.classId === "custom" ? [] : levelOneClassFeats(d.classId);
+  const known = new Set([...(cls?.feats.map((feat) => feat.id) ?? []), ...listed.map((feat) => feat.id)]);
+  if ((cls?.featLevel1 || ambition) && d.classId !== "custom" && known.size > 0 && !c(d, "classFeat")) return "Выберите классовую черту.";
+  if (c(d, "classFeat") && known.size > 0 && !known.has(c(d, "classFeat"))) return "Эта классовая черта не из списка этого класса.";
   return null;
 }
 
@@ -428,7 +433,7 @@ export function creationMeters(d: Draft): ChoiceMeter[] {
     meters.push({ id: "ancestry-feat", label: "Черта народа", have: c(d, "ancestryFeat") ? 1 : 0, need: 1 });
     meters.push({ id: "skill-feat", label: "Черта навыка", have: c(d, "skillFeat") ? 1 : 0, need: 1 });
     const cls = CL2.find((item) => item.id === d.classId);
-    if (cls?.featLevel1) meters.push({ id: "class-feat", label: "Черта класса", have: c(d, "classFeat") ? 1 : 0, need: 1 });
+    if (cls?.featLevel1 && (cls.feats.length > 0 || levelOneClassFeats(cls.id).length > 0)) meters.push({ id: "class-feat", label: "Черта класса", have: c(d, "classFeat") ? 1 : 0, need: 1 });
   }
   if (d.system === "dnd5e" && d.ancestryId === "human") {
     meters.push({ id: "origin-feat", label: "Черта происхождения", have: c(d, "humanFeat") ? 1 : 0, need: 1 });
@@ -754,6 +759,49 @@ function build5(d: Draft, scores: Record<Ability, number>): Character {
   return character;
 }
 
+function seedPf(d: Draft, scores: Record<Ability, number>): Pf2eProgress | undefined {
+  if (c(d, "abilityMethod") !== "boost") return undefined;
+  if (d.ancestryId === "custom" || d.classId === "custom" || d.backgroundId === "custom") return undefined;
+  const ancestry = ANCESTRIES.find((item) => item.id === d.ancestryId);
+  const cls = CL2.find((item) => item.id === d.classId);
+  const key = classKey(d);
+  if (!ancestry || !cls || !key) return undefined;
+  const choices: Pf2eProgress["choices"] = [];
+  const push = (id: string, source: string, pick: string) => {
+    if (pick) choices.push({ id, level: 1, source, pick });
+  };
+  if (ancestry.boosts.length === 0) m(d, "ancestryBoosts").forEach((pick, index) => push(`boost-1-ancestry-${index}`, "ancestry-boost", pick));
+  else if (ancestry.freeBoosts > 0) push("boost-1-ancestry-0", "ancestry-boost", c(d, "ancFree"));
+  push("boost-1-background-0", "background-boost", c(d, "bgFixed"));
+  push("boost-1-background-1", "background-boost", c(d, "bgFree"));
+  push("boost-1-class", "class-boost", key);
+  m(d, "freeBoosts").forEach((pick, index) => push(`boost-1-free-${index}`, "free-boost", pick));
+  if (cls.id === "fighter") push("class-skill-primary", "class-skill", c(d, "fighterSkill"));
+  m(d, "skills").forEach((pick, index) => push(`class-skill-extra-${index}`, "class-skill", pick));
+  if (d.heritageId === "skilled") push("heritage-skill", "heritage-skill", c(d, "humanSkill"));
+  if (c(d, "ancestryFeat")) push("ancestry-feat-1", "ancestry-feat", c(d, "ancestryFeat"));
+  if (cls.featLevel1 && c(d, "classFeat")) push("class-feat-1", "class-feat", c(d, "classFeat"));
+  if (cls.id === "rogue" && c(d, "skillFeat")) push("skill-feat-1", "skill-feat", c(d, "skillFeat"));
+  if (c(d, "instinct")) push("class-path", "instinct", c(d, "instinct"));
+  if (cls.id === "swashbuckler" && c(d, "style")) push("class-path", "style", c(d, "style"));
+  if (c(d, "mystery")) push("class-path", "mystery", c(d, "mystery"));
+  const progress: Pf2eProgress = {
+    freeArchetype: false,
+    ancestryId: d.ancestryId,
+    heritageId: d.heritageId,
+    backgroundId: d.backgroundId,
+    classId: d.classId,
+    keyAbility: key,
+    choices,
+    toggles: [],
+    dailyFeats: [],
+    versatileHeritageId: d.versatileHeritageId || undefined,
+  };
+  const derived = derive({ progress, items: [], level: 1 });
+  if (!ABILITIES.every((ability) => derived.abilities[ability].score === scores[ability])) return undefined;
+  return progress;
+}
+
 function build2(d: Draft, scores: Record<Ability, number>): Character {
   const ancestry = ANCESTRIES.find((a) => a.id === d.ancestryId);
   const heritage = ancestry?.heritages.find((h) => h.id === d.heritageId);
@@ -873,6 +921,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     thiefDamage: c(d, "racket") === "thief",
     resources: [],
     pendingAsi: false,
+    progress: seedPf(d, scores),
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };

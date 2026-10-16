@@ -2,10 +2,13 @@ import { CLASSES as CL5, CONDITIONS as COND5, GENERAL_FEATS, ITEMS as ITEMS5, MA
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
 import { LORE } from "./lore";
 import pfCorePack from "./generated/pf-core.json";
+import pfLegacyPack from "./generated/pf-legacy.json";
+import pfListsPack from "./generated/pf-lists.json";
 import srd2014Pack from "./generated/srd-2014.json";
 import srd2024Pack from "./generated/srd-2024.json";
 import { DND_2014, DND_2024_MORE, PF_LEGACY, PF_ORC_MORE, type PackedEntry } from "./packs-extra";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, CONDITIONS as COND2, ITEMS as ITEMS2, SKILL_FEATS, SKILLS as SK2, SPELLS as SP2 } from "./pf2e";
+import { pathOption } from "./pf-index";
 import { LINKS, REVIEW } from "./review";
 import { VERSATILE } from "./versatile";
 
@@ -152,14 +155,28 @@ function rulesEntries(): RuleEntry[] {
   }
   for (const item of BG2) list.push(make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info));
   for (const item of CL2) {
-    if (heldByPack.has(`class:${item.id}`)) continue;
-    list.push(make(pf, "class", "Класс", item.id, item.name, item.short, item.info));
+    const held = heldByPack.has(`class:${item.id}`);
+    if (!held) list.push(make(pf, "class", "Класс", item.id, item.name, item.short, item.info));
     for (const choice of item.choices) {
       for (const option of choice.options) {
-        list.push(make(pf, "class-choice", choice.title, `${item.id}:${choice.id}:${option.id}`, option.name, option.short, option.info));
+        const entry = make(pf, "class-choice", choice.title, `${item.id}:${choice.id}:${option.id}`, option.name, option.short, option.info);
+        const known = pathOption(choice.id, option.id);
+        if (known) {
+          const pack = packById("pf-orc-more");
+          entry.originalName = known.originalName;
+          entry.status = "verified-reference";
+          entry.checkedOn = "2026-10-16";
+          entry.sourceVersion = "Player Core 2";
+          entry.sourceId = "pf-orc-more";
+          entry.license = pack?.license ?? entry.license;
+          entry.link = pack?.link ?? entry.link;
+        }
+        list.push(entry);
       }
     }
-    for (const feat of item.feats) list.push(make(pf, "class-feat", "Черта класса", `${item.id}:${feat.id}`, feat.name, feat.short, feat.info));
+    if (!held) {
+      for (const feat of item.feats) list.push(make(pf, "class-feat", "Черта класса", `${item.id}:${feat.id}`, feat.name, feat.short, feat.info));
+    }
   }
   for (const item of SKILL_FEATS) list.push(make(pf, "skill-feat", "Черта", item.id, item.name, item.short, item.info));
   for (const item of SK2) list.push(make(pf, "skill", "Навык", item.id, item.name, item.short, item.info));
@@ -171,6 +188,18 @@ function rulesEntries(): RuleEntry[] {
   const seen = new Set(list.map((entry) => entry.token));
   for (const extra of pfCorePack as PackedEntry[]) {
     const entry = fromPacked(extra, "pf2e", "pf-remaster");
+    if (seen.has(entry.token)) continue;
+    seen.add(entry.token);
+    list.push(entry);
+  }
+  for (const extra of pfListsPack as PackedEntry[]) {
+    const entry = fromPacked(extra, "pf2e", "pf-remaster");
+    if (seen.has(entry.token)) continue;
+    seen.add(entry.token);
+    list.push(entry);
+  }
+  for (const extra of pfLegacyPack as PackedEntry[]) {
+    const entry = fromPacked(extra, "pf2e", "pf-legacy");
     if (seen.has(entry.token)) continue;
     seen.add(entry.token);
     list.push(entry);

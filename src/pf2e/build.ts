@@ -1,3 +1,4 @@
+import { FEAT_BY_ID, FEAT_INDEX, pathGroup, pathOption, type PathOption } from "../data/pf-index";
 import { ANCESTRIES, BACKGROUNDS, CLASSES, SKILLS } from "../data/pf2e";
 import {
   ABILITIES,
@@ -76,6 +77,8 @@ interface FeatDef {
   skill?: string;
   knowledge?: boolean;
   repeatable?: boolean;
+  classes?: string[];
+  ancestries?: string[];
 }
 
 const FEATS: Record<string, FeatDef> = {
@@ -181,6 +184,11 @@ export function derive(input: DeriveInput): Derived {
     loreNames.set(loreId, background.lore);
     grantFeat(background.feat, feats, taken, issues, ranks);
   }
+  const classRow = CLASSES.find((item) => item.id === progress.classId);
+  for (const id of classRow?.skillsFixed ?? []) train(ranks, id);
+  const pathPick = progress.choices.find((choice) => choice.level <= level && (choice.source === "instinct" || choice.source === "style" || choice.source === "mystery"));
+  const path = pathOption(pathPick?.source ?? "", pathPick?.pick);
+  if (pathPick && !path) issues.push({ kind: "build", message: "Неизвестный выбор инстинкта, стиля или тайны." });
 
   for (const slot of slots.filter((slot) => slot.source === "class-skill" || slot.source === "heritage-skill")) {
     const choice = byId.get(slot.id);
@@ -197,6 +205,7 @@ export function derive(input: DeriveInput): Derived {
     }
     train(ranks, choice.pick);
   }
+  if (path?.skill) train(ranks, path.skill);
 
   const archetypeFeats: { id: string; level: number }[] = [];
 
@@ -360,6 +369,7 @@ export function derive(input: DeriveInput): Derived {
   const classRank: Rank = progress.classId === "fighter" ? (level >= 19 ? "master" : level >= 11 ? "expert" : "trained") : "trained";
   const classDc = cls ? 10 + key + rankBonus(classRank, level) - statusPenalty : null;
 
+  const rage = rageDamage(progress, level, toggles, path, issues);
   const attacks = input.items.filter((item) => item.kind === "weapon").map((item) => {
     const category = item.weapon?.category ?? "martial";
     const group = item.weapon?.group ?? GROUPS[item.catalogId ?? ""] ?? "other";
@@ -374,7 +384,8 @@ export function derive(input: DeriveInput): Derived {
     const spec = specialization(level, rank);
     const striking = item.runes?.striking ?? 0;
     const dice = item.weapon?.damage ?? "1d4";
-    const damageMod = (item.weapon?.attr === "dex" ? 0 : str) + spec;
+    const ragePart = item.weapon?.ranged ? 0 : rage;
+    const damageMod = (item.weapon?.attr === "dex" ? 0 : str) + spec + ragePart;
     return {
       name: item.name,
       group,
@@ -382,7 +393,7 @@ export function derive(input: DeriveInput): Derived {
       rank,
       equipped: item.equipped,
       attack: { value: attack, formula: line(item.name, attack, parts), aside: item.equipped ? [] : ["Оружие не в руках и не надето: бонус показан так, как если его взять."] },
-      damage: `${dice}${striking ? ` + ${striking} кост${striking === 1 ? "ь" : "и"} руны` : ""}${damageMod ? ` ${fmt(damageMod)}` : ""}${spec ? ` (специализация ${fmt(spec)})` : ""}`,
+      damage: `${dice}${striking ? ` + ${striking} кост${striking === 1 ? "ь" : "и"} руны` : ""}${damageMod ? ` ${fmt(damageMod)}` : ""}${ragePart ? ` (ярость ${fmt(ragePart)})` : ""}${spec ? ` (специализация ${fmt(spec)})` : ""}`,
     };
   });
 
@@ -536,6 +547,32 @@ function boost(state: ScoreState) {
   } else state.score += 2;
 }
 
+const EVEN_TO_20 = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const ODD_GENERAL = [3, 7, 11, 15, 19];
+const ANCESTRY_FEATS = [1, 5, 9, 13, 17];
+const ODD_INCREASE = [3, 5, 7, 9, 11, 13, 15, 17, 19];
+const EVERY_LEVEL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+function classFeatLevels(classId: string): number[] {
+  if (["bard", "cleric", "druid", "oracle", "sorcerer", "witch", "wizard"].includes(classId)) return EVEN_TO_20;
+  if (["alchemist", "barbarian", "champion", "fighter", "investigator", "monk", "ranger", "rogue", "swashbuckler"].includes(classId)) {
+    return [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+  }
+  return [];
+}
+
+function skillFeatLevels(classId: string): number[] {
+  if (classId === "rogue") return EVERY_LEVEL;
+  if (classId === "investigator") return EVERY_LEVEL.filter((at) => at >= 2);
+  if (classId === "swashbuckler") return [2, 3, 4, 6, 7, 8, 10, 12, 14, 15, 16, 18, 20];
+  return EVEN_TO_20;
+}
+
+function skillIncreaseLevels(classId: string): number[] {
+  if (classId === "rogue" || classId === "investigator") return EVERY_LEVEL.filter((at) => at >= 2);
+  return ODD_INCREASE;
+}
+
 function slotsFor(progress: Pf2eProgress, level: number): Slot[] {
   const slots: Slot[] = [];
   const push = (id: string, at: number, source: string, label: string) => {
@@ -554,21 +591,19 @@ function slotsFor(progress: Pf2eProgress, level: number): Slot[] {
   if (progress.classId === "fighter") push("class-skill-primary", 1, "class-skill", "Навык класса: Атлетика или Акробатика");
   for (let i = 0; i < extra; i += 1) push(`class-skill-extra-${i}`, 1, "class-skill", "Дополнительный навык класса");
   if (progress.heritageId === "skilled") push("heritage-skill", 1, "heritage-skill", "Навык умелого наследия");
-  const classFeats = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-  const skillFeats = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-  const general = [3, 7, 11, 15, 19];
-  const ancestryFeats = [1, 5, 9, 13, 17];
-  const increases = [3, 5, 7, 9, 11, 13, 15, 17, 19];
-  if (progress.classId === "fighter") {
-    for (const at of classFeats) push(`class-feat-${at}`, at, "class-feat", "Черта класса");
-    push("weapon-group", 5, "weapon-group", "Группа оружия мастера");
-  }
-  for (const at of skillFeats) push(`skill-feat-${at}`, at, "skill-feat", "Черта навыка");
-  for (const at of general) push(`general-feat-${at}`, at, "general-feat", "Общая черта");
-  for (const at of ancestryFeats) push(`ancestry-feat-${at}`, at, "ancestry-feat", "Черта народа");
-  for (const at of increases) push(`skill-increase-${at}`, at, "skill-increase", "Повышение навыка");
+  if (progress.classId === "barbarian") push("class-path", 1, "instinct", "Инстинкт");
+  if (progress.classId === "swashbuckler") push("class-path", 1, "style", "Стиль");
+  if (progress.classId === "oracle") push("class-path", 1, "mystery", "Тайна");
+  const fury = progress.choices.some((choice) => choice.source === "instinct" && choice.pick === "fury-instinct" && choice.level <= level);
+  if (fury) push("fury-feat", 1, "class-feat", "Черта класса от инстинкта ярости");
+  for (const at of classFeatLevels(progress.classId)) push(`class-feat-${at}`, at, "class-feat", "Черта класса");
+  if (progress.classId === "fighter") push("weapon-group", 5, "weapon-group", "Группа оружия мастера");
+  for (const at of skillFeatLevels(progress.classId)) push(`skill-feat-${at}`, at, "skill-feat", "Черта навыка");
+  for (const at of ODD_GENERAL) push(`general-feat-${at}`, at, "general-feat", "Общая черта");
+  for (const at of ANCESTRY_FEATS) push(`ancestry-feat-${at}`, at, "ancestry-feat", "Черта народа");
+  for (const at of skillIncreaseLevels(progress.classId)) push(`skill-increase-${at}`, at, "skill-increase", "Повышение навыка");
   if (progress.freeArchetype) {
-    for (const at of skillFeats) push(`free-archetype-${at}`, at, "free-archetype", "Свободный архетип");
+    for (const at of EVEN_TO_20) push(`free-archetype-${at}`, at, "free-archetype", "Свободный архетип");
   }
   return slots;
 }
@@ -617,8 +652,10 @@ function detailWord(value: string): string {
 
 /** Русская подпись выбора. Код выбора на экран не выводится. */
 export function choiceCaption(choice: { pick: string; source: string; detail?: Record<string, string> }): string {
-  const named = optionsForSlot(choice.source).find((option) => option.pick === choice.pick)?.name
-    ?? FEATS[choice.pick]?.name
+  const named = FEATS[choice.pick]?.name
+    ?? FEAT_BY_ID.get(choice.pick)?.name
+    ?? pathOption(choice.source, choice.pick)?.name
+    ?? optionsForSlot(choice.source).find((option) => option.pick === choice.pick)?.name
     ?? (choice.pick.startsWith("lore:") ? "знание" : "выбор");
   if (!choice.detail) return named;
   const bits = Object.values(choice.detail).map(detailWord).filter((word) => word.length > 0);
@@ -668,7 +705,7 @@ function applyFeatChoice(
   archetypeFeats: { id: string; level: number }[],
   scores: Record<Ability, ScoreState>,
 ) {
-  const def = FEATS[choice.pick];
+  const def = resolveFeat(choice.pick);
   if (choice.source === "weapon-group") return;
   if (!def) {
     issues.push({ kind: "build", message: `Неизвестная черта на уровне ${choice.level}.` });
@@ -682,8 +719,11 @@ function applyFeatChoice(
     (choice.source === "general-feat" && def.kind === "general") ||
     (choice.source === "free-archetype" && def.kind === "archetype");
   if (!kindOk) issues.push({ kind: "build", message: `«${def.name}» не подходит этому слоту.` });
-  if (progress.classId === "fighter" && def.kind === "class" && choice.source === "class-feat" && progress.classId !== "fighter") {
+  if (choice.source === "class-feat" && def.kind === "class" && def.classes && def.classes.length > 0 && !def.classes.includes(progress.classId)) {
     issues.push({ kind: "build", message: `«${def.name}» — черта другого класса.` });
+  }
+  if (choice.source === "ancestry-feat" && def.ancestries && def.ancestries.length > 0 && !def.ancestries.includes(progress.ancestryId)) {
+    issues.push({ kind: "build", message: `«${def.name}» — черта другого народа.` });
   }
   if (taken.has(choice.pick) && !def.repeatable) issues.push({ kind: "build", message: `«${def.name}» уже есть, повторно её не берут.` });
   if (def.skill && (ranks.get(def.skill) ?? "untrained") === "untrained") {
@@ -996,7 +1036,34 @@ export function slotsForProgress(progress: Pf2eProgress, level: number): { id: s
   return slotsFor(progress, level);
 }
 
-export function optionsForSlot(source: string): { pick: string; name: string }[] {
+function resolveFeat(id: string): FeatDef | null {
+  const known = FEATS[id];
+  const indexed = FEAT_BY_ID.get(id);
+  if (known) return { ...known, classes: indexed?.classes, ancestries: indexed?.ancestries };
+  if (!indexed) return null;
+  return { name: indexed.name, kind: indexed.kind, level: indexed.level, modeled: false, classes: indexed.classes, ancestries: indexed.ancestries };
+}
+
+function rageDamage(progress: Pf2eProgress, level: number, toggles: Set<string>, path: PathOption | undefined, issues: Issue[]): number {
+  if (progress.classId !== "barbarian" || !toggles.has("rage")) return 0;
+  if (!path || path.rage.length === 0) {
+    issues.push({
+      kind: "limit",
+      message: path
+        ? `Инстинкт «${path.name}» не даёт безусловного числа урона ярости. К удару ничего не прибавлено.`
+        : "Ярость включена, но инстинкт не даёт числа. Базовое действие ярости в этой выгрузке отдельным полем не лежит.",
+    });
+    return 0;
+  }
+  const steps = path.rage.filter((step) => step.minLevel <= level);
+  if (!steps.length) {
+    issues.push({ kind: "limit", message: `Инстинкт «${path.name}» на этом уровне не поднимает урон ярости. К удару ничего не прибавлено.` });
+    return 0;
+  }
+  return steps[steps.length - 1].value;
+}
+
+export function optionsForSlot(source: string, ctx?: { classId?: string; ancestryId?: string; level?: number }): { pick: string; name: string }[] {
   if (source === "ancestry-boost" || source === "background-boost" || source === "class-boost" || source === "free-boost") {
     return ABILITIES.map((ability) => ({ pick: ability, name: ABILITY_NAME[ability] }));
   }
@@ -1013,10 +1080,36 @@ export function optionsForSlot(source: string): { pick: string; name: string }[]
       { pick: "hammer", name: "Молоты" },
     ];
   }
+  if (source === "instinct" || source === "style" || source === "mystery") {
+    return pathGroup(source)?.options.map((option) => ({ pick: option.id, name: option.name })) ?? [];
+  }
   const kind = source === "class-feat" ? "class" : source === "skill-feat" ? "skill" : source === "general-feat" ? "general" : source === "ancestry-feat" ? "ancestry" : source === "free-archetype" ? "archetype" : "";
-  return Object.entries(FEATS)
-    .filter(([, def]) => (source === "class-feat" ? def.kind === "class" || def.kind === "archetype" : def.kind === kind))
+  const modeled = Object.entries(FEATS).filter(([, def]) => {
+    const kindOk = source === "class-feat" ? def.kind === "class" || def.kind === "archetype" : def.kind === kind;
+    if (!kindOk) return false;
+    if (ctx?.level != null && def.level > ctx.level) return false;
+    return true;
+  });
+  const seen = new Set(modeled.map(([id]) => id));
+  const list = modeled
+    .filter(([id, def]) => {
+      if (source !== "class-feat" || def.kind !== "class" || !ctx?.classId) return true;
+      const classes = FEAT_BY_ID.get(id)?.classes ?? [];
+      return classes.length === 0 || classes.includes(ctx.classId);
+    })
     .map(([id, def]) => ({ pick: id, name: def.name }));
+  for (const feat of FEAT_INDEX) {
+    if (seen.has(feat.id)) continue;
+    const kindOk = source === "class-feat" ? feat.kind === "class" : feat.kind === kind;
+    if (!kindOk) continue;
+    if (ctx?.level != null && feat.level > ctx.level) continue;
+    if (source === "class-feat" && ctx?.classId && feat.classes.length > 0 && !feat.classes.includes(ctx.classId)) continue;
+    if (source === "ancestry-feat" && feat.ancestries.length === 0) continue;
+    if (source === "ancestry-feat" && ctx?.ancestryId && !feat.ancestries.includes(ctx.ancestryId)) continue;
+    seen.add(feat.id);
+    list.push({ pick: feat.id, name: feat.name });
+  }
+  return list;
 }
 
 export function snapshot(character: Character): Character {

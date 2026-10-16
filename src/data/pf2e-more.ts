@@ -1,4 +1,11 @@
 import type { Ability } from "../types";
+import heritages from "./generated/pf-heritages.json";
+import paths from "./generated/pf-paths.json";
+
+function lines(id: string): Heritage[] {
+  const rows = (heritages as Record<string, { id: string; name: string; info: string }[]>)[id] ?? [];
+  return rows.map((row) => ({ id: row.id, name: row.name, info: row.info }));
+}
 
 const DRAFT = "Черновик, не сверено. ";
 
@@ -60,46 +67,14 @@ function people(
 }
 
 export const MORE_ANCESTRIES: Ancestry[] = [
-  people("catfolk", "Амуррун", 8, "Средний", 25, "Сумеречное зрение", ["dex", "cha"], "wis", [
-    { id: "catfolk-climber", name: "Лазающий", info: `${DRAFT}Лазать для вас обычнее, чем для большинства. Скорость лазания лист сам не ставит. В справочнике народ назван «Кошачий народ».` },
-    { id: "catfolk-night", name: "Ночной", info: `${DRAFT}Сумеречное зрение уже есть. В темноте вам проще не шуметь: отметьте +1 к Скрытности в темноте, лист сам это не прибавляет.` },
-    { id: "catfolk-nine", name: "Девять жизней", info: `${DRAFT}Раз в день, когда вы должны упасть до 0 хитов, остаётесь с 1 хитом. Кнопка урона это не перехватывает: нажмите отмену, если правило сработало.` },
-  ]),
-  people("hobgoblin", "Хобгоблин", 8, "Средний", 25, "Тёмное зрение", ["con", "int"], "wis", [
-    { id: "hob-short", name: "Короткий", info: `${DRAFT}Рост меньше обычного. Размер остаётся средним, если мастер не скажет иначе.` },
-    { id: "hob-smokeworker", name: "Дымный", info: `${DRAFT}Дым и едкий воздух мешают вам на ступень слабее.` },
-    { id: "hob-warmarch", name: "Походный", info: `${DRAFT}Долгий переход утомляет вас меньше. Лист скорость не повышает.` },
-  ]),
-  people("kholo", "Кхоло", 8, "Средний", 25, "Сумеречное зрение", ["str", "int"], "wis", [
-    { id: "kholo-ant", name: "Муравьиный", info: `${DRAFT}Можете нести больше обычного. К пределу объёма лист сам не прибавляет: запишите +1, если стол так играет.` },
-    { id: "kholo-cave", name: "Пещерный", info: `${DRAFT}Тёмное зрение вместо сумеречного.` },
-    { id: "kholo-winter", name: "Зимний", info: `${DRAFT}Холод среды для вас на ступень слабее.` },
-  ]),
-  people("kobold", "Кобольд", 6, "Малый", 25, "Тёмное зрение", ["dex", "cha"], "con", [
-    { id: "kobold-cave", name: "Пещерный", info: `${DRAFT}В тесноте и под землёй вам привычнее. Отдельного бонуса к скорости нет.` },
-    { id: "kobold-dragon", name: "Драконий", info: `${DRAFT}Сопротивление одной энергии на выбор, равное половине уровня, минимум 1. Выберите энергию в заметке.` },
-    { id: "kobold-spellscale", name: "Чешуя чар", info: `${DRAFT}Врождённый заговор одной традиции. Он не попадает в список заклинаний сам.` },
-  ]),
-  people("tripkee", "Трипки", 6, "Малый", 25, "Сумеречное зрение", ["dex", "wis"], "str", [
-    { id: "tripkee-snare", name: "Силковый", info: `${DRAFT}Вам проще ставить простые силки. Формула силка в сумку сама не кладётся.` },
-    { id: "tripkee-poison", name: "Ядовитый", info: `${DRAFT}Раз в день можете смазать оружие слабым ядом. Урон яда лист не бросает.` },
-    { id: "tripkee-wind", name: "Ветреный", info: `${DRAFT}Прыжок с места чуть дальше. Дистанцию назовите мастеру, лист её не прибавляет к скорости.` },
-  ]),
-  people("ratfolk", "Крысиный народ", 6, "Малый", 25, "Сумеречное зрение", ["dex", "int"], "str", [
-    { id: "rat-deep", name: "Глубинный", info: `${DRAFT}Тёмное зрение.` },
-    { id: "rat-long", name: "Длиннозубый", info: `${DRAFT}Укус 1d6 колющего как безоружная атака. В атаку листа сам не добавляется.` },
-    { id: "rat-warren", name: "Норовой", info: `${DRAFT}В толпе своего народа вам проще остаться незамеченным. Числовой бонус отметьте сами.` },
-  ]),
-  people("tengu", "Тенгу", 6, "Средний", 25, "Сумеречное зрение", ["dex"], undefined, [
-    { id: "tengu-sky", name: "Небесный", info: `${DRAFT}Падая, вы планируете и получаете меньше урона. Точную формулу скажет книга, лист её не считает.` },
-    { id: "tengu-storm", name: "Грозовой", info: `${DRAFT}Сопротивление электричеству, равное половине уровня, минимум 1.` },
-    { id: "tengu-taloned", name: "Когтистый", info: `${DRAFT}Когти — безоружная атака 1d4 рубящего.` },
-  ]),
-  people("lizardfolk", "Ящеролюд", 8, "Средний", 25, "Обычное зрение", ["str", "wis"], "int", [
-    { id: "lizard-claws", name: "Когти", info: `${DRAFT}Когти 1d4 рубящего и вам проще лазать.` },
-    { id: "lizard-frilled", name: "Воротник", info: `${DRAFT}Можете деморализовать без языка, если цель вас видит.` },
-    { id: "lizard-wet", name: "Речной", info: `${DRAFT}Вы дышите под водой и плаваете со своей скоростью. Скорость ходьбы лист не меняет.` },
-  ]),
+  people("catfolk", "Амуррун", 8, "Средний", 25, "Сумеречное зрение", ["dex", "cha"], "wis", lines("catfolk")),
+  people("hobgoblin", "Хобгоблин", 8, "Средний", 25, "Тёмное зрение", ["con", "int"], "wis", lines("hobgoblin")),
+  people("kholo", "Кхоло", 8, "Средний", 25, "Сумеречное зрение", ["str", "int"], "wis", lines("kholo")),
+  people("kobold", "Кобольд", 6, "Малый", 25, "Тёмное зрение", ["dex", "cha"], "con", lines("kobold")),
+  people("tripkee", "Трипки", 6, "Малый", 25, "Сумеречное зрение", ["dex", "wis"], "str", lines("tripkee")),
+  people("ratfolk", "Крысиный народ", 6, "Малый", 25, "Сумеречное зрение", ["dex", "int"], "str", lines("ratfolk")),
+  people("tengu", "Тенгу", 6, "Средний", 25, "Сумеречное зрение", ["dex"], undefined, lines("tengu")),
+  people("lizardfolk", "Ящеролюд", 8, "Средний", 25, "Обычное зрение", ["str", "wis"], "int", lines("lizardfolk")),
 ];
 
 interface ClassRow {
@@ -177,8 +152,8 @@ export const MORE_CLASSES: ClassRow[] = [
     extraSkills: 3,
     attacks: martial,
     armor: { unarmored: "trained", light: "trained", medium: "trained", heavy: "untrained" },
-    features: [{ name: "Ярость", info: `${DRAFT}Действие: больше урона и временные хиты, хуже действия, которым нужна сосредоточенность. Кнопки ярости на листе нет.`, short: "Черновик" }],
-    info: "Больше всех хитов среди этих классов. Воинское оружие и средние доспехи. Инстинкт ярости выберите заметкой: в расчёт он не входит.",
+    features: [{ name: "Ярость", info: `${DRAFT}Действие: больше урона и временные хиты, хуже действия, которым нужна сосредоточенность. Кнопка на листе включает ярость. К удару прибавляется только число из выбранного инстинкта.`, short: "Черновик" }],
+    info: "Больше всех хитов среди этих классов. Воинское оружие и средние доспехи. Инстинкт выбирается ниже. Дополнительный урон входит в удар, когда ярость включена и у инстинкта есть безусловное число в полях.",
   }),
   klass({
     id: "champion",
@@ -246,7 +221,7 @@ export const MORE_CLASSES: ClassRow[] = [
     attacks: simple,
     armor: { unarmored: "trained", light: "trained", medium: "untrained", heavy: "untrained" },
     features: [{ name: "Проклятие", info: `${DRAFT}Тайна даёт силу и проклятие, которое нарастает. Ступени проклятия лист не ведёт. Число ячеек в сверенной карточке не стояло, поэтому лист их не выдумывает.`, short: "Черновик" }],
-    info: "Божественная магия. Число ячеек в сверенной карточке не стояло, поэтому конструктор их не назначает.",
+    info: "Божественная магия. Число ячеек в сверенной карточке не стояло, поэтому конструктор их не назначает. Тайна ниже обучает навыку из поля и записывает проклятие, но ступень проклятия в штраф не переводит.",
   }),
   klass({
     id: "sorcerer",
@@ -290,6 +265,22 @@ export const MORE_CLASSES: ClassRow[] = [
     attacks: martial,
     armor: { unarmored: "trained", light: "trained", medium: "untrained", heavy: "untrained" },
     features: [{ name: "Стиль", info: `${DRAFT}Удачный финт, обман или акробатика дают точность к следующему удару. Лист точность сам не включает.`, short: "Черновик" }],
-    info: "Ловкость, воинское оружие, лёгкие доспехи. Стиль — заметка.",
+    info: "Ловкость, воинское оружие, лёгкие доспехи. Стиль ниже обучает навыку из поля. Точность к удару лист сам не включает.",
   }),
 ];
+
+const PATH_ROWS = paths as { classId: string; source: string; title: string; options: { id: string; name: string; info: string }[] }[];
+const FEAT_AT_1 = new Set(["alchemist", "barbarian", "champion", "investigator", "monk", "swashbuckler"]);
+for (const job of MORE_CLASSES) {
+  if (FEAT_AT_1.has(job.id)) job.featLevel1 = true;
+  const path = PATH_ROWS.find((row) => row.classId === job.id);
+  if (!path) continue;
+  job.choices = [
+    ...job.choices,
+    {
+      id: path.source,
+      title: path.title,
+      options: path.options.map((option) => ({ id: option.id, name: option.name, info: option.info })),
+    },
+  ];
+}

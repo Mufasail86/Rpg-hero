@@ -37,6 +37,7 @@ import {
   type Draft,
 } from "../types";
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
+import { levelOneClassFeats } from "../data/pf-index";
 import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
 
@@ -264,7 +265,7 @@ function SystemStep({
               </button>
             ))}
           </div>
-          {edition && !filledEdition(edition) && <p className="tiny">Эта редакция в сборке ещё без записей. Конструктор не покажет чужой список.</p>}
+          {edition && !filledEdition(edition) && <p className="tiny">{edition === "pf-legacy" ? "Карточки до ремастера лежат в справочнике. Конструктор их в расчёт не подставляет, чтобы не смешать с ремастером." : "Эта редакция в конструктор не подставляется. Чужой список здесь не показан."}</p>}
           {edition && <BookLine edition={edition} />}
         </>
       )}
@@ -298,7 +299,7 @@ function Meters({ draft }: { draft: Draft }) {
 function UnfilledNote({ edition }: { edition: RulesEdition }) {
   const text = edition === "dnd-2014"
     ? "Правила 2014 года лежат в справочнике отдельно. Конструктор их в расчёт не подставляет, чтобы не смешать с правилами 2024 года. Здесь можно завести свою запись."
-    : "Правила до ремастера хранятся отдельно. Записей этого пакета в сборке ноль, поэтому список ремастера здесь не показан. Можно завести свою запись.";
+    : "Правила до ремастера лежат в справочнике отдельным пакетом. Конструктор этот список в расчёт не подставляет, чтобы не смешать с ремастером. Здесь можно завести свою запись.";
   return (
     <p className="lead" data-testid="edition-empty">
       {text}
@@ -934,16 +935,14 @@ function FeatStep({
           <Choice key={feat.id} id={`general-${feat.id}`} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.generalFeat === feat.id} disabled={Boolean(reason)} reason={reason} onPick={() => setChoice("generalFeat", feat.id)} />
         );
       })}
-      {(cls?.featLevel1 || ambition) && cls && cls.feats.length > 0 && (
+      {(cls?.featLevel1 || ambition) && cls && (
         <>
           <p className="kicker">Черта класса</p>
-          {cls.feats.map((feat) => (
+          <p className="tiny">Список 1 уровня этого класса из полей книг. Черта без отдельного числа в движке остаётся текстом.</p>
+          {[...cls.feats, ...levelOneClassFeats(cls.id).filter((feat) => !cls.feats.some((known) => known.id === feat.id))].map((feat) => (
             <Choice key={feat.id} id={feat.id} name={feat.name} info={feat.info} short={feat.short} on={draft.choices.classFeat === feat.id} onPick={() => setChoice("classFeat", feat.id)} />
           ))}
         </>
-      )}
-      {(cls?.featLevel1 || ambition) && cls && cls.feats.length === 0 && (
-        <p className="tiny">Ограничение приложения: у этого класса в справочнике нет черт 1 уровня, поэтому шаг не требует выбора из пустого списка. Запишите классовую черту своей записью ниже. «Общая подготовка» тут ни при чём — остальные черты народа тоже выбираются.</p>
       )}
       <CustomFeats draft={draft} update={update} />
     </>

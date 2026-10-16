@@ -100,6 +100,7 @@ describe("готовый персонаж", () => {
     draft.choices.skillFeat = "hefty";
     expect(validateStep(draft, "feats")).toMatch(/Атлетика/);
     draft.multi.skills = ["athletics"];
+    draft.choices.classFeat = "spellbook-prodigy";
     expect(validateStep(draft, "feats")).toBeNull();
     draft.choices.ancestryFeat = "general-training";
     expect(validateStep(draft, "feats")).toMatch(/общую черту/);

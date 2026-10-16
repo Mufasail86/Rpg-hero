@@ -39,7 +39,7 @@ import { go, Info } from "./common";
 import { DicePanel, queueRoll } from "./dice";
 import { AdvancePanel, CombatTracker, sheetDerived, WarningBanner } from "./remaster";
 import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
-import { sheetDnd } from "../dnd/build";
+import { sheetDnd, subclassIdOf } from "../dnd/build";
 import { systemTitle } from "../labels";
 import { EDITION_NAME, rulesOf } from "../data/editions";
 import { portraitSrc } from "./art";
@@ -532,6 +532,20 @@ function Health({ character, commit }: { character: Character; commit: (next: Ch
         <button type="button" className="btn" data-testid="apply-heal" onClick={() => applyHarm(previewHeal(character.system, bodyOf(character), amount, max))}>Лечение</button>
       </div>
       <div className="row">
+        {character.system === "dnd5e" && character.classId === "barbarian" && (
+          <button type="button" className={`pill ${(character.dnd ? character.dnd.toggles.includes("rage") : character.conditions.includes("rage")) ? "on" : ""}`} data-testid="toggle-rage" onClick={() => {
+            if (character.dnd) {
+              const on = character.dnd.toggles.includes("rage");
+              const toggles = on ? character.dnd.toggles.filter((id) => id !== "rage") : [...character.dnd.toggles, "rage"];
+              commit({ ...character, dnd: { ...character.dnd, toggles } });
+              return;
+            }
+            const on = character.conditions.includes("rage");
+            commit({ ...character, conditions: on ? character.conditions.filter((id) => id !== "rage") : [...character.conditions, "rage"] });
+          }}>
+            Ярость {(character.dnd ? character.dnd.toggles.includes("rage") : character.conditions.includes("rage")) ? "включена" : "выключена"}
+          </button>
+        )}
         <button type="button" className={`pill ${crit ? "on" : ""}`} onClick={() => setCrit((value) => !value)}>Критический</button>
         {character.system === "pf2e" && <button type="button" className={`pill ${nonlethal ? "on" : ""}`} onClick={() => setNonlethal((value) => !value)}>Несмертельный</button>}
         <button type="button" className="btn" data-testid="end-turn" onClick={() => applyHarm(endTurn(bodyOf(character)))}>Конец хода</button>
@@ -806,6 +820,10 @@ function Experience({ character, commit }: { character: Character; commit: (next
       const cls = CL5.find((item) => item.id === next.classId);
       if (cls && !next.features.some((feature) => feature.name === cls.subclass.name)) {
         next = { ...next, subclassName: cls.subclass.name, features: [...next.features, { name: cls.subclass.name, info: cls.subclass.info }] };
+      }
+      if (next.dnd && !next.dnd.subclassId && next.subclassName) {
+        const id = subclassIdOf(next.subclassName);
+        if (id && id !== "other") next = { ...next, dnd: { ...next.dnd, subclassId: id } };
       }
     }
     if (next.system === "dnd5e" && [4, 8, 12, 16, 19].includes(next.level)) next = { ...next, pendingAsi: true };

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
-import { describeDndChoice, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
+import { describeDndChoice, KNOWN_SUBCLASSES, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
 import { useCompact } from "./common";
@@ -36,6 +36,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
   const preview = sheetDnd(character, view);
   if (!live || !preview) return null;
   const slots = slotsForProgress(progress, character.level);
+  const knownSubclass = KNOWN_SUBCLASSES.filter((row) => row.classId === progress.classId);
   const open = slots.filter((slot) => !progress.choices.some((choice) => choice.id === slot.id));
 
   function commit(next: Character) {
@@ -118,13 +119,35 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
       )}
       <p className="tiny">{live.ac.formula}</p>
       <p className="tiny">{live.hp.formula}</p>
+      {knownSubclass.length > 0 && (
+        <label className="field">
+          <span>Подкласс с 3 уровня</span>
+          <select data-testid="dnd-subclass" value={progress.subclassId} onChange={(event) => {
+            const id = event.target.value;
+            const name = knownSubclass.find((row) => row.id === id)?.name ?? "";
+            commit({ ...character, subclassName: name || character.subclassName, dnd: { ...progress, subclassId: id } });
+          }}>
+            <option value="">Не выбран</option>
+            {knownSubclass.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}
+          </select>
+        </label>
+      )}
+      {progress.classId === "barbarian" && (
+        <button type="button" className={`pill ${progress.toggles.includes("rage") ? "on" : ""}`} data-testid="toggle-rage" onClick={() => {
+          const on = progress.toggles.includes("rage");
+          const toggles = on ? progress.toggles.filter((id) => id !== "rage") : [...progress.toggles, "rage"];
+          commit({ ...character, dnd: { ...progress, toggles } });
+        }}>
+          Ярость {progress.toggles.includes("rage") ? "включена" : "выключена"}
+        </button>
+      )}
       {open.length > 0 && <h2>Открытые выборы</h2>}
       {open.map((slot) => (
         <label key={slot.id} className="field">
           <span>{slot.level}. {slot.label}</span>
           <select value="" onChange={(event) => fill(slot, event.target.value)}>
             <option value="">Выбрать</option>
-            {optionsFor(slot.source).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            {optionsFor(slot.source, character).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
           </select>
         </label>
       ))}
@@ -249,8 +272,13 @@ function structured(name: string, entry: CustomEntry): StructuredEffect | null {
   };
 }
 
-function optionsFor(source: string): { pick: string; name: string }[] {
-  if (source === "skill") return SKILLS.map((skill) => ({ pick: skill.id, name: skill.name }));
+function optionsFor(source: string, character?: Character): { pick: string; name: string }[] {
+  if (source === "skill" || source === "expertise") {
+    const known = source === "expertise"
+      ? SKILLS.filter((skill) => character?.skillRanks[skill.id] === "proficient" || character?.skillRanks[skill.id] === "expertise")
+      : SKILLS;
+    return (known.length ? known : SKILLS).map((skill) => ({ pick: skill.id, name: skill.name }));
+  }
   if (source === "style") return [...STYLE_FEATS.map((feat) => ({ pick: feat.id, name: feat.name })), { pick: "dueling", name: "Дуэль" }, { pick: "protection", name: "Защита" }];
   if (source === "feat") return [...ORIGIN_FEATS, ...GENERAL_FEATS].map((feat) => ({ pick: `feat:${feat.id}`, name: feat.name }));
   if (source === "mastery") return ITEMS.filter((item) => item.kind === "weapon").map((item) => ({ pick: item.id, name: item.name }));

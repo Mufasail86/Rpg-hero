@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ItemInst } from "../types";
-import { deriveProgress, sheetDnd } from "./build";
+import { deriveProgress, sheetDnd, slotsForProgress, subclassIdOf } from "./build";
 import { guardCharacter, guardItems, guardProgress } from "./guard";
 
 function at(level: number, progress = guardProgress(), items = guardItems(), conditions: Record<string, number> = {}) {
@@ -161,6 +161,52 @@ describe("приёмка D&D", () => {
     expect(sheet.abilities.int).toMatchObject({ score: 17, mod: 3 });
     expect(sheet.initiative.value).toBe(5);
     expect(sheet.hp.value).toBe(32);
+  });
+
+  it("коллегия знаний даёт три навыка и одну экспертизу", () => {
+    const sheet = deriveProgress({
+      speciesId: "human",
+      backgroundId: "sage",
+      classId: "bard",
+      subclassId: "lore",
+      base: { str: 8, dex: 14, con: 14, int: 12, wis: 10, cha: 15 },
+      speed: 30,
+      toggles: [],
+      choices: [
+        { id: "skill-species", level: 1, source: "skill", pick: "perception" },
+        { id: "skill-class-0", level: 1, source: "skill", pick: "performance" },
+        { id: "skill-class-1", level: 1, source: "skill", pick: "persuasion" },
+        { id: "origin-feat", level: 1, source: "feat", pick: "feat:alert" },
+        { id: "lore-skill-0", level: 3, source: "skill", pick: "athletics" },
+        { id: "lore-skill-1", level: 3, source: "skill", pick: "acrobatics" },
+        { id: "lore-skill-2", level: 3, source: "skill", pick: "stealth" },
+        { id: "lore-expertise", level: 3, source: "expertise", pick: "arcana" },
+      ],
+    }, [], {}, [], 3);
+    expect(sheet.issues.filter((issue) => issue.kind === "build"), sheet.issues.map((issue) => issue.message).join("\n")).toEqual([]);
+    expect(slotsForProgress({ speciesId: "human", backgroundId: "sage", classId: "bard", subclassId: "lore", base: sheet.abilities && { str: 8, dex: 14, con: 14, int: 12, wis: 10, cha: 15 }, speed: 30, toggles: [], choices: [] }, 3).filter((slot) => slot.source === "expertise")).toHaveLength(1);
+    expect(sheet.skills.athletics.rank).toBe("proficient");
+    expect(sheet.skills.arcana.rank).toBe("expertise");
+    expect(sheet.skills.history.rank).toBe("proficient");
+  });
+
+  it("берсерк в ярости прибавляет урон ближнего боя и не меняет атаку", () => {
+    const base = { str: 16, dex: 14, con: 14, int: 8, wis: 10, cha: 10 };
+    const choices = [
+      { id: "skill-species", level: 1, source: "skill", pick: "perception" },
+      { id: "skill-class-0", level: 1, source: "skill", pick: "survival" },
+      { id: "skill-class-1", level: 1, source: "skill", pick: "nature" },
+      { id: "origin-feat", level: 1, source: "feat", pick: "feat:alert" },
+    ];
+    const sword = { uid: "axe", name: "Секира", qty: 1, weight: 4, equipped: true, kind: "weapon" as const, weapon: { damage: "1d12", attr: "str" as const, category: "martial" as const, hands: 2 as const, twoHanded: true } };
+    const calm = deriveProgress({ speciesId: "human", backgroundId: "soldier", classId: "barbarian", subclassId: "berserker", base, speed: 30, toggles: [], choices }, [sword], {}, [], 3);
+    const raging = deriveProgress({ speciesId: "human", backgroundId: "soldier", classId: "barbarian", subclassId: "berserker", base, speed: 30, toggles: ["rage"], choices }, [sword], {}, [], 3);
+    expect(calm.attacks[0].attack.value).toBe(raging.attacks[0].attack.value);
+    expect(calm.attacks[0].damage).toBe("1d12+3");
+    expect(raging.attacks[0].damage).toBe("1d12+5");
+    expect(raging.attacks[0].attack.aside.join(" ")).toMatch(/берсерка/);
+    expect(subclassIdOf("Путь берсерка")).toBe("berserker");
+    expect(subclassIdOf("Чемпион")).toBe("champion");
   });
 
   it("снимок кладёт посчитанные характеристики и не читает заметку", () => {
