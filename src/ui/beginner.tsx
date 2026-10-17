@@ -298,11 +298,13 @@ export function LevelWizard({
   open,
   optionsFor,
   onPick,
+  advice,
 }: {
   level: number;
   open: { id: string; level: number; source: string; label: string }[];
   optionsFor: (slot: { id: string; level: number; source: string; label: string }) => { pick: string; name: string }[];
   onPick: (slot: { id: string; level: number; source: string; label: string }, pick: string) => void;
+  advice?: { pick: string; reason: string }[];
 }) {
   const here = open.filter((slot) => slot.level === level);
   const slot = here[0] ?? open[0];
@@ -313,9 +315,9 @@ export function LevelWizard({
       {slot && (
         <>
           <p>{slotTitle(slot.source, slot.label)}. {here.length > 1 ? `Таких шагов сейчас ${here.length}. Этот — первый.` : "Один шаг."}</p>
-          {wizardOptions(slot.source, optionsFor(slot)).map((option, index) => (
-            <button key={option.pick} type="button" className="advise-row" data-testid={`wizard-${slot.id}`} onClick={() => onPick(slot, option.pick)}>
-              <b>{index === 0 ? "Советуем. " : ""}{option.name}</b>
+          {wizardOptions(slot.source, optionsFor(slot), advice).map((option, index) => (
+            <button key={option.pick} type="button" className="advise-row" data-testid={`wizard-${slot.id}`} data-advised={option.advised || index === 0 ? "1" : "0"} onClick={() => onPick(slot, option.pick)}>
+              <b>{option.advised || index === 0 ? "Советуем. " : ""}{option.name}</b>
               <small>{option.reason}</small>
             </button>
           ))}

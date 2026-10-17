@@ -8,6 +8,7 @@ import {
   spellBudget,
   type StepId,
 } from "./create";
+import { skillPlan } from "./skills/picks";
 import {
   ANCESTRIES,
   CLASSES as CL2,
@@ -695,11 +696,16 @@ const WIZARD_ARCHETYPE: { id: string; reason: string }[] = [
 ];
 
 /** A few legal picks a new player can understand. The full list stays in the level plan. */
-export function wizardOptions(source: string, options: { pick: string; name: string }[]): { pick: string; name: string; reason: string }[] {
-  const withReason = (option: { pick: string; name: string }, reason?: string) => ({
+export function wizardOptions(
+  source: string,
+  options: { pick: string; name: string }[],
+  advice?: { pick: string; reason: string }[],
+): { pick: string; name: string; reason: string; advised?: boolean }[] {
+  const withReason = (option: { pick: string; name: string }, reason?: string, advised?: boolean) => ({
     pick: option.pick,
     name: option.name,
     reason: reason ?? slotReason(source, option.name),
+    advised,
   });
   if (source.includes("boost")) return options.map((option) => withReason(option));
   if (source === "asi") {
@@ -709,6 +715,14 @@ export function wizardOptions(source: string, options: { pick: string; name: str
     return shown.map((option) => withReason(option, WIZARD_FEATS.find((row) => row.id === option.pick)?.reason));
   }
   if (source === "class-skill" || source === "heritage-skill" || source === "skill-increase" || source === "skill" || source === "expertise") {
+    if (advice?.length) {
+      const byPick = new Map(options.map((option) => [option.pick, option]));
+      const advised = advice.flatMap((row) => {
+        const option = byPick.get(row.pick);
+        return option ? [withReason(option, row.reason, true)] : [];
+      }).slice(0, 4);
+      if (advised.length) return advised;
+    }
     const prefer = ["athletics", "acrobatics", "medicine", "stealth", "perception", "intimidation"];
     const ranked = [...options].sort((left, right) => {
       const leftAt = prefer.indexOf(left.pick);
@@ -826,7 +840,19 @@ function fillSkills(draft: Draft): Partial<Draft> {
     .map((skill) => skill.id)
     .filter((id) => !fixed.has(id))
     .filter((id) => allowed === "any" || !allowed || allowed.includes(id));
-  const prefer = [...PREFER_SKILLS.filter((id) => pool.includes(id)), ...pool];
+  const key = classKey(draft) ?? "str";
+  const plan = skillPlan({
+    system: draft.system,
+    classId: draft.classId,
+    keyAbility: key,
+    role: classFace(draft.system, draft.classId).role,
+    scores: scored.scores,
+  });
+  const prefer = [
+    ...plan.grow.map((row) => row.id).filter((id) => pool.includes(id)),
+    ...PREFER_SKILLS.filter((id) => pool.includes(id)),
+    ...pool,
+  ];
   const skills: string[] = [];
   for (const id of prefer) {
     if (skills.length >= need) break;

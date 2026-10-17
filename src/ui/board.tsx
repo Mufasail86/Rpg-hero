@@ -277,7 +277,10 @@ export function CharacterBoard({ character, commit, hints = false }: { character
       </div>
 
       <div className="board-skills">
-        <b>Навыки</b>
+        <div className="skill-head">
+          <b>Навыки</b>
+          <button type="button" className="text-btn" data-testid="open-skill-picks" onClick={() => go(`#/c/${character.id}/skill-picks`)}>Какие брать</button>
+        </div>
         <div className="skill-grid">
           {skills.map((skill) => (
             <div key={skill.id} className="skill-line" data-testid={`skill-${skill.id}`}>

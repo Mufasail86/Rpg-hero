@@ -700,7 +700,10 @@ body:has(.board-app),
   flex-direction: column;
   gap: 2px;
 }
-.board-skills > b { flex: none; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.board-skills > b, .skill-head b { flex: none; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.skill-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 0; }
+.skill-head .text-btn { min-height: 0; padding: 0; font-size: 11px; }
+.skill-picks summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; }
 .skill-grid {
   flex: 1;
   min-height: 0;

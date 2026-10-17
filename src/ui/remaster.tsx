@@ -10,6 +10,7 @@ import { hpMax, refreshSlots } from "../rules";
 import { useCompact } from "./common";
 import { PickList } from "./feat-picker";
 import { LevelWizard } from "./beginner";
+import { advicePicks, planForCharacter } from "./skill-guide";
 
 function detailFor(pick: string): Record<string, string> | undefined {
   if (pick === "canny-acumen") return { defense: "will" };
@@ -207,7 +208,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
         open={open}
         optionsFor={(slot) => {
           const taken = new Set(progress.choices.map((choice) => choice.pick));
-          const options = optionsForSlot(slot.source, {
+          const raw = optionsForSlot(slot.source, {
             classId: progress.classId,
             ancestryId: progress.ancestryId,
             level: slot.level,
@@ -215,7 +216,8 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
             ranks: character.skillRanks,
             scores: character.abilities,
             skillInGeneral: slot.source === "general-feat",
-          }).filter((option) => !taken.has(option.pick));
+          });
+          const options = slot.source === "skill-increase" ? raw : raw.filter((option) => !taken.has(option.pick));
           return options.length ? options : optionsForSlot(slot.source, {
             classId: progress.classId,
             ancestryId: progress.ancestryId,
@@ -227,6 +229,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
           });
         }}
         onPick={(slot, pick) => fill(slot, pick)}
+        advice={advicePicks(planForCharacter(character))}
       />
       <details className="card">
         <summary>Весь план по уровням</summary>

@@ -13,7 +13,7 @@ import {
 import { SKILLS as DND_SKILLS } from "../data/dnd5e";
 import { rulesOf } from "../data/editions";
 import { SKILLS as PF_SKILLS } from "../data/pf2e";
-import { Info } from "./common";
+import { go, Info } from "./common";
 import { appendRoll } from "../play/log";
 import { type Character, type VowKind, fmt, uid } from "../types";
 
@@ -82,7 +82,7 @@ export function QuickBar({
               </div>
             )}
             {open === "skills"
-              ? current ? <SkillsPane character={current} onChange={onChange} /> : <SkillGuide />
+              ? current ? <SkillsPane character={current} onChange={onChange} onGuide={() => { setOpen(null); go(`#/c/${current.id}/skill-picks`); }} /> : <SkillGuide onGuide={() => { setOpen(null); go("#/skill-picks"); }} />
               : current ? <ReminderPane character={current} onChange={onChange} /> : <ReminderGuide />}
           </div>
         </div>
@@ -99,7 +99,7 @@ export function QuickBar({
   );
 }
 
-function SkillsPane({ character, onChange }: { character: Character; onChange: (character: Character) => void }) {
+function SkillsPane({ character, onChange, onGuide }: { character: Character; onChange: (character: Character) => void; onGuide: () => void }) {
   const lines = skillSnapshot(character);
   const [showRest, setShowRest] = useState(false);
   const [opened, setOpened] = useState<string | null>(lines.find((line) => line.pinned || line.trained)?.id ?? null);
@@ -155,6 +155,9 @@ function SkillsPane({ character, onChange }: { character: Character; onChange: (
   return (
     <div className="stack">
       <p className="tiny">Если здесь +7, к кости к20 прибавьте только 7. Характеристика и владение уже внутри.</p>
+      <button type="button" className="btn" data-testid="quick-skill-picks" onClick={onGuide}>
+        Какие навыки брать
+      </button>
       <label className="field">
         <span>СЛ, если мастер назвал</span>
         <input inputMode="numeric" data-testid="skill-dc" value={dc} onChange={(event) => setDc(event.target.value)} />
@@ -333,9 +336,10 @@ export function ReminderPane({ character, onChange }: { character: Character; on
   );
 }
 
-function SkillGuide() {
+function SkillGuide({ onGuide }: { onGuide: () => void }) {
   return (
     <div className="stack">
+      <button type="button" className="btn" data-testid="quick-skill-picks" onClick={onGuide}>Какие навыки брать</button>
       <p className="tiny">Справочник навыков. Бросок с модификатором героя появится, когда на телефоне будет лист.</p>
       <b>Ремастер</b>
       {PF_SKILLS.map((skill) => (
