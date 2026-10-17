@@ -84,13 +84,20 @@ describe("единая модель редакций", () => {
     expect(counts["pf-orc-more"]).toBe(9148);
     expect(counts["lore-golarion"]).toBe(68);
     expect(counts["lore-forgotten-realms"]).toBe(22);
-    expect(counts["lore-other-settings"]).toBe(8);
+    expect(counts["lore-other-settings"]).toBe(9);
     expect(counts["lore-srd-settings"]).toBe(1);
     expect(counts["pf-monster-core"]).toBe(492);
     expect(counts["srd-5.2-monsters"]).toBe(330);
     expect(counts["srd-5.1-monsters"]).toBe(307);
-    expect(loreCatalog()).toHaveLength(99);
-    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(96);
+    expect(loreCatalog()).toHaveLength(100);
+    expect(loreCatalog().find((entry) => entry.localId === "jalmeray")?.text).toContain("океане Обари");
+    expect(loreCatalog().find((entry) => entry.localId === "jalmeray")?.text).not.toContain("Обсидиан");
+    expect(loreCatalog().find((entry) => entry.localId === "sigil")?.category).toBe("city");
+    expect(loreCatalog().find((entry) => entry.localId === "planescape")?.category).toBe("world");
+    expect(loreCatalog().find((entry) => entry.localId === "taldor")?.era).toBe("4725 AR");
+    expect(loreCatalog().find((entry) => entry.localId === "gorum")?.text).toContain("4724 AR");
+    expect(loreCatalog().filter((entry) => entry.category === "policy")).toHaveLength(3);
+    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(97);
     expect(loreCatalog().some((entry) => entry.localId === "oppara-court" && entry.spoiler === "gm")).toBe(true);
     expect(loreCatalog().every((entry) => ["golarion", "forgotten-realms", "srd", "greyhawk", "krynn", "eberron", "ravenloft", "spelljammer", "athas", "planescape", "policy"].includes(entry.settingId))).toBe(true);
     expect(loreCatalog().find((entry) => entry.localId === "abadar")?.text).toContain("Эдикты");
@@ -173,7 +180,7 @@ describe("единая модель редакций", () => {
       { id: "srd-5.1-monsters", entered: 307, verified: 307 },
       { id: "lore-golarion", entered: 68, verified: 68 },
       { id: "lore-forgotten-realms", entered: 22, verified: 22 },
-      { id: "lore-other-settings", entered: 8, verified: 8 },
+      { id: "lore-other-settings", entered: 9, verified: 9 },
       { id: "lore-srd-settings", entered: 1, verified: 1 },
     ]);
   });

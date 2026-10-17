@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { loreCatalog, entryByToken } from "../data/catalog";
-import { PACKS } from "../data/editions";
-import { ART, ART_CAPTION, artSrc } from "./art";
+import { fold } from "../data/editions";
+import { LORE_TOPIC_NAME, type LoreTopic } from "../data/lore";
+import { SearchField, SelectField } from "./controls";
 import { go, useHash } from "./common";
 
 const MODE_KEY = "rpg-spoiler";
@@ -21,6 +22,20 @@ function worldName(id: string): string {
   return "Отдельный мир";
 }
 
+function LoreBody({ text }: { text: string }) {
+  const mark = "Идея для стола.";
+  const cut = text.indexOf(mark);
+  if (cut < 0) return <p className="prose">{text}</p>;
+  return (
+    <>
+      <p className="prose">{text.slice(0, cut).trim()}</p>
+      <aside className="gm-idea" data-testid="lore-idea">
+        <b>{mark}</b> {text.slice(cut + mark.length).trim()}
+      </aside>
+    </>
+  );
+}
+
 function readMode(): "player" | "gm" {
   try {
     return sessionStorage.getItem(MODE_KEY) === "gm" ? "gm" : "player";
@@ -33,8 +48,20 @@ export function Lore() {
   const hash = useHash();
   const token = decodeURIComponent(hash.replace(/^#/, "").split("/").filter(Boolean)[1] ?? "");
   const [mode, setMode] = useState<"player" | "gm">(readMode);
-  const cards = loreCatalog().filter((card) => mode === "gm" || card.spoiler !== "gm");
-  const hidden = loreCatalog().length - cards.length;
+  const [world, setWorld] = useState("все");
+  const [topic, setTopic] = useState("все");
+  const [query, setQuery] = useState("");
+  const stories = loreCatalog().filter((card) => card.category !== "policy");
+  const cards = stories.filter((card) => {
+    if (mode !== "gm" && card.spoiler === "gm") return false;
+    if (world !== "все" && card.settingId !== world) return false;
+    if (topic !== "все" && card.category !== topic) return false;
+    if (!query.trim()) return true;
+    const needle = fold(query);
+    return fold(`${card.name} ${card.originalName} ${card.short} ${card.era}`).includes(needle);
+  });
+  const worlds = [...new Set(stories.map((card) => card.settingId))];
+  const hidden = stories.filter((card) => card.spoiler === "gm").length;
   const focus = token ? entryByToken(token) : undefined;
 
   function pick(next: "player" | "gm") {
@@ -64,21 +91,29 @@ export function Lore() {
           <button type="button" className={`pill ${mode === "gm" ? "on" : ""}`} aria-pressed={mode === "gm"} data-testid="lore-gm" onClick={() => pick("gm")}>Режим ведущего</button>
         </div>
         <p className="tiny" data-testid="lore-count">
-          Показано {focus ? 1 : cards.length} из {loreCatalog().length}. Скрыто от игрока: {hidden}.
+          Преданий {stories.length}, без карточек политики публикации. Показано {focus ? 1 : cards.length}. Скрыто от игрока: {hidden}.
         </p>
-        {PACKS.filter((pack) => pack.edition === "lore").map((pack) => (
-          <p key={pack.id} className="tiny">{pack.title}: {loreCatalog().filter((card) => card.sourceId === pack.id).length} карточек. {pack.note}</p>
-        ))}
+        <SearchField label="Поиск" testId="lore-search" value={query} onChange={setQuery} placeholder="Например, Талдор или Глубоководье" />
+        <SelectField label="Мир" testId="lore-world" value={world} onChange={setWorld}>
+          <option value="все">все миры</option>
+          {worlds.map((id) => <option key={id} value={id}>{worldName(id)}</option>)}
+        </SelectField>
+        <SelectField label="Вид" testId="lore-topic" value={topic} onChange={setTopic}>
+          <option value="все">все виды</option>
+          {(Object.keys(LORE_TOPIC_NAME) as LoreTopic[]).filter((id) => id !== "policy").map((id) => (
+            <option key={id} value={id}>{LORE_TOPIC_NAME[id]}</option>
+          ))}
+        </SelectField>
         {focus && focus.edition === "lore" && mode === "player" && focus.spoiler === "gm" && (
           <p data-testid="lore-hidden">Эта карточка для ведущего. В режиме игрока текст не показывается.</p>
         )}
         {focus && focus.edition === "lore" && (mode === "gm" || focus.spoiler !== "gm") ? (
           <article className="card stack">
             <b>{focus.name}</b>
-            <p className="tiny">{focus.era || "Эпоха не указана"} · {focus.spoiler === "gm" ? "для ведущего" : focus.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
+            <p className="tiny">{worldName(focus.settingId)} · {LORE_TOPIC_NAME[focus.category as LoreTopic] ?? focus.categoryTitle} · {focus.era || "Эпоха не указана"} · {focus.spoiler === "gm" ? "для ведущего" : focus.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
             {focus.short && <p className="lede">{focus.short}</p>}
-            <p>{focus.text}</p>
-            {focus.link && <p className="tiny">Источник: {focus.link}</p>}
+            <LoreBody text={focus.text} />
+            {focus.link && <p className="tiny">Источник: <a href={focus.link} target="_blank" rel="noreferrer">{focus.link}</a></p>}
             {focus.relations.length > 0 && (
               <div className="wrap">
                 {focus.relations.filter((id) => mode === "gm" || entryByToken(id)?.spoiler !== "gm").map((id) => (
@@ -94,7 +129,7 @@ export function Lore() {
               {cards.map((card) => (
                 <article key={card.token} className="card stack">
                   <b>{card.name}</b>
-                  <p className="tiny">{worldName(card.settingId)} · {card.spoiler === "gm" ? "для ведущего" : card.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
+                  <p className="tiny">{worldName(card.settingId)} · {LORE_TOPIC_NAME[card.category as LoreTopic] ?? card.categoryTitle} · {card.era || "без даты"} · {card.spoiler === "gm" ? "для ведущего" : card.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
                   {card.short && <p>{card.short}</p>}
                   <button type="button" className="btn" onClick={() => go(`#/lore/${encodeURIComponent(card.token)}`)}>Открыть</button>
                 </article>
@@ -102,10 +137,6 @@ export function Lore() {
             </div>
           </>
         )}
-        <figure className="figure-card">
-          <img src={artSrc(ART.castle)} alt="Ночной замок из синего камня над водопадом, свой рисунок" loading="lazy" decoding="async" />
-          <figcaption className="caption">{ART_CAPTION} Файл hill-castle.jpg. Это не вид города из книги и не карта.</figcaption>
-        </figure>
         <button type="button" className="btn" onClick={() => go("#/library")}>К справочнику правил</button>
       </main>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { allEntries, entryByToken, packCounts, type RuleEntry } from "../data/catalog";
-import { EDITION_NAME, PACKS, STATUS_NAME, fold, licenseCaption, packById, statusVerified, type RulesEdition } from "../data/editions";
+import { EDITION_NAME, PACKS, fold, licenseCaption, marksLabel, packById, statusVerified, type RulesEdition } from "../data/editions";
 import { SYSTEM_DND, SYSTEM_PF } from "../labels";
 import { ruSort } from "../sort";
 import { ART, ART_CAPTION, artSrc, cardArt } from "./art";
@@ -142,7 +142,7 @@ export function Library() {
         <h1 className="grow">Справочник</h1>
       </header>
       <main className="screen stack">
-        <p className="lead">Короткая строка и подробный пересказ. Редакции подписаны отдельно. «Ждёт сверки» значит: это свой пересказ, не построчная вычитка.</p>
+        <p className="lead">Короткая строка и подробный пересказ. Редакции подписаны отдельно. Отметка говорит только о том, что уже проверено: импорт, числа, перевод, правило или автоматизация.</p>
         <figure className="figure-card">
           <img src={artSrc(ART.drake)} alt="Речной змей с медной чешуёй, свой рисунок, не существо из бестиария" loading="lazy" decoding="async" />
           <figcaption className="caption">{ART_CAPTION} Чудовища книг открываются на экране бестиария, не в этом списке правил.</figcaption>
@@ -153,7 +153,7 @@ export function Library() {
             const row = packs.find((item) => item.id === pack.id);
             return (
               <p key={pack.id} className="tiny">
-                {pack.title}: {row?.entered ?? 0} записей, сверено {row?.verified ?? 0}. {pack.removable ? ((row?.entered ?? 0) > 0 ? "Пакет отдельный: его можно не включать в источники листа." : "Пакет можно не подключать, пока он пуст.") : "Пакет уже внутри сборки."} {pack.bytes === null ? "Отдельный размер не измерялся." : `Размер данных пакета: ${pack.bytes} байт.`}
+                {pack.title}: {row?.entered ?? 0} записей, с отдельной проверкой {row?.verified ?? 0}. {pack.removable ? ((row?.entered ?? 0) > 0 ? "Пакет отдельный: его можно не включать в источники листа." : "Пакет можно не подключать, пока он пуст.") : "Пакет уже внутри сборки."} {pack.bytes === null ? "Отдельный размер не измерялся." : `Размер данных пакета: ${pack.bytes} байт.`}
               </p>
             );
           })}
@@ -262,11 +262,12 @@ function EntryCard({
   const art = cardArt(entry.localId.split(":").pop() ?? entry.localId) ?? cardArt(entry.localId);
   const pack = packById(entry.sourceId);
   const card = cardFor(entry.localId);
-  const sourceNote = `${systemName(entry.system)} · ${editionLabel(entry)} · ${entry.categoryTitle} · ${pack?.title ?? entry.sourceId}. ${STATUS_NAME[entry.status]} · ${licenseCaption(entry.license)}.`;
+  const sourceNote = `${systemName(entry.system)} · ${editionLabel(entry)} · ${entry.categoryTitle} · ${pack?.title ?? entry.sourceId}. ${marksLabel(entry.status, entry.location)} · ${licenseCaption(entry.license)}.`;
   return (
     <article className="card stack">
       {art && <img className="card-art" src={art} alt="" loading="lazy" decoding="async" />}
       {showTitle && <b>{entry.name}</b>}
+      <p className="tiny" data-testid="data-marks">{marksLabel(entry.status, entry.location)}</p>
       {card ? <p className="en-name">{card.originalName}</p> : entry.originalName ? <p className="en-name">{entry.originalName}</p> : null}
       {card ? <RuleCardView card={card} sourceNote={sourceNote} /> : (
         <>

@@ -43,6 +43,7 @@ import { KNOWN_SUBCLASSES, sheetDnd, subclassIdOf } from "../dnd/build";
 import { rulesOf } from "../data/editions";
 import { RulesPanel } from "./rules";
 import { useHints } from "./beginner";
+import { PlayNow } from "./play-now";
 import { planForCharacter, SkillPicks } from "./skill-guide";
 
 const PANELS = [
@@ -69,7 +70,7 @@ export function Sheet({
   onChange: (character: Character) => void;
   onDelete: () => void;
 }) {
-  const title = panel === "skill-picks" ? "Какие навыки брать" : panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : panel === "feats" ? "Черты" : panel === "reminder" ? "Памятка" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
+  const title = panel === "now" ? "Играю сейчас" : panel === "skill-picks" ? "Какие навыки брать" : panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : panel === "feats" ? "Черты" : panel === "reminder" ? "Памятка" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [hints, toggleHints] = useHints();
 
@@ -111,10 +112,11 @@ export function Sheet({
           {panel === "notes" && <Notes character={character} commit={commit} />}
           {panel === "rules" && <RulesPanel character={character} commit={commit} />}
           {panel === "skill-picks" && <SkillPicks system={character.system} plan={planForCharacter(character)} />}
+          {panel === "now" && <PlayNow character={character} />}
           {panel === "growth" && (character.dnd ? <DndAdvance character={character} onChange={commit} /> : <AdvancePanel character={character} onChange={commit} />)}
           {panel === "combat" && (character.system === "dnd5e" ? <DndCombatPanel character={character} onChange={commit} /> : <CombatTracker character={character} onChange={commit} />)}
-          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "feats", "reminder", "dice", "notes", "growth", "combat", "rules", "skill-picks"].includes(panel) && <p>Такого раздела нет.</p>}
-          {panel !== "skill-picks" && (confirmDelete ? (
+          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "feats", "reminder", "dice", "notes", "growth", "combat", "rules", "skill-picks", "now"].includes(panel) && <p>Такого раздела нет.</p>}
+          {panel !== "skill-picks" && panel !== "now" && (confirmDelete ? (
             <div className="row">
               <button type="button" className="btn danger" onClick={onDelete}>Удалить насовсем</button>
               <button type="button" className="btn" onClick={() => setConfirmDelete(false)}>Оставить</button>
@@ -135,6 +137,7 @@ function SheetTabs({ id, panel }: { id: string; panel: string | null }) {
     ["spells", "Магия"],
     ["feats", "Черты"],
     ["reminder", "Памятка"],
+    ["now", "Сейчас"],
   ] as const;
   return (
     <nav className="board-tabs" aria-label="Страницы листа">

@@ -191,6 +191,8 @@ export interface Character {
   /** Короткая строка сопротивлений. В формулы не входит. */
   resistances?: string;
   photo?: string;
+  /** Исходный файл до кадрирования. На лист не выводится. */
+  photoOriginal?: string;
   level: number;
   xp: number;
   hpCurrent: number;
@@ -443,6 +445,7 @@ export interface Draft {
   customBackground: { name: string; info: string; skill: string };
   customClass: { name: string; info: string; hit: string; key: Ability; caster: string; hp: string };
   photo?: string;
+  photoOriginal?: string;
 }
 
 export const SAVE_KEY = "rpg-hero-v1";

@@ -1,4 +1,5 @@
 import cards from "./generated/pf-cards.json";
+import { polishDuration, polishName, polishProse } from "./voice";
 import traits from "./generated/pf-traits.json";
 import features from "./generated/pf-class-features.json";
 
@@ -50,7 +51,13 @@ export interface ClassFeatureLine {
   name: string;
 }
 
-export const CARDS = cards as RuleCard[];
+export const CARDS = (cards as RuleCard[]).map((card) => ({
+  ...card,
+  name: polishName(card.name, card.originalName),
+  summary: polishProse(card.summary),
+  duration: card.duration ? polishDuration(card.duration) : card.duration,
+  heightened: card.heightened ? polishProse(card.heightened) : card.heightened,
+}));
 export const CARD_BY_ID = new Map(CARDS.map((card) => [card.id, card]));
 export const TRAIT_BY_ID = new Map((traits as TraitChip[]).map((trait) => [trait.id, trait]));
 export const CLASS_FEATURES = features as ClassFeatureLine[];

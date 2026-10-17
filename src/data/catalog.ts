@@ -1,6 +1,6 @@
 import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
-import { LORE } from "./lore";
+import { LORE, LORE_TOPIC_NAME, loreTopic } from "./lore";
 import pfCorePack from "./generated/pf-core.json";
 import pfLegacyPack from "./generated/pf-legacy.json";
 import pfListsPack from "./generated/pf-lists.json";
@@ -13,6 +13,7 @@ import { ORC_ORIGINAL_NAME } from "./roster";
 import { pathOption } from "./pf-index";
 import { bestiaryPackCounts } from "./bestiary";
 import { LINKS, REVIEW } from "./review";
+import { polishName, polishProse } from "./voice";
 import { VERSATILE } from "./versatile";
 
 export interface RuleEntry {
@@ -61,7 +62,7 @@ function make(stamp: Stamp, category: string, categoryTitle: string, localId: st
   return {
     token,
     localId,
-    name,
+    name: polishName(name, review?.originalName ?? ""),
     originalName: review?.originalName ?? "",
     altNames: [],
     system: stamp.system,
@@ -77,8 +78,8 @@ function make(stamp: Stamp, category: string, categoryTitle: string, localId: st
     sourceVersion: review?.sourceVersion ?? "",
     status: review?.status ?? "pending",
     license: pack?.license ?? "summary-only",
-    short: short ?? "",
-    text,
+    short: polishProse(short ?? ""),
+    text: polishProse(text),
     prereq: "",
     relations: [],
     relationNotes: [],
@@ -101,7 +102,10 @@ function fromPacked(entry: PackedEntry, system: "dnd5e" | "pf2e", edition: Rules
   );
   return {
     ...base,
+    name: polishName(entry.name, entry.originalName || base.originalName),
     originalName: entry.originalName || base.originalName,
+    short: polishProse(entry.short || base.short),
+    text: polishProse(entry.text || base.text),
     altNames: entry.altNames,
     prereq: entry.prereq,
     location: entry.location || base.location,
@@ -280,8 +284,8 @@ function loreEntries(): RuleEntry[] {
       system: "lore" as const,
       edition: "lore" as const,
       settingId: card.settingId,
-      category: "lore",
-      categoryTitle: "Предание",
+      category: loreTopic(card.id),
+      categoryTitle: LORE_TOPIC_NAME[loreTopic(card.id)],
       rank: null,
       sourceId: card.sourceId,
       location: card.location,

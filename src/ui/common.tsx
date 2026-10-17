@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { PORTRAIT_PROVENANCE } from "./art";
+import { ArtButton } from "./lightbox";
 
 const InfoContext = createContext<(title: string, text: string) => void>(() => {});
 
@@ -66,6 +66,10 @@ export function useHash(): string {
 export function go(hash: string) {
   if (window.location.hash === hash) window.dispatchEvent(new HashChangeEvent("hashchange"));
   else window.location.hash = hash;
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+    document.querySelector(".screen")?.scrollTo(0, 0);
+  });
 }
 
 /** Компактный бой включён, пока игрок сам не выключит его в этой вкладке. */
@@ -122,7 +126,7 @@ export function Choice({
 }) {
   return (
     <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
-      {art ? <img className="option-art" src={art} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} loading="lazy" decoding="async" /> : null}
+      {art ? <ArtButton src={art} label={name} /> : null}
       <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
         {english ? <small className="en-name">{english}</small> : null}

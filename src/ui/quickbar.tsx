@@ -88,6 +88,11 @@ export function QuickBar({
         </div>
       )}
       <nav className={`quickbar ${raised ? "raised" : ""} ${compact ? "slim" : ""}`} aria-label="Быстрый доступ">
+        {current && (
+          <button type="button" className="btn primary" data-testid="play-now-open" onClick={() => { setOpen(null); go(`#/c/${current.id}/now`); }}>
+            Играю сейчас
+          </button>
+        )}
         <button type="button" className="btn" data-testid="quick-skills" onClick={() => setOpen("skills")}>
           Навыки
         </button>

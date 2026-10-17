@@ -134,9 +134,14 @@ function editionOpen(d: Draft): boolean {
   return d.system ? filledEdition(activeEdition(d)) : true;
 }
 
+function knownAncestry(d: Draft): boolean {
+  if (d.system === "dnd5e") return SPECIES.some((item) => item.id === d.ancestryId);
+  return ANCESTRIES.some((item) => item.id === d.ancestryId);
+}
+
 function validateAncestry(d: Draft): string | null {
-  if (!editionOpen(d)) {
-    if (d.ancestryId !== "custom") return "В этой редакции готовых народов нет. Выберите свою запись или другую редакцию.";
+  if (!editionOpen(d) && d.ancestryId !== "custom" && !knownAncestry(d)) {
+    return "В этой редакции этого народа нет. Выберите человека из открытого списка, свою запись или другую редакцию.";
   }
   if (d.versatileHeritageId) {
     if (d.versatileHeritageId === "umbral") return "«Сумеречный» — наследие гнома, не универсальное.";
@@ -752,6 +757,7 @@ function build5(d: Draft, scores: Record<Ability, number>): Character {
     system: "dnd5e",
     name: d.name.trim(),
     photo: d.photo,
+    photoOriginal: d.photoOriginal,
     level: 1,
     xp: 0,
     hpCurrent: 1,
@@ -958,6 +964,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     system: "pf2e",
     name: d.name.trim(),
     photo: d.photo,
+    photoOriginal: d.photoOriginal,
     level: 1,
     xp: 0,
     hpCurrent: 1,

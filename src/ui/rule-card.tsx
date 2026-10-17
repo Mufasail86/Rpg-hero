@@ -66,7 +66,7 @@ export function RuleCardView({ card, sourceNote }: { card: RuleCard; sourceNote?
       <Line label="Усиление" value={card.heightened} />
       <details className="source-foot">
         <summary>Источник</summary>
-        <p className="tiny">{book}.{sourceNote ? ` ${sourceNote}` : ""} Сверено по полям ORC, абзац книги не скопирован.</p>
+        <p className="tiny">{book}.{sourceNote ? ` ${sourceNote}` : ""} Поля взяты из открытой выгрузки. Это не значит, что перевод вычитан или правило разобрано целиком.</p>
       </details>
     </div>
   );

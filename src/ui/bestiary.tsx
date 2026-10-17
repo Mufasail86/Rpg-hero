@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LICENSE_NOTICE, bestiaryCatalog, monsterByToken, type MonsterCard } from "../data/bestiary";
-import { EDITION_NAME, fold, type RulesEdition } from "../data/editions";
+import { EDITION_NAME, fold, marksLabel, type RulesEdition } from "../data/editions";
 import { dnd2014Guidance, dnd2024Budget, pfAward, pfBudget, pfCreatureXp, type Dnd2024Threat, type PfThreat } from "../encounter";
 import { ART, artSrc } from "./art";
 import { go, useHash } from "./common";
+import { SearchField, SelectField } from "./controls";
 
 const PAGE = 24;
 
@@ -133,17 +134,11 @@ export function Bestiary() {
           <MonsterArticle monster={focus} mode={mode} onAdd={() => add(focus.token)} />
         ) : (
           <>
-            <label className="field">
-              <span>Поиск</span>
-              <input data-testid="bestiary-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Например, гоблин или аболеф" />
-            </label>
-            <label className="field">
-              <span>Тип</span>
-              <select data-testid="bestiary-kind" value={kind} onChange={(event) => setKind(event.target.value)}>
-                <option value="все">все типы</option>
-                {kinds.map((item) => <option key={item} value={item}>{item}</option>)}
-              </select>
-            </label>
+            <SearchField label="Поиск" testId="bestiary-search" value={query} onChange={setQuery} placeholder="Например, гоблин или аболеф" />
+            <SelectField label="Тип" testId="bestiary-kind" value={kind} onChange={setKind}>
+              <option value="все">все типы</option>
+              {kinds.map((item) => <option key={item} value={item}>{item}</option>)}
+            </SelectField>
             <div className="grid-2">
               <label className="field">
                 <span>{activeEdition === "pf-remaster" ? "Уровень от" : "Опасность от"}</span>
@@ -164,6 +159,7 @@ export function Bestiary() {
             <div className="library-grid">
               {shown.map((monster) => (
                 <article key={monster.token} className="card stack">
+                  <div className="bestiary-art" data-testid="bestiary-art" aria-hidden />
                   <b>{monster.name}</b>
                   <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>
                   {mode === "gm" && <p className="tiny">КБ {monster.ac} · хиты {monster.hp}{monster.xp != null ? ` · опыт ${monster.xp}` : ""}</p>}
@@ -190,6 +186,7 @@ function MonsterArticle({ monster, mode, onAdd }: { monster: MonsterCard; mode: 
   return (
     <article className="card stack" data-testid="bestiary-card">
       <b>{monster.name}</b>
+      <p className="tiny" data-testid="data-marks">{marksLabel(monster.status, monster.location)}</p>
       <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>
       {mode === "player" && <p data-testid="bestiary-hidden">Полный блок для ведущего. В режиме игрока скрыты класс брони, хиты, опыт и способности.</p>}
       {mode === "gm" && (

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { blankDraft } from "./types";
 import { createCharacter, validateStep } from "./create";
-import { fillStep, plainWords, premades, starterDraft, TERMS, wizardOptions } from "./beginner";
+import { ancestryAdvice, fillStep, peopleSplit, plainWords, premades, starterDraft, TERMS, wizardOptions } from "./beginner";
 
 describe("готовые герои новичка", () => {
   it("каждый премейд проходит проверку и создаёт лист", () => {
@@ -44,6 +44,41 @@ describe("готовые герои новичка", () => {
       multi: { ...withAbilities.multi, ...skills.multi, ...feats.multi },
     };
     expect(validateStep(filled, "review")).toBeNull();
+  });
+});
+
+describe("выбор народа", () => {
+  it("ставит человека первым в советах и оставляет его в алфавитном списке", () => {
+    for (const system of ["pf2e", "dnd5e"] as const) {
+      const advice = ancestryAdvice(system);
+      expect(advice[0]?.id).toBe("human");
+      const people = [
+        { id: "elf", name: "Эльф" },
+        { id: "human", name: "Человек" },
+        { id: "dwarf", name: "Дварф" },
+        { id: "goblin", name: "Гоблин" },
+      ];
+      const open = peopleSplit(advice, people, "");
+      expect(open.recommended[0]?.id).toBe("human");
+      expect(open.all.map((item) => item.id)).toContain("human");
+      const found = peopleSplit(advice, people, "человек", (item) => item.id === "human" ? "Human" : "");
+      expect(found.recommended.map((item) => item.id)).toEqual(["human"]);
+      expect(found.all.map((item) => item.id)).toEqual(["human"]);
+    }
+  });
+
+  it("в редакции 2014 года человека можно выбрать, список не пустой запрет", () => {
+    const draft = blankDraft();
+    draft.system = "dnd5e";
+    draft.edition = "dnd-2014";
+    draft.ancestryId = "human";
+    expect(validateStep(draft, "ancestry")).not.toMatch(/готовых народов нет/);
+    const legacy = blankDraft();
+    legacy.system = "pf2e";
+    legacy.edition = "pf-legacy";
+    legacy.ancestryId = "human";
+    expect(validateStep(legacy, "ancestry")).not.toMatch(/готовых народов нет/);
+    expect(validateStep(legacy, "ancestry")).toMatch(/наследие/);
   });
 });
 

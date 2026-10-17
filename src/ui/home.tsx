@@ -131,6 +131,9 @@ export function Home({
           <button type="button" className="btn" data-testid="open-table" onClick={() => go("#/table")}>
             Стол ведущего
           </button>
+          <button type="button" className="btn" data-testid="open-settings" onClick={() => go("#/settings")}>
+            Настройки
+          </button>
         </div>
         {hasDraft && (
           <button type="button" className="btn" onClick={() => go("#/new")}>
@@ -144,7 +147,7 @@ export function Home({
           const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
           return (
           <div key={hero.id} className="card portrait-home">
-            {drawn ? <img className="avatar" src={drawn} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} /> : <div className="avatar" aria-hidden>⚔</div>}
+            {drawn ? <img className="avatar" src={drawn} alt="" /> : <div className="avatar" aria-hidden>⚔</div>}
             <div className="grow">
               {hero.readiness === "draft" && <span className="chip">Черновик, не проверен</span>}
               <button type="button" className="text-btn" onClick={() => go(`#/c/${hero.id}`)}>
@@ -205,10 +208,11 @@ export function Home({
         )}
         {message && <p className="warn">{message}</p>}
         <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, выгрузите файл и загрузите его там. Сборка {APP_BUILD}.</p>
-        <button type="button" className="text-btn" onClick={() => setAbout((value) => !value)}>
-          {about ? "Скрыть лицензии" : "Об игре и лицензиях"}
-        </button>
-        {about && <LegalText />}
+        <details className="source-foot">
+          <summary>Источники и права</summary>
+          <p className="tiny">{PORTRAIT_PROVENANCE} {ART_CAPTION}</p>
+          {about ? <LegalText /> : <button type="button" className="text-btn" onClick={() => setAbout(true)}>Текст лицензий</button>}
+        </details>
         </div>
         </div>
       </main>

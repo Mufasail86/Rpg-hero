@@ -10,7 +10,7 @@ describe("бестиарий", () => {
     expect(counts["pf-monster-core"]).toBe(492);
     expect(counts["srd-5.2-monsters"]).toBe(330);
     expect(counts["srd-5.1-monsters"]).toBe(307);
-    expect(rows.every((row) => row.spoiler === "gm" && row.status === "verified-reference" && row.checkedOn === "2026-10-17")).toBe(true);
+    expect(rows.every((row) => row.spoiler === "gm" && row.status === "verified-partial" && row.checkedOn === "2026-10-17")).toBe(true);
     expect(rulesCatalog().some((entry) => entry.category === "monster")).toBe(false);
     expect(new Set(rows.map((row) => row.token)).size).toBe(rows.length);
   });
