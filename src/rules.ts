@@ -415,7 +415,15 @@ export function slotsFor(c: Character): Character["slots"] {
 function prepareLimit(c: Character): number {
   if (!c.spellcasting) return 0;
   const ability = abilityMod(c, c.spellcasting.ability);
-  if (c.system === "pf2e") return c.spellcasting.kind === "prepared" || c.spellcasting.kind === "book" ? Math.max(1, slotsFor(c)[0]?.max ?? 1) : 99;
+  if (c.system === "pf2e") {
+    if (c.spellcasting.kind === "prepared" || c.spellcasting.kind === "book") {
+      const total = slotsFor(c)
+        .filter((slot) => slot.rank > 0 && slot.max > 0 && slot.note !== "шрифт")
+        .reduce((sum, slot) => sum + slot.max, 0);
+      return Math.max(1, total);
+    }
+    return 99;
+  }
   if (c.spellcasting.kind === "known" || c.spellcasting.kind === "pact") return 99;
   if (c.classId === "paladin" || c.classId === "ranger") return Math.max(1, ability + Math.floor(c.level / 2));
   return Math.max(1, ability + c.level);

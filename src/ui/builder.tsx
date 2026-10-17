@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { VERSATILE } from "../data/versatile";
-import { CALLINGS, COMPANIONS } from "../data/roster";
+import { CALLINGS, COMPANIONS, englishName } from "../data/roster";
 import { featChoices, featInfo } from "../data/pf-index";
 import { rulesCatalog } from "../data/catalog";
 import { ruSort } from "../sort";
@@ -404,7 +404,7 @@ function AncestryStep({
   return (
     <div data-testid="ancestry-list">
       {people.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
       {ancestry && (
@@ -480,7 +480,7 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
       {legacyDnd && <p className="lead">В справочнике 5.1 одно происхождение. Классы 2014 года в расчёт не входят и с правилами 2024 года не смешиваются.</p>}
       {unfilled && <UnfilledNote edition={edition} />}
       {list.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={"originalName" in item ? item.originalName : undefined} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
       {picked && skillOptions.length > 0 && (
         <>
@@ -577,7 +577,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
   return (
     <>
       {ruSort(CL2, (item) => item.name).map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} />
       ))}
       <CustomClassCard draft={draft} update={update} />
       {cls?.choices.map((choice) => (
@@ -1391,6 +1391,18 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
           <b>{draft.name || "Без имени"}</b>
           <p className="tiny">Фото сжимается и остаётся в памяти телефона. В сеть оно не уходит.</p>
         </div>
+      </div>
+      <div className="card stack">
+        <label className="field">
+          <span>Собрать сразу до уровня</span>
+          <input data-testid="build-level" type="number" min={1} max={20} value={draft.choices.buildLevel || "1"} onChange={(event) => update({ choices: { ...draft.choices, buildLevel: String(Math.max(1, Math.min(20, Number(event.target.value) || 1))) } })} />
+        </label>
+        {draft.system === "pf2e" && (
+          <button type="button" className={`pill ${draft.choices.freeArchetype === "yes" ? "on" : ""}`} data-testid="free-archetype" onClick={() => update({ choices: { ...draft.choices, freeArchetype: draft.choices.freeArchetype === "yes" ? "" : "yes" } })}>
+            Свободный архетип {draft.choices.freeArchetype === "yes" ? "включён" : "выключен"}
+          </button>
+        )}
+        <p className="tiny">Уровень 1 собирается здесь. Остальные слоты закрываются в разделе «Развитие».</p>
       </div>
       <div className="card">
         <p>{draft.system ? systemTitle(draft.system) : "Своя игра"}</p>

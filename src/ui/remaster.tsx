@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, mapPenalty, newRound, openHelp, parry, reactiveStrike, strike, strikeCount } from "../pf2e/combat";
+import { featuresAt } from "../data/cards";
 import { choiceCaption, derive, effectsFrom, optionsForSlot, slotsForProgress, snapshot } from "../pf2e/build";
 import { SKILLS } from "../data/pf2e";
 import { rulesCatalog } from "../data/catalog";
 import type { Character, CombatState, ItemInst, Placement, StructuredEffect } from "../types";
 import { fmt, uid } from "../types";
-import { refreshSlots } from "../rules";
+import { hpMax, refreshSlots } from "../rules";
 import { useCompact } from "./common";
 import { PickList } from "./feat-picker";
 
@@ -54,6 +55,8 @@ export function WarningBanner({ character }: { character: Character }) {
 export function AdvancePanel({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
   const progress = character.progress;
   const [view, setView] = useState(character.level);
+  const [target, setTarget] = useState(String(character.level));
+  const [openId, setOpenId] = useState("");
   const [entry, setEntry] = useState(blankEntry());
   if (!progress) return <p>Этот лист ещё на старом расчёте. Контрольный воин на главной уже ведётся ремастером.</p>;
   const live = sheetDerived(character);
@@ -61,6 +64,8 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
   if (!live || !preview) return null;
   const slots = slotsForProgress(progress, character.level);
   const open = slots.filter((slot) => !progress.choices.some((choice) => choice.id === slot.id));
+  const takenFeats = progress.choices.filter((choice) => choice.source.endsWith("-feat") || choice.source === "free-archetype").map((choice) => choice.pick);
+  const active = open.find((slot) => slot.id === openId) ?? open[0];
 
   function commit(next: Character) {
     onChange(snapshot(next));
@@ -93,9 +98,23 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
     onChange({ ...character, progress: { ...progress!, toggles } });
   }
 
+  function applyLevel(level: number, spendXp: boolean) {
+    const nextLevel = Math.max(1, Math.min(20, level));
+    let next: Character = {
+      ...character,
+      level: nextLevel,
+      xp: spendXp ? Math.max(0, character.xp - 1000) : character.xp,
+      progress: progress ? { ...progress, choices: progress.choices.filter((choice) => choice.level <= nextLevel) } : progress,
+    };
+    next = snapshot(refreshSlots(next));
+    next.hpCurrent = hpMax(next);
+    onChange(next);
+    setView(nextLevel);
+  }
+
   function levelUp() {
     if (character.xp < 1000 || character.level >= 20) return;
-    commit(refreshSlots({ ...character, level: character.level + 1, xp: character.xp - 1000 }));
+    applyLevel(character.level + 1, true);
   }
 
   function addEntry() {
@@ -192,9 +211,35 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
           <p className="tiny">Текущий лист остаётся {character.level} уровня. Опыт не списан.</p>
         </div>
       )}
-      <button type="button" className="btn primary" disabled={character.xp < 1000 || character.level >= 20} onClick={levelUp}>
-        Получить уровень
+      <button type="button" className="btn primary" data-testid="level-up" disabled={character.xp < 1000 || character.level >= 20} onClick={levelUp}>
+        Повысить уровень
       </button>
+      <label className="field">
+        <span>Собрать до уровня</span>
+        <input data-testid="assemble-level" type="number" min={1} max={20} value={target} onChange={(event) => setTarget(event.target.value)} />
+      </label>
+      <button type="button" className="btn" data-testid="assemble" onClick={() => applyLevel(Number(target) || character.level, false)}>
+        Собрать до уровня
+      </button>
+      <button type="button" className={`pill ${progress.freeArchetype ? "on" : ""}`} data-testid="sheet-free-archetype" onClick={() => commit({ ...character, progress: { ...progress, freeArchetype: !progress.freeArchetype } })}>
+        Свободный архетип {progress.freeArchetype ? "включён" : "выключен"}
+      </button>
+      {character.spellcasting && (
+        <p className="tiny" data-testid="spell-progress">
+          Ячейки: {character.slots.filter((slot) => slot.max > 0).map((slot) => `${slot.rank} круг × ${slot.max}${slot.note ? ` (${slot.note})` : ""}`).join(", ") || "ещё нет"}.
+          {character.spellcasting.knownLimit >= 99
+            ? `Подготовить ${character.spellcasting.prepareLimit}. Заговоры ${character.spellcasting.cantripLimit}.`
+            : `Репертуар до ${character.spellcasting.knownLimit}. Заговоры ${character.spellcasting.cantripLimit}.`}
+        </p>
+      )}
+      {featuresAt(progress.classId, character.level).length > 0 && (
+        <div className="card stack">
+          <b>Особенности класса на {character.level} уровне</b>
+          {featuresAt(progress.classId, character.level).map((feature) => (
+            <p key={feature.originalName}>{feature.name} <span className="en-name">{feature.originalName}</span></p>
+          ))}
+        </div>
+      )}
       <h2>Условные эффекты</h2>
       <button type="button" className={`pill ${progress.toggles.includes("dueling-parry") ? "on" : ""}`} onClick={() => toggle("dueling-parry")}>
         Дуэльное парирование {progress.toggles.includes("dueling-parry") ? "включено" : "выключено"}
@@ -232,31 +277,47 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {live.ac.aside.map((line) => <p key={line} className="tiny">{line}</p>)}
       <h2>Открытые выборы</h2>
       {open.length === 0 && <p className="tiny">Все положенные слоты до {character.level} уровня закрыты.</p>}
-      {open.map((slot) => {
-        const options = optionsForSlot(slot.source, { classId: progress.classId, ancestryId: progress.ancestryId, level: slot.level });
-        const featLike = slot.source.endsWith("-feat") || slot.source === "free-archetype";
+      {open.length > 0 && (
+        <div className="wrap">
+          {open.map((slot) => (
+            <button key={slot.id} type="button" className={`pill ${active?.id === slot.id ? "on" : ""}`} onClick={() => setOpenId(slot.id)}>
+              {slot.level}. {slot.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {active && (() => {
+        const options = optionsForSlot(active.source, {
+          classId: progress.classId,
+          ancestryId: progress.ancestryId,
+          level: active.level,
+          taken: takenFeats,
+          ranks: character.skillRanks,
+          scores: character.abilities,
+          skillInGeneral: active.source === "general-feat",
+        });
+        const featLike = active.source.endsWith("-feat") || active.source === "free-archetype";
         if (featLike) {
           return (
             <PickList
-              key={slot.id}
-              title={`${slot.label}, уровень ${slot.level}`}
-              testId={`slot-${slot.id}`}
-              rows={options.map((option) => ({ id: option.pick, name: option.name, info: `${slot.label}. Уровень ${slot.level}.` }))}
+              title={`${active.label}, уровень ${active.level}`}
+              testId={`slot-${active.id}`}
+              rows={options.map((option) => ({ id: option.pick, name: option.name, info: `${active.label}. Уровень ${active.level}.` }))}
               selected=""
-              onPick={(row) => fill(slot, row.id)}
+              onPick={(row) => fill(active, row.id)}
             />
           );
         }
         return (
-          <label key={slot.id} className="field">
-            <span>{slot.label}, уровень {slot.level}</span>
-            <select data-testid={`slot-${slot.id}`} value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
+          <label className="field">
+            <span>{active.label}, уровень {active.level}</span>
+            <select data-testid={`slot-${active.id}`} value="" onChange={(event) => { if (event.target.value) fill(active, event.target.value); }}>
               <option value="">Выбрать</option>
               {options.map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
             </select>
           </label>
         );
-      })}
+      })()}
       <h2>Сделанные выборы</h2>
       <p className="tiny">Убрать ранний выбор и взять другой заново проверяет всё, что от него зависит. Просмотр уровня выше этого не делает.</p>
       {progress.choices.slice().sort((a, b) => a.level - b.level || a.source.localeCompare(b.source)).map((choice) => (

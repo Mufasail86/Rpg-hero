@@ -1,0 +1,3200 @@
+[
+ {
+  "classId": "wizard",
+  "level": 1,
+  "originalName": "Wizard Spellcasting",
+  "name": "Волшебник колдовство"
+ },
+ {
+  "classId": "wizard",
+  "level": 1,
+  "originalName": "Arcane School",
+  "name": "Арканный школа"
+ },
+ {
+  "classId": "wizard",
+  "level": 1,
+  "originalName": "Arcane Bond",
+  "name": "Арканный связь"
+ },
+ {
+  "classId": "wizard",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "wizard",
+  "level": 11,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "wizard",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "wizard",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "wizard",
+  "level": 1,
+  "originalName": "Arcane Thesis",
+  "name": "Арканный тезис"
+ },
+ {
+  "classId": "wizard",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "wizard",
+  "level": 19,
+  "originalName": "Archwizard's Spellcraft",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "wizard",
+  "level": 17,
+  "originalName": "Prodigious Will",
+  "name": "Громадный воля"
+ },
+ {
+  "classId": "wizard",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "wizard",
+  "level": 5,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "wizard",
+  "level": 9,
+  "originalName": "Magical Fortitude",
+  "name": "Магический стойкость"
+ },
+ {
+  "classId": "wizard",
+  "level": 13,
+  "originalName": "Defensive Robes",
+  "name": "Оборонительный одеяния"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 1,
+  "originalName": "Panache",
+  "name": "Лихость"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 1,
+  "originalName": "Precise Strike",
+  "name": "Точный удар"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 1,
+  "originalName": "Confident Finisher",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 3,
+  "originalName": "Vivacious Speed",
+  "name": "Жизнерадостный скорость"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 19,
+  "originalName": "Eternal Confidence",
+  "name": "Вечный уверенность"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 13,
+  "originalName": "Assured Evasion",
+  "name": "Уверенный уворот"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 1,
+  "originalName": "Swashbuckler's Style",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 17,
+  "originalName": "Reinforced Ego",
+  "name": "Укреплённый эго"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 3,
+  "originalName": "Stylish Tricks",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 11,
+  "originalName": "Vigilant Senses",
+  "name": "Бдительный чувства"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 19,
+  "originalName": "Light Armor Mastery",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 1,
+  "originalName": "Stylish Combatant",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 3,
+  "originalName": "Opportune Riposte",
+  "name": "Своевременный ответный выпад"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 9,
+  "originalName": "Exemplary Finisher",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 13,
+  "originalName": "Light Armor Expertise",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 3,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 7,
+  "originalName": "Confident Evasion",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 15,
+  "originalName": "Keen Flair",
+  "name": "Острый шик"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 9,
+  "originalName": "Swashbuckler Expertise",
+  "name": "Сорвиголова мастерство"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 11,
+  "originalName": "Continuous Flair",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "swashbuckler",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 17,
+  "originalName": "Shootist's Edge",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 9,
+  "originalName": "Gunslinger Expertise",
+  "name": "Стрелок мастерство"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 15,
+  "originalName": "Greater Deed",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 9,
+  "originalName": "Advanced Deed",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 13,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 1,
+  "originalName": "Gunslinger's Way",
+  "name": "Стрелок' путь"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 1,
+  "originalName": "Slinger's Precision",
+  "name": "Пращник' точность"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 19,
+  "originalName": "Perception Legend",
+  "name": "Восприятие легенда"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 19,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 13,
+  "originalName": "Gunslinging Legend",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 11,
+  "originalName": "Blast Dodger",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 17,
+  "originalName": "Lead Constitution",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 3,
+  "originalName": "Stubborn",
+  "name": "Упрямый"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 5,
+  "originalName": "Gunslinger Weapon Mastery",
+  "name": "Стрелок оружие мастерство"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 7,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "gunslinger",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization (Level 15)",
+  "name": "Большое оружие специализация (уровень 15)"
+ },
+ {
+  "classId": "barbarian",
+  "level": 13,
+  "originalName": "Greater Juggernaut",
+  "name": "Большое несокрушимый"
+ },
+ {
+  "classId": "barbarian",
+  "level": 5,
+  "originalName": "Brutality",
+  "name": "Зверство"
+ },
+ {
+  "classId": "barbarian",
+  "level": 13,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "barbarian",
+  "level": 9,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "barbarian",
+  "level": 17,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "barbarian",
+  "level": 17,
+  "originalName": "Revitalizing Rage",
+  "name": "Бодрящий ярость"
+ },
+ {
+  "classId": "barbarian",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "barbarian",
+  "level": 15,
+  "originalName": "Indomitable Will",
+  "name": "Неукротимый воля"
+ },
+ {
+  "classId": "barbarian",
+  "level": 7,
+  "originalName": "Juggernaut",
+  "name": "Несокрушимый"
+ },
+ {
+  "classId": "barbarian",
+  "level": 3,
+  "originalName": "Furious Footfalls",
+  "name": "Яростный поступи"
+ },
+ {
+  "classId": "barbarian",
+  "level": 19,
+  "originalName": "Devastator",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "barbarian",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization (Barbarian)",
+  "name": "Большое оружие специализация (варвар)"
+ },
+ {
+  "classId": "barbarian",
+  "level": 11,
+  "originalName": "Mighty Rage",
+  "name": "Могучий ярость"
+ },
+ {
+  "classId": "barbarian",
+  "level": 19,
+  "originalName": "Armor Mastery",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "barbarian",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "barbarian",
+  "level": 9,
+  "originalName": "Raging Resistance",
+  "name": "Бушующий устойчивость"
+ },
+ {
+  "classId": "barbarian",
+  "level": 1,
+  "originalName": "Instinct",
+  "name": "Инстинкт"
+ },
+ {
+  "classId": "barbarian",
+  "level": 1,
+  "originalName": "Rage",
+  "name": "Ярость"
+ },
+ {
+  "classId": "barbarian",
+  "level": 1,
+  "originalName": "Quick-Tempered",
+  "name": "Быстрый-закалённый"
+ },
+ {
+  "classId": "cleric",
+  "level": 1,
+  "originalName": "Deity",
+  "name": "Божество"
+ },
+ {
+  "classId": "cleric",
+  "level": 1,
+  "originalName": "Cleric Spellcasting",
+  "name": "Жрец колдовство"
+ },
+ {
+  "classId": "cleric",
+  "level": 1,
+  "originalName": "Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 1,
+  "originalName": "First Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 1,
+  "originalName": "Divine Font",
+  "name": "Божественный источник"
+ },
+ {
+  "classId": "cleric",
+  "level": 3,
+  "originalName": "Second Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 5,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "cleric",
+  "level": 7,
+  "originalName": "Third Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 9,
+  "originalName": "Resolute Faith",
+  "name": "Решительный вера"
+ },
+ {
+  "classId": "cleric",
+  "level": 11,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 11,
+  "originalName": "Fourth Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 13,
+  "originalName": "Divine Defense",
+  "name": "Божественный защита"
+ },
+ {
+  "classId": "cleric",
+  "level": 15,
+  "originalName": "Fifth Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "cleric",
+  "level": 19,
+  "originalName": "Final Doctrine",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "cleric",
+  "level": 19,
+  "originalName": "Miraculous Spell",
+  "name": "Чудесный заклинание"
+ },
+ {
+  "classId": "psychic",
+  "level": 1,
+  "originalName": "Psychic Spellcasting",
+  "name": "Экстрасенс колдовство"
+ },
+ {
+  "classId": "psychic",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "psychic",
+  "level": 1,
+  "originalName": "Psi Cantrips and Amps",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 1,
+  "originalName": "Unleash Psyche",
+  "name": "Высвобождение психика"
+ },
+ {
+  "classId": "psychic",
+  "level": 1,
+  "originalName": "Subconscious Mind",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 1,
+  "originalName": "Conscious Mind",
+  "name": "Сознательный разум"
+ },
+ {
+  "classId": "psychic",
+  "level": 3,
+  "originalName": "Signature Spells",
+  "name": "Подпись заклинания"
+ },
+ {
+  "classId": "psychic",
+  "level": 5,
+  "originalName": "Clarity of Focus",
+  "name": "Ясность фокус"
+ },
+ {
+  "classId": "psychic",
+  "level": 5,
+  "originalName": "Precognitive Reflexes",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 11,
+  "originalName": "Extrasensory Perception",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 11,
+  "originalName": "Walls of Will",
+  "name": "Стены воля"
+ },
+ {
+  "classId": "psychic",
+  "level": 13,
+  "originalName": "Personal Barrier",
+  "name": "Личный преграда"
+ },
+ {
+  "classId": "psychic",
+  "level": 9,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "psychic",
+  "level": 13,
+  "originalName": "Psychic Weapon Specialization",
+  "name": "Экстрасенс оружие специализация"
+ },
+ {
+  "classId": "psychic",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 17,
+  "originalName": "Fortress of Will",
+  "name": "Крепость воля"
+ },
+ {
+  "classId": "psychic",
+  "level": 19,
+  "originalName": "Infinite Mind",
+  "name": "Бесконечный разум"
+ },
+ {
+  "classId": "psychic",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "psychic",
+  "level": 1,
+  "originalName": "Spell Repertoire",
+  "name": "Заклинание репертуар"
+ },
+ {
+  "classId": "necromancer",
+  "level": 1,
+  "originalName": "Fatal Method",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "necromancer",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "necromancer",
+  "level": 15,
+  "originalName": "Master Necromancy",
+  "name": "Мастер некромантия"
+ },
+ {
+  "classId": "necromancer",
+  "level": 3,
+  "originalName": "Inevitable Return",
+  "name": "Неизбежный возврат"
+ },
+ {
+  "classId": "necromancer",
+  "level": 17,
+  "originalName": "Undying Resilience",
+  "name": "Бессмертный стойкость"
+ },
+ {
+  "classId": "necromancer",
+  "level": 3,
+  "originalName": "Mental Wards",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "necromancer",
+  "level": 19,
+  "originalName": "Epitaph",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "necromancer",
+  "level": 7,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "necromancer",
+  "level": 1,
+  "originalName": "Necromancer Spellcasting",
+  "name": "Некромант колдовство"
+ },
+ {
+  "classId": "necromancer",
+  "level": 1,
+  "originalName": "Grave Spells",
+  "name": "Могила заклинания"
+ },
+ {
+  "classId": "necromancer",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "necromancer",
+  "level": 19,
+  "originalName": "Legendary Necromancy",
+  "name": "Легендарный некромантия"
+ },
+ {
+  "classId": "necromancer",
+  "level": 1,
+  "originalName": "Undead Lore",
+  "name": "Нежить знание"
+ },
+ {
+  "classId": "necromancer",
+  "level": 11,
+  "originalName": "Unnatural Fortitude",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "necromancer",
+  "level": 1,
+  "originalName": "Mastery of Life and Death",
+  "name": "Мастерство жизнь и смерть"
+ },
+ {
+  "classId": "necromancer",
+  "level": 7,
+  "originalName": "Expert Necromancy",
+  "name": "Эксперт некромантия"
+ },
+ {
+  "classId": "necromancer",
+  "level": 1,
+  "originalName": "Grim Fascination",
+  "name": "Мрачный очарование"
+ },
+ {
+  "classId": "necromancer",
+  "level": 13,
+  "originalName": "Light Armor Expertise",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "necromancer",
+  "level": 5,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "oracle",
+  "level": 7,
+  "originalName": "Mysterious Resolve",
+  "name": "Таинственный решимость"
+ },
+ {
+  "classId": "oracle",
+  "level": 1,
+  "originalName": "Oracle Spellcasting",
+  "name": "Оракул колдовство"
+ },
+ {
+  "classId": "oracle",
+  "level": 1,
+  "originalName": "Mystery",
+  "name": "Тайна"
+ },
+ {
+  "classId": "oracle",
+  "level": 3,
+  "originalName": "Signature Spells",
+  "name": "Подпись заклинания"
+ },
+ {
+  "classId": "oracle",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "oracle",
+  "level": 19,
+  "originalName": "Oracular Clarity",
+  "name": "Оракульский ясность"
+ },
+ {
+  "classId": "oracle",
+  "level": 1,
+  "originalName": "Oracular Curse",
+  "name": "Оракульский проклятие"
+ },
+ {
+  "classId": "oracle",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "oracle",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "oracle",
+  "level": 13,
+  "originalName": "Premonition Reflexes",
+  "name": "Предчувствие рефлексы"
+ },
+ {
+  "classId": "oracle",
+  "level": 17,
+  "originalName": "Greater Mysterious Resolve",
+  "name": "Большое таинственный решимость"
+ },
+ {
+  "classId": "oracle",
+  "level": 1,
+  "originalName": "Revelation Spells",
+  "name": "Откровение заклинания"
+ },
+ {
+  "classId": "oracle",
+  "level": 13,
+  "originalName": "Light Armor Expertise",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "oracle",
+  "level": 11,
+  "originalName": "Major Curse",
+  "name": "Старшее проклятие"
+ },
+ {
+  "classId": "oracle",
+  "level": 17,
+  "originalName": "Extreme Curse",
+  "name": "Крайний проклятие"
+ },
+ {
+  "classId": "oracle",
+  "level": 9,
+  "originalName": "Magical Fortitude",
+  "name": "Магический стойкость"
+ },
+ {
+  "classId": "oracle",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "oracle",
+  "level": 11,
+  "originalName": "Divine Access",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "oracle",
+  "level": 1,
+  "originalName": "Spell Repertoire",
+  "name": "Заклинание репертуар"
+ },
+ {
+  "classId": "oracle",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "oracle",
+  "level": 11,
+  "originalName": "Oracular Senses",
+  "name": "Оракульский чувства"
+ },
+ {
+  "classId": "guardian",
+  "level": 11,
+  "originalName": "Unbreakable Mastery",
+  "name": "Несокрушимый мастерство"
+ },
+ {
+  "classId": "guardian",
+  "level": 7,
+  "originalName": "Reaction Time",
+  "name": "Реакция время"
+ },
+ {
+  "classId": "guardian",
+  "level": 19,
+  "originalName": "Guardian Mastery",
+  "name": "Страж мастерство"
+ },
+ {
+  "classId": "guardian",
+  "level": 17,
+  "originalName": "Unyielding Resolve",
+  "name": "Несгибаемый решимость"
+ },
+ {
+  "classId": "guardian",
+  "level": 1,
+  "originalName": "Taunt",
+  "name": "Насмешка"
+ },
+ {
+  "classId": "guardian",
+  "level": 7,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "guardian",
+  "level": 3,
+  "originalName": "Tough To Kill",
+  "name": "Крепкий убивать"
+ },
+ {
+  "classId": "guardian",
+  "level": 5,
+  "originalName": "Unbreakable Expertise",
+  "name": "Несокрушимый мастерство"
+ },
+ {
+  "classId": "guardian",
+  "level": 1,
+  "originalName": "Guardian's Techniques",
+  "name": "Страж' приёмы"
+ },
+ {
+  "classId": "guardian",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "guardian",
+  "level": 11,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "guardian",
+  "level": 9,
+  "originalName": "Battle Hardened",
+  "name": "Боевой закалённый"
+ },
+ {
+  "classId": "guardian",
+  "level": 9,
+  "originalName": "Guardian Expertise",
+  "name": "Страж мастерство"
+ },
+ {
+  "classId": "guardian",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "guardian",
+  "level": 1,
+  "originalName": "Guardian's Armor",
+  "name": "Страж' доспех"
+ },
+ {
+  "classId": "guardian",
+  "level": 15,
+  "originalName": "Unbreakable Legend",
+  "name": "Несокрушимый легенда"
+ },
+ {
+  "classId": "guardian",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "guardian",
+  "level": 17,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "monk",
+  "level": 3,
+  "originalName": "Mystic Strikes",
+  "name": "Мистик удары"
+ },
+ {
+  "classId": "monk",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "monk",
+  "level": 11,
+  "originalName": "Second Path to Perfection",
+  "name": "Второй путь совершенство"
+ },
+ {
+  "classId": "monk",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization (Level 15)",
+  "name": "Большое оружие специализация (уровень 15)"
+ },
+ {
+  "classId": "monk",
+  "level": 3,
+  "originalName": "Incredible Movement",
+  "name": "Невероятная движение"
+ },
+ {
+  "classId": "monk",
+  "level": 5,
+  "originalName": "Expert Strikes",
+  "name": "Эксперт удары"
+ },
+ {
+  "classId": "monk",
+  "level": 1,
+  "originalName": "Flurry of Blows",
+  "name": "Шквал удары"
+ },
+ {
+  "classId": "monk",
+  "level": 5,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "monk",
+  "level": 17,
+  "originalName": "Graceful Legend",
+  "name": "Грациозный легенда"
+ },
+ {
+  "classId": "monk",
+  "level": 1,
+  "originalName": "Powerful Fist",
+  "name": "Мощный кулак"
+ },
+ {
+  "classId": "monk",
+  "level": 13,
+  "originalName": "Graceful Mastery",
+  "name": "Грациозный мастерство"
+ },
+ {
+  "classId": "monk",
+  "level": 9,
+  "originalName": "Monk Expertise",
+  "name": "Монах мастерство"
+ },
+ {
+  "classId": "monk",
+  "level": 9,
+  "originalName": "Metal Strikes",
+  "name": "Металл удары"
+ },
+ {
+  "classId": "monk",
+  "level": 17,
+  "originalName": "Adamantine Strikes",
+  "name": "Адамантиновый удары"
+ },
+ {
+  "classId": "monk",
+  "level": 7,
+  "originalName": "Path to Perfection",
+  "name": "Путь совершенство"
+ },
+ {
+  "classId": "monk",
+  "level": 19,
+  "originalName": "Perfected Form",
+  "name": "Усовершенствованный облик"
+ },
+ {
+  "classId": "monk",
+  "level": 15,
+  "originalName": "Third Path to Perfection",
+  "name": "Третий путь совершенство"
+ },
+ {
+  "classId": "monk",
+  "level": 13,
+  "originalName": "Master Strikes",
+  "name": "Мастер удары"
+ },
+ {
+  "classId": "witch",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "witch",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "witch",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "witch",
+  "level": 11,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "witch",
+  "level": 17,
+  "originalName": "Will of the Pupil",
+  "name": "Воля ученик"
+ },
+ {
+  "classId": "witch",
+  "level": 13,
+  "originalName": "Defensive Robes",
+  "name": "Оборонительный одеяния"
+ },
+ {
+  "classId": "witch",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "witch",
+  "level": 9,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "witch",
+  "level": 1,
+  "originalName": "Witch Spellcasting",
+  "name": "Ведьма колдовство"
+ },
+ {
+  "classId": "witch",
+  "level": 1,
+  "originalName": "Familiar (Witch)",
+  "name": "Фамильяр (ведьма)"
+ },
+ {
+  "classId": "witch",
+  "level": 1,
+  "originalName": "Hexes",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "witch",
+  "level": 1,
+  "originalName": "Patron",
+  "name": "Покровитель"
+ },
+ {
+  "classId": "witch",
+  "level": 5,
+  "originalName": "Magical Fortitude",
+  "name": "Магический стойкость"
+ },
+ {
+  "classId": "witch",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "witch",
+  "level": 19,
+  "originalName": "Patron's Gift",
+  "name": "Покровитель' дар"
+ },
+ {
+  "classId": "fighter",
+  "level": 13,
+  "originalName": "Weapon Legend",
+  "name": "Оружие легенда"
+ },
+ {
+  "classId": "fighter",
+  "level": 11,
+  "originalName": "Fighter Expertise",
+  "name": "Воин мастерство"
+ },
+ {
+  "classId": "fighter",
+  "level": 11,
+  "originalName": "Armor Expertise",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "fighter",
+  "level": 1,
+  "originalName": "Reactive Strike",
+  "name": "Ответный удар"
+ },
+ {
+  "classId": "fighter",
+  "level": 15,
+  "originalName": "Tempered Reflexes",
+  "name": "Закалённый рефлексы"
+ },
+ {
+  "classId": "fighter",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "fighter",
+  "level": 9,
+  "originalName": "Battle Hardened",
+  "name": "Боевой закалённый"
+ },
+ {
+  "classId": "fighter",
+  "level": 15,
+  "originalName": "Improved Flexibility",
+  "name": "Улучшенный гибкость"
+ },
+ {
+  "classId": "fighter",
+  "level": 7,
+  "originalName": "Battlefield Surveyor",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "fighter",
+  "level": 3,
+  "originalName": "Bravery",
+  "name": "Отвага"
+ },
+ {
+  "classId": "fighter",
+  "level": 17,
+  "originalName": "Armor Mastery",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "fighter",
+  "level": 9,
+  "originalName": "Combat Flexibility",
+  "name": "Бой гибкость"
+ },
+ {
+  "classId": "fighter",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "fighter",
+  "level": 5,
+  "originalName": "Fighter Weapon Mastery",
+  "name": "Воин оружие мастерство"
+ },
+ {
+  "classId": "fighter",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "fighter",
+  "level": 19,
+  "originalName": "Versatile Legend",
+  "name": "Универсальный легенда"
+ },
+ {
+  "classId": "druid",
+  "level": 1,
+  "originalName": "Anathema (Druid)",
+  "name": "Анафема (друид)"
+ },
+ {
+  "classId": "druid",
+  "level": 13,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "druid",
+  "level": 5,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 1,
+  "originalName": "Druid Spellcasting",
+  "name": "Друид колдовство"
+ },
+ {
+  "classId": "druid",
+  "level": 11,
+  "originalName": "Wild Willpower",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 3,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "druid",
+  "level": 3,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "druid",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 1,
+  "originalName": "Druidic Order",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 1,
+  "originalName": "Wildsong",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "druid",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "druid",
+  "level": 1,
+  "originalName": "Voice of Nature",
+  "name": "Голос природа"
+ },
+ {
+  "classId": "druid",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "druid",
+  "level": 19,
+  "originalName": "Primal Hierophant",
+  "name": "Первозданный иерофант"
+ },
+ {
+  "classId": "druid",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "rogue",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "rogue",
+  "level": 5,
+  "originalName": "Weapon Tricks",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "rogue",
+  "level": 19,
+  "originalName": "Light Armor Mastery",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "rogue",
+  "level": 13,
+  "originalName": "Master Tricks",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "rogue",
+  "level": 7,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "rogue",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "rogue",
+  "level": 13,
+  "originalName": "Light Armor Expertise",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "rogue",
+  "level": 7,
+  "originalName": "Evasive Reflexes",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "rogue",
+  "level": 1,
+  "originalName": "Rogue's Racket",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "rogue",
+  "level": 9,
+  "originalName": "Rogue Resilience",
+  "name": "Плут стойкость"
+ },
+ {
+  "classId": "rogue",
+  "level": 17,
+  "originalName": "Agile Mind",
+  "name": "Ловкий разум"
+ },
+ {
+  "classId": "rogue",
+  "level": 11,
+  "originalName": "Rogue Expertise",
+  "name": "Плут мастерство"
+ },
+ {
+  "classId": "rogue",
+  "level": 1,
+  "originalName": "Sneak Attack",
+  "name": "Скрытный атака"
+ },
+ {
+  "classId": "rogue",
+  "level": 13,
+  "originalName": "Greater Rogue Reflexes",
+  "name": "Большое плут рефлексы"
+ },
+ {
+  "classId": "rogue",
+  "level": 9,
+  "originalName": "Debilitating Strikes",
+  "name": "Ослабляющий удары"
+ },
+ {
+  "classId": "rogue",
+  "level": 15,
+  "originalName": "Double Debilitation",
+  "name": "Двойной ослабление"
+ },
+ {
+  "classId": "rogue",
+  "level": 13,
+  "originalName": "Perception Legend",
+  "name": "Восприятие легенда"
+ },
+ {
+  "classId": "rogue",
+  "level": 1,
+  "originalName": "Surprise Attack",
+  "name": "Неожиданность атака"
+ },
+ {
+  "classId": "rogue",
+  "level": 3,
+  "originalName": "Deny Advantage",
+  "name": "Отказ преимущество"
+ },
+ {
+  "classId": "rogue",
+  "level": 19,
+  "originalName": "Master Strike",
+  "name": "Мастер удар"
+ },
+ {
+  "classId": "runesmith",
+  "level": 2,
+  "originalName": "Runic Crafter",
+  "name": "Рунический ремесленник"
+ },
+ {
+  "classId": "runesmith",
+  "level": 19,
+  "originalName": "Legendary Runes",
+  "name": "Легендарный руны"
+ },
+ {
+  "classId": "runesmith",
+  "level": 13,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "runesmith",
+  "level": 9,
+  "originalName": "Assured Runic Crafter",
+  "name": "Уверенный рунический ремесленник"
+ },
+ {
+  "classId": "runesmith",
+  "level": 1,
+  "originalName": "Runic Repertoire",
+  "name": "Рунический репертуар"
+ },
+ {
+  "classId": "runesmith",
+  "level": 19,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "runesmith",
+  "level": 13,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "runesmith",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "runesmith",
+  "level": 15,
+  "originalName": "Masterful Runes",
+  "name": "Мастерский руны"
+ },
+ {
+  "classId": "runesmith",
+  "level": 1,
+  "originalName": "Runes",
+  "name": "Руны"
+ },
+ {
+  "classId": "runesmith",
+  "level": 7,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "runesmith",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "runesmith",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "runesmith",
+  "level": 7,
+  "originalName": "Runic Optimization",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "runesmith",
+  "level": 11,
+  "originalName": "Forged Endurance",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "runesmith",
+  "level": 7,
+  "originalName": "Expert Runes",
+  "name": "Эксперт руны"
+ },
+ {
+  "classId": "runesmith",
+  "level": 15,
+  "originalName": "Greater Runic Optimization",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "exemplar",
+  "level": 19,
+  "originalName": "Burnished Armor Mastery",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 9,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "exemplar",
+  "level": 9,
+  "originalName": "Divine Premonition",
+  "name": "Божественный предчувствие"
+ },
+ {
+  "classId": "exemplar",
+  "level": 15,
+  "originalName": "Sovereignty Epithet",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 15,
+  "originalName": "Greater Spirit Striking",
+  "name": "Большое духовный ударная"
+ },
+ {
+  "classId": "exemplar",
+  "level": 15,
+  "originalName": "Mortality Reforged",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 17,
+  "originalName": "Deific Mastery",
+  "name": "Божественный мастерство"
+ },
+ {
+  "classId": "exemplar",
+  "level": 3,
+  "originalName": "Root Epithet",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 13,
+  "originalName": "Greater Unassailable Soul",
+  "name": "Большое неприступный душа"
+ },
+ {
+  "classId": "exemplar",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "exemplar",
+  "level": 13,
+  "originalName": "Divine Weapon Mastery",
+  "name": "Божественный оружие мастерство"
+ },
+ {
+  "classId": "exemplar",
+  "level": 13,
+  "originalName": "Burnished Armor Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 7,
+  "originalName": "Spirit Striking",
+  "name": "Духовный ударная"
+ },
+ {
+  "classId": "exemplar",
+  "level": 17,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "exemplar",
+  "level": 1,
+  "originalName": "Humble Strikes",
+  "name": "Скромный удары"
+ },
+ {
+  "classId": "exemplar",
+  "level": 7,
+  "originalName": "Unassailable Soul",
+  "name": "Неприступный душа"
+ },
+ {
+  "classId": "exemplar",
+  "level": 7,
+  "originalName": "Dominion Epithet",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 1,
+  "originalName": "Divine Spark and Ikons",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "exemplar",
+  "level": 9,
+  "originalName": "Godly Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "investigator",
+  "level": 11,
+  "originalName": "Deductive Improvisation",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "investigator",
+  "level": 13,
+  "originalName": "Incredible Senses",
+  "name": "Невероятная чувства"
+ },
+ {
+  "classId": "investigator",
+  "level": 9,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "investigator",
+  "level": 11,
+  "originalName": "Dogged Will",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "investigator",
+  "level": 1,
+  "originalName": "On the Case",
+  "name": "Футляр"
+ },
+ {
+  "classId": "investigator",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "investigator",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "investigator",
+  "level": 3,
+  "originalName": "Keen Recollection",
+  "name": "Острый воспоминание"
+ },
+ {
+  "classId": "investigator",
+  "level": 7,
+  "originalName": "Vigilant Senses",
+  "name": "Бдительный чувства"
+ },
+ {
+  "classId": "investigator",
+  "level": 19,
+  "originalName": "Light Armor Mastery (Level 19)",
+  "name": "Лёгкий доспех мастерство (уровень 19)"
+ },
+ {
+  "classId": "investigator",
+  "level": 1,
+  "originalName": "Methodology",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "investigator",
+  "level": 9,
+  "originalName": "Investigator Expertise",
+  "name": "Сыщик мастерство"
+ },
+ {
+  "classId": "investigator",
+  "level": 15,
+  "originalName": "Savvy Reflexes",
+  "name": "Смекалистый рефлексы"
+ },
+ {
+  "classId": "investigator",
+  "level": 19,
+  "originalName": "Master Detective",
+  "name": "Мастер сыщик"
+ },
+ {
+  "classId": "investigator",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization (Level 15)",
+  "name": "Большое оружие специализация (уровень 15)"
+ },
+ {
+  "classId": "investigator",
+  "level": 1,
+  "originalName": "Devise a Stratagem",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "investigator",
+  "level": 1,
+  "originalName": "Strategic Strike",
+  "name": "Стратегический удар"
+ },
+ {
+  "classId": "investigator",
+  "level": 3,
+  "originalName": "Skillful Lessons",
+  "name": "Умелый уроки"
+ },
+ {
+  "classId": "investigator",
+  "level": 13,
+  "originalName": "Light Armor Expertise",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "investigator",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "investigator",
+  "level": 17,
+  "originalName": "Greater Dogged Will",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 5,
+  "originalName": "Inventor Weapon Expertise",
+  "name": "Изобретатель оружие мастерство"
+ },
+ {
+  "classId": "inventor",
+  "level": 17,
+  "originalName": "Anvil's Hardness",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 1,
+  "originalName": "Peerless Inventor",
+  "name": "Бесподобный изобретатель"
+ },
+ {
+  "classId": "inventor",
+  "level": 13,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "inventor",
+  "level": 13,
+  "originalName": "Complete Reconfiguration",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 7,
+  "originalName": "Master Overdrive",
+  "name": "Мастер форсаж"
+ },
+ {
+  "classId": "inventor",
+  "level": 9,
+  "originalName": "Offensive Boost",
+  "name": "Наступательный усиление"
+ },
+ {
+  "classId": "inventor",
+  "level": 7,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 19,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "inventor",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization (Level 15)",
+  "name": "Большое оружие специализация (уровень 15)"
+ },
+ {
+  "classId": "inventor",
+  "level": 11,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "inventor",
+  "level": 15,
+  "originalName": "Revolutionary Innovation",
+  "name": "Революционный новшество"
+ },
+ {
+  "classId": "inventor",
+  "level": 17,
+  "originalName": "Inventive Mastery",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "inventor",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "inventor",
+  "level": 7,
+  "originalName": "Breakthrough Innovation",
+  "name": "Прорыв новшество"
+ },
+ {
+  "classId": "inventor",
+  "level": 9,
+  "originalName": "Inventive Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 15,
+  "originalName": "Legendary Overdrive",
+  "name": "Легендарный форсаж"
+ },
+ {
+  "classId": "inventor",
+  "level": 19,
+  "originalName": "Infinite Invention",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 1,
+  "originalName": "Explode",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 1,
+  "originalName": "Overdrive",
+  "name": "Форсаж"
+ },
+ {
+  "classId": "inventor",
+  "level": 3,
+  "originalName": "Reconfigure",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 3,
+  "originalName": "Expert Overdrive",
+  "name": "Эксперт форсаж"
+ },
+ {
+  "classId": "inventor",
+  "level": 11,
+  "originalName": "Churning Mind",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "inventor",
+  "level": 13,
+  "originalName": "Inventor Weapon Mastery",
+  "name": "Изобретатель оружие мастерство"
+ },
+ {
+  "classId": "inventor",
+  "level": 1,
+  "originalName": "Innovation",
+  "name": "Новшество"
+ },
+ {
+  "classId": "summoner",
+  "level": 1,
+  "originalName": "Eidolon",
+  "name": "Эйдолон"
+ },
+ {
+  "classId": "summoner",
+  "level": 11,
+  "originalName": "Eidolon Defensive Expertise",
+  "name": "Эйдолон оборонительный мастерство"
+ },
+ {
+  "classId": "summoner",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "summoner",
+  "level": 9,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 19,
+  "originalName": "Instant Manifestation",
+  "name": "Мгновенный проявление"
+ },
+ {
+  "classId": "summoner",
+  "level": 3,
+  "originalName": "Shared Vigilance",
+  "name": "Общий бдительность"
+ },
+ {
+  "classId": "summoner",
+  "level": 13,
+  "originalName": "Eidolon Unarmed Mastery",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 15,
+  "originalName": "Shared Resolve",
+  "name": "Общий решимость"
+ },
+ {
+  "classId": "summoner",
+  "level": 3,
+  "originalName": "Signature Spells",
+  "name": "Подпись заклинания"
+ },
+ {
+  "classId": "summoner",
+  "level": 1,
+  "originalName": "Evolution Feat",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 11,
+  "originalName": "Twin Juggernauts",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 15,
+  "originalName": "Greater Eidolon Specialization",
+  "name": "Большое эйдолон специализация"
+ },
+ {
+  "classId": "summoner",
+  "level": 13,
+  "originalName": "Defensive Robes",
+  "name": "Оборонительный одеяния"
+ },
+ {
+  "classId": "summoner",
+  "level": 11,
+  "originalName": "Simple Weapon Expertise",
+  "name": "Простой оружие мастерство"
+ },
+ {
+  "classId": "summoner",
+  "level": 1,
+  "originalName": "Summoner Spellcasting",
+  "name": "Призыватель колдовство"
+ },
+ {
+  "classId": "summoner",
+  "level": 1,
+  "originalName": "Spell Repertoire",
+  "name": "Заклинание репертуар"
+ },
+ {
+  "classId": "summoner",
+  "level": 5,
+  "originalName": "Eidolon Unarmed Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 7,
+  "originalName": "Eidolon Symbiosis",
+  "name": "Эйдолон симбиоз"
+ },
+ {
+  "classId": "summoner",
+  "level": 17,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 7,
+  "originalName": "Eidolon Weapon Specialization",
+  "name": "Эйдолон оружие специализация"
+ },
+ {
+  "classId": "summoner",
+  "level": 17,
+  "originalName": "Eidolon Transcendence",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "summoner",
+  "level": 19,
+  "originalName": "Eidolon Defensive Mastery",
+  "name": "Эйдолон оборонительный мастерство"
+ },
+ {
+  "classId": "summoner",
+  "level": 9,
+  "originalName": "Shared Reflexes",
+  "name": "Общий рефлексы"
+ },
+ {
+  "classId": "summoner",
+  "level": 1,
+  "originalName": "Link Spells",
+  "name": "Связь заклинания"
+ },
+ {
+  "classId": "champion",
+  "level": 7,
+  "originalName": "Armor Expertise",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "champion",
+  "level": 9,
+  "originalName": "Champion Expertise",
+  "name": "Поборник мастерство"
+ },
+ {
+  "classId": "champion",
+  "level": 9,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "champion",
+  "level": 17,
+  "originalName": "Champion Mastery",
+  "name": "Поборник мастерство"
+ },
+ {
+  "classId": "champion",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "champion",
+  "level": 1,
+  "originalName": "Deity (Champion)",
+  "name": "Божество (поборник)"
+ },
+ {
+  "classId": "champion",
+  "level": 1,
+  "originalName": "Cause",
+  "name": "Повод"
+ },
+ {
+  "classId": "champion",
+  "level": 17,
+  "originalName": "Legendary Armor",
+  "name": "Легендарный доспех"
+ },
+ {
+  "classId": "champion",
+  "level": 11,
+  "originalName": "Exalted Reaction",
+  "name": "Возвышенный реакция"
+ },
+ {
+  "classId": "champion",
+  "level": 1,
+  "originalName": "Devotion Spells",
+  "name": "Преданность заклинания"
+ },
+ {
+  "classId": "champion",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "champion",
+  "level": 3,
+  "originalName": "Blessing of the Devoted",
+  "name": "Благословение преданный"
+ },
+ {
+  "classId": "champion",
+  "level": 11,
+  "originalName": "Divine Will",
+  "name": "Божественный воля"
+ },
+ {
+  "classId": "champion",
+  "level": 9,
+  "originalName": "Relentless Reaction",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "champion",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "champion",
+  "level": 11,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "champion",
+  "level": 13,
+  "originalName": "Armor Mastery",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "champion",
+  "level": 9,
+  "originalName": "Sacred Body",
+  "name": "Священный тело"
+ },
+ {
+  "classId": "champion",
+  "level": 19,
+  "originalName": "Hero's Defiance",
+  "name": "Непокорность героя"
+ },
+ {
+  "classId": "champion",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "champion",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 17,
+  "originalName": "Masterful Hunter",
+  "name": "Мастерский охотник"
+ },
+ {
+  "classId": "ranger",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "ranger",
+  "level": 5,
+  "originalName": "Trackless Journey",
+  "name": "Бесследный странствие"
+ },
+ {
+  "classId": "ranger",
+  "level": 9,
+  "originalName": "Nature's Edge",
+  "name": "Природа' грань"
+ },
+ {
+  "classId": "ranger",
+  "level": 11,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 15,
+  "originalName": "Greater Natural Reflexes",
+  "name": "Большое природный рефлексы"
+ },
+ {
+  "classId": "ranger",
+  "level": 11,
+  "originalName": "Warden's Endurance",
+  "name": "Страж' выносливость"
+ },
+ {
+  "classId": "ranger",
+  "level": 7,
+  "originalName": "Natural Reflexes",
+  "name": "Природный рефлексы"
+ },
+ {
+  "classId": "ranger",
+  "level": 19,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "ranger",
+  "level": 1,
+  "originalName": "Hunter's Edge",
+  "name": "Охотник' грань"
+ },
+ {
+  "classId": "ranger",
+  "level": 19,
+  "originalName": "Swift Prey",
+  "name": "Стремительный добыча"
+ },
+ {
+  "classId": "ranger",
+  "level": 15,
+  "originalName": "Perception Legend",
+  "name": "Восприятие легенда"
+ },
+ {
+  "classId": "ranger",
+  "level": 5,
+  "originalName": "Ranger Weapon Expertise",
+  "name": "Следопыт оружие мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 11,
+  "originalName": "Unimpeded Journey",
+  "name": "Беспрепятственный странствие"
+ },
+ {
+  "classId": "ranger",
+  "level": 1,
+  "originalName": "Hunt Prey",
+  "name": "Охота добыча"
+ },
+ {
+  "classId": "ranger",
+  "level": 3,
+  "originalName": "Will Expertise",
+  "name": "Воля мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 9,
+  "originalName": "Ranger Expertise",
+  "name": "Следопыт мастерство"
+ },
+ {
+  "classId": "ranger",
+  "level": 7,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "bard",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "bard",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "bard",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "bard",
+  "level": 19,
+  "originalName": "Magnum Opus",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "bard",
+  "level": 1,
+  "originalName": "Spell Repertoire",
+  "name": "Заклинание репертуар"
+ },
+ {
+  "classId": "bard",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "bard",
+  "level": 9,
+  "originalName": "Performer's Heart",
+  "name": "Исполнитель' сердце"
+ },
+ {
+  "classId": "bard",
+  "level": 3,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "bard",
+  "level": 11,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "bard",
+  "level": 1,
+  "originalName": "Composition Spells",
+  "name": "Композиция заклинания"
+ },
+ {
+  "classId": "bard",
+  "level": 3,
+  "originalName": "Signature Spells",
+  "name": "Подпись заклинания"
+ },
+ {
+  "classId": "bard",
+  "level": 9,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "bard",
+  "level": 1,
+  "originalName": "Muses",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "bard",
+  "level": 13,
+  "originalName": "Light Armor Expertise",
+  "name": "Лёгкий доспех мастерство"
+ },
+ {
+  "classId": "bard",
+  "level": 1,
+  "originalName": "Bard Spellcasting",
+  "name": "Бард колдовство"
+ },
+ {
+  "classId": "bard",
+  "level": 17,
+  "originalName": "Greater Performer's Heart",
+  "name": "Большое исполнитель' сердце"
+ },
+ {
+  "classId": "bard",
+  "level": 11,
+  "originalName": "Bard Weapon Expertise",
+  "name": "Бард оружие мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 1,
+  "originalName": "Alchemy",
+  "name": "Алхимия"
+ },
+ {
+  "classId": "alchemist",
+  "level": 11,
+  "originalName": "Chemical Hardiness",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "alchemist",
+  "level": 15,
+  "originalName": "Alchemical Weapon Mastery",
+  "name": "Алхимический оружие мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 9,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 15,
+  "originalName": "Explosion Dodger",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "alchemist",
+  "level": 19,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 7,
+  "originalName": "Will Expertise",
+  "name": "Воля мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 1,
+  "originalName": "Research Field",
+  "name": "Исследование поле"
+ },
+ {
+  "classId": "alchemist",
+  "level": 13,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "alchemist",
+  "level": 9,
+  "originalName": "Double Brew",
+  "name": "Двойной варево"
+ },
+ {
+  "classId": "alchemist",
+  "level": 7,
+  "originalName": "Alchemical Weapon Expertise",
+  "name": "Алхимический оружие мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 13,
+  "originalName": "(Choice) Greater Field Discovery",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "alchemist",
+  "level": 9,
+  "originalName": "Alchemical Expertise",
+  "name": "Алхимический мастерство"
+ },
+ {
+  "classId": "alchemist",
+  "level": 17,
+  "originalName": "Abundant Vials",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "alchemist",
+  "level": 11,
+  "originalName": "Advanced Vials",
+  "name": "Продвинутая флаконы"
+ },
+ {
+  "classId": "alchemist",
+  "level": 5,
+  "originalName": "Field Discovery",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "alchemist",
+  "level": 5,
+  "originalName": "Powerful Alchemy",
+  "name": "Мощный алхимия"
+ },
+ {
+  "classId": "alchemist",
+  "level": 17,
+  "originalName": "Alchemical Mastery",
+  "name": "Алхимический мастерство"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 19,
+  "originalName": "Unlimited Esoterica",
+  "name": "Безграничный эзотерика"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 1,
+  "originalName": "First Implement and Esoterica",
+  "name": "Первый регалия и эзотерика"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 11,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 11,
+  "originalName": "Second Adept",
+  "name": "Второй адепт"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 1,
+  "originalName": "Esoteric Lore",
+  "name": "Эзотерический знание"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 15,
+  "originalName": "Third Implement",
+  "name": "Третий регалия"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 1,
+  "originalName": "Implement's Empowerment",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 15,
+  "originalName": "Earned Resilience",
+  "name": "Заработанный стойкость"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 17,
+  "originalName": "Implement Paragon",
+  "name": "Регалия идеал"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 9,
+  "originalName": "Intensify Vulnerability",
+  "name": "Усиливать уязвимость"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 9,
+  "originalName": "Thaumaturgic Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 5,
+  "originalName": "Second Implement",
+  "name": "Второй регалия"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 9,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 13,
+  "originalName": "Perfected Mind",
+  "name": "Совершенный разум"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 7,
+  "originalName": "Implement Adept",
+  "name": "Регалия адепт"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 17,
+  "originalName": "Thaumaturgic Mastery",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 1,
+  "originalName": "Exploit Vulnerability",
+  "name": "Подвиг уязвимость"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 19,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 3,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "thaumaturge",
+  "level": 7,
+  "originalName": "Disciplined Mind",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "commander",
+  "level": 15,
+  "originalName": "Master Tactician",
+  "name": "Мастер тактик"
+ },
+ {
+  "classId": "commander",
+  "level": 1,
+  "originalName": "Commander's Banner",
+  "name": "Командир' знамя"
+ },
+ {
+  "classId": "commander",
+  "level": 17,
+  "originalName": "Armor Mastery",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "commander",
+  "level": 1,
+  "originalName": "Tactics",
+  "name": "Тактика"
+ },
+ {
+  "classId": "commander",
+  "level": 19,
+  "originalName": "Legendary Tactician",
+  "name": "Легендарный тактик"
+ },
+ {
+  "classId": "commander",
+  "level": 7,
+  "originalName": "Expert Tactician",
+  "name": "Эксперт тактик"
+ },
+ {
+  "classId": "commander",
+  "level": 1,
+  "originalName": "Drilled Reactions",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "commander",
+  "level": 11,
+  "originalName": "Commanding Will",
+  "name": "Повелевающий воля"
+ },
+ {
+  "classId": "commander",
+  "level": 9,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "commander",
+  "level": 11,
+  "originalName": "Armor Expertise",
+  "name": "Доспех мастерство"
+ },
+ {
+  "classId": "commander",
+  "level": 5,
+  "originalName": "Military Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "commander",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "commander",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "commander",
+  "level": 15,
+  "originalName": "Battlefield Intuition",
+  "name": "Поле битвы интуиция"
+ },
+ {
+  "classId": "commander",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "commander",
+  "level": 3,
+  "originalName": "Warfare Expertise",
+  "name": "Война мастерство"
+ },
+ {
+  "classId": "commander",
+  "level": 13,
+  "originalName": "Perception Mastery",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "commander",
+  "level": 1,
+  "originalName": "Shield Block",
+  "name": "Блок щитом"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 9,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 19,
+  "originalName": "Bloodline Paragon",
+  "name": "Кровная линия идеал"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 1,
+  "originalName": "Spell Repertoire",
+  "name": "Заклинание репертуар"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 17,
+  "originalName": "Majestic Will",
+  "name": "Величественный воля"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 11,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 11,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 1,
+  "originalName": "Sorcerous Potency",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 1,
+  "originalName": "Sorcerer Spellcasting",
+  "name": "Чародей колдовство"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 3,
+  "originalName": "Signature Spells",
+  "name": "Подпись заклинания"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 13,
+  "originalName": "Defensive Robes",
+  "name": "Оборонительный одеяния"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 1,
+  "originalName": "Bloodline",
+  "name": "Кровная линия"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 1,
+  "originalName": "Bloodline Spells",
+  "name": "Кровная линия заклинания"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 5,
+  "originalName": "Magical Fortitude",
+  "name": "Магический стойкость"
+ },
+ {
+  "classId": "sorcerer",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 11,
+  "originalName": "Expert Protections",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 1,
+  "originalName": "Apparition Attunement",
+  "name": "Явление созвучие"
+ },
+ {
+  "classId": "animist",
+  "level": 7,
+  "originalName": "Third Apparition",
+  "name": "Третий явление"
+ },
+ {
+  "classId": "animist",
+  "level": 11,
+  "originalName": "Simple Weapon Expertise",
+  "name": "Простой оружие мастерство"
+ },
+ {
+  "classId": "animist",
+  "level": 1,
+  "originalName": "Animistic Practice",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 19,
+  "originalName": "Supreme Incarnation",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 7,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 9,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "animist",
+  "level": 13,
+  "originalName": "Master of Mind and Spirit",
+  "name": "Мастер разум и духовный"
+ },
+ {
+  "classId": "animist",
+  "level": 1,
+  "originalName": "Animist & Apparition Spellcasting",
+  "name": "Анимист & явление колдовство"
+ },
+ {
+  "classId": "animist",
+  "level": 13,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "animist",
+  "level": 15,
+  "originalName": "Fourth Apparition",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 19,
+  "originalName": "Legendary Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "animist",
+  "level": 3,
+  "originalName": "Fortitude Expertise",
+  "name": "Стойкость мастерство"
+ },
+ {
+  "classId": "animist",
+  "level": 15,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "magus",
+  "level": 7,
+  "originalName": "Studious Spells",
+  "name": "Прилежный заклинания"
+ },
+ {
+  "classId": "magus",
+  "level": 15,
+  "originalName": "Greater Weapon Specialization",
+  "name": "Большое оружие специализация"
+ },
+ {
+  "classId": "magus",
+  "level": 15,
+  "originalName": "Spell-Tempered Body",
+  "name": "Заклинание-закалённый тело"
+ },
+ {
+  "classId": "magus",
+  "level": 5,
+  "originalName": "Weapon Expertise",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "magus",
+  "level": 9,
+  "originalName": "Perception Expertise",
+  "name": "Восприятие мастерство"
+ },
+ {
+  "classId": "magus",
+  "level": 1,
+  "originalName": "Arcane Cascade",
+  "name": "Арканный каскад"
+ },
+ {
+  "classId": "magus",
+  "level": 19,
+  "originalName": "Double Spellstrike",
+  "name": "Двойной заклинательный удар"
+ },
+ {
+  "classId": "magus",
+  "level": 1,
+  "originalName": "Spellstrike",
+  "name": "Заклинательный удар"
+ },
+ {
+  "classId": "magus",
+  "level": 17,
+  "originalName": "Medium Armor Mastery",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "magus",
+  "level": 1,
+  "originalName": "Magus Spellcasting",
+  "name": "Магус колдовство"
+ },
+ {
+  "classId": "magus",
+  "level": 9,
+  "originalName": "Twofold Will",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "magus",
+  "level": 9,
+  "originalName": "Expert Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "magus",
+  "level": 17,
+  "originalName": "Master Spellcaster",
+  "name": "особенность класса"
+ },
+ {
+  "classId": "magus",
+  "level": 13,
+  "originalName": "Weapon Mastery",
+  "name": "Оружие мастерство"
+ },
+ {
+  "classId": "magus",
+  "level": 1,
+  "originalName": "Hybrid Study",
+  "name": "Гибрид изучение"
+ },
+ {
+  "classId": "magus",
+  "level": 11,
+  "originalName": "Medium Armor Expertise",
+  "name": "Медиум доспех мастерство"
+ },
+ {
+  "classId": "magus",
+  "level": 7,
+  "originalName": "Weapon Specialization",
+  "name": "Оружие специализация"
+ },
+ {
+  "classId": "magus",
+  "level": 1,
+  "originalName": "Conflux Spells",
+  "name": "Стечение заклинания"
+ },
+ {
+  "classId": "magus",
+  "level": 5,
+  "originalName": "Reflex Expertise",
+  "name": "особенность класса"
+ }
+]

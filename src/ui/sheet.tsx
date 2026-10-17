@@ -849,7 +849,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
         <p className="tiny">Уровень и выборы ремастера открываются в разделе «Развитие». Эта кнопка не прибавляет характеристики вторым способом.</p>
       ) : (
       <button type="button" className="btn primary" disabled={!canLevel(character) || (wantsBoosts && boosts.length !== 4)} onClick={level}>
-        Получить уровень
+        Повысить уровень
       </button>
       )}
       {character.pendingAsi && (

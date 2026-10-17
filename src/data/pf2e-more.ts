@@ -157,7 +157,7 @@ export const MORE_CLASSES: ClassRow[] = [
   }),
   klass({
     id: "champion",
-    name: "Чемпион",
+    name: "Поборник",
     hint: "10 хитов · Сила или Ловкость · тяжёлые доспехи",
     hp: 10,
     key: ["str", "dex"],

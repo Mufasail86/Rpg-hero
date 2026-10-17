@@ -1,6 +1,7 @@
 import featIndex from "./generated/pf-feat-index.json";
 import featWide from "./generated/pf-feat-wide.json";
 import paths from "./generated/pf-paths.json";
+import { CARD_BY_ID, cardText } from "./cards";
 import { byRu } from "../sort";
 
 export interface IndexedFeat {
@@ -76,5 +77,7 @@ export function featChoices(filter: { kind: IndexedFeat["kind"]; classId?: strin
 }
 
 export function featInfo(feat: IndexedFeat): string {
+  const card = CARD_BY_ID.get(feat.id);
+  if (card) return cardText(card);
   return `Уровень ${feat.level}. ${FEAT_NOTE}`;
 }

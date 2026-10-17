@@ -2,6 +2,7 @@ import { useState } from "react";
 import { EPIC_BOONS, GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
 import { describeDndChoice, KNOWN_SUBCLASSES, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
+import { hpMax, refreshSlots } from "../rules";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
 import { useCompact } from "./common";
@@ -30,6 +31,7 @@ export function DndBanner({ character }: { character: Character }) {
 export function DndAdvance({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
   const progress = character.dnd;
   const [view, setView] = useState(character.level);
+  const [target, setTarget] = useState(String(character.level));
   const [entry, setEntry] = useState<CustomEntry>(blankCustom());
   if (!progress) return <p>У этого листа нет истории уровней. Числа всё равно разбираются по текущим полям.</p>;
   const live = sheetDnd(character);
@@ -41,6 +43,25 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
 
   function commit(next: Character) {
     onChange(snapshotDnd(next));
+  }
+
+  function applyLevel(level: number, spendXp: boolean) {
+    if (!progress) return;
+    const nextLevel = Math.max(1, Math.min(20, level));
+    const average = Math.floor(character.hitDie / 2) + 1;
+    const rolls = Array.from({ length: nextLevel }, (_, index) => character.hpRolls[index] ?? average);
+    let next: Character = refreshSlots({
+      ...character,
+      level: nextLevel,
+      xp: spendXp ? Math.max(0, character.xp - (character.system === "pf2e" ? 1000 : 0)) : character.xp,
+      hpRolls: rolls,
+      hitDice: { ...character.hitDice, max: nextLevel },
+      dnd: { ...progress, choices: progress.choices.filter((choice) => choice.level <= nextLevel) },
+    });
+    next = snapshotDnd(next);
+    next.hpCurrent = hpMax(next);
+    onChange(next);
+    setView(nextLevel);
   }
 
   function fill(slot: { id: string; level: number; source: string }, pick: string) {
@@ -106,6 +127,19 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
   return (
     <div className="stack">
       <p className="lead">Уровень {character.level}. Просмотр другого уровня не стирает план и не тратит опыт.</p>
+      <button type="button" className="btn primary" data-testid="dnd-level-up" disabled={character.level >= 20} onClick={() => applyLevel(character.level + 1, false)}>
+        Повысить уровень
+      </button>
+      <label className="field">
+        <span>Собрать до уровня</span>
+        <input data-testid="dnd-assemble-level" type="number" min={1} max={20} value={target} onChange={(event) => setTarget(event.target.value)} />
+      </label>
+      <button type="button" className="btn" data-testid="dnd-assemble" onClick={() => applyLevel(Number(target) || character.level, false)}>
+        Собрать до уровня
+      </button>
+      {character.spellcasting && (
+        <p className="tiny">Ячейки: {character.slots.filter((slot) => slot.max > 0).map((slot) => `${slot.rank} круг × ${slot.max}`).join(", ") || "ещё нет"}.</p>
+      )}
       <label className="field">
         <span>Посмотреть уровень</span>
         <input type="number" min={1} max={character.level} value={view} onChange={(event) => setView(Math.max(1, Math.min(character.level, Number(event.target.value) || 1)))} />

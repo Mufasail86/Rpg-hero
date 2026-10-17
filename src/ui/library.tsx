@@ -5,6 +5,7 @@ import { SYSTEM_DND, SYSTEM_PF } from "../labels";
 import { ruSort } from "../sort";
 import { ART, ART_CAPTION, artSrc, cardArt } from "./art";
 import { go, useHash } from "./common";
+import { cardFor, RuleCardView } from "./rule-card";
 
 const SECTIONS: { id: string; title: string; categories: string[] }[] = [
   { id: "ancestry", title: "Народы", categories: ["species", "ancestry", "lineage"] },
@@ -265,7 +266,7 @@ function EntryCard({
       <p className="tiny">{systemName(entry.system)} · {editionLabel(entry)} · {entry.categoryTitle} · {pack?.title ?? entry.sourceId}</p>
       <p className="tiny">{STATUS_NAME[entry.status]} · {licenseCaption(entry.license)}{entry.originalName ? ` · ${entry.originalName}` : ""}</p>
       {entry.short && <p className="lede">{entry.short}</p>}
-      <p>{entry.text}</p>
+      {cardFor(entry.localId) ? <RuleCardView card={cardFor(entry.localId)!} /> : <p>{entry.text}</p>}
       {entry.relations.length > 0 && (
         <p className="tiny">Связанные записи: {entry.relations.map((id) => entryByToken(id)?.name ?? id).join(", ")}</p>
       )}

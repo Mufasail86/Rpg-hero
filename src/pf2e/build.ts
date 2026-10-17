@@ -1,3 +1,4 @@
+import { archetypeLegal, CARD_BY_ID, gatesOk, isArchetypeFeat, isDedication } from "../data/cards";
 import { FEAT_BY_ID, FEAT_INDEX, pathGroup, pathOption, type PathOption } from "../data/pf-index";
 import { curseMax, curseMods, doctrineOptions, monkSaveOptions, resolveRanks } from "./progression";
 import { ANCESTRIES, CLASSES, SKILLS, backgroundBoostCount, backgroundById, type BackgroundDef } from "../data/pf2e";
@@ -1081,7 +1082,15 @@ function rageDamage(progress: Pf2eProgress, level: number, toggles: Set<string>,
   return steps[steps.length - 1].value;
 }
 
-export function optionsForSlot(source: string, ctx?: { classId?: string; ancestryId?: string; level?: number }): { pick: string; name: string }[] {
+export function optionsForSlot(source: string, ctx?: {
+  classId?: string;
+  ancestryId?: string;
+  level?: number;
+  taken?: string[];
+  ranks?: Record<string, string>;
+  scores?: Record<string, number>;
+  skillInGeneral?: boolean;
+}): { pick: string; name: string }[] {
   if (source === "ancestry-boost" || source === "background-boost" || source === "class-boost" || source === "free-boost") {
     return ABILITIES.map((ability) => ({ pick: ability, name: ABILITY_NAME[ability] }));
   }
@@ -1104,10 +1113,17 @@ export function optionsForSlot(source: string, ctx?: { classId?: string; ancestr
     return pathGroup(source)?.options.map((option) => ({ pick: option.id, name: option.name })) ?? [];
   }
   const kind = source === "class-feat" ? "class" : source === "skill-feat" ? "skill" : source === "general-feat" ? "general" : source === "ancestry-feat" ? "ancestry" : source === "free-archetype" ? "archetype" : "";
-  const modeled = Object.entries(FEATS).filter(([, def]) => {
-    const kindOk = source === "class-feat" ? def.kind === "class" || def.kind === "archetype" : def.kind === kind;
+  const taken = ctx?.taken ?? [];
+  const modeled = Object.entries(FEATS).filter(([id, def]) => {
+    const archetype = isArchetypeFeat(id, def.kind);
+    const kindOk = source === "class-feat"
+      ? def.kind === "class" || (archetype && archetypeLegal(id, taken))
+      : source === "free-archetype"
+        ? archetype && archetypeLegal(id, taken)
+        : def.kind === kind;
     if (!kindOk) return false;
     if (ctx?.level != null && def.level > ctx.level) return false;
+    if (!gatesOk(CARD_BY_ID.get(id), taken, ctx?.ranks, ctx?.scores)) return false;
     return true;
   });
   const seen = new Set(modeled.map(([id]) => id));
@@ -1120,13 +1136,21 @@ export function optionsForSlot(source: string, ctx?: { classId?: string; ancestr
     .map(([id, def]) => ({ pick: id, name: def.name }));
   for (const feat of FEAT_INDEX) {
     if (seen.has(feat.id)) continue;
-    const dedication = feat.kind === "archetype" || feat.id.endsWith("-dedication");
-    const kindOk = source === "free-archetype" ? dedication : source === "class-feat" ? feat.kind === "class" && !dedication : feat.kind === kind;
+    const dedication = isDedication(feat.id);
+    const archetype = isArchetypeFeat(feat.id, feat.kind);
+    let kindOk = false;
+    if (source === "free-archetype") kindOk = archetype && archetypeLegal(feat.id, taken);
+    else if (source === "class-feat") {
+      if (dedication || archetype) kindOk = archetypeLegal(feat.id, taken);
+      else kindOk = feat.kind === "class";
+    } else if (source === "general-feat" && ctx?.skillInGeneral && feat.kind === "skill") kindOk = true;
+    else kindOk = feat.kind === kind;
     if (!kindOk) continue;
     if (ctx?.level != null && feat.level > ctx.level) continue;
-    if (source === "class-feat" && ctx?.classId && feat.classes.length > 0 && !feat.classes.includes(ctx.classId)) continue;
+    if (source === "class-feat" && !archetype && ctx?.classId && feat.classes.length > 0 && !feat.classes.includes(ctx.classId)) continue;
     if (source === "ancestry-feat" && feat.ancestries.length === 0) continue;
     if (source === "ancestry-feat" && ctx?.ancestryId && !feat.ancestries.includes(ctx.ancestryId)) continue;
+    if (!gatesOk(CARD_BY_ID.get(feat.id), taken, ctx?.ranks, ctx?.scores)) continue;
     seen.add(feat.id);
     list.push({ pick: feat.id, name: feat.name });
   }

@@ -95,6 +95,7 @@ export function Choice({
   id,
   name,
   hint,
+  english,
   info,
   short,
   art,
@@ -107,6 +108,7 @@ export function Choice({
   id: string;
   name: string;
   hint?: string;
+  english?: string;
   info: string;
   short?: string;
   art?: string;
@@ -121,6 +123,7 @@ export function Choice({
       {art ? <img className="option-art" src={art} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} loading="lazy" decoding="async" /> : null}
       <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
+        {english ? <small className="en-name">{english}</small> : null}
         {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}
       </button>
       <Info title={name} text={short ? `${short}\n\n${info}` : info} />
