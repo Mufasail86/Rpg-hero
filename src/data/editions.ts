@@ -39,13 +39,41 @@ export const EDITION_NAME: Record<RulesEdition, string> = {
   "pf-legacy": "До ремастера",
 };
 
+export type DataMark = "imported" | "numbers" | "translation" | "rule" | "automation";
+
+export const MARK_NAME: Record<DataMark, string> = {
+  imported: "импортировано",
+  numbers: "числовые поля проверены",
+  translation: "перевод вычитан",
+  rule: "правило проверено",
+  automation: "автоматизация проверена",
+};
+
+/** Старые коды остаются в данных. Подпись собирается только из того, что действительно отмечено. */
 export const STATUS_NAME: Record<ReviewStatus, string> = {
-  pending: "черновик, не сверено",
-  "verified-partial": "сверено частично",
-  "verified-reference": "сверено, только текст",
-  "verified-implemented": "сверено и в расчёте",
+  pending: "импортировано",
+  "verified-partial": "числовые поля проверены",
+  "verified-reference": "правило проверено",
+  "verified-implemented": "автоматизация проверена",
   homebrew: "домашнее",
 };
+
+export function dataMarks(status: ReviewStatus, location = ""): DataMark[] {
+  if (status === "homebrew") return ["imported"];
+  const marks: DataMark[] = ["imported"];
+  const place = location.toLocaleLowerCase("ru");
+  const declined = /не сверял|не копировал|не вычитан|не вычитывал/.test(place);
+  const numbers = /хит|скорост|поля foundry|кб|урон|модификатор|уровень/.test(place);
+  if ((status === "verified-partial" || status === "verified-reference" || status === "verified-implemented") && numbers) marks.push("numbers");
+  if (!declined && (status === "verified-reference" || status === "verified-partial") && /сверк|srd|ядро игрока|pathfinderwiki|справочник|wiki/.test(place)) marks.push("rule");
+  if (!declined && status === "verified-reference" && !marks.includes("rule") && !numbers) marks.push("rule");
+  if (status === "verified-implemented") marks.push("automation");
+  return marks;
+}
+
+export function marksLabel(status: ReviewStatus, location = ""): string {
+  return dataMarks(status, location).map((mark) => MARK_NAME[mark]).join(" · ");
+}
 
 export const PACKS: SourcePack[] = [
   {

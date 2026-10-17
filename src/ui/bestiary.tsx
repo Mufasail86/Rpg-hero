@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LICENSE_NOTICE, bestiaryCatalog, monsterByToken, type MonsterCard } from "../data/bestiary";
-import { EDITION_NAME, fold, type RulesEdition } from "../data/editions";
+import { EDITION_NAME, fold, marksLabel, type RulesEdition } from "../data/editions";
 import { dnd2014Guidance, dnd2024Budget, pfAward, pfBudget, pfCreatureXp, type Dnd2024Threat, type PfThreat } from "../encounter";
 import { ART, artSrc } from "./art";
 import { go, useHash } from "./common";
@@ -185,6 +185,7 @@ function MonsterArticle({ monster, mode, onAdd }: { monster: MonsterCard; mode: 
   return (
     <article className="card stack" data-testid="bestiary-card">
       <b>{monster.name}</b>
+      <p className="tiny" data-testid="data-marks">{marksLabel(monster.status, monster.location)}</p>
       <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>
       {mode === "player" && <p data-testid="bestiary-hidden">Полный блок для ведущего. В режиме игрока скрыты класс брони, хиты, опыт и способности.</p>}
       {mode === "gm" && (

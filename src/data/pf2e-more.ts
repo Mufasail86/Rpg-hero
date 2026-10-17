@@ -7,7 +7,7 @@ function lines(id: string): Heritage[] {
   return rows.map((row) => ({ id: row.id, name: row.name, info: row.info }));
 }
 
-const DRAFT = "Черновик, не сверено. ";
+const DRAFT = "Импортировано, перевод не вычитан. ";
 
 interface Heritage {
   id: string;
@@ -49,7 +49,7 @@ function people(
     id,
     name,
     hint: `${hp} хитов · черновик`,
-    short: "Черновик, не сверено",
+    short: "Импортировано, перевод не вычитан",
     hp,
     size,
     speed,
@@ -106,7 +106,7 @@ interface ClassRow {
 function klass(row: Omit<ClassRow, "short" | "featLevel1" | "classDc" | "spellRank" | "feats" | "kit" | "choices"> & { choices?: ClassRow["choices"]; spell?: ClassRow["spell"] }): ClassRow {
   return {
     ...row,
-    short: "Черновик, не сверено",
+    short: "Импортировано, перевод не вычитан",
     classDc: "trained",
     spellRank: row.spell ? "trained" : "untrained",
     featLevel1: false,

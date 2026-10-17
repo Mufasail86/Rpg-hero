@@ -1,4 +1,5 @@
 import type { LicenseId, ReviewStatus, RulesEdition } from "./editions";
+import { polishName, polishProse } from "./voice";
 import monsters2014 from "./generated/monsters-2014.json";
 import monsters2024 from "./generated/monsters-2024.json";
 import monstersPf from "./generated/monsters-pf.json";
@@ -19,6 +20,7 @@ export interface MonsterCard {
   ac: number;
   hp: number;
   text: string;
+  location: string;
   spoiler: "gm";
   status: ReviewStatus;
   checkedOn: string;
@@ -47,7 +49,7 @@ function load(rows: RawMonster[], edition: RulesEdition, sourceId: string, sourc
   return rows.map((row) => ({
     token: `${edition}~monster~${row.id}`,
     id: row.id,
-    name: row.name,
+    name: polishName(row.name, row.originalName),
     originalName: row.originalName,
     edition,
     sourceId,
@@ -59,9 +61,10 @@ function load(rows: RawMonster[], edition: RulesEdition, sourceId: string, sourc
     traits: row.traits,
     ac: row.ac,
     hp: row.hp,
-    text: row.text,
+    text: polishProse(row.text.replace(row.name, polishName(row.name, row.originalName))),
     spoiler: "gm",
-    status: "verified-reference",
+    status: "verified-partial",
+    location: "Числа КБ, хитов и уровня сняты с полей. Текст способностей не вычитан.",
     checkedOn: ON,
     sourceVersion,
     license,

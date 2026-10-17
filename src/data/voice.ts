@@ -215,3 +215,129 @@ export function voiceSpell(entry: Spoken & { level: number; time: string }, fram
 export function voiceMastery(entry: { name: string; info: string; short?: string }) {
   paint(entry, "свойство оружия открытого справочника", "Свойство срабатывает так, как написано, и только у оружия, которым вы владеете через мастерство класса.");
 }
+
+/** Починка машинного перевода на границе чтения. Сырые JSON не переписываются. */
+
+const BY_ORIGINAL: Record<string, string> = {
+  "Animated Broom": "Оживлённая метла",
+  "Animated Statue": "Оживлённая статуя",
+  "Giant Animated Statue": "Гигантская оживлённая статуя",
+  "Cloud Giant": "Облачный великан",
+  "Fire Giant": "Огненный великан",
+  "Frost Giant": "Ледяной великан",
+  "Marsh Giant": "Болотный великан",
+  "Rune Giant": "Рунный великан",
+  "Shadow Giant": "Теневой великан",
+  "Skeletal Giant": "Скелетный великан",
+  "Stone Giant": "Каменный великан",
+  "Desert Drake": "Пустынный дрейк",
+  "Flame Drake": "Огненный дрейк",
+  "Frost Drake": "Морозный дрейк",
+  "Jungle Drake": "Джунглевый дрейк",
+  "River Drake": "Речной дрейк",
+  Pixie: "Пикси",
+  "Will-o'-Wisp": "Блуждающий огонёк",
+  "You're Next": "Ты следующий",
+  "Can't Fall Here": "Здесь нельзя упасть",
+  "You Can't Keep Us Down": "Нас не удержать",
+  "You Can't Hide From Us": "От нас не спрятаться",
+  "You Can't Kill an Idea": "Идею не убить",
+  "Can't You See?": "Разве не видишь?",
+  "You Don't Smell Right": "От тебя пахнет не так",
+  "Make 'Em Sweat": "Заставь их попотеть",
+  "Reel 'Em In": "Подсекай",
+  "Tiger's‑eye": "Тигровый глаз",
+  "Tiger's-eye": "Тигровый глаз",
+};
+
+const QUOTED: Record<string, string> = {
+  "проверку": "проверке",
+  "проверку навыка": "проверке навыка",
+  "испытание": "испытанию",
+  "атаку": "атаке",
+  "бросок удара": "броску удара",
+  "урон удара": "урону удара",
+  "волю": "воле",
+  "урон": "урону",
+  "стойкость": "стойкости",
+  "восприятие": "восприятию",
+  "рефлексы": "рефлексам",
+};
+
+function rounds(count: number): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return "раунд";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "раунда";
+  return "раундов";
+}
+
+function genitive(word: string): string {
+  const lower = word.toLocaleLowerCase("ru");
+  if (/(ый|ий|ой)$/.test(lower)) return `${lower.slice(0, -2)}ого`;
+  if (/ая$/.test(lower)) return `${lower.slice(0, -2)}ой`;
+  if (/[гкхжчшщ]а$/.test(lower)) return `${lower.slice(0, -1)}и`;
+  if (/а$/.test(lower)) return `${lower.slice(0, -1)}ы`;
+  if (/я$/.test(lower)) return `${lower.slice(0, -1)}и`;
+  if (/[ое]$/.test(lower)) return `${lower.slice(0, -1)}а`;
+  if (/й$/.test(lower)) return `${lower.slice(0, -1)}я`;
+  if (/ь$/.test(lower)) return `${lower.slice(0, -1)}я`;
+  return `${lower}а`;
+}
+
+function capitalize(text: string): string {
+  if (!text) return text;
+  return text.charAt(0).toLocaleUpperCase("ru") + text.slice(1);
+}
+
+function possessive(name: string): string | null {
+  const match = name.match(/^(.*?)([A-Za-zА-Яа-яЁё-]+)'[сs]?\s+(.+)$/i);
+  if (!match) return null;
+  const [, prefix, owner, thing] = match;
+  const line = `${prefix}${thing} ${genitive(owner)}`.replace(/\s+/g, " ").replace(/\bкаллинг\b/gi, "призвание").trim();
+  return capitalize(line);
+}
+
+export function polishName(name: string, original = ""): string {
+  const known = BY_ORIGINAL[original] ?? BY_ORIGINAL[name];
+  if (known) return known;
+  const color = name.match(/^(латунь|серебрян\S*|зелён\S*|красн\S*|бронзов\S*|чёрн\S*|бел\S*|син\S*|золот\S*)/i)?.[1]?.toLocaleLowerCase("ru") ?? "";
+  if (/дракон/i.test(name) && /зелье/i.test(name) && /'/.test(name)) {
+    const age = name.match(/\(([^)]+)\)/)?.[1] ?? "";
+    const metal: Record<string, string> = {
+      латунь: "латунного",
+      серебро: "серебряного",
+      серебряный: "серебряного",
+      зелёный: "зелёного",
+      красный: "красного",
+      бронза: "бронзового",
+      бронзовый: "бронзового",
+      чёрный: "чёрного",
+    };
+    const key = Object.keys(metal).find((item) => color.startsWith(item.slice(0, 4))) ?? "";
+    return `Зелье дыхания ${metal[key] ?? "дракона"} дракона${age ? ` (${age})` : ""}`.replace("дракона дракона", "дракона");
+  }
+  return possessive(name)
+    ?? name.replace(/'их\b/g, "").replace(/'т\b/g, "").replace(/'‐/g, "-").replace(/\s+/g, " ").trim();
+}
+
+export function polishDuration(duration: string): string {
+  return duration
+    .replace(/(\d+)\s+или больше патроны/g, (_, count: string) => `${count} или больше раундов`)
+    .replace(/(\d+)\s+патрон(?:а|ов|ы)?/g, (_, count: string) => `${count} ${rounds(Number(count))}`);
+}
+
+export function polishProse(text: string): string {
+  if (!text) return text;
+  const quoted = text.replace(/([+−-]?\d+)\s+к показателю «([^»]+)»/g, (_, amount: string, word: string) => `${amount} к ${QUOTED[word] ?? word}`);
+  return polishDuration(quoted);
+}
+
+export function voiceIssues(text: string): string[] {
+  const issues: string[] = [];
+  if (/[А-Яа-яЁёA-Za-z]'/.test(text)) issues.push("apostrophe");
+  if (/\d+\s+патрон|патроны/.test(text)) issues.push("cartridge-duration");
+  if (/к показателю «/.test(text)) issues.push("broken-quote");
+  if (/Броом|Статуе|Пиксие|Драке|гигантский/.test(text)) issues.push("bad-name");
+  return issues;
+}
