@@ -314,14 +314,21 @@ export function derive(input: DeriveInput): Derived {
   const armorRank = ranksNow.armor;
   const dexCap = armor?.armor?.dexCap;
   const dexToAc = dexCap == null ? dex : Math.min(dex, dexCap);
-  const acParts: string[] = ["10", `Ловкость ${fmt(dexToAc)}${dexCap != null && dex > dexCap ? ` (предел ${fmt(dexCap)})` : ""}`, `уровень ${level}`, `${RANK_WORD[armorRank]} ${fmt(RANK_EXTRA[armorRank])}`];
+  const dexNote = dexCap != null && dex > dexCap ? ` (предел ${fmt(dexCap)}, у вас ${fmt(dex)})` : "";
+  const acParts: string[] = ["10", `Ловкость ${fmt(dexToAc)}${dexNote}`, proficiencyPhrase(armorRank, level)];
   let ac = 10 + dexToAc + rankBonus(armorRank, level);
-  const armorItem = (armor?.armor?.bonus ?? 0) + (armor?.runes?.potency ?? 0);
-  if (armorItem) {
-    ac += armorItem;
-    acParts.push(`${armor?.name ?? "доспех"} ${fmt(armorItem)}`);
+  const armorBonus = armor?.armor?.bonus ?? 0;
+  const armorPotency = armor?.runes?.potency ?? 0;
+  if (armorBonus) {
+    ac += armorBonus;
+    acParts.push(`${armor?.name ?? "доспех"} ${fmt(armorBonus)}`);
   }
-  const aside: string[] = [];
+  if (armorPotency) {
+    ac += armorPotency;
+    acParts.push(`руна мощи ${fmt(armorPotency)}`);
+  }
+  const armorItem = armorBonus + armorPotency;
+  const aside: string[] = ["Владение уже включает уровень: обучен — это уровень +2, эксперт +4, мастер +6, легенда +8. Второй раз уровень не прибавляется."];
   const parryOk = toggles.has("dueling-parry") && taken.has("dueling-parry") && parryReady(input.items);
   const equippedShield = input.items.find((item) => item.kind === "shield" && inHands(item));
   const shieldBonus = input.shieldRaised ? equippedShield?.shield?.acBonus ?? 2 : 0;
@@ -350,11 +357,7 @@ export function derive(input: DeriveInput): Derived {
     const ability = skillAbility(id);
     const rank = ranks.get(id) ?? "untrained";
     let value = mod(scores[ability].score) + rankBonus(rank, level);
-    const parts = [`${ABILITY_NAME[ability]} ${fmt(mod(scores[ability].score))}`, `уровень ${level}`, `${RANK_WORD[rank]} ${fmt(RANK_EXTRA[rank])}`];
-    if (rank === "untrained") {
-      value = mod(scores[ability].score);
-      parts.splice(1, 2, "необучен +0");
-    }
+    const parts = [`${ABILITY_NAME[ability]} ${fmt(mod(scores[ability].score))}`, proficiencyPhrase(rank, level)];
     if (checkPenalty && (ability === "str" || ability === "dex") && rank !== "untrained") {
       value -= checkPenalty;
       parts.push(`штраф доспеха −${checkPenalty}`);
@@ -366,7 +369,8 @@ export function derive(input: DeriveInput): Derived {
       value -= localStatus;
       parts.push(`штраф состояния −${localStatus}`);
     }
-    skills[id] = { value, rank, ability, formula: line(skillName(id, loreNames), value, parts), aside: [] };
+    const aside: string[] = id.startsWith("lore:") ? ["Это знание даёт происхождение. Отдельного повышения класса на него не тратили."] : [];
+    skills[id] = { value, rank, ability, formula: line(skillName(id, loreNames), value, parts), aside };
   }
 
   const resilient = armor?.runes?.resilient ?? 0;
@@ -381,7 +385,7 @@ export function derive(input: DeriveInput): Derived {
   if (progress.classId === "fighter" && level >= 15) saveStats.ref.aside.push("Крепкие рефлексы: успех становится критическим успехом.");
 
   const perceptionValue = wis + rankBonus(perceptionRank, level) - statusPenalty - curse.perceptionPenalty;
-  const perceptionParts = [`Мудрость ${fmt(wis)}`, `уровень ${level}`, `${RANK_WORD[perceptionRank]} ${fmt(RANK_EXTRA[perceptionRank])}`];
+  const perceptionParts = [`Мудрость ${fmt(wis)}`, proficiencyPhrase(perceptionRank, level)];
   if (statusPenalty) perceptionParts.push(`штраф состояния −${statusPenalty}`);
   if (curse.perceptionPenalty) perceptionParts.push(`проклятие −${curse.perceptionPenalty}`);
   const initBonus = progress.classId === "fighter" && level >= 7 ? 2 : 0;
@@ -402,7 +406,7 @@ export function derive(input: DeriveInput): Derived {
     const potency = item.runes?.potency ?? 0;
     const rangedCurse = item.weapon?.ranged ? curse.rangedPenalty : 0;
     let attack = ability + rankBonus(rank, level) + potency - statusPenalty - rangedCurse;
-    const parts = [`${abilityName} ${fmt(ability)}`, `уровень ${level}`, `${RANK_WORD[rank]} ${fmt(RANK_EXTRA[rank])}`];
+    const parts = [`${abilityName} ${fmt(ability)}`, proficiencyPhrase(rank, level)];
     if (potency) parts.push(`руна мощи ${fmt(potency)}`);
     if (statusPenalty) parts.push(`штраф состояния −${statusPenalty}`);
     if (rangedCurse) parts.push(`встречный ветер −${rangedCurse}`);
@@ -421,7 +425,7 @@ export function derive(input: DeriveInput): Derived {
       traits: item.weapon?.traits ?? "",
       ranged: Boolean(item.weapon?.ranged),
       attack: { value: attack, formula: line(item.name, attack, parts), aside: [...(item.equipped ? [] : ["Оружие не в руках и не надето: бонус показан так, как если его взять."]), ...(property.length ? [`Свойства: ${property.map((rune) => rune.name).join(", ")}. Их карточка в число удара не входит.`] : [])] },
-      damage: `${dice}${damageMod ? ` ${fmt(damageMod)}` : ""}${ragePart ? ` (ярость ${fmt(ragePart)})` : ""}${spec ? ` (специализация ${fmt(spec)})` : ""}`,
+      damage: `${dice}${damageMod ? ` ${fmt(damageMod)}` : ""}${ragePart ? ` ярость ${fmt(ragePart)}` : ""}${spec ? ` спец. ${fmt(spec)}` : ""}`,
     };
   });
 
@@ -458,11 +462,11 @@ export function derive(input: DeriveInput): Derived {
     initiative: { value: perceptionValue + initBonus, formula: line("Инициатива", perceptionValue + initBonus, initParts), aside: initBonus ? ["+2 обстоятельственных только к инициативе, не ко всем проверкам Восприятия."] : [] },
     saves: saveStats,
     skills,
-    classDc: classDc == null ? null : { value: classDc, rank: classRank, formula: line("Классовая СЛ", classDc, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, `уровень ${level}`, `${RANK_WORD[classRank]} ${fmt(RANK_EXTRA[classRank])}`]), aside: [] },
+    classDc: classDc == null ? null : { value: classDc, rank: classRank, formula: line("Классовая СЛ", classDc, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, proficiencyPhrase(classRank, level)]), aside: [] },
     spell: ranksNow.spell === "untrained" ? null : {
       value: 10 + key + rankBonus(ranksNow.spell, level) - statusPenalty,
       rank: ranksNow.spell,
-      formula: line("СЛ заклинаний", 10 + key + rankBonus(ranksNow.spell, level) - statusPenalty, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, `уровень ${level}`, `${RANK_WORD[ranksNow.spell]} ${fmt(RANK_EXTRA[ranksNow.spell])}`]),
+      formula: line("СЛ заклинаний", 10 + key + rankBonus(ranksNow.spell, level) - statusPenalty, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, proficiencyPhrase(ranksNow.spell, level)]),
       aside: [],
     },
     attacks,
@@ -507,6 +511,11 @@ function line(name: string, value: number, parts: string[]): string {
 function rankBonus(rank: Rank, level: number): number {
   if (rank === "untrained") return 0;
   return level + RANK_EXTRA[rank];
+}
+
+function proficiencyPhrase(rank: Rank, level: number): string {
+  if (rank === "untrained") return "необучен +0";
+  return `владение ${RANK_WORD[rank]} ${fmt(rankBonus(rank, level))}`;
 }
 
 function atLeast(current: Rank, target: Rank): Rank {
@@ -922,7 +931,7 @@ function saveStat(name: string, ability: Ability, rank: Rank, scores: Record<Abi
   const abilityMod = mod(scores[ability].score);
   const totalPenalty = Math.max(penalty, extra) + flat;
   const value = abilityMod + rankBonus(rank, level) - totalPenalty + itemBonus;
-  const parts = [`${ABILITY_NAME[ability]} ${fmt(abilityMod)}`, `уровень ${level}`, `${RANK_WORD[rank]} ${fmt(RANK_EXTRA[rank])}`];
+  const parts = [`${ABILITY_NAME[ability]} ${fmt(abilityMod)}`, proficiencyPhrase(rank, level)];
   if (Math.max(penalty, extra)) parts.push(`штраф −${Math.max(penalty, extra)}`);
   if (flat) parts.push(`проклятие −${flat}`);
   if (itemBonus) parts.push(`руна устойчивости +${itemBonus}`);

@@ -309,7 +309,7 @@ function pfFighter(name: string): Draft {
   draft.heritageId = "skilled";
   draft.choices = {
     ancestryMode: "free",
-    humanSkill: "society",
+    humanSkill: "survival",
     ancestryFeat: "natural-ambition",
     skillFeat: "glare",
     classFeat: "sudden-charge",
@@ -495,7 +495,7 @@ function dndRogue(name: string): Draft {
   const draft = base("dnd5e", name);
   dndHuman(draft, "perception");
   draft.choices.humanFeat = "skilled";
-  draft.multi.hskilled = ["athletics", "history", "investigation"];
+  draft.multi.hskilled = ["athletics", "intimidation", "investigation"];
   draft.backgroundId = "criminal";
   draft.classId = "rogue";
   draft.choices.abilityMethod = "standard";
@@ -546,7 +546,7 @@ function dndWizard(name: string): Draft {
   draft.choices.bgc2 = "mage-hand";
   draft.choices.bgAbility = "int";
   draft.scores = { str: 8, dex: 12, con: 14, int: 15, wis: 13, cha: 10 };
-  draft.multi.skills = ["insight", "medicine"];
+  draft.multi.skills = ["insight", "religion"];
   draft.gearMode = "a";
   draft.knownSpells = ["fire-bolt", "mage-hand", "light", "magic-missile", "shield", "mage-armor", "sleep", "detect-magic", "burning-hands"];
   draft.preparedSpells = ["magic-missile", "shield", "mage-armor", "sleep"];
@@ -582,8 +582,8 @@ export function premades(system: "pf2e" | "dnd5e"): Premade[] {
   if (system === "pf2e") {
     return [
       pack("pf-fighter", "pf2e", "боец", "Марта Щит", "Воин в кольчуге. Бьёт мечом и закрывается щитом.", [
-        "Народ человек: свободные повышения в Силу и Телосложение.",
-        "Происхождение «Боец» даёт Запугивание.",
+        "Народ человек, наследие «Умелый»: лишний навык Выживание.",
+        "Происхождение «Боец» даёт Запугивание и Знание войны.",
         "Ключ — Сила. Черта «Внезапный рывок»: подбежать и ударить.",
         "Набор класса: кольчуга, щит и меч.",
       ], pfFighter("Марта Щит")),
@@ -635,11 +635,11 @@ export function premades(system: "pf2e" | "dnd5e"): Premade[] {
       "В книге шесть заклинаний, на день готовятся четыре.",
       "Набор «Книга и посох».",
     ], dndWizard("Искра")),
-    pack("dnd-bard", "dnd5e", "поддержка", "Лира", "Бард. Вдохновение союзнику и пара заклинаний.", [
-      "Харизма выше остальных чисел.",
-      "Насмешка и лечащее слово.",
-      "Набор «Кожа и песня».",
-    ], dndBard("Лира")),
+      pack("dnd-bard", "dnd5e", "поддержка", "Лира", "Бард при храме. Поёт союзникам и умеет лечить.", [
+        "Происхождение послушника: из готовых начал только оно поднимает Харизму.",
+        "От него же жреческая магия: насмешка рядом с лечащим словом.",
+        "Набор «Кожа и песня».",
+      ], dndBard("Лира")),
   ];
 }
 

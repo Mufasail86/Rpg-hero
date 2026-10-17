@@ -999,7 +999,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     hitDice: { sides: 0, max: 0, current: 0 },
     conditions: [],
     conditionValues: {},
-    languages: ancestry?.languages ?? "Всеобщий",
+    languages: spokenLanguages(d.ancestryId, scores.int),
     notes: "",
     reminder: reminderFromClass("pf2e", d.classId, c(d, "deity")),
     shieldRaised: false,
@@ -1020,6 +1020,14 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+}
+
+function spokenLanguages(ancestryId: string, intScore: number): string {
+  const ancestry = ANCESTRIES.find((item) => item.id === ancestryId);
+  const named = (ancestry?.languages ?? "Всеобщий").split(" и дополнительные")[0].trim();
+  const extra = Math.max(0, mod(intScore));
+  if (extra === 0) return `${named}. Дополнительных языков по Интеллекту нет.`;
+  return `${named} и ещё ${extra} по Интеллекту`;
 }
 
 function targetLevel(d: Draft): number {

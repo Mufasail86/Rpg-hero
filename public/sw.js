@@ -1,4 +1,4 @@
-const CACHE = "rpg-hero-shell-20261017-8";
+const CACHE = "rpg-hero-shell-20261017-9";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(["./", "./index.html"])));
