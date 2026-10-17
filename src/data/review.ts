@@ -1,6 +1,7 @@
 import type { ReviewStatus } from "./editions";
 import handReviewJson from "./generated/hand-review.json";
 import extraLinks from "./generated/links.json";
+import { LORE_MORE_REVIEW } from "./lore-more";
 
 const handReview = handReviewJson as Record<string, { status: ReviewStatus; checkedOn: string; sourceVersion: string; originalName?: string; location?: string }>;
 
@@ -89,6 +90,7 @@ export const REVIEW: Record<string, { status: ReviewStatus; checkedOn: string; s
   "lore~forgotten-realms~neverwinter": { status: "verified-reference", checkedOn: on, sourceVersion: "wikipedia", originalName: "Neverwinter", location: "Сверка 2026-10-16: город-государство на северо-западном берегу Фаэруна" },
   "lore~forgotten-realms~waterdeep": { status: "verified-reference", checkedOn: on, sourceVersion: "forgottenrealms.fandom", originalName: "Waterdeep", location: "https://forgottenrealms.fandom.com/wiki/Waterdeep, сверка 2026-10-16: север побережья мечей, северо-запад Фаэруна, глубокая гавань" },
   "lore~srd~open-srd": { status: "verified-reference", checkedOn: on, sourceVersion: "SRD page", originalName: "System Reference Document", location: "https://www.dndbeyond.com/srd, сверка 2026-10-16: справочник — правила; Забытые королевства в таблицу справочника не входят; приложение про планы убрано как не правила" },
+  ...LORE_MORE_REVIEW,
 };
 
 /** Связь между записями разных редакций. Оба конца должны уже лежать в каталоге. */

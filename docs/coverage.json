@@ -1,7 +1,7 @@
 {
   "stage": 2,
   "takenFrom": "src/data/catalog.ts",
-  "takenOn": "2026-10-16",
+  "takenOn": "2026-10-17",
   "decisions": {
     "v1": "full-open-license",
     "editionsSeparate": true,
@@ -25,8 +25,12 @@
     {"id": "pf-player-core", "edition": "pf-remaster", "entered": 1805, "verified": 1805},
     {"id": "pf-orc-more", "edition": "pf-remaster", "entered": 2274, "verified": 2274},
     {"id": "pf-ogl", "edition": "pf-legacy", "entered": 256, "verified": 256},
-    {"id": "lore-golarion", "edition": "lore", "entered": 15, "verified": 15},
-    {"id": "lore-forgotten-realms", "edition": "lore", "entered": 8, "verified": 8},
+    {"id": "pf-monster-core", "edition": "pf-remaster", "entered": 492, "verified": 492},
+    {"id": "srd-5.2-monsters", "edition": "dnd-2024", "entered": 330, "verified": 330},
+    {"id": "srd-5.1-monsters", "edition": "dnd-2014", "entered": 307, "verified": 307},
+    {"id": "lore-golarion", "edition": "lore", "entered": 68, "verified": 68},
+    {"id": "lore-forgotten-realms", "edition": "lore", "entered": 22, "verified": 22},
+    {"id": "lore-other-settings", "edition": "lore", "entered": 8, "verified": 8},
     {"id": "lore-srd-settings", "edition": "lore", "entered": 1, "verified": 1}
   ],
   "systems": [

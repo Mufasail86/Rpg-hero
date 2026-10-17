@@ -1,4 +1,5 @@
 import type { Spoiler } from "./editions";
+import { LORE_MORE } from "./lore-more";
 
 export interface LoreCard {
   id: string;
@@ -333,3 +334,5 @@ export const LORE: LoreCard[] = [
     links: [],
   },
 ];
+
+LORE.push(...LORE_MORE);

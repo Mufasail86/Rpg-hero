@@ -82,13 +82,21 @@ describe("единая модель редакций", () => {
     expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(256);
     expect(counts["pf-orc-more"]).toBe(2274);
-    expect(counts["lore-golarion"]).toBe(15);
-    expect(counts["lore-forgotten-realms"]).toBe(8);
+    expect(counts["lore-golarion"]).toBe(68);
+    expect(counts["lore-forgotten-realms"]).toBe(22);
+    expect(counts["lore-other-settings"]).toBe(8);
     expect(counts["lore-srd-settings"]).toBe(1);
-    expect(loreCatalog()).toHaveLength(24);
-    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(23);
+    expect(counts["pf-monster-core"]).toBe(492);
+    expect(counts["srd-5.2-monsters"]).toBe(330);
+    expect(counts["srd-5.1-monsters"]).toBe(307);
+    expect(loreCatalog()).toHaveLength(99);
+    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(96);
     expect(loreCatalog().some((entry) => entry.localId === "oppara-court" && entry.spoiler === "gm")).toBe(true);
-    expect(loreCatalog().every((entry) => entry.settingId === "golarion" || entry.settingId === "forgotten-realms" || entry.settingId === "srd")).toBe(true);
+    expect(loreCatalog().every((entry) => ["golarion", "forgotten-realms", "srd", "greyhawk", "krynn", "eberron", "ravenloft", "spelljammer", "athas", "planescape", "policy"].includes(entry.settingId))).toBe(true);
+    expect(loreCatalog().find((entry) => entry.localId === "abadar")?.text).toContain("Эдикты");
+    expect(loreCatalog().find((entry) => entry.localId === "abadar")?.text).toContain("Анафема");
+    expect(loreCatalog().find((entry) => entry.localId === "gravelands")?.spoiler).toBe("gm");
+    expect(loreCatalog().find((entry) => entry.localId === "greyhawk")?.settingId).toBe("greyhawk");
     const loreById = Object.fromEntries(loreCatalog().map((entry) => [entry.localId, entry]));
     expect(loreById.absalom.status).toBe("verified-reference");
     expect(loreById.waterdeep.status).toBe("verified-reference");
@@ -153,8 +161,12 @@ describe("единая модель редакций", () => {
       { id: "pf-player-core", entered: 1805, verified: 1805 },
       { id: "pf-orc-more", entered: 2274, verified: 2274 },
       { id: "pf-ogl", entered: 256, verified: 256 },
-      { id: "lore-golarion", entered: 15, verified: 15 },
-      { id: "lore-forgotten-realms", entered: 8, verified: 8 },
+      { id: "pf-monster-core", entered: 492, verified: 492 },
+      { id: "srd-5.2-monsters", entered: 330, verified: 330 },
+      { id: "srd-5.1-monsters", entered: 307, verified: 307 },
+      { id: "lore-golarion", entered: 68, verified: 68 },
+      { id: "lore-forgotten-realms", entered: 22, verified: 22 },
+      { id: "lore-other-settings", entered: 8, verified: 8 },
       { id: "lore-srd-settings", entered: 1, verified: 1 },
     ]);
   });
