@@ -649,6 +649,10 @@ def main():
     ART.mkdir(parents=True, exist_ok=True)
     manifest = {}
     for row in ancestries:
+        # Illustrated portraits (own generated art) win; the SVG placeholder is only a fallback.
+        if (ART / f"{row['id']}.webp").exists():
+            manifest[row["id"]] = f"portraits/{row['id']}.webp"
+            continue
         file_name = f"{row['id']}.svg"
         (ART / file_name).write_text(portrait_svg(row["id"], row["name"]), encoding="utf-8")
         manifest[row["id"]] = f"portraits/{file_name}"
@@ -656,6 +660,9 @@ def main():
     (OUT / "pf-roster.json").write_text(json.dumps(roster, ensure_ascii=False) + "\n")
     (OUT / "pf-wide.json").write_text(json.dumps(cards, ensure_ascii=False) + "\n")
     (OUT / "pf-feat-wide.json").write_text(json.dumps(index, ensure_ascii=False) + "\n")
+    for extra in sorted(ART.glob("*.webp")):
+        manifest.setdefault(extra.stem, f"portraits/{extra.name}")
+    manifest = dict(sorted(manifest.items()))
     (OUT / "portraits.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
     from collections import Counter
     print("ancestries", len(ancestries), "classes", len(classes), "companions", len(companions), "callings", len(callings))

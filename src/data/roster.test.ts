@@ -41,7 +41,7 @@ describe("полный список ORC", () => {
     expect(names.aiuvarin).toBe("Аюварин");
     expect(names.dromaar).toBe("Дромаар");
     expect(names.dhampir).toBe("Дампир");
-    expect(names.dragonblood).toBe("Драконорождённый");
+    expect(names.dragonblood).toBe("Драконородный");
     expect(names.hungerseed).toBe("Ненасытный");
     expect(names.duskwalker).toBe("Сумеречный");
     expect(names.talos).toBeUndefined();
@@ -55,6 +55,14 @@ describe("полный список ORC", () => {
       const file = portraitFile(ancestry.id);
       expect(file, ancestry.id).toBeTruthy();
       expect(existsSync(new URL(`../../public/art/${file}`, import.meta.url))).toBe(true);
+    }
+  });
+
+  it("даёт иллюстрированный портрет универсальным наследиям и народам D&D", () => {
+    for (const id of [...VERSATILE.map((item) => item.id), "dragonborn", "goliath", "tiefling", "human", "dwarf", "elf", "gnome", "halfling", "orc"]) {
+      const file = portraitFile(id);
+      expect(file, id).toMatch(/\.webp$/);
+      expect(existsSync(new URL(`../../public/art/${file}`, import.meta.url)), id).toBe(true);
     }
   });
 
