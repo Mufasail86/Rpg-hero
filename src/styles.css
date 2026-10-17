@@ -976,6 +976,13 @@ body:has(.board-app),
 .play-places { display: flex; flex-wrap: wrap; gap: 8px; }
 .play-now .card p { margin: 4px 0 0; }
 .play-now article.card b { display: block; }
+.gm-idea {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--gold);
+  background: var(--well);
+  border-radius: 0 12px 12px 0;
+}
 
 @media (min-width: 768px) {
   .home-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; align-items: start; }

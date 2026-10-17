@@ -1,6 +1,6 @@
 import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
-import { LORE } from "./lore";
+import { LORE, LORE_TOPIC_NAME, loreTopic } from "./lore";
 import pfCorePack from "./generated/pf-core.json";
 import pfLegacyPack from "./generated/pf-legacy.json";
 import pfListsPack from "./generated/pf-lists.json";
@@ -284,8 +284,8 @@ function loreEntries(): RuleEntry[] {
       system: "lore" as const,
       edition: "lore" as const,
       settingId: card.settingId,
-      category: "lore",
-      categoryTitle: "Предание",
+      category: loreTopic(card.id),
+      categoryTitle: LORE_TOPIC_NAME[loreTopic(card.id)],
       rank: null,
       sourceId: card.sourceId,
       location: card.location,
