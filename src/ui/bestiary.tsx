@@ -159,6 +159,7 @@ export function Bestiary() {
             <div className="library-grid">
               {shown.map((monster) => (
                 <article key={monster.token} className="card stack">
+                  <div className="bestiary-art" data-testid="bestiary-art" aria-hidden />
                   <b>{monster.name}</b>
                   <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>
                   {mode === "gm" && <p className="tiny">КБ {monster.ac} · хиты {monster.hp}{monster.xp != null ? ` · опыт ${monster.xp}` : ""}</p>}

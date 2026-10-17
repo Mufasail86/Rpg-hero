@@ -8,8 +8,8 @@
   --teal: #3aa89a;
   --teal-ink: #08211e;
   --teal-2: #1a3330;
-  --copper: #d47a86;
-  --copper-ink: #2a1014;
+  --copper: #c9842a;
+  --copper-ink: #1a1004;
   --copper-2: #3a2428;
   --gold: #f0c48a;
   --gold-2: #3a2e22;
@@ -38,8 +38,8 @@ html[data-theme="atlas"] {
   --teal: #1b6b4a;
   --teal-ink: #f4fff8;
   --teal-2: #e7f3ec;
-  --copper: #7a2e3b;
-  --copper-ink: #fff7f8;
+  --copper: #7a4e12;
+  --copper-ink: #fff6e8;
   --copper-2: #f8e8ea;
   --gold: #8d6420;
   --gold-2: #f6efe2;
@@ -686,7 +686,7 @@ body:has(.board-app),
   border: 1px solid var(--copper);
   background: transparent;
 }
-.track button.on { background: var(--copper); }
+.track button.on { background: var(--copper); color: var(--copper-ink); }
 .track button.fail { border-color: var(--danger); }
 .track button.fail.on { background: var(--danger); }
 .track small { color: var(--muted); font-size: 9px; }
@@ -976,6 +976,18 @@ body:has(.board-app),
 .play-places { display: flex; flex-wrap: wrap; gap: 8px; }
 .play-now .card p { margin: 4px 0 0; }
 .play-now article.card b { display: block; }
+.art-open { padding: 0; border: 0; background: transparent; min-height: 0; display: block; }
+.lightbox {
+  position: relative; width: min(440px, 100%); max-height: 88dvh; overflow: auto;
+  background: var(--paper); border-radius: 18px; padding: 12px;
+}
+.lightbox img { width: 100%; height: auto; max-height: 72dvh; object-fit: contain; background: #121820; }
+.bestiary-art { height: 88px; border: 1px dashed var(--line); border-radius: 12px; background: var(--well); }
+article.card { border-top: 3px solid var(--gold); }
+.option { border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
+.rule-card { border-left: 3px solid var(--teal); padding-left: 10px; }
+.figure-card img { max-height: 160px; }
+.banner img { max-height: 240px; }
 .gm-idea {
   margin: 8px 0 0;
   padding: 10px 12px;
@@ -1019,6 +1031,8 @@ body:has(.board-app),
   .option-art { width: 168px; height: 224px; aspect-ratio: 3 / 4; }
   .avatar, .avatar-btn { width: 112px; height: 148px; aspect-ratio: 3 / 4; }
   .cast .cast-portrait { height: 180px; }
+  .bestiary-art { height: 150px; }
+  .banner img { max-height: 320px; }
 }
 @media (min-width: 1600px) {
   .app { max-width: 1280px; }

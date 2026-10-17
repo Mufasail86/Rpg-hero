@@ -30,7 +30,7 @@ import {
   ORIGIN_FEATS,
   validateStep,
 } from "../create";
-import { compressImage } from "../image";
+import { CropDialog } from "./lightbox";
 import { PF_STANDARD, POINT_BUY_BUDGET, pointBuySpent, roll4d6 } from "../rules";
 import { loadDraft, saveDraft } from "../storage";
 import {
@@ -1520,20 +1520,21 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
 
 function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: Partial<Draft>) => void; error: string }) {
   const scored = scoresOf(draft);
-  async function photo(file: File) {
-    try {
-      update({ photo: await compressImage(file) });
-    } catch {
-      update({ photo: undefined });
-    }
-  }
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   return (
     <>
       <div className="card hero-card">
         <label className="avatar-btn">
           {draft.photo ? <img src={draft.photo} alt="" /> : <span>+</span>}
-          <input hidden type="file" accept="image/*" onChange={(event) => { const file = event.target.files?.[0]; if (file) void photo(file); }} />
+          <input hidden type="file" accept="image/*" onChange={(event) => { const file = event.target.files?.[0]; if (file) setPhotoFile(file); }} />
         </label>
+        {photoFile && (
+          <CropDialog
+            file={photoFile}
+            onCancel={() => setPhotoFile(null)}
+            onSave={(photo, photoOriginal) => { update({ photo, photoOriginal }); setPhotoFile(null); }}
+          />
+        )}
         <div>
           <b>{draft.name || "Без имени"}</b>
           <p className="tiny">Фото сжимается и остаётся в памяти телефона. В сеть оно не уходит.</p>

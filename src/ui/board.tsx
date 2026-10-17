@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { SKILLS as DND_SKILLS } from "../data/dnd5e";
 import { rulesOf } from "../data/editions";
 import { ANCESTRIES, SKILLS as PF_SKILLS } from "../data/pf2e";
 import { VERSATILE } from "../data/versatile";
 import { sheetDnd } from "../dnd/build";
-import { compressImage } from "../image";
 import { appendRoll } from "../play/log";
 import { conditionList } from "../create";
 import { armorClass, initiativeOf, saveMod, skillRows, speedOf, xpToNext } from "../rules";
@@ -16,7 +16,8 @@ import {
   mod,
   uid,
 } from "../types";
-import { PORTRAIT_PROVENANCE, portraitSrc } from "./art";
+import { portraitSrc } from "./art";
+import { CropDialog } from "./lightbox";
 import { go, useInfo } from "./common";
 import { sheetDerived } from "./remaster";
 import { TurnHints } from "./beginner";
@@ -102,6 +103,7 @@ export function CharacterBoard({ character, commit, hints = false }: { character
     commit({ ...character, conditionValues, conditions });
   }
 
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const attack = melee[0]?.attack ?? ranged[0]?.attack ?? 0;
   return (
     <section className={`character-board${hints ? " has-hint" : ""}`} data-testid="character-board">
@@ -109,7 +111,7 @@ export function CharacterBoard({ character, commit, hints = false }: { character
       <header className="board-head">
         <label className="board-portrait" title="Портрет">
           {(character.photo || portraitSrc(character.ancestryId, character.classId)) ? (
-            <img src={character.photo || portraitSrc(character.ancestryId, character.classId) || ""} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} />
+            <img src={character.photo || portraitSrc(character.ancestryId, character.classId) || ""} alt="" />
           ) : (
             <span aria-hidden>⚔</span>
           )}
@@ -120,10 +122,17 @@ export function CharacterBoard({ character, commit, hints = false }: { character
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (!file) return;
-              void compressImage(file).then((photo) => setNumber({ photo })).catch(() => undefined);
+              setPhotoFile(file);
             }}
           />
         </label>
+        {photoFile && (
+          <CropDialog
+            file={photoFile}
+            onCancel={() => setPhotoFile(null)}
+            onSave={(photo, photoOriginal) => { setNumber({ photo, photoOriginal }); setPhotoFile(null); }}
+          />
+        )}
         <label className="board-name">
           <span>Имя</span>
           <input data-testid="sheet-name" value={character.name} onChange={(event) => setNumber({ name: event.target.value })} />
