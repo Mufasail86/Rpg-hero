@@ -1,4 +1,5 @@
 import { MORE_ANCESTRIES, MORE_CLASSES } from "./pf2e-more";
+import { ROSTER_ANCESTRIES, ROSTER_CLASSES } from "./roster";
 import { ABILITY_NAME, type Ability, type CatalogItem, type Opt } from "../types";
 import { voiceItem, voiceNamed, voiceOpt, voiceSkill, voiceSpell } from "./voice";
 
@@ -643,6 +644,16 @@ export const CLASSES: ClassDef[] = [
 ];
 
 CLASSES.push(...MORE_CLASSES);
+const ancestryIds = new Set(ANCESTRIES.map((item) => item.id));
+const extraAncestries = ROSTER_ANCESTRIES.filter((item) => !ancestryIds.has(item.id));
+ANCESTRIES.push(...extraAncestries);
+const classIds = new Set(CLASSES.map((item) => item.id));
+const extraClasses = ROSTER_CLASSES.filter((item) => !classIds.has(item.id));
+CLASSES.push(...extraClasses);
+
+/** Народы и классы, которых не было в рукописном ядре. Справочник помечает их пакетом ORC. */
+export const EXTRA_ANCESTRY_IDS = new Set(extraAncestries.map((item) => item.id));
+export const EXTRA_CLASS_IDS = new Set(extraClasses.map((item) => item.id));
 
 export const SKILL_FEATS: Opt[] = [
   { id: "cat-fall", name: "Мягкое падение", info: "Нужна обученная Акробатика. Падая, считаете дистанцию на 10 футов меньше, на экспертном ранге — на 25. Урон от падения считается по уменьшенной высоте." },

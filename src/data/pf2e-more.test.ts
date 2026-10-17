@@ -4,9 +4,9 @@ import { derive } from "../pf2e/build";
 import type { Pf2eProgress } from "../types";
 
 describe("черновики второй книги ядра", () => {
-  it("держит 16 народов и 16 классов", () => {
-    expect(ANCESTRIES).toHaveLength(16);
-    expect(CLASSES).toHaveLength(16);
+  it("держит народы и классы открытой лицензии", () => {
+    expect(ANCESTRIES.length).toBeGreaterThanOrEqual(34);
+    expect(CLASSES.length).toBeGreaterThanOrEqual(28);
     expect(ANCESTRIES.find((item) => item.id === "kobold")?.hp).toBe(6);
     expect(ANCESTRIES.find((item) => item.id === "kholo")?.boosts).toEqual(["str", "int"]);
     expect(CLASSES.find((item) => item.id === "alchemist")?.spell).toBeUndefined();

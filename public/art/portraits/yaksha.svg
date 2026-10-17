@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240" role="img" aria-label="Якша">
+<title>Якша</title>
+<!-- Свой геометрический портрет. Не официальная иллюстрация. -->
+<rect width="180" height="240" rx="28" fill="#2a2438"/>
+<ellipse cx="90" cy="196" rx="62" ry="36" fill="#d98b6a" opacity="0.9"/>
+<circle cx="90" cy="104" r="48" fill="#f2e2c4"/>
+<circle cx="74" cy="98" r="4" fill="#2a2438"/>
+<circle cx="106" cy="98" r="4" fill="#2a2438"/>
+<path d="M78 122 Q90 132 102 122" fill="none" stroke="#2a2438" stroke-width="3" stroke-linecap="round"/>
+
+</svg>

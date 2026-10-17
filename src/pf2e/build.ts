@@ -1,6 +1,7 @@
 import { FEAT_BY_ID, FEAT_INDEX, pathGroup, pathOption, type PathOption } from "../data/pf-index";
 import { curseMax, curseMods, doctrineOptions, monkSaveOptions, resolveRanks } from "./progression";
 import { ANCESTRIES, BACKGROUNDS, CLASSES, SKILLS } from "../data/pf2e";
+import { CLASS_FEAT_LEVELS, SKILL_FEAT_LEVELS } from "../data/roster";
 import {
   ABILITIES,
   ABILITY_NAME,
@@ -73,7 +74,7 @@ interface Slot {
 
 interface FeatDef {
   name: string;
-  kind: "ancestry" | "class" | "skill" | "general" | "archetype";
+  kind: "ancestry" | "class" | "skill" | "general" | "archetype" | "mythic";
   level: number;
   modeled: boolean;
   skill?: string;
@@ -567,13 +568,15 @@ function classFeatLevels(classId: string): number[] {
   if (["alchemist", "barbarian", "champion", "fighter", "investigator", "monk", "ranger", "rogue", "swashbuckler"].includes(classId)) {
     return [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
   }
-  return [];
+  return CLASS_FEAT_LEVELS[classId] ?? [];
 }
 
 function skillFeatLevels(classId: string): number[] {
   if (classId === "rogue") return EVERY_LEVEL;
   if (classId === "investigator") return EVERY_LEVEL.filter((at) => at >= 2);
   if (classId === "swashbuckler") return [2, 3, 4, 6, 7, 8, 10, 12, 14, 15, 16, 18, 20];
+  const listed = SKILL_FEAT_LEVELS[classId];
+  if (listed && listed.length > 0) return listed;
   return EVEN_TO_20;
 }
 
@@ -1086,7 +1089,8 @@ export function optionsForSlot(source: string, ctx?: { classId?: string; ancestr
     .map(([id, def]) => ({ pick: id, name: def.name }));
   for (const feat of FEAT_INDEX) {
     if (seen.has(feat.id)) continue;
-    const kindOk = source === "class-feat" ? feat.kind === "class" : feat.kind === kind;
+    const dedication = feat.kind === "archetype" || feat.id.endsWith("-dedication");
+    const kindOk = source === "free-archetype" ? dedication : source === "class-feat" ? feat.kind === "class" && !dedication : feat.kind === kind;
     if (!kindOk) continue;
     if (ctx?.level != null && feat.level > ctx.level) continue;
     if (source === "class-feat" && ctx?.classId && feat.classes.length > 0 && !feat.classes.includes(ctx.classId)) continue;
@@ -1095,7 +1099,7 @@ export function optionsForSlot(source: string, ctx?: { classId?: string; ancestr
     seen.add(feat.id);
     list.push({ pick: feat.id, name: feat.name });
   }
-  return list;
+  return list.sort((left, right) => left.name.localeCompare(right.name, "ru"));
 }
 
 export function snapshot(character: Character): Character {

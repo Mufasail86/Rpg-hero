@@ -70,12 +70,13 @@ export function Home({
       <main className="screen">
         <div className="home-grid">
         <div className="stack">
-        <figure className="banner">
-          <img src={artSrc(ART.hero)} alt="Четыре героя у ночной таверны: щит, лук, молот и бирюзовый свет" />
-          <span className="spark" style={{ left: "18%", top: "22%" }} />
-          <span className="spark amber" style={{ left: "62%", top: "30%" }} />
-          <span className="spark violet" style={{ left: "78%", top: "18%" }} />
-          <div className="veil" />
+        <figure className="banner" data-testid="home-hero">
+          <div className="banner-art">
+            <img src={artSrc(ART.hero)} alt="Четыре героя у ночной таверны: щит, лук, молот и бирюзовый свет" />
+            <span className="spark" style={{ left: "18%", top: "22%" }} />
+            <span className="spark amber" style={{ left: "62%", top: "30%" }} />
+            <span className="spark violet" style={{ left: "78%", top: "18%" }} />
+          </div>
           <div className="copy">
             <p className="kicker">Ночная таверна</p>
             <h1 className="display">Лист в кармане</h1>
@@ -92,7 +93,7 @@ export function Home({
             [ART.goblin, "Гоблин"],
           ].map(([file, label]) => (
             <figure key={file}>
-              <div className="face"><img src={artSrc(file)} alt="" loading="lazy" decoding="async" /></div>
+              <div className="face"><img src={artSrc(file)} alt={label} loading="lazy" decoding="async" /></div>
               <figcaption>{label}</figcaption>
             </figure>
           ))}

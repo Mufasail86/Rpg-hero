@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240" role="img" aria-label="Багбир">
+<title>Багбир</title>
+<!-- Свой геометрический портрет. Не официальная иллюстрация. -->
+<rect width="180" height="240" rx="28" fill="#24303c"/>
+<ellipse cx="90" cy="196" rx="62" ry="36" fill="#e7c27a" opacity="0.9"/>
+<circle cx="90" cy="104" r="48" fill="#8fd0c6"/>
+<circle cx="74" cy="98" r="4" fill="#24303c"/>
+<circle cx="106" cy="98" r="4" fill="#24303c"/>
+<path d="M78 122 Q90 132 102 122" fill="none" stroke="#24303c" stroke-width="3" stroke-linecap="round"/>
+
+</svg>

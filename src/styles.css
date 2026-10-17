@@ -187,7 +187,7 @@ textarea { min-height: 88px; resize: vertical; }
 
 .hero-card { display: flex; gap: 14px; align-items: center; }
 .avatar, .avatar-btn {
-  width: 84px; height: 84px; border-radius: 28px; object-fit: cover;
+  width: 84px; height: 84px; border-radius: 28px; object-fit: contain;
   background: var(--teal-2); display: grid; place-items: center;
   font-size: 1.8rem; border: 1px solid var(--line); overflow: hidden; flex: none;
 }
@@ -311,13 +311,10 @@ textarea { min-height: 88px; resize: vertical; }
   .spark { animation: none !important; }
 }
 
-.banner { position: relative; border-radius: 18px; overflow: hidden; min-height: 220px; border: 1px solid var(--line); }
-.banner img { width: 100%; height: 280px; object-fit: cover; display: block; }
-.banner .veil {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(12, 16, 22, 0.05) 18%, rgba(18, 24, 32, 0.2) 50%, #121820 100%);
-}
-.banner .copy { position: absolute; left: 14px; right: 14px; bottom: 12px; }
+.banner { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--well); }
+.banner-art { position: relative; background: #121820; }
+.banner img { width: 100%; height: auto; max-height: 520px; object-fit: contain; object-position: center; display: block; background: #121820; }
+.banner .copy { position: static; padding: 12px 14px 0; }
 .spark {
   position: absolute; z-index: 2; width: 7px; height: 7px; border-radius: 50%; pointer-events: none;
   background: #7ef0df; box-shadow: 0 0 10px 3px rgba(58, 168, 154, 0.85);
@@ -332,14 +329,19 @@ textarea { min-height: 88px; resize: vertical; }
 .cast .face, .thumb {
   height: 92px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--well);
 }
-.cast img, .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cast img, .thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; background: var(--well); }
 .cast figcaption, .caption { margin-top: 4px; font-size: 0.72rem; color: var(--muted); }
 .figure-card { margin: 0; }
-.figure-card img { width: 100%; max-height: 360px; object-fit: cover; border-radius: 16px; border: 1px solid var(--line); }
-.option-art { width: 54px; height: 72px; object-fit: cover; flex: none; }
-.card-art { width: 100%; height: 140px; object-fit: cover; border-radius: 12px; }
+.figure-card img { width: 100%; height: auto; max-height: 520px; object-fit: contain; object-position: center; border-radius: 16px; border: 1px solid var(--line); background: var(--well); }
+.option-art { width: 72px; height: 96px; object-fit: contain; object-position: center; flex: none; background: var(--well); border-radius: 12px; }
+.card-art { width: 100%; height: auto; max-height: 280px; object-fit: contain; object-position: center; border-radius: 12px; background: var(--well); }
 .lede { margin: 0; color: var(--gold); }
 .library-grid { display: flex; flex-direction: column; gap: 12px; }
+.library-tree { display: flex; flex-direction: column; gap: 8px; }
+.library-tree details { border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+.library-tree summary { cursor: pointer; min-height: 44px; padding: 10px 12px; font-weight: 700; }
+.library-tree .tree-items { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 10px 10px; }
+.library-tree .tree-items .pill { flex: none; }
 .sentinel { height: 1px; }
 .combat-figure { margin: 0; font-variant-numeric: tabular-nums; font-weight: 750; }
 .combat-board.compact .combat-figure { font-size: 1.85rem; letter-spacing: -0.03em; }
@@ -377,6 +379,6 @@ textarea { min-height: 88px; resize: vertical; }
   .info-card, .panel { width: min(720px, 100%); }
   .home-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; align-items: start; }
   .library-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .banner img { height: 360px; }
+  .banner img { max-height: 640px; }
   .cast .face { height: 140px; }
 }

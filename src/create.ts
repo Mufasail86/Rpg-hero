@@ -3,7 +3,8 @@ import { reminderFromClass } from "./reminder";
 import { VERSATILE } from "./data/versatile";
 import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
-import { levelOneClassFeats } from "./data/pf-index";
+import { FEAT_BY_ID, levelOneClassFeats } from "./data/pf-index";
+import { extraGear } from "./data/shop";
 import { derive } from "./pf2e/build";
 import {
   ABILITIES,
@@ -828,14 +829,17 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
   const bg = bg2(d);
   const custom = d.ancestryId === "custom";
   const feats: FeatInst[] = [];
-  const ancFeat = ancestry?.feats.find((f) => f.id === c(d, "ancestryFeat"));
+  const ancFeat = ancestry?.feats.find((f) => f.id === c(d, "ancestryFeat")) ?? indexedFeat(c(d, "ancestryFeat"));
   if (ancFeat) feats.push({ id: ancFeat.id, name: ancFeat.name, info: ancFeat.info });
-  const skillFeat = SKILL_FEATS.find((f) => f.id === c(d, "skillFeat"));
+  const skillFeat = SKILL_FEATS.find((f) => f.id === c(d, "skillFeat")) ?? indexedFeat(c(d, "skillFeat"));
   if (skillFeat) feats.push({ id: skillFeat.id, name: skillFeat.name, info: skillFeat.info });
   const generalFeat = SKILL_FEATS.find((f) => f.id === c(d, "generalFeat")) ?? (c(d, "generalFeat") === "fleet" ? { id: "fleet", name: "Быстроногий", info: "Скорость +5 футов." } : c(d, "generalFeat") === "canny-acumen" ? { id: "canny-acumen", name: "Дальновидность", info: "Эксперт в выбранном испытании или Восприятии, мастер с 17 уровня." } : c(d, "generalFeat") === "breath-control" ? { id: "breath-control", name: "Контроль дыхания", info: "Дольше задерживаете дыхание." } : null);
-  if (generalFeat) feats.push({ id: generalFeat.id, name: generalFeat.name, info: generalFeat.info });
-  const classFeat = cls?.feats.find((f) => f.id === c(d, "classFeat"));
+  const generalPick = generalFeat ?? indexedFeat(c(d, "generalFeat"));
+  if (generalPick) feats.push({ id: generalPick.id, name: generalPick.name, info: generalPick.info });
+  const classFeat = cls?.feats.find((f) => f.id === c(d, "classFeat")) ?? indexedFeat(c(d, "classFeat"));
   if (classFeat) feats.push({ id: classFeat.id, name: classFeat.name, info: classFeat.info });
+  const archetype = indexedFeat(c(d, "archetype"));
+  if (archetype) feats.push({ id: archetype.id, name: archetype.name, info: archetype.info });
   if (c(d, "doctrine") === "war") feats.push({ id: "shield-block", name: "Блок щитом", info: SKILL_FEATS.find((f) => f.id === "shield-block")?.info ?? "" });
   for (const feat of d.customFeats) if (feat.name.trim()) feats.push({ id: uid(), name: feat.name.trim(), info: feat.info || "Своя черта." });
   const ranks: Record<string, string> = {};
@@ -1110,7 +1114,23 @@ function copperToCoins(copper: number): Character["coins"] {
 }
 
 export function catalog(system: Draft["system"]) {
-  return system === "pf2e" ? ITEMS2 : ITEMS5;
+  const hand = system === "pf2e" ? ITEMS2 : ITEMS5;
+  if (system !== "pf2e" && system !== "dnd5e") return hand;
+  const taken = new Set(hand.map((item) => item.id));
+  return [...hand, ...extraGear(system, taken).priced];
+}
+
+export function notedGear(system: Draft["system"]) {
+  const hand = system === "pf2e" ? ITEMS2 : ITEMS5;
+  if (system !== "pf2e" && system !== "dnd5e") return [];
+  return extraGear(system, new Set(hand.map((item) => item.id))).noted;
+}
+
+function indexedFeat(id: string): { id: string; name: string; info: string } | undefined {
+  if (!id) return undefined;
+  const row = FEAT_BY_ID.get(id);
+  if (!row) return undefined;
+  return { id: row.id, name: row.name, info: `Уровень ${row.level}. Постоянные числа листа эта черта не меняет, если эффект не вынесен числом.` };
 }
 
 export function conditionList(system: Character["system"]) {
