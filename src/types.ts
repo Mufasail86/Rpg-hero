@@ -23,12 +23,12 @@ export const ABILITY_SHORT: Record<Ability, string> = {
 };
 
 export const ABILITY_INFO: Record<Ability, string> = {
-  str: "Сила — физическая мощь. В D&D 5e от неё зависят атаки ближнего боя без фехтовального свойства, урон таким оружием и грузоподъёмность (счёт × 15 фунтов). Проверка Силы — выломать дверь, удержать обрыв, толкнуть. Спасбросок Силы в правилах 2024 года встречается реже, чем проверка. Модификатор = (значение − 10) ÷ 2, округление вниз. Значение 10 даёт +0, 12 даёт +1, 8 даёт −1.",
+  str: "Сила — физическая мощь. В правилах 2024 года от неё зависят атаки ближнего боя без фехтовального свойства, урон таким оружием и грузоподъёмность (счёт × 15 фунтов). Проверка Силы — выломать дверь, удержать обрыв, толкнуть. Спасбросок Силы встречается реже, чем проверка. Модификатор = (значение − 10) ÷ 2, округление вниз. Значение 10 даёт +0, 12 даёт +1, 8 даёт −1.",
   dex: "Ловкость — ловкость рук, равновесие и реакция. От неё зависят инициатива, класс брони (пока доспех не ограничивает бонус), атаки дальнобойным и фехтовальным оружием, навыки вроде Скрытности и Акробатики. Спасбросок Ловкости — увернуться от дыхания дракона или огненного шара.",
-  con: "Телосложение — здоровье и выносливость. Модификатор прибавляется к хитам на каждом уровне. Спасбросок Телосложения — устоять перед ядом, болезнью, холодом и удержанием концентрации на заклинании в D&D 5e. В Pathfinder 2e тот же модификатор входит в хиты и в стойкость.",
-  int: "Интеллект — память, логика и учёность. В D&D 5e на него опираются Магия, История и Расследование, а волшебник колдует через Интеллект. В Pathfinder 2e положительный модификатор даёт дополнительные обученные навыки и языки, а волшебник и ведьма используют его как ключевую характеристику.",
-  wis: "Мудрость — чутьё и внимательность. От неё зависят Внимательность, Проницательность, выживание в дикой местности, пассивное восприятие. Жрец, друид и следопыт в D&D 5e колдуют через Мудрость. В Pathfinder 2e Мудрость входит в Восприятие и волю.",
-  cha: "Харизма — сила личности, обаяние и воля. Обман, Запугивание и Убеждение завязаны на неё. Бард, чародей, колдун и паладин в D&D 5e колдуют через Харизму. В Pathfinder 2e бард опирается на Харизму, а божественный шрифт жреца зависит от её модификатора.",
+  con: "Телосложение — здоровье и выносливость. Модификатор прибавляется к хитам на каждом уровне. Спасбросок Телосложения — устоять перед ядом, болезнью, холодом и удержанием концентрации на заклинании в правилах 2024 года. В Pathfinder тот же модификатор входит в хиты и в стойкость.",
+  int: "Интеллект — память, логика и учёность. В правилах 2024 года на него опираются Магия, История и Расследование, а волшебник колдует через Интеллект. В Pathfinder положительный модификатор даёт дополнительные обученные навыки и языки, а волшебник и ведьма используют его как ключевую характеристику.",
+  wis: "Мудрость — чутьё и внимательность. От неё зависят Внимательность, Проницательность, выживание в дикой местности, пассивное восприятие. Жрец, друид и следопыт в правилах 2024 года колдуют через Мудрость. В Pathfinder Мудрость входит в Восприятие и волю.",
+  cha: "Харизма — сила личности, обаяние и воля. Обман, Запугивание и Убеждение завязаны на неё. Бард, чародей, колдун и паладин в правилах 2024 года колдуют через Харизму. В Pathfinder бард опирается на Харизму, а божественный шрифт жреца зависит от её модификатора.",
 };
 
 export interface Coins {
@@ -102,7 +102,7 @@ export interface ItemInst {
   armor?: ArmorStat;
   weapon?: WeaponStat;
   /** Руны предмета. Бонус предмета не складывается с другой руной того же типа. */
-  runes?: { potency?: number; striking?: number; resilient?: number };
+  runes?: { potency?: number; striking?: number; resilient?: number; property?: { id: string; name: string }[] };
   /** Плоский бонус магического предмета, +1 оружие или +1 доспех. */
   magicBonus?: number;
   /** Своя запись игрока, не из справочника. */
@@ -180,6 +180,8 @@ export interface Spellcasting {
   knownLimit: number;
 }
 
+import type { RulesEdition, RulesProfile } from "./data/editions";
+
 export interface Character {
   id: string;
   system: SystemId;
@@ -254,6 +256,72 @@ export interface Character {
   combat?: CombatState;
   /** Боевой трекер D&D. Не меняет постоянные характеристики. */
   dndCombat?: DndCombat;
+  /** Редакция, разрешённые пакеты и домашние правила. В формулы сами не входят. */
+  rules?: RulesProfile;
+  /** Универсальное наследие Pathfinder. Складывается с народом, не заменяет его. */
+  versatileHeritageId?: string;
+  /** Памятка игрока: наказы, биография, божество. В формулы не входит. */
+  reminder?: CharacterReminder;
+  /** Черновик не выдаётся за проверенный лист. */
+  readiness?: "draft" | "built";
+  /** Журнал бросков. Поздние правки листа старые строки не переписывают. */
+  rolls?: RollEntry[];
+  /** Спасброски от смерти D&D. */
+  death?: DeathTrack;
+  /** Один шаг отмены урона, лечения и оплаты. Журнал бросков сюда не входит. */
+  undo?: PlayUndo | null;
+}
+
+export interface RollEntry {
+  id: string;
+  at: number;
+  system: string;
+  edition: string;
+  action: string;
+  dice: number[];
+  kept: number;
+  modifier: number;
+  total: number;
+  dc: number | null;
+  verdict: string;
+}
+
+export interface DeathTrack {
+  success: number;
+  fail: number;
+  stable: boolean;
+}
+
+export interface PlayUndo {
+  hpCurrent: number;
+  hpTemp: number;
+  conditions: string[];
+  conditionValues: Record<string, number>;
+  death: DeathTrack;
+  coins: Coins;
+}
+
+export type VowKind = "taboo" | "vow" | "duty" | "note";
+
+export interface VowEntry {
+  id: string;
+  kind: VowKind;
+  text: string;
+}
+
+export interface DeityCard {
+  name: string;
+  domains: string;
+  symbol: string;
+  weapon: string;
+  edicts: string;
+  anathema: string;
+}
+
+export interface CharacterReminder {
+  backstory: string;
+  deity: DeityCard;
+  vows: VowEntry[];
 }
 
 export interface DndProgress {
@@ -299,12 +367,19 @@ export interface Pf2eProgress {
   toggles: string[];
   /** Боевая гибкость воина: черты на день, не часть постоянного плана. */
   dailyFeats: string[];
+  /** Пусто — универсального наследия нет. Не заменяет heritageId. */
+  versatileHeritageId?: string;
+  /** Ступень проклятия оракула. Выше предела уровня не держится. */
+  cursebound?: number;
 }
 
 export interface CombatState {
   actions: number;
   reaction: boolean;
+  /** Штраф следующей обычной атаки: 0, −5 или −10. */
   map: number;
+  /** Сколько атак уже было в этот ход. Вне хода не растёт. */
+  strikes: number;
   flourish: boolean;
   immunity: { target: string; effect: string }[];
   defense?: string | null;
@@ -317,6 +392,7 @@ export interface CatalogItem {
   weight: number;
   costCp: number;
   info: string;
+  short?: string;
   armor?: ArmorStat;
   weapon?: WeaponStat;
   notes?: string;
@@ -327,13 +403,25 @@ export interface Opt {
   name: string;
   hint?: string;
   info: string;
+  /** Короткая русская строка: вкус и суть правила. Подробности остаются в info. */
+  short?: string;
+}
+
+export function describe(entry: { short?: string; info: string }): string {
+  if (!entry.short) return entry.info;
+  if (entry.info.startsWith(entry.short)) return entry.info;
+  return `${entry.short}\n\n${entry.info}`;
 }
 
 export interface Draft {
   system: SystemId | null;
+  /** Пустая строка — редакция по умолчанию для выбранной игры. */
+  edition: RulesEdition | "";
   name: string;
   ancestryId: string;
   heritageId: string;
+  /** Пусто — без универсального наследия. */
+  versatileHeritageId: string;
   backgroundId: string;
   classId: string;
   choices: Record<string, string>;
@@ -363,9 +451,11 @@ export function emptyScores(n = 8): Record<Ability, number> {
 export function blankDraft(): Draft {
   return {
     system: null,
+    edition: "",
     name: "",
     ancestryId: "",
     heritageId: "",
+    versatileHeritageId: "",
     backgroundId: "",
     classId: "",
     choices: {},

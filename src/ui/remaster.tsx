@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, newRound, openHelp, parry, reactiveStrike, strike } from "../pf2e/combat";
-import { derive, effectsFrom, optionsForSlot, slotsForProgress, snapshot } from "../pf2e/build";
+import { attackPreview, battleMedicine, doctorsVisit, emptyCombat, handsLine, knockdown, mapPenalty, newRound, openHelp, parry, reactiveStrike, strike, strikeCount } from "../pf2e/combat";
+import { choiceCaption, derive, effectsFrom, optionsForSlot, slotsForProgress, snapshot } from "../pf2e/build";
 import { SKILLS } from "../data/pf2e";
+import { rulesCatalog } from "../data/catalog";
 import type { Character, CombatState, ItemInst, Placement, StructuredEffect } from "../types";
 import { fmt, uid } from "../types";
+import { refreshSlots } from "../rules";
+import { useCompact } from "./common";
 
 function detailFor(pick: string): Record<string, string> | undefined {
   if (pick === "canny-acumen") return { defense: "will" };
@@ -91,7 +94,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
 
   function levelUp() {
     if (character.xp < 1000 || character.level >= 20) return;
-    commit({ ...character, level: character.level + 1, xp: character.xp - 1000 });
+    commit(refreshSlots({ ...character, level: character.level + 1, xp: character.xp - 1000 }));
   }
 
   function addEntry() {
@@ -195,6 +198,35 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       <button type="button" className={`pill ${progress.toggles.includes("dueling-parry") ? "on" : ""}`} onClick={() => toggle("dueling-parry")}>
         Дуэльное парирование {progress.toggles.includes("dueling-parry") ? "включено" : "выключено"}
       </button>
+      {progress.classId === "barbarian" && (
+        <button type="button" className={`pill ${progress.toggles.includes("rage") ? "on" : ""}`} data-testid="toggle-rage" onClick={() => toggle("rage")}>
+          Ярость {progress.toggles.includes("rage") ? "включена" : "выключена"}
+        </button>
+      )}
+      {progress.classId === "monk" && (
+        <button type="button" className={`pill ${progress.toggles.includes("qi") ? "on" : ""}`} data-testid="toggle-qi" onClick={() => toggle("qi")}>
+          Заклинания ци {progress.toggles.includes("qi") ? "есть" : "нет"}
+        </button>
+      )}
+      {progress.classId === "ranger" && (
+        <button type="button" className={`pill ${progress.toggles.includes("warden") ? "on" : ""}`} data-testid="toggle-warden" onClick={() => toggle("warden")}>
+          Заклинания смотрителя {progress.toggles.includes("warden") ? "есть" : "нет"}
+        </button>
+      )}
+      {progress.classId === "oracle" && (
+        <div className="card stack">
+          <b>Ступень проклятия</b>
+          <p className="tiny">Предел сейчас {Math.min(4, character.level >= 17 ? 4 : character.level >= 11 ? 3 : 2)}. Числа берутся из текста выбранной тайны.</p>
+          <div className="stepper">
+            <button type="button" data-testid="curse-down" onClick={() => onChange({ ...character, progress: { ...progress, cursebound: Math.max(0, (progress.cursebound ?? 0) - 1) } })}>−</button>
+            <span data-testid="curse-value">{progress.cursebound ?? 0}</span>
+            <button type="button" data-testid="curse-up" onClick={() => {
+              const cap = character.level >= 17 ? 4 : character.level >= 11 ? 3 : 2;
+              onChange({ ...character, progress: { ...progress, cursebound: Math.min(cap, (progress.cursebound ?? 0) + 1) } });
+            }}>+</button>
+          </div>
+        </div>
+      )}
       <p className="tiny">{live.ac.formula}</p>
       {live.ac.aside.map((line) => <p key={line} className="tiny">{line}</p>)}
       <h2>Открытые выборы</h2>
@@ -202,9 +234,9 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {open.map((slot) => (
         <label key={slot.id} className="field">
           <span>{slot.label}, уровень {slot.level}</span>
-          <select value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
+          <select data-testid={`slot-${slot.id}`} value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
             <option value="">Выбрать</option>
-            {optionsForSlot(slot.source).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            {optionsForSlot(slot.source, { classId: progress.classId, ancestryId: progress.ancestryId, level: slot.level }).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
           </select>
         </label>
       ))}
@@ -213,7 +245,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {progress.choices.slice().sort((a, b) => a.level - b.level || a.source.localeCompare(b.source)).map((choice) => (
         <div key={choice.id} className="card stack">
           <div className="row-between">
-            <span>{choice.level}. {choice.pick}{choice.detail ? ` (${Object.values(choice.detail).join(", ")})` : ""}</span>
+            <span>{choice.level}. {choiceCaption(choice)}</span>
             <button type="button" className="text-btn" onClick={() => remove(choice.id)}>Убрать</button>
           </div>
           {choice.pick === "canny-acumen" && (
@@ -250,7 +282,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
           <span>Боевая гибкость на сегодня</span>
           <select value={progress.dailyFeats[0] ?? ""} onChange={(event) => onChange({ ...character, progress: { ...progress, dailyFeats: event.target.value ? [event.target.value] : [] } })}>
             <option value="">Не выбрана</option>
-            {optionsForSlot("class-feat").map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            {optionsForSlot("class-feat", { classId: progress.classId, level: character.level }).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
           </select>
         </label>
       )}
@@ -460,9 +492,10 @@ function Field({ label, value, onChange }: { label: string; value: string; onCha
   );
 }
 
-function CombatTracker({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
+export function CombatTracker({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
   const [target, setTarget] = useState("");
   const [note, setNote] = useState("");
+  const [compact, toggleCompact] = useCompact();
   const combat: CombatState = { ...emptyCombat(), ...character.combat, immunity: character.combat?.immunity ?? [] };
   const derived = sheetDerived(character);
   const sword = derived?.attacks.find((attack) => attack.equipped) ?? derived?.attacks[0];
@@ -479,13 +512,19 @@ function CombatTracker({ character, onChange }: { character: Character; onChange
     return { ...character.progress, toggles };
   }
   return (
-    <div className="card stack" data-testid="combat-screen">
-      <b>Боевой экран</b>
-      <p>Действия {combat.actions}/3 · реакция {combat.reaction ? "есть" : "нет"} · штраф повторной атаки {combat.map} · усилие {combat.flourish ? "потрачено" : "свободно"}</p>
+    <div className={`card stack combat-board ${compact ? "compact" : ""}`} data-testid="combat-screen">
+      <div className="row-between">
+        <b>Боевой экран</b>
+        <button type="button" className={`pill ${compact ? "on" : ""}`} aria-pressed={compact} onClick={toggleCompact}>
+          {compact ? "Компактно" : "Обычный вид"}
+        </button>
+      </div>
+      <p data-testid="map-line">Действия {combat.actions}/3 · реакция {combat.reaction ? "есть" : "нет"} · атак в ход {strikeCount(combat)} · обычный штраф {combat.map} · быстрый {mapPenalty(strikeCount(combat), true)} · усилие {combat.flourish ? "потрачено" : "свободно"}</p>
       <p className="tiny">{handsLine(character.items)}</p>
-      {sword && <p data-testid="attack-preview">{attackPreview(sword.attack.value, combat.map)}</p>}
+      {sword && <p className="combat-figure" data-testid="attack-preview">{attackPreview(sword.attack.value, combat.map)}</p>}
       <div className="row">
         <button type="button" className="btn" data-testid="combat-strike" onClick={() => apply(strike(combat))}>Удар</button>
+        <button type="button" className="btn" data-testid="combat-agile" onClick={() => apply(strike(combat, { agile: true }))}>Быстрый удар</button>
         <button type="button" className="btn" data-testid="combat-reactive" disabled={!combat.reaction} onClick={() => apply(reactiveStrike(combat))}>Внеочередная атака</button>
       </div>
       <div className="row">
@@ -511,6 +550,94 @@ function CombatTracker({ character, onChange }: { character: Character; onChange
         apply(step, withToggle(false));
       }}>Новый раунд</button>
       {note && <p className="tiny" data-testid="combat-note">{note}</p>}
+    </div>
+  );
+}
+
+const FUNDAMENTAL = new Set([
+  "striking", "striking-greater", "striking-major",
+  "resilient", "resilient-greater", "resilient-major",
+  "weapon-potency-1", "weapon-potency-2", "weapon-potency-3",
+  "armor-potency-1", "armor-potency-2", "armor-potency-3",
+]);
+
+const PROPERTY_RUNES = rulesCatalog()
+  .filter((entry) => entry.edition === "pf-remaster" && entry.category === "rune" && !FUNDAMENTAL.has(entry.localId))
+  .map((entry) => ({ id: entry.localId, name: entry.name }));
+
+export function Etch({ item, onChange }: { item: ItemInst; onChange: (runes: NonNullable<ItemInst["runes"]>) => void }) {
+  const runes = item.runes ?? {};
+  const property = runes.property ?? [];
+  const cap = runes.potency ?? 0;
+  function set(partial: NonNullable<ItemInst["runes"]>) {
+    const next = { ...runes, ...partial };
+    if ((next.property?.length ?? 0) > (next.potency ?? 0)) next.property = (next.property ?? []).slice(0, next.potency ?? 0);
+    onChange(next);
+  }
+  return (
+    <div className="stack" data-testid={`etch-${item.uid}`}>
+      {item.kind === "weapon" && (
+        <>
+          <label className="field">
+            <span>Руна мощи</span>
+            <select data-testid="etch-potency" value={String(runes.potency ?? 0)} onChange={(event) => set({ potency: Number(event.target.value) })}>
+              <option value="0">Нет</option>
+              <option value="1">+1, одно свойство</option>
+              <option value="2">+2, два свойства</option>
+              <option value="3">+3, три свойства</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Руна ударов</span>
+            <select data-testid="etch-striking" value={String(runes.striking ?? 0)} onChange={(event) => set({ striking: Number(event.target.value) })}>
+              <option value="0">Нет, одна кость</option>
+              <option value="1">Удары, две кости</option>
+              <option value="2">Большие удары, три кости</option>
+              <option value="3">Высшие удары, четыре кости</option>
+            </select>
+          </label>
+        </>
+      )}
+      {item.kind === "armor" && (
+        <>
+          <label className="field">
+            <span>Руна мощи доспеха</span>
+            <select data-testid="etch-potency" value={String(runes.potency ?? 0)} onChange={(event) => set({ potency: Number(event.target.value) })}>
+              <option value="0">Нет</option>
+              <option value="1">+1 к КБ, одно свойство</option>
+              <option value="2">+2 к КБ, два свойства</option>
+              <option value="3">+3 к КБ, три свойства</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Руна устойчивости</span>
+            <select data-testid="etch-resilient" value={String(runes.resilient ?? 0)} onChange={(event) => set({ resilient: Number(event.target.value) })}>
+              <option value="0">Нет</option>
+              <option value="1">+1 к испытаниям</option>
+              <option value="2">+2 к испытаниям</option>
+              <option value="3">+3 к испытаниям</option>
+            </select>
+          </label>
+        </>
+      )}
+      <label className="field">
+        <span>Свойство, мест {property.length} из {cap}</span>
+        <select data-testid="etch-property" value="" onChange={(event) => {
+          const id = event.target.value;
+          if (!id || property.length >= cap || property.some((rune) => rune.id === id)) return;
+          const found = PROPERTY_RUNES.find((rune) => rune.id === id);
+          if (!found) return;
+          set({ property: [...property, found] });
+        }}>
+          <option value="">{cap === 0 ? "Сначала руна мощи" : "Добавить карточку"}</option>
+          {PROPERTY_RUNES.map((rune) => <option key={rune.id} value={rune.id}>{rune.name}</option>)}
+        </select>
+      </label>
+      {property.map((rune) => (
+        <button key={rune.id} type="button" className="text-btn" onClick={() => set({ property: property.filter((row) => row.id !== rune.id) })}>
+          Убрать {rune.name}
+        </button>
+      ))}
     </div>
   );
 }

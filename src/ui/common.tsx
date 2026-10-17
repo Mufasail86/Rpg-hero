@@ -63,11 +63,36 @@ export function go(hash: string) {
   else window.location.hash = hash;
 }
 
+/** Компактный бой включён, пока игрок сам не выключит его в этой вкладке. */
+export function useCompact(): [boolean, () => void] {
+  const [on, setOn] = useState(() => {
+    try {
+      return sessionStorage.getItem("rpg-compact") !== "0";
+    } catch {
+      return true;
+    }
+  });
+  function toggle() {
+    setOn((prev) => {
+      const next = !prev;
+      try {
+        sessionStorage.setItem("rpg-compact", next ? "1" : "0");
+      } catch {
+        /* приватный режим */
+      }
+      return next;
+    });
+  }
+  return [on, toggle];
+}
+
 export function Choice({
   id,
   name,
   hint,
   info,
+  short,
+  art,
   on,
   onPick,
   testId,
@@ -78,6 +103,8 @@ export function Choice({
   name: string;
   hint?: string;
   info: string;
+  short?: string;
+  art?: string;
   on: boolean;
   onPick: () => void;
   testId?: string;
@@ -86,11 +113,12 @@ export function Choice({
 }) {
   return (
     <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
-      <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} disabled={disabled} onClick={onPick}>
+      {art ? <img className="option-art" src={art} alt="" loading="lazy" decoding="async" /> : null}
+      <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
         {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}
       </button>
-      <Info title={name} text={info} />
+      <Info title={name} text={short ? `${short}\n\n${info}` : info} />
     </div>
   );
 }

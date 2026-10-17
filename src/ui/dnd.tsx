@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
+import { EPIC_BOONS, GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
-import { sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
+import { describeDndChoice, KNOWN_SUBCLASSES, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
+import { useCompact } from "./common";
 
 export function DndBanner({ character }: { character: Character }) {
   const derived = sheetDnd(character);
@@ -35,6 +36,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
   const preview = sheetDnd(character, view);
   if (!live || !preview) return null;
   const slots = slotsForProgress(progress, character.level);
+  const knownSubclass = KNOWN_SUBCLASSES.filter((row) => row.classId === progress.classId);
   const open = slots.filter((slot) => !progress.choices.some((choice) => choice.id === slot.id));
 
   function commit(next: Character) {
@@ -117,20 +119,42 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
       )}
       <p className="tiny">{live.ac.formula}</p>
       <p className="tiny">{live.hp.formula}</p>
+      {knownSubclass.length > 0 && (
+        <label className="field">
+          <span>Подкласс с 3 уровня</span>
+          <select data-testid="dnd-subclass" value={progress.subclassId} onChange={(event) => {
+            const id = event.target.value;
+            const name = knownSubclass.find((row) => row.id === id)?.name ?? "";
+            commit({ ...character, subclassName: name || character.subclassName, dnd: { ...progress, subclassId: id } });
+          }}>
+            <option value="">Не выбран</option>
+            {knownSubclass.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}
+          </select>
+        </label>
+      )}
+      {progress.classId === "barbarian" && (
+        <button type="button" className={`pill ${progress.toggles.includes("rage") ? "on" : ""}`} data-testid="toggle-rage" onClick={() => {
+          const on = progress.toggles.includes("rage");
+          const toggles = on ? progress.toggles.filter((id) => id !== "rage") : [...progress.toggles, "rage"];
+          commit({ ...character, dnd: { ...progress, toggles } });
+        }}>
+          Ярость {progress.toggles.includes("rage") ? "включена" : "выключена"}
+        </button>
+      )}
       {open.length > 0 && <h2>Открытые выборы</h2>}
       {open.map((slot) => (
         <label key={slot.id} className="field">
           <span>{slot.level}. {slot.label}</span>
           <select value="" onChange={(event) => fill(slot, event.target.value)}>
             <option value="">Выбрать</option>
-            {optionsFor(slot.source).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            {optionsFor(slot.source, character).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
           </select>
         </label>
       ))}
       <h2>Сделанные выборы</h2>
       {progress.choices.slice().sort((a, b) => a.level - b.level).map((choice) => (
         <div key={choice.id} className="row-between">
-          <span>{choice.level}. {choice.pick}</span>
+          <span>{choice.level}. {describeDndChoice(choice)}</span>
           <button type="button" className="text-btn" onClick={() => commit({ ...character, dnd: { ...progress, choices: progress.choices.filter((item) => item.id !== choice.id) } })}>Убрать</button>
         </div>
       ))}
@@ -143,6 +167,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
 export function DndCombatPanel({ character, onChange }: { character: Character; onChange: (next: Character) => void }) {
   const derived = sheetDnd(character);
   const [note, setNote] = useState("");
+  const [compact, toggleCompact] = useCompact();
   if (!derived) return null;
   const combat: DndCombat = { ...emptyDndCombat(derived.resources, derived.slots), ...character.dndCombat };
   const sword = derived.attacks.find((attack) => attack.equipped) ?? derived.attacks[0];
@@ -152,13 +177,18 @@ export function DndCombatPanel({ character, onChange }: { character: Character; 
     onChange({ ...character, dndCombat: step.state });
   }
   return (
-    <div className="card stack" data-testid="dnd-combat">
-      <b>Боевой экран</b>
+    <div className={`card stack combat-board ${compact ? "compact" : ""}`} data-testid="dnd-combat">
+      <div className="row-between">
+        <b>Боевой экран</b>
+        <button type="button" className={`pill ${compact ? "on" : ""}`} aria-pressed={compact} onClick={toggleCompact}>
+          {compact ? "Компактно" : "Обычный вид"}
+        </button>
+      </div>
       <p>Действие {combat.action ? "есть" : "нет"} · бонусное {combat.bonus ? "есть" : "нет"} · реакция {combat.reaction ? "есть" : "нет"} · атак {combat.attacks}/{derived.attacksPerAction}{combat.extraAction ? " и ещё действие" : ""}</p>
       {derived.resources.length > 0 && (
         <p>{derived.resources.map((resource) => `${resource.name} ${combat.resources[resource.id] ?? 0} из ${resource.max}`).join(" · ")}</p>
       )}
-      {sword && <p data-testid="dnd-preview">{attackPreview(sword.attack.value)} Урон {sword.damage}. Крит {derived.crit}.</p>}
+      {sword && <p className="combat-figure" data-testid="dnd-preview">{attackPreview(sword.attack.value)} Урон {sword.damage}. Крит {derived.crit}.</p>}
       <div className="row">
         <button type="button" className="btn" data-testid="dnd-attack" onClick={() => apply(spendAttack(combat, derived.attacksPerAction))}>Атака</button>
         <button type="button" className="btn" onClick={() => apply(useReaction(combat))}>Реакция</button>
@@ -242,12 +272,23 @@ function structured(name: string, entry: CustomEntry): StructuredEffect | null {
   };
 }
 
-function optionsFor(source: string): { pick: string; name: string }[] {
-  if (source === "skill") return SKILLS.map((skill) => ({ pick: skill.id, name: skill.name }));
+function optionsFor(source: string, character?: Character): { pick: string; name: string }[] {
+  if (source === "skill" || source === "expertise") {
+    const known = source === "expertise"
+      ? SKILLS.filter((skill) => character?.skillRanks[skill.id] === "proficient" || character?.skillRanks[skill.id] === "expertise")
+      : SKILLS;
+    return (known.length ? known : SKILLS).map((skill) => ({ pick: skill.id, name: skill.name }));
+  }
   if (source === "style") return [...STYLE_FEATS.map((feat) => ({ pick: feat.id, name: feat.name })), { pick: "dueling", name: "Дуэль" }, { pick: "protection", name: "Защита" }];
   if (source === "feat") return [...ORIGIN_FEATS, ...GENERAL_FEATS].map((feat) => ({ pick: `feat:${feat.id}`, name: feat.name }));
   if (source === "mastery") return ITEMS.filter((item) => item.kind === "weapon").map((item) => ({ pick: item.id, name: item.name }));
-  if (source === "epic") return ABILITIES.map((ability) => ({ pick: `boon:combat-prowess|${ability}`, name: `+1 к ${ABILITY_NAME[ability]}` }));
+  if (source === "epic") {
+    return EPIC_BOONS.flatMap((boon) => {
+      if (boon.id === "spell-recall" && character && !character.spellcasting) return [];
+      const abilities: Ability[] = boon.id === "irresistible-offense" ? ["str", "dex"] : boon.id === "spell-recall" ? ["int", "wis", "cha"] : ABILITIES;
+      return abilities.map((ability) => ({ pick: `boon:${boon.id}|${ability}`, name: `${boon.name}: +1 к ${ABILITY_NAME[ability]}` }));
+    });
+  }
   if (source === "asi") {
     const list = ABILITIES.map((ability) => ({ pick: `${ability}+2`, name: `${ABILITY_NAME[ability]} +2` }));
     for (let i = 0; i < ABILITIES.length; i += 1) {

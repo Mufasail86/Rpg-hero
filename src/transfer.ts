@@ -1,3 +1,4 @@
+import { rulesOf } from "./data/editions";
 import type { Character } from "./types";
 
 export const FORMAT_VERSION = 2;
@@ -9,7 +10,7 @@ export interface SaveFile {
 }
 
 export function migrateCharacter(character: Character): Character {
-  return { ...character, formatVersion: character.formatVersion ?? FORMAT_VERSION };
+  return { ...character, formatVersion: character.formatVersion ?? FORMAT_VERSION, rules: rulesOf(character) };
 }
 
 export function readSave(text: string): { characters: Character[] } | { error: string } {
@@ -17,7 +18,7 @@ export function readSave(text: string): { characters: Character[] } | { error: s
   try {
     parsed = JSON.parse(text);
   } catch {
-    return { error: "Файл не похож на JSON этого приложения. Текущие персонажи не изменены." };
+    return { error: "Файл не похож на файл обмена этого приложения. Текущие персонажи не изменены." };
   }
   const incoming = Array.isArray((parsed as SaveFile)?.characters)
     ? (parsed as SaveFile).characters

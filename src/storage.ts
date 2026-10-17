@@ -2,6 +2,7 @@ import { DRAFT_KEY, SAVE_KEY, type Character, type Draft } from "./types";
 import { applySave, migrateCharacter, readSave, serialize } from "./transfer";
 
 const BACKUP_KEY = "rpg-hero-backup";
+const EDITION_BACKUP_KEY = "rpg-hero-edition-backup";
 
 export function loadCharacters(): Character[] {
   try {
@@ -40,6 +41,31 @@ export function loadDraft(): Draft | null {
 export function saveDraft(draft: Draft | null) {
   if (!draft) sessionStorage.removeItem(DRAFT_KEY);
   else sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+}
+
+export function saveEditionBackup(character: Character) {
+  const all = readEditionBackups();
+  all[character.id] = character;
+  localStorage.setItem(EDITION_BACKUP_KEY, JSON.stringify(all));
+}
+
+export function loadEditionBackup(id: string): Character | null {
+  return readEditionBackups()[id] ?? null;
+}
+
+export function clearEditionBackup(id: string) {
+  const all = readEditionBackups();
+  delete all[id];
+  localStorage.setItem(EDITION_BACKUP_KEY, JSON.stringify(all));
+}
+
+function readEditionBackups(): Record<string, Character> {
+  try {
+    const raw = JSON.parse(localStorage.getItem(EDITION_BACKUP_KEY) || "{}") as Record<string, Character>;
+    return raw && typeof raw === "object" ? raw : {};
+  } catch {
+    return {};
+  }
 }
 
 export function mergeImport(current: Character[], text: string): { characters: Character[]; added: number } | { error: string } {

@@ -8,35 +8,54 @@ export interface CombatStep {
 }
 
 export function emptyCombat(): CombatState {
-  return { actions: 3, reaction: true, map: 0, flourish: false, immunity: [], defense: null };
+  return { actions: 3, reaction: true, map: 0, strikes: 0, flourish: false, immunity: [], defense: null };
 }
 
 export function normalize(state: CombatState | undefined): CombatState {
-  return { ...emptyCombat(), ...state, immunity: state?.immunity ? [...state.immunity] : [] };
+  const merged = { ...emptyCombat(), ...state, immunity: state?.immunity ? [...state.immunity] : [] };
+  if (state?.strikes == null) merged.strikes = merged.map <= -8 ? 2 : merged.map < 0 ? 1 : 0;
+  return merged;
+}
+
+/** Штраф этой атаки: обычное оружие 0/−5/−10, быстрое 0/−4/−8. */
+export function mapPenalty(strikes: number, agile = false): number {
+  if (strikes <= 0) return 0;
+  if (strikes === 1) return agile ? -4 : -5;
+  return agile ? -8 : -10;
+}
+
+export function strikeCount(state: CombatState): number {
+  return normalize(state).strikes;
 }
 
 function keep(state: CombatState, note: string): CombatStep {
   return { state, note, spent: false };
 }
 
-function nextMap(map: number): number {
-  return map === 0 ? -5 : -10;
-}
-
-export function strike(state: CombatState): CombatStep {
+export function strike(state: CombatState, options?: { agile?: boolean; onTurn?: boolean }): CombatStep {
   const current = normalize(state);
-  if (current.actions < 1) return keep(current, "Нет свободного действия на удар.");
-  const map = nextMap(current.map);
-  return { state: { ...current, actions: current.actions - 1, map }, note: `Удар совершён. Следующий штраф повторной атаки ${map}.`, spent: true };
+  const onTurn = options?.onTurn !== false;
+  if (onTurn && current.actions < 1) return keep(current, "Нет свободного действия на удар.");
+  const agile = options?.agile === true;
+  const used = onTurn ? mapPenalty(current.strikes, agile) : 0;
+  const strikes = onTurn ? current.strikes + 1 : current.strikes;
+  const next = mapPenalty(strikes, false);
+  const note = onTurn
+    ? `Удар. Штраф этого удара ${fmt(used)}${agile ? ", быстрое оружие" : ""}. Следующий обычный ${fmt(next)}, быстрый ${fmt(mapPenalty(strikes, true))}. Причина: атак в этот ход ${strikes}.`
+    : "Вне своего хода штраф повторной атаки не применён и счётчик не вырос.";
+  return {
+    state: { ...current, actions: onTurn ? current.actions - 1 : current.actions, map: next, strikes },
+    note,
+    spent: true,
+  };
 }
 
 export function reactiveStrike(state: CombatState): CombatStep {
   const current = normalize(state);
   if (!current.reaction) return keep(current, "Реакция в этом раунде уже потрачена.");
-  const map = nextMap(current.map);
   return {
-    state: { ...current, reaction: false, map },
-    note: "Внеочередная атака потратила реакцию и повысила штраф повторной атаки.",
+    state: { ...current, reaction: false },
+    note: "Вне своего хода штраф повторной атаки не применён. Реакция потрачена, счётчик атак не вырос.",
     spent: true,
   };
 }
@@ -45,9 +64,10 @@ export function knockdown(state: CombatState): CombatStep {
   const current = normalize(state);
   if (current.flourish) return keep(current, "Усилие уже потрачено в этом раунде. Нокдаун тоже с чертой «усилие».");
   if (current.actions < 2) return keep(current, "Нокдаун стоит 2 действия.");
+  const strikes = current.strikes + 1;
   return {
-    state: { ...current, actions: current.actions - 2, map: nextMap(current.map), flourish: true },
-    note: "Нокдаун: удар и попытка сбить с ног. Усилие потрачено.",
+    state: { ...current, actions: current.actions - 2, map: mapPenalty(strikes, false), strikes, flourish: true },
+    note: `Нокдаун: удар со штрафом ${fmt(mapPenalty(current.strikes, false))} и попытка сбить с ног. Усилие потрачено. Следующий обычный штраф ${fmt(mapPenalty(strikes, false))}.`,
     spent: true,
   };
 }
@@ -92,7 +112,7 @@ export function battleMedicine(state: CombatState, target: string): CombatStep {
 export function newRound(state: CombatState): CombatStep {
   const current = normalize(state);
   return {
-    state: { actions: 3, reaction: true, map: 0, flourish: false, immunity: current.immunity, defense: null },
+    state: { actions: 3, reaction: true, map: 0, strikes: 0, flourish: false, immunity: current.immunity, defense: null },
     note: "Новый раунд. Иммунитет лечения по целям сохранён, парирование спало.",
     spent: false,
   };

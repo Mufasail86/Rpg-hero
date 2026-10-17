@@ -217,7 +217,7 @@ export function DicePanel() {
       <button type="button" className="btn" onClick={enableShake}>
         {armed ? "Встряхивание включено" : "Разрешить встряхивание"}
       </button>
-      <p className="tiny">{shakeNote} Преимущество и помеха бросают два к20 и берут больший или меньший, затем прибавляют модификатор. На Pathfinder натуральная 20 поднимает ступень успеха, натуральная 1 опускает.</p>
+      <p className="tiny">{shakeNote} Преимущество и помеха бросают два к20 и берут больший или меньший, затем прибавляют модификатор. В Pathfinder натуральная 20 поднимает ступень успеха, натуральная 1 опускает.</p>
       {history.length > 0 && (
         <div className="card history">
           {history.map((line, index) => (

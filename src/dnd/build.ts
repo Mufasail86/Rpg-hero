@@ -1,4 +1,4 @@
-import { fullSlots, halfSlots, pactSlots, SKILLS } from "../data/dnd5e";
+import { EPIC_BOONS, fullSlots, GENERAL_FEATS, halfSlots, ITEMS, ORIGIN_FEATS, pactSlots, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import {
   ABILITY_NAME,
   type Ability,
@@ -79,6 +79,10 @@ export function slotsForProgress(progress: DndProgress, level: number): Slot[] {
   for (let i = 0; i < CLASS_SKILLS; i += 1) push(`skill-class-${i}`, 1, "skill", "Навык класса");
   if (progress.classId === "fighter") push("style-1", 1, "style", "Боевой стиль");
   if (progress.classId === "fighter" && progress.subclassId === "champion") push("style-7", 7, "style", "Второй боевой стиль чемпиона");
+  if (progress.classId === "bard" && progress.subclassId === "lore") {
+    for (let i = 0; i < 3; i += 1) push(`lore-skill-${i}`, 3, "skill", "Навык коллегии знаний");
+    push("lore-expertise", 3, "expertise", "Экспертиза коллегии знаний");
+  }
   if (progress.classId === "fighter") {
     const mastery = masteryCount(level);
     for (let i = 0; i < mastery; i += 1) {
@@ -106,7 +110,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
   const byId = new Map<string, BuildChoice>();
   for (const choice of progress.choices) {
     if (choice.level > level) continue;
-    if (byId.has(choice.id)) issues.push({ kind: "build", message: `Выбор «${choice.id}» записан дважды.` });
+    if (byId.has(choice.id)) issues.push({ kind: "build", message: "Один и тот же выбор записан дважды." });
     byId.set(choice.id, choice);
   }
   for (const slot of slots) {
@@ -114,7 +118,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
   }
   for (const choice of byId.values()) {
     if (!slots.some((slot) => slot.id === choice.id)) {
-      issues.push({ kind: "build", message: `Лишний выбор «${choice.pick}» на уровне ${choice.level}: для него нет слота.` });
+      issues.push({ kind: "build", message: `Лишний выбор «${describeDndChoice(choice)}» на уровне ${choice.level}: для него нет слота.` });
     }
   }
   if (level >= 3 && !progress.subclassId) issues.push({ kind: "build", message: "С 3 уровня нужен подкласс." });
@@ -123,7 +127,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
     const slot = slots.find((item) => item.id === choice.id);
     if (!slot) continue;
     if (choice.source === "skill") {
-      if (!SKILLS.some((skill) => skill.id === choice.pick)) issues.push({ kind: "build", message: `Неизвестный навык «${choice.pick}».` });
+      if (!SKILLS.some((skill) => skill.id === choice.pick)) issues.push({ kind: "build", message: "Неизвестный навык." });
       else if (skills.get(choice.pick) === "proficient" || skills.get(choice.pick) === "expertise") {
         issues.push({ kind: "build", message: `${skillName(choice.pick)} уже есть. Повторный выбор его не удваивает.` });
       } else skills.set(choice.pick, "proficient");
@@ -131,11 +135,16 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
     if (choice.source === "style") {
       styles.push(choice.pick);
       if (!["defense", "dueling", "archery"].includes(choice.pick)) {
-        issues.push({ kind: "limit", message: `Боевой стиль «${choice.pick}» записан, но в постоянные числа его нет.` });
+        issues.push({ kind: "limit", message: `Боевой стиль «${STYLE_NAMES[choice.pick] ?? "без русского имени"}» записан, но в постоянные числа его нет.` });
       }
     }
     if (choice.source === "asi" || choice.source === "feat") applyAsi(choice, scores, feats, issues, false);
     if (choice.source === "epic") applyAsi(choice, scores, feats, issues, true);
+    if (choice.source === "expertise") {
+      const rank = skills.get(choice.pick);
+      if (rank !== "proficient" && rank !== "expertise") issues.push({ kind: "build", message: "Экспертиза берётся в навыке, которым вы уже владеете." });
+      else skills.set(choice.pick, "expertise");
+    }
   }
   for (const ability of ABILITIES) scores[ability] = Math.max(1, Math.min(30, scores[ability]));
   return deriveNumbers({
@@ -174,15 +183,18 @@ function applyAsi(choice: BuildChoice, scores: Record<Ability, number>, feats: S
     }
     feats.add(id);
     if (!["tough", "alert", "savage", "grappler"].includes(id)) {
-      issues.push({ kind: "limit", message: `Черта «${id}» записана, но её эффект приложение не прибавляет к числам.` });
+      issues.push({ kind: "limit", message: `Черта «${featLabel(id)}» записана, но её эффект приложение не прибавляет к числам.` });
     }
     return;
   }
   if (pick.startsWith("boon:")) {
+    const id = pick.slice("boon:".length);
+    feats.add(id);
     const ability = choice.detail?.ability as Ability | undefined;
     if (!ability || !ABILITIES.includes(ability)) issues.push({ kind: "build", message: "Эпический дар должен назвать характеристику для +1." });
     else scores[ability] = Math.min(30, scores[ability] + 1);
-    issues.push({ kind: "limit", message: "Особый эффект эпического дара, кроме +1 к характеристике, в постоянные числа не входит." });
+    if (id === "spell-recall") issues.push({ kind: "limit", message: "Дар памяти заклинаний требует особенность заклинаний. Возврат ячейки по 1d4 в постоянные числа не входит." });
+    else issues.push({ kind: "limit", message: "Особый эффект эпического дара, кроме +1 к характеристике, в постоянные числа не входит." });
     return;
   }
   const parts = pick.split(",").filter(Boolean);
@@ -195,7 +207,7 @@ function applyAsi(choice: BuildChoice, scores: Record<Ability, number>, feats: S
     const [ability, raw] = part.split("+");
     const delta = Number(raw);
     if (!ABILITIES.includes(ability as Ability) || (delta !== 1 && delta !== 2)) {
-      issues.push({ kind: "build", message: `Непонятное повышение «${part}».` });
+      issues.push({ kind: "build", message: "Непонятное повышение." });
       continue;
     }
     if (seen.has(ability)) issues.push({ kind: "build", message: "В одном повышении характеристика указана дважды." });
@@ -348,6 +360,9 @@ function deriveNumbers(input: NumberInput): DndDerived {
     const rage = input.toggles.has("rage") && input.classId === "barbarian" && !weapon.ranged ? rageDamage(level) : 0;
     const damage = `${weapon.damage}${fmt(damageBonus + rage)}`;
     const aside: string[] = [];
+    if (input.classId === "barbarian" && input.subclassId === "berserker" && level >= 3 && input.toggles.has("rage") && !weapon.ranged) {
+      aside.push("Путь берсерка: бонусным действием, пока длится ярость, можно атаковать оружием ближнего боя. К этому модификатору не прибавляется.");
+    }
     if (input.feats.has("savage")) aside.push("Дикий натиск не меняет записанный урон: раз за ход можно взять лучший из двух бросков костей оружия.");
     if (!item.equipped) aside.push("Оружие не в руках. Бонус показан так, как если его взять.");
     return {
@@ -363,9 +378,7 @@ function deriveNumbers(input: NumberInput): DndDerived {
   ac = adjusted.ac;
   speed = adjusted.speed;
 
-  if (input.subclassId && input.subclassId !== "champion" && level >= 3) {
-    issues.push({ kind: "limit", message: "Особенности этого подкласса в постоянные числа не входят." });
-  }
+  noteSubclass(input.subclassId, level, issues);
   if (input.classId === "fighter" && level >= 18 && input.subclassId === "champion") {
     issues.push({ kind: "limit", message: "Стойкость чемпиона возвращает хиты раненому в начале хода и помогает спасброскам от смерти. Максимум хитов она не увеличивает." });
   }
@@ -420,7 +433,7 @@ export function deriveStored(character: Character): DndDerived | null {
   const feats = new Set(character.feats.map((feat) => feat.id));
   if (character.tough) feats.add("tough");
   const styles = character.fightingStyle ? [character.fightingStyle] : [];
-  const subclassId = character.subclassName.includes("Чемпион") ? "champion" : character.subclassName ? "other" : "";
+  const subclassId = subclassIdOf(character.subclassName);
   return deriveNumbers({
     level: character.level,
     classId: character.classId,
@@ -519,6 +532,47 @@ function rageDamage(level: number): number {
   return 2;
 }
 
+/** Подклассы, у которых в открытой карточке класса есть имя и описание. */
+export const KNOWN_SUBCLASSES: { classId: string; id: string; name: string }[] = [
+  { classId: "barbarian", id: "berserker", name: "Путь берсерка" },
+  { classId: "bard", id: "lore", name: "Коллегия знаний" },
+  { classId: "cleric", id: "life", name: "Домен жизни" },
+  { classId: "druid", id: "land", name: "Круг земли" },
+  { classId: "fighter", id: "champion", name: "Чемпион" },
+  { classId: "monk", id: "open-hand", name: "Воин открытой ладони" },
+  { classId: "paladin", id: "devotion", name: "Клятва преданности" },
+  { classId: "ranger", id: "hunter", name: "Охотник" },
+  { classId: "rogue", id: "thief", name: "Вор" },
+  { classId: "sorcerer", id: "draconic", name: "Драконье чародейство" },
+  { classId: "warlock", id: "fiend", name: "Покровитель исчадие" },
+  { classId: "wizard", id: "evoker", name: "Воплотитель" },
+];
+
+export function subclassIdOf(name: string): string {
+  const exact = KNOWN_SUBCLASSES.find((row) => row.name === name);
+  if (exact) return exact.id;
+  if (name.includes("Чемпион")) return "champion";
+  return name ? "other" : "";
+}
+
+function noteSubclass(subclassId: string, level: number, issues: Issue[]) {
+  if (!subclassId || level < 3 || subclassId === "champion") return;
+  const notes: Record<string, string> = {
+    lore: "Особенности этого подкласса: коллегия знаний даёт три навыка и одну экспертизу. Режущие слова тратят вдохновение и в постоянный модификатор не входят.",
+    evoker: "Особенности этого подкласса: школа воплощения не меняет число ячеек. Заговоры урона и два заклинания книги в постоянные числа не входят.",
+    berserker: "Особенности этого подкласса: путь берсерка даёт бонусную атаку ближнего боя, пока ярость включена. К модификатору атаки она не прибавляется.",
+    life: "Особенности этого подкласса: домен жизни в карточке не даёт постоянного числа лечения. Лист его не прибавляет.",
+    draconic: "Особенности этого подкласса: драконье чародейство в карточке не даёт постоянного числа хитов. Лист его не прибавляет.",
+    hunter: "Особенности этого подкласса: охотник в карточке не даёт постоянного числа урона. Лист его не прибавляет.",
+    fiend: "Особенности этого подкласса: покровитель-исчадие в карточке не даёт постоянного числа временных хитов. Лист их не прибавляет.",
+    thief: "Особенности этого подкласса: вор в карточке не даёт постоянного модификатора. Лист его не прибавляет.",
+    "open-hand": "Особенности этого подкласса: открытая ладонь в карточке не даёт постоянного числа. Лист его не прибавляет.",
+    devotion: "Особенности этого подкласса: клятва преданности в карточке не даёт постоянного числа. Лист его не прибавляет.",
+    land: "Особенности этого подкласса: круг земли в карточке не даёт постоянного числа ячеек. Лист его не прибавляет.",
+  };
+  issues.push({ kind: "limit", message: notes[subclassId] ?? "Особенности этого подкласса в постоянные числа не входят." });
+}
+
 function resourcesOf(classId: string, level: number, subclassId: string): DndDerived["resources"] {
   const list: DndDerived["resources"] = [];
   if (classId === "fighter") {
@@ -556,7 +610,60 @@ function duelingReady(items: ItemInst[]): boolean {
 }
 
 function skillName(id: string): string {
-  return SKILLS.find((skill) => skill.id === id)?.name ?? id;
+  return SKILLS.find((skill) => skill.id === id)?.name ?? "неизвестный навык";
+}
+
+const STYLE_NAMES: Record<string, string> = {
+  defense: "Оборона",
+  dueling: "Дуэль",
+  archery: "Стрельба",
+  gwf: "Двуручное оружие",
+  twf: "Парное оружие",
+  protection: "Защита",
+};
+
+const EXTRA_FEAT_NAMES: Record<string, string> = {
+  tough: "Живучесть",
+  alert: "Бдительный",
+  savage: "Дикий натиск",
+  grappler: "Борец",
+};
+
+function featLabel(id: string): string {
+  return ORIGIN_FEATS.find((feat) => feat.id === id)?.name
+    ?? GENERAL_FEATS.find((feat) => feat.id === id)?.name
+    ?? STYLE_FEATS.find((feat) => feat.id === id)?.name
+    ?? EPIC_BOONS.find((feat) => feat.id === id)?.name
+    ?? EXTRA_FEAT_NAMES[id]
+    ?? "черта";
+}
+
+/** Русская подпись выбора. Код выбора на экран не выводится. */
+export function describeDndChoice(choice: { pick: string; source: string; detail?: Record<string, string> }): string {
+  const pick = choice.pick;
+  if (choice.source === "skill") return skillName(pick);
+  if (choice.source === "expertise") return `экспертиза: ${skillName(pick)}`;
+  if (choice.source === "style") return STYLE_NAMES[pick] ?? "боевой стиль без русского имени";
+  if (choice.source === "mastery") return ITEMS.find((item) => item.id === pick)?.name ?? "оружие";
+  if (pick.startsWith("feat:")) {
+    const name = featLabel(pick.slice(5));
+    const ability = choice.detail?.ability;
+    if (ability && ABILITIES.includes(ability as Ability)) return `${name}, ${ABILITY_NAME[ability as Ability]}`;
+    return name;
+  }
+  if (pick.startsWith("boon:") || choice.source === "epic") {
+    const id = pick.startsWith("boon:") ? pick.slice("boon:".length) : "";
+    const name = EPIC_BOONS.find((feat) => feat.id === id)?.name ?? "эпический дар";
+    const ability = choice.detail?.ability;
+    if (ability && ABILITIES.includes(ability as Ability)) return `${name}, +1 к ${ABILITY_NAME[ability as Ability]}`;
+    return name;
+  }
+  const bits = pick.split(",").filter(Boolean).map((part) => {
+    const [ability, raw] = part.split("+");
+    if (!ABILITIES.includes(ability as Ability) || !raw) return "";
+    return `${ABILITY_NAME[ability as Ability]} +${raw}`;
+  }).filter(Boolean);
+  return bits.join(", ") || "повышение";
 }
 
 export function effectsFrom(character: { feats: FeatInst[]; features: FeatureInst[] }): StructuredEffect[] {

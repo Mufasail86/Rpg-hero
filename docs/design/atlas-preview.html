@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>Макеты «Ночная таверна» — не экран приложения</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #0c1016; }
+  body { font-family: "Iowan Old Style", Palatino, Georgia, serif; }
+  button { font: inherit; color: inherit; appearance: none; margin: 0; cursor: default; background: none; border: 0; }
+  .stage { display: flex; flex-direction: column; gap: 32px; padding: 28px; align-items: flex-start; }
+  .phone, .desk { position: relative; overflow: hidden; color: #f4efe6; background: #121820; }
+  .phone { width: 390px; height: 844px; }
+  .desk { width: 1280px; height: 820px; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .kicker { margin: 0; letter-spacing: 0.14em; text-transform: uppercase; font-size: 11px; color: #e0a15a; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  h1 { margin: 0; font-size: 36px; line-height: 1; font-weight: 600; }
+  h2 { margin: 0; font-size: 28px; line-height: 1.05; font-weight: 600; }
+  p { margin: 0; }
+  .muted { color: #c3b8a6; font-size: 14px; line-height: 1.4; }
+  .meta { color: #c3b8a6; font-size: 12px; line-height: 1.35; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  .banner { position: relative; height: 248px; }
+  .banner .veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(12, 16, 22, 0.05) 20%, rgba(18, 24, 32, 0.25) 55%, #121820 100%);
+  }
+  .banner .copy { position: absolute; left: 16px; right: 16px; bottom: 12px; }
+  .spark {
+    position: absolute; width: 7px; height: 7px; border-radius: 50%; pointer-events: none;
+    background: #7ef0df; box-shadow: 0 0 10px 3px rgba(58, 168, 154, 0.85);
+  }
+  .spark.amber { background: #ffc56e; box-shadow: 0 0 10px 3px rgba(224, 161, 90, 0.9); }
+  .spark.violet { background: #c4b4ff; box-shadow: 0 0 12px 4px rgba(139, 120, 200, 0.9); }
+  .body { padding: 0 16px 92px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    border: 1px solid #31404f; background: #24303c; color: #f4efe6;
+    border-radius: 999px; padding: 7px 12px; font-size: 13px;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+  }
+  .chip.on { background: #3aa89a; color: #08211e; border-color: transparent; }
+  .cast { display: flex; gap: 8px; }
+  .cast figure { flex: 1; min-width: 0; margin: 0; }
+  .cast .face { height: 92px; border-radius: 12px; overflow: hidden; border: 1px solid #31404f; }
+  .cast figcaption { margin-top: 4px; font-size: 11px; text-align: center; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tile { position: relative; height: 96px; border-radius: 16px; overflow: hidden; border: 1px solid #31404f; }
+  .tile .veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12,16,22,0.05), rgba(12,16,22,0.78)); }
+  .tile span { position: absolute; left: 10px; bottom: 8px; font-size: 16px; }
+  .dock {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    display: grid; grid-template-columns: 1fr 1.35fr 1fr; gap: 8px;
+  }
+  .dock button {
+    min-height: 52px; border-radius: 16px; border: 1px solid #31404f; background: #1c2530;
+    font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 15px;
+  }
+  .dock button.primary { background: #d47a86; color: #2a1014; border-color: transparent; font-weight: 700; }
+  .shot { height: 300px; border-radius: 18px; overflow: hidden; position: relative; border: 1px solid #31404f; }
+  .shot.short { height: 188px; }
+  .shot.beast { height: 340px; }
+  .shot .cap {
+    position: absolute; left: 10px; bottom: 8px; right: 10px;
+    font-size: 12px; font-family: "Avenir Next", "Segoe UI", sans-serif;
+    text-shadow: 0 1px 4px #000;
+  }
+  .card {
+    background: #1c2530; border: 1px solid #31404f; border-radius: 16px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .status { color: #e0a15a; font-size: 12px; font-family: "Avenir Next", "Segoe UI", sans-serif; }
+  .option, .locked {
+    display: flex; justify-content: space-between; gap: 8px; align-items: center;
+    padding: 8px 10px; border-radius: 12px; background: #24303c; border: 1px solid #31404f;
+    font-size: 15px;
+  }
+  .option.on { outline: 2px solid #3aa89a; }
+  .locked { opacity: 0.8; }
+  .reason { background: #24343a; border-radius: 12px; padding: 8px 10px; font-size: 14px; line-height: 1.35; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pick { border-radius: 16px; overflow: hidden; border: 1px solid #31404f; background: #1c2530; }
+  .pick.on { outline: 2px solid #e0a15a; }
+  .pick .face { height: 168px; }
+  .pick .label { padding: 6px 8px 8px; }
+  .pick b { display: block; font-size: 16px; }
+  .split { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: center; }
+  .split .face { height: 112px; border-radius: 14px; overflow: hidden; }
+  .who { display: grid; grid-template-columns: 56px 1fr auto; gap: 10px; align-items: center; }
+  .who .face { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; border: 2px solid #e0a15a; }
+  .stat { display: flex; justify-content: space-between; align-items: baseline; }
+  .stat b { font-size: 32px; line-height: 1; }
+  .formula { font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 13px; color: #c3b8a6; line-height: 1.4; }
+  .bars { display: flex; gap: 6px; }
+  .bars i { flex: 1; height: 8px; border-radius: 99px; background: #31404f; display: block; }
+  .bars i.on { background: #e0a15a; }
+  .links { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 14px; }
+  .links em { color: #e0a15a; font-style: normal; }
+  .search {
+    width: 100%; min-height: 46px; border-radius: 14px; border: 1px solid #31404f;
+    background: #1c2530; color: #f4efe6; padding: 0 12px; font: inherit; font-size: 16px;
+  }
+  .desk .top { height: 280px; position: relative; }
+  .desk .top .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,16,22,0.72), rgba(12,16,22,0.05) 55%, rgba(12,16,22,0.45)); }
+  .desk .top .copy { position: absolute; left: 28px; top: 36px; max-width: 460px; display: flex; flex-direction: column; gap: 10px; }
+  .desk .main { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 12px; padding: 12px 16px 16px; }
+  .desk .cast .face { height: 128px; }
+  .lore { display: grid; grid-template-rows: 1fr 1fr; gap: 12px; }
+  .lore .tile { height: auto; min-height: 196px; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+<section class="phone" id="home">
+  <div class="banner">
+    <img src="art/hero-tavern-party.jpg" alt="Отряд у ночной таверны" />
+    <div class="veil"></div>
+    <i class="spark" style="left: 18%; top: 22%"></i>
+    <i class="spark amber" style="left: 74%; top: 30%"></i>
+    <i class="spark violet" style="left: 58%; top: 16%"></i>
+    <div class="copy">
+      <p class="kicker">Ночная таверна</p>
+      <h1>Герой</h1>
+      <p class="muted">Правила, предания и лист. Рисунки свои.</p>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row">
+      <span class="chip on">Следопыт · ремастер</span>
+      <span class="chip">Подземелья и драконы · 2024</span>
+    </div>
+    <p class="meta">Герои на карточках — свои портреты, не официальные образы.</p>
+    <div class="cast">
+      <figure><div class="face"><img src="art/elf-portrait.jpg" alt="" /></div><figcaption>Эльф</figcaption></figure>
+      <figure><div class="face"><img src="art/dwarf-portrait.jpg" alt="" /></div><figcaption>Дварф</figcaption></figure>
+      <figure><div class="face"><img src="art/orc-portrait.jpg" alt="" /></div><figcaption>Орк</figcaption></figure>
+      <figure><div class="face"><img src="art/wizard-portrait.jpg" alt="" /></div><figcaption>Маг</figcaption></figure>
+      <figure><div class="face"><img src="art/goblin-portrait.jpg" alt="" /></div><figcaption>Гоблин</figcaption></figure>
+    </div>
+    <div class="tiles">
+      <div class="tile"><img src="art/hill-castle.jpg" alt="" /><div class="veil"></div><span>Предания</span></div>
+      <div class="tile"><img src="art/river-drake.jpg" alt="" /><div class="veil"></div><span>Чудовища</span></div>
+      <div class="tile"><img src="art/wizard-portrait.jpg" alt="" /><div class="veil"></div><span>Конструктор</span></div>
+      <div class="tile"><img src="art/dwarf-portrait.jpg" alt="" /><div class="veil"></div><span>Лист боя</span></div>
+    </div>
+  </div>
+  <div class="dock">
+    <button>Поиск</button>
+    <button class="primary">Новый герой</button>
+    <button>Лист</button>
+  </div>
+</section>
+
+<section class="phone" id="ancestry">
+  <div class="body" style="padding-top:16px">
+    <p class="kicker">Следопыт · ремастер · народ</p>
+    <div class="shot">
+      <img src="art/elf-portrait.jpg" alt="Свой портрет эльфа" />
+      <div class="cap">Свой рисунок. Не официальный образ народа.</div>
+    </div>
+    <div class="stat"><h2>Эльф</h2></div>
+    <p class="status">Сверено частично · в конструкторе</p>
+    <p class="muted">6 хитов, скорость 30 футов, сумеречное зрение. Повышения: Ловкость, Интеллект и свободное. Изъян: Телосложение.</p>
+    <div class="option on"><span>Лесной</span><span class="meta">в базе</span></div>
+    <div class="locked"><span>Айуварин</span><span class="meta">нет в базе</span></div>
+    <p class="reason">Недоступно: универсальное наследие ещё не заведено. Эльфа с айуварином собрать нельзя, причина на экране.</p>
+  </div>
+  <div class="dock">
+    <button>Назад</button>
+    <button class="primary">Взять лесное</button>
+    <button>Связи</button>
+  </div>
+</section>
+
+<section class="phone" id="knowledge">
+  <div class="body" style="padding-top:16px">
+    <p class="kicker">Предание · черновик карточки</p>
+    <div class="shot short">
+      <img src="art/hill-castle.jpg" alt="Свой замок" />
+      <i class="spark" style="left: 22%; top: 28%"></i>
+      <i class="spark violet" style="right: 18%; top: 20%; left: auto"></i>
+      <div class="cap">Свой замок. Не вид изданного города и не карта.</div>
+    </div>
+    <h2>Талдор</h2>
+    <div class="row">
+      <span class="chip on">Игрок</span>
+      <span class="chip">Ведущий</span>
+      <span class="chip">Без спойлеров</span>
+    </div>
+    <p class="muted">Черновик в одну фразу: старое государство на востоке внутреннего моря. Текст книги сюда не копируется.</p>
+    <div class="links"><span>Талдор</span><em>→</em><span>Оппара</span><em>→</em><span>Львиные клинки</span></div>
+    <div class="shot beast">
+      <img src="art/river-drake.jpg" alt="Свой речной змей" />
+      <div class="cap">Речной змей. Свой рисунок для справочника, не статья из книги.</div>
+    </div>
+  </div>
+  <div class="dock">
+    <button>Назад</button>
+    <button class="primary">К Оппаре</button>
+    <button>Источник</button>
+  </div>
+</section>
+
+<section class="phone" id="builder">
+  <div class="body" style="padding-top:16px">
+    <p class="kicker">Конструктор · народ · Следопыт</p>
+    <h2>Кого ведёте</h2>
+    <input class="search" value="эльф" aria-label="Поиск народа" />
+    <div class="grid2">
+      <article class="pick on">
+        <div class="face"><img src="art/elf-portrait.jpg" alt="" /></div>
+        <div class="label"><b>Эльф</b><span class="meta">Ловкость и Интеллект</span></div>
+      </article>
+      <article class="pick">
+        <div class="face"><img src="art/dwarf-portrait.jpg" alt="" /></div>
+        <div class="label"><b>Дварф</b><span class="meta">Телосложение и Мудрость</span></div>
+      </article>
+      <article class="pick">
+        <div class="face"><img src="art/orc-portrait.jpg" alt="" /></div>
+        <div class="label"><b>Орк</b><span class="meta">два свободных</span></div>
+      </article>
+      <article class="pick">
+        <div class="face"><img src="art/goblin-portrait.jpg" alt="" /></div>
+        <div class="label"><b>Гоблин</b><span class="meta">Ловкость и Харизма</span></div>
+      </article>
+    </div>
+    <p class="reason">Айуварин недоступен: универсальное наследие не заведено. Базовый эльф доступен. Портреты свои и не заменяют текст правила.</p>
+  </div>
+  <div class="dock">
+    <button>Назад</button>
+    <button class="primary">Дальше</button>
+    <button>Почему</button>
+  </div>
+</section>
+
+<section class="phone" id="combat">
+  <div class="body" style="padding-top:18px">
+    <p class="kicker">Бой · сжатый · учебные числа</p>
+    <div class="who">
+      <div class="face"><img src="art/dwarf-portrait.jpg" alt="" /></div>
+      <div>
+        <h2>Образец</h2>
+        <p class="meta">воин · уровень 5 · ремастер</p>
+      </div>
+      <b style="font-size:28px">КБ 21</b>
+    </div>
+    <article class="card">
+      <p class="formula">10 + чешуя 5 + Ловкость +2, не выше предела + обучен +2. Предметный бонус 0. Парирование выключено и в сумму не вошло.</p>
+      <div class="bars"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </article>
+    <article class="card">
+      <div class="stat"><span>Хиты</span><b>48 / 48</b></div>
+      <p class="formula">Предмет и обстоятельство не складываются сами с собой. Журнал: доспех надет. Отмена вернёт прошлый класс брони.</p>
+    </article>
+    <article class="card">
+      <div class="stat"><span>Меч</span><b>+7</b></div>
+      <p class="formula">1d8+4 · действие есть · повторная атака ещё не тратилась</p>
+    </article>
+    <p class="meta">Портрет маленький, чтобы числа читались. Свечение только по краю, не поверх цифр.</p>
+    <i class="spark" style="right: 22px; top: 78px"></i>
+  </div>
+  <div class="dock">
+    <button>Отмена</button>
+    <button class="primary">Удар</button>
+    <button>Парирование</button>
+  </div>
+</section>
+
+<section class="desk" id="desktop">
+  <div class="top">
+    <img src="art/hero-tavern-party.jpg" alt="Отряд у ночной таверны" />
+    <div class="veil"></div>
+    <i class="spark" style="left: 48%; top: 30%"></i>
+    <i class="spark amber" style="left: 62%; top: 42%"></i>
+    <i class="spark violet" style="left: 70%; top: 22%"></i>
+    <div class="copy">
+      <p class="kicker">Ночная таверна</p>
+      <h1>Герой</h1>
+      <p class="muted">Широкий стол той же тёмной комнаты. Справочник, конструктор и лист смотрят в одну базу. Рисунки свои и подписаны.</p>
+      <div class="row">
+        <span class="chip on">Следопыт · ремастер</span>
+        <span class="chip">Подземелья и драконы · 2024</span>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div>
+      <p class="meta" style="margin-bottom:8px">Народы и классы. Портреты не заменяют карточку правила.</p>
+      <div class="cast">
+        <figure><div class="face"><img src="art/elf-portrait.jpg" alt="" /></div><figcaption>Эльф</figcaption></figure>
+        <figure><div class="face"><img src="art/dwarf-portrait.jpg" alt="" /></div><figcaption>Дварф</figcaption></figure>
+        <figure><div class="face"><img src="art/orc-portrait.jpg" alt="" /></div><figcaption>Орк</figcaption></figure>
+        <figure><div class="face"><img src="art/wizard-portrait.jpg" alt="" /></div><figcaption>Маг</figcaption></figure>
+        <figure><div class="face"><img src="art/goblin-portrait.jpg" alt="" /></div><figcaption>Гоблин</figcaption></figure>
+      </div>
+      <article class="card" style="margin-top:12px">
+        <b>Бой остаётся сжатым</b>
+        <p class="muted">На листе стола крупное число, формула и кнопки под руку. Большой рисунок живёт на главной, в народе и в преданиях, а не поверх класса брони.</p>
+      </article>
+    </div>
+    <div class="lore">
+      <div class="tile"><img src="art/hill-castle.jpg" alt="" /><div class="veil"></div><span>Замок · свой рисунок</span></div>
+      <div class="tile"><img src="art/river-drake.jpg" alt="" /><div class="veil"></div><span>Чудовище · свой рисунок</span></div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

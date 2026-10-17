@@ -1,5 +1,8 @@
+import { FEAT_BY_ID, FEAT_INDEX, pathGroup, pathOption, type PathOption } from "../data/pf-index";
+import { curseMax, curseMods, doctrineOptions, monkSaveOptions, resolveRanks } from "./progression";
 import { ANCESTRIES, BACKGROUNDS, CLASSES, SKILLS } from "../data/pf2e";
 import {
+  ABILITIES,
   ABILITY_NAME,
   type Ability,
   type BuildChoice,
@@ -48,11 +51,12 @@ export interface Derived {
   hp: Stat;
   ac: Stat;
   speed: Stat;
-  perception: Stat;
+  perception: Stat & { rank: Rank };
   initiative: Stat;
   saves: Record<"fort" | "ref" | "will", SkillStat>;
   skills: Record<string, SkillStat>;
-  classDc: Stat | null;
+  classDc: (Stat & { rank: Rank }) | null;
+  spell: (Stat & { rank: Rank }) | null;
   attacks: { name: string; group: string; category: string; rank: Rank; attack: Stat; damage: string; equipped: boolean }[];
   load: { bulk: number; limit: number; max: number; encumbered: boolean };
   issues: Issue[];
@@ -75,6 +79,8 @@ interface FeatDef {
   skill?: string;
   knowledge?: boolean;
   repeatable?: boolean;
+  classes?: string[];
+  ancestries?: string[];
 }
 
 const FEATS: Record<string, FeatDef> = {
@@ -124,7 +130,6 @@ const FEATS: Record<string, FeatDef> = {
 };
 
 const KNOWLEDGE = new Set(["arcana", "crafting", "medicine", "nature", "occultism", "religion", "society"]);
-const ABILITIES: Ability[] = ["str", "dex", "con", "int", "wis", "cha"];
 
 const GROUPS: Record<string, string> = {
   longsword: "sword",
@@ -161,7 +166,7 @@ export function derive(input: DeriveInput): Derived {
   const byId = new Map<string, BuildChoice>();
   for (const choice of progress.choices) {
     if (choice.level > level) continue;
-    if (byId.has(choice.id)) issues.push({ kind: "build", message: `Выбор «${choice.id}» записан дважды.` });
+    if (byId.has(choice.id)) issues.push({ kind: "build", message: "Один и тот же выбор записан дважды." });
     byId.set(choice.id, choice);
   }
   for (const slot of slots) {
@@ -169,7 +174,7 @@ export function derive(input: DeriveInput): Derived {
   }
   for (const choice of byId.values()) {
     if (!slots.some((slot) => slot.id === choice.id)) {
-      issues.push({ kind: "build", message: `Лишний выбор «${choice.pick}» на уровне ${choice.level}: для него нет положенного слота.` });
+      issues.push({ kind: "build", message: `Лишний выбор «${choiceCaption(choice)}» на уровне ${choice.level}: для него нет положенного слота.` });
     }
   }
 
@@ -181,6 +186,11 @@ export function derive(input: DeriveInput): Derived {
     loreNames.set(loreId, background.lore);
     grantFeat(background.feat, feats, taken, issues, ranks);
   }
+  const classRow = CLASSES.find((item) => item.id === progress.classId);
+  for (const id of classRow?.skillsFixed ?? []) train(ranks, id);
+  const pathPick = progress.choices.find((choice) => choice.level <= level && (choice.source === "instinct" || choice.source === "style" || choice.source === "mystery"));
+  const path = pathOption(pathPick?.source ?? "", pathPick?.pick);
+  if (pathPick && !path) issues.push({ kind: "build", message: "Неизвестный выбор инстинкта, стиля или тайны." });
 
   for (const slot of slots.filter((slot) => slot.source === "class-skill" || slot.source === "heritage-skill")) {
     const choice = byId.get(slot.id);
@@ -197,6 +207,7 @@ export function derive(input: DeriveInput): Derived {
     }
     train(ranks, choice.pick);
   }
+  if (path?.skill) train(ranks, path.skill);
 
   const archetypeFeats: { id: string; level: number }[] = [];
 
@@ -222,12 +233,17 @@ export function derive(input: DeriveInput): Derived {
     }
   }
 
-  if (progress.classId !== "fighter") {
+  if (progress.versatileHeritageId) {
     issues.push({
       kind: "limit",
-      message: "Автоматическая прогрессия владения оружием, доспехами и испытаний до 20 уровня сделана для воина. У этого класса ранги выше 1 уровня нужно сверять вручную.",
+      message: "Универсальное наследие записано вместе с народом. Его эффект приложение к числам не прибавляет.",
     });
   }
+
+  const mysteryId = progress.choices.find((choice) => choice.source === "mystery" && choice.level <= level)?.pick ?? "";
+  const curseValue = progress.classId === "oracle" ? Math.min(curseMax(level), Math.max(0, progress.cursebound ?? 0)) : 0;
+  const curse = curseMods(mysteryId, curseValue, level);
+  for (const note of curse.notes) issues.push({ kind: "limit", message: note });
 
   for (const feat of feats) {
     if (!feat.modeled) issues.push({ kind: "limit", message: `«${feat.name}» записана, но её эффект приложение не применяет к числам.` });
@@ -264,18 +280,19 @@ export function derive(input: DeriveInput): Derived {
   const hefty = taken.has("hefty") ? 2 : 0;
   const encLimit = 5 + str + hefty;
   const encumbered = bulk > encLimit;
-  let speed = (ancestry?.speed ?? 25) + (fleet ? 5 : 0) - speedPenalty - (encumbered ? 10 : 0);
+  let speed = (ancestry?.speed ?? 25) + (fleet ? 5 : 0) - speedPenalty - (encumbered ? 10 : 0) - curse.speedPenalty;
   const speedParts = [`база ${ancestry?.speed ?? 25}`];
   if (fleet) speedParts.push("Быстроногий +5");
   if (speedPenalty) speedParts.push(`доспех −${speedPenalty}`);
   if (encumbered) speedParts.push("перегрузка −10");
+  if (curse.speedPenalty) speedParts.push(`проклятие −${curse.speedPenalty}`);
 
   const canny = cannyDefense(byId, level);
-  const saves = fighterSaves(level, canny, progress.classId === "fighter");
+  const ranksNow = resolveRanks(progress, level, armor?.armor?.category ?? "unarmored", canny);
+  for (const note of ranksNow.notes) issues.push({ kind: "limit", message: note });
+  const saves = { fort: ranksNow.fort, ref: ranksNow.ref, will: ranksNow.will, perception: ranksNow.perception };
   const perceptionRank = saves.perception;
-  const armorRank = progress.classId === "fighter" ? fighterArmor(level) : ((cls?.armor[armor?.armor?.category ?? "unarmored"] as Rank) ?? "untrained");
-  const chosenGroup = byId.get("weapon-group")?.pick ?? null;
-
+  const armorRank = ranksNow.armor;
   const dexCap = armor?.armor?.dexCap;
   const dexToAc = dexCap == null ? dex : Math.min(dex, dexCap);
   const acParts: string[] = ["10", `Ловкость ${fmt(dexToAc)}${dexCap != null && dex > dexCap ? ` (предел ${fmt(dexCap)})` : ""}`, `уровень ${level}`, `${RANK_WORD[armorRank]} ${fmt(RANK_EXTRA[armorRank])}`];
@@ -299,7 +316,7 @@ export function derive(input: DeriveInput): Derived {
     else if (parryOk) acParts.push("дуэльное парирование +2");
     else acParts.push(`поднятый щит ${fmt(shieldBonus)}`);
   }
-  const clumsyAc = input.conditions?.clumsy ?? 0;
+  const clumsyAc = Math.max(input.conditions?.clumsy ?? 0, curse.clumsy);
   if (clumsyAc) {
     ac -= clumsyAc;
     acParts.push(`неуклюжий −${clumsyAc}`);
@@ -323,8 +340,8 @@ export function derive(input: DeriveInput): Derived {
       value -= checkPenalty;
       parts.push(`штраф доспеха −${checkPenalty}`);
     }
-    const clumsy = ability === "dex" ? input.conditions?.clumsy ?? 0 : 0;
-    const enfeebled = ability === "str" ? input.conditions?.enfeebled ?? 0 : 0;
+    const clumsy = ability === "dex" ? Math.max(input.conditions?.clumsy ?? 0, curse.clumsy) : 0;
+    const enfeebled = ability === "str" ? Math.max(input.conditions?.enfeebled ?? 0, curse.enfeebled) : 0;
     const localStatus = Math.max(statusPenalty, clumsy, enfeebled);
     if (localStatus) {
       value -= localStatus;
@@ -333,49 +350,57 @@ export function derive(input: DeriveInput): Derived {
     skills[id] = { value, rank, ability, formula: line(skillName(id, loreNames), value, parts), aside: [] };
   }
 
+  const resilient = armor?.runes?.resilient ?? 0;
   const saveStats = {
-    fort: saveStat("Стойкость", "con", saves.fort, scores, level, statusPenalty, input.conditions?.drained ?? 0),
-    ref: saveStat("Рефлексы", "dex", saves.ref, scores, level, Math.max(statusPenalty, input.conditions?.clumsy ?? 0), 0),
-    will: saveStat("Воля", "wis", saves.will, scores, level, statusPenalty, input.conditions?.stupefied ?? 0),
+    fort: saveStat("Стойкость", "con", saves.fort, scores, level, statusPenalty, input.conditions?.drained ?? 0, curse.fortPenalty, resilient),
+    ref: saveStat("Рефлексы", "dex", saves.ref, scores, level, Math.max(statusPenalty, clumsyAc), 0, 0, resilient),
+    will: saveStat("Воля", "wis", saves.will, scores, level, statusPenalty, Math.max(input.conditions?.stupefied ?? 0, curse.stupefied), curse.willPenalty, resilient),
   };
   if (progress.classId === "fighter" && level >= 3) saveStats.will.aside.push("Храбрость: успех против страха становится критическим успехом, значение испуга снижается на 1.");
   if (canny === "will" && level >= 17) saveStats.will.aside.push("Дальновидность поднимает волю до мастера на 17 уровне. Храбрость сама даёт только эксперта.");
   if (progress.classId === "fighter" && level >= 9) saveStats.fort.aside.push("Закалка в бою: успех стойкости становится критическим успехом.");
   if (progress.classId === "fighter" && level >= 15) saveStats.ref.aside.push("Крепкие рефлексы: успех становится критическим успехом.");
 
-  const perceptionValue = wis + rankBonus(perceptionRank, level) - statusPenalty;
+  const perceptionValue = wis + rankBonus(perceptionRank, level) - statusPenalty - curse.perceptionPenalty;
   const perceptionParts = [`Мудрость ${fmt(wis)}`, `уровень ${level}`, `${RANK_WORD[perceptionRank]} ${fmt(RANK_EXTRA[perceptionRank])}`];
   if (statusPenalty) perceptionParts.push(`штраф состояния −${statusPenalty}`);
+  if (curse.perceptionPenalty) perceptionParts.push(`проклятие −${curse.perceptionPenalty}`);
   const initBonus = progress.classId === "fighter" && level >= 7 ? 2 : 0;
   const initParts = [`Восприятие ${fmt(perceptionValue)}`];
   if (initBonus) initParts.push("обзор поля боя +2");
 
-  const classRank: Rank = progress.classId === "fighter" ? (level >= 19 ? "master" : level >= 11 ? "expert" : "trained") : "trained";
+  const classRank: Rank = ranksNow.classDc;
   const classDc = cls ? 10 + key + rankBonus(classRank, level) - statusPenalty : null;
 
+  const rage = rageDamage(progress, level, toggles, path, issues);
   const attacks = input.items.filter((item) => item.kind === "weapon").map((item) => {
     const category = item.weapon?.category ?? "martial";
     const group = item.weapon?.group ?? GROUPS[item.catalogId ?? ""] ?? "other";
-    const rank = progress.classId === "fighter" ? fighterWeapon(level, category, group, chosenGroup) : ((cls?.attacks[category] as Rank) ?? "untrained");
+    const bomb = /bomb|бомб/i.test(`${item.weapon?.traits ?? ""} ${item.weapon?.group ?? ""} ${item.name}`);
+    const rank = ranksNow.weaponRank(category, group, bomb);
     const ability = item.weapon?.attr === "dex" ? dex : item.weapon?.attr === "finesse" ? Math.max(str, dex) : str;
     const abilityName = item.weapon?.attr === "dex" ? "Ловкость" : item.weapon?.attr === "finesse" && dex > str ? "Ловкость" : "Сила";
     const potency = item.runes?.potency ?? 0;
-    let attack = ability + rankBonus(rank, level) + potency - statusPenalty;
+    const rangedCurse = item.weapon?.ranged ? curse.rangedPenalty : 0;
+    let attack = ability + rankBonus(rank, level) + potency - statusPenalty - rangedCurse;
     const parts = [`${abilityName} ${fmt(ability)}`, `уровень ${level}`, `${RANK_WORD[rank]} ${fmt(RANK_EXTRA[rank])}`];
     if (potency) parts.push(`руна мощи ${fmt(potency)}`);
     if (statusPenalty) parts.push(`штраф состояния −${statusPenalty}`);
-    const spec = specialization(level, rank);
+    if (rangedCurse) parts.push(`встречный ветер −${rangedCurse}`);
+    const spec = ranksNow.specialization(rank);
     const striking = item.runes?.striking ?? 0;
-    const dice = item.weapon?.damage ?? "1d4";
-    const damageMod = (item.weapon?.attr === "dex" ? 0 : str) + spec;
+    const dice = strikeDice(item.weapon?.damage ?? "1d4", striking);
+    const property = item.runes?.property ?? [];
+    const ragePart = item.weapon?.ranged ? 0 : rage;
+    const damageMod = (item.weapon?.attr === "dex" ? 0 : str) + spec + ragePart;
     return {
       name: item.name,
       group,
       category,
       rank,
       equipped: item.equipped,
-      attack: { value: attack, formula: line(item.name, attack, parts), aside: item.equipped ? [] : ["Оружие не в руках и не надето: бонус показан так, как если его взять."] },
-      damage: `${dice}${striking ? ` + ${striking} кост${striking === 1 ? "ь" : "и"} руны` : ""}${damageMod ? ` ${fmt(damageMod)}` : ""}${spec ? ` (специализация ${fmt(spec)})` : ""}`,
+      attack: { value: attack, formula: line(item.name, attack, parts), aside: [...(item.equipped ? [] : ["Оружие не в руках и не надето: бонус показан так, как если его взять."]), ...(property.length ? [`Свойства: ${property.map((rune) => rune.name).join(", ")}. Их карточка в число удара не входит.`] : [])] },
+      damage: `${dice}${damageMod ? ` ${fmt(damageMod)}` : ""}${ragePart ? ` (ярость ${fmt(ragePart)})` : ""}${spec ? ` (специализация ${fmt(spec)})` : ""}`,
     };
   });
 
@@ -408,11 +433,17 @@ export function derive(input: DeriveInput): Derived {
     hp: { value: adjusted.hp, formula: line("ПЗ", adjusted.hp, adjusted.hpParts), aside: [] },
     ac: { value: adjusted.ac, formula: line("КБ", adjusted.ac, adjusted.acParts), aside },
     speed: { value: adjusted.speed, formula: line("Скорость", adjusted.speed, adjusted.speedParts).replace("+", ""), aside: [] },
-    perception: { value: perceptionValue, formula: line("Восприятие", perceptionValue, perceptionParts), aside: [] },
+    perception: { value: perceptionValue, rank: perceptionRank, formula: line("Восприятие", perceptionValue, perceptionParts), aside: [] },
     initiative: { value: perceptionValue + initBonus, formula: line("Инициатива", perceptionValue + initBonus, initParts), aside: initBonus ? ["+2 обстоятельственных только к инициативе, не ко всем проверкам Восприятия."] : [] },
     saves: saveStats,
     skills,
-    classDc: classDc == null ? null : { value: classDc, formula: line("Классовая СЛ", classDc, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, `уровень ${level}`, `${RANK_WORD[classRank]} ${fmt(RANK_EXTRA[classRank])}`]), aside: [] },
+    classDc: classDc == null ? null : { value: classDc, rank: classRank, formula: line("Классовая СЛ", classDc, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, `уровень ${level}`, `${RANK_WORD[classRank]} ${fmt(RANK_EXTRA[classRank])}`]), aside: [] },
+    spell: ranksNow.spell === "untrained" ? null : {
+      value: 10 + key + rankBonus(ranksNow.spell, level) - statusPenalty,
+      rank: ranksNow.spell,
+      formula: line("СЛ заклинаний", 10 + key + rankBonus(ranksNow.spell, level) - statusPenalty, [`10`, `${ABILITY_NAME[progress.keyAbility]} ${fmt(key)}`, `уровень ${level}`, `${RANK_WORD[ranksNow.spell]} ${fmt(RANK_EXTRA[ranksNow.spell])}`]),
+      aside: [],
+    },
     attacks,
     load: { bulk, limit: encLimit, max: 10 + str + hefty, encumbered },
     issues: adjusted.issues,
@@ -453,10 +484,6 @@ function atLeast(current: Rank, target: Rank): Rank {
   return RANK_ORDER.indexOf(current) >= RANK_ORDER.indexOf(target) ? current : target;
 }
 
-function higher(a: Rank, b: Rank): Rank {
-  return RANK_ORDER.indexOf(a) >= RANK_ORDER.indexOf(b) ? a : b;
-}
-
 function stepUp(current: Rank, level: number): { rank: Rank } | { error: string } {
   const index = RANK_ORDER.indexOf(current);
   if (index >= RANK_ORDER.length - 1) return { error: "навык уже легендарный, повышать некуда" };
@@ -492,12 +519,12 @@ function abilityScores(progress: Pf2eProgress, level: number, issues: Issue[]): 
   for (const pool of pools) {
     if (pool.level > level) continue;
     const picks = progress.choices.filter((choice) => choice.source === pool.source && choice.level === pool.level);
-    if (picks.length < pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} не хватает повышений (${pool.source}): нужно ${pool.count}.` });
-    if (picks.length > pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} лишние повышения (${pool.source}).` });
+    if (picks.length < pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} не хватает повышений (${poolLabel(pool.source)}): нужно ${pool.count}.` });
+    if (picks.length > pool.count) issues.push({ kind: "build", message: `На уровне ${pool.level} лишние повышения (${poolLabel(pool.source)}).` });
     const seen = new Set<string>();
     for (const choice of picks) {
       if (!ABILITIES.includes(choice.pick as Ability)) {
-        issues.push({ kind: "build", message: `Повышение ${choice.id} указывает не на характеристику.` });
+        issues.push({ kind: "build", message: "Одно повышение указано не на характеристику." });
         continue;
       }
       if (seen.has(choice.pick)) {
@@ -529,6 +556,32 @@ function boost(state: ScoreState) {
   } else state.score += 2;
 }
 
+const EVEN_TO_20 = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const ODD_GENERAL = [3, 7, 11, 15, 19];
+const ANCESTRY_FEATS = [1, 5, 9, 13, 17];
+const ODD_INCREASE = [3, 5, 7, 9, 11, 13, 15, 17, 19];
+const EVERY_LEVEL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+function classFeatLevels(classId: string): number[] {
+  if (["bard", "cleric", "druid", "oracle", "sorcerer", "witch", "wizard"].includes(classId)) return EVEN_TO_20;
+  if (["alchemist", "barbarian", "champion", "fighter", "investigator", "monk", "ranger", "rogue", "swashbuckler"].includes(classId)) {
+    return [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+  }
+  return [];
+}
+
+function skillFeatLevels(classId: string): number[] {
+  if (classId === "rogue") return EVERY_LEVEL;
+  if (classId === "investigator") return EVERY_LEVEL.filter((at) => at >= 2);
+  if (classId === "swashbuckler") return [2, 3, 4, 6, 7, 8, 10, 12, 14, 15, 16, 18, 20];
+  return EVEN_TO_20;
+}
+
+function skillIncreaseLevels(classId: string): number[] {
+  if (classId === "rogue" || classId === "investigator") return EVERY_LEVEL.filter((at) => at >= 2);
+  return ODD_INCREASE;
+}
+
 function slotsFor(progress: Pf2eProgress, level: number): Slot[] {
   const slots: Slot[] = [];
   const push = (id: string, at: number, source: string, label: string) => {
@@ -547,21 +600,25 @@ function slotsFor(progress: Pf2eProgress, level: number): Slot[] {
   if (progress.classId === "fighter") push("class-skill-primary", 1, "class-skill", "Навык класса: Атлетика или Акробатика");
   for (let i = 0; i < extra; i += 1) push(`class-skill-extra-${i}`, 1, "class-skill", "Дополнительный навык класса");
   if (progress.heritageId === "skilled") push("heritage-skill", 1, "heritage-skill", "Навык умелого наследия");
-  const classFeats = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-  const skillFeats = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-  const general = [3, 7, 11, 15, 19];
-  const ancestryFeats = [1, 5, 9, 13, 17];
-  const increases = [3, 5, 7, 9, 11, 13, 15, 17, 19];
-  if (progress.classId === "fighter") {
-    for (const at of classFeats) push(`class-feat-${at}`, at, "class-feat", "Черта класса");
-    push("weapon-group", 5, "weapon-group", "Группа оружия мастера");
+  if (progress.classId === "barbarian") push("class-path", 1, "instinct", "Инстинкт");
+  if (progress.classId === "swashbuckler") push("class-path", 1, "style", "Стиль");
+  if (progress.classId === "oracle") push("class-path", 1, "mystery", "Тайна");
+  const fury = progress.choices.some((choice) => choice.source === "instinct" && choice.pick === "fury-instinct" && choice.level <= level);
+  if (fury) push("fury-feat", 1, "class-feat", "Черта класса от инстинкта ярости");
+  for (const at of classFeatLevels(progress.classId)) push(`class-feat-${at}`, at, "class-feat", "Черта класса");
+  if (progress.classId === "fighter") push("weapon-group", 5, "weapon-group", "Группа оружия мастера");
+  if (progress.classId === "cleric") push("doctrine", 1, "doctrine", "Доктрина");
+  if (progress.classId === "monk") {
+    push("monk-save-7", 7, "monk-save", "Путь к совершенству");
+    push("monk-save-11", 11, "monk-save", "Второй путь к совершенству");
+    push("monk-save-15", 15, "monk-save", "Третий путь к совершенству");
   }
-  for (const at of skillFeats) push(`skill-feat-${at}`, at, "skill-feat", "Черта навыка");
-  for (const at of general) push(`general-feat-${at}`, at, "general-feat", "Общая черта");
-  for (const at of ancestryFeats) push(`ancestry-feat-${at}`, at, "ancestry-feat", "Черта народа");
-  for (const at of increases) push(`skill-increase-${at}`, at, "skill-increase", "Повышение навыка");
+  for (const at of skillFeatLevels(progress.classId)) push(`skill-feat-${at}`, at, "skill-feat", "Черта навыка");
+  for (const at of ODD_GENERAL) push(`general-feat-${at}`, at, "general-feat", "Общая черта");
+  for (const at of ANCESTRY_FEATS) push(`ancestry-feat-${at}`, at, "ancestry-feat", "Черта народа");
+  for (const at of skillIncreaseLevels(progress.classId)) push(`skill-increase-${at}`, at, "skill-increase", "Повышение навыка");
   if (progress.freeArchetype) {
-    for (const at of skillFeats) push(`free-archetype-${at}`, at, "free-archetype", "Свободный архетип");
+    for (const at of EVEN_TO_20) push(`free-archetype-${at}`, at, "free-archetype", "Свободный архетип");
   }
   return slots;
 }
@@ -577,7 +634,47 @@ function isSkillId(id: string): boolean {
 }
 
 function skillName(id: string, lore: Map<string, string>): string {
-  return SKILLS.find((skill) => skill.id === id)?.name ?? lore.get(id) ?? id;
+  return SKILLS.find((skill) => skill.id === id)?.name ?? lore.get(id) ?? (id.startsWith("lore:") ? "знание" : "неизвестный навык");
+}
+
+const POOL_LABEL: Record<string, string> = {
+  "ancestry-boost": "повышения народа",
+  "background-boost": "повышения происхождения",
+  "class-boost": "классовое повышение",
+  "free-boost": "свободные повышения",
+};
+
+function poolLabel(source: string): string {
+  return POOL_LABEL[source] ?? "повышения";
+}
+
+const DETAIL_NAME: Record<string, string> = {
+  fort: "Стойкость",
+  ref: "Рефлексы",
+  will: "Воля",
+  perception: "Восприятие",
+};
+
+function detailWord(value: string): string {
+  if (DETAIL_NAME[value]) return DETAIL_NAME[value];
+  if (ABILITIES.includes(value as Ability)) return ABILITY_NAME[value as Ability];
+  const skill = SKILLS.find((item) => item.id === value);
+  if (skill) return skill.name;
+  if (FEATS[value]) return FEATS[value].name;
+  if (value.startsWith("lore:")) return "знание";
+  return "";
+}
+
+/** Русская подпись выбора. Код выбора на экран не выводится. */
+export function choiceCaption(choice: { pick: string; source: string; detail?: Record<string, string> }): string {
+  const named = FEATS[choice.pick]?.name
+    ?? FEAT_BY_ID.get(choice.pick)?.name
+    ?? pathOption(choice.source, choice.pick)?.name
+    ?? optionsForSlot(choice.source).find((option) => option.pick === choice.pick)?.name
+    ?? (choice.pick.startsWith("lore:") ? "знание" : "выбор");
+  if (!choice.detail) return named;
+  const bits = Object.values(choice.detail).map(detailWord).filter((word) => word.length > 0);
+  return bits.length ? `${named} (${bits.join(", ")})` : named;
 }
 
 function skillAbility(id: string): Ability {
@@ -588,9 +685,9 @@ function grantFeat(id: string, feats: { id: string; name: string; modeled: boole
   if (!id || taken.has(id)) return;
   const def = FEATS[id];
   if (!def) {
-    issues.push({ kind: "limit", message: `Черта «${id}» есть в листе, но справочник приложения её не знает.` });
+    issues.push({ kind: "limit", message: "Черта есть в листе, но справочник приложения её не знает." });
     taken.add(id);
-    feats.push({ id, name: id, modeled: false });
+    feats.push({ id, name: "черта без имени", modeled: false });
     return;
   }
   if (def.skill && (ranks.get(def.skill) ?? "untrained") === "untrained") {
@@ -623,10 +720,10 @@ function applyFeatChoice(
   archetypeFeats: { id: string; level: number }[],
   scores: Record<Ability, ScoreState>,
 ) {
-  const def = FEATS[choice.pick];
+  const def = resolveFeat(choice.pick);
   if (choice.source === "weapon-group") return;
   if (!def) {
-    issues.push({ kind: "build", message: `Неизвестная черта «${choice.pick}» в слоте ${choice.id}.` });
+    issues.push({ kind: "build", message: `Неизвестная черта на уровне ${choice.level}.` });
     return;
   }
   if (def.level > choice.level) issues.push({ kind: "build", message: `«${def.name}» уровня ${def.level}, слот только ${choice.level}.` });
@@ -636,9 +733,12 @@ function applyFeatChoice(
     (choice.source === "skill-feat" && def.kind === "skill") ||
     (choice.source === "general-feat" && def.kind === "general") ||
     (choice.source === "free-archetype" && def.kind === "archetype");
-  if (!kindOk) issues.push({ kind: "build", message: `«${def.name}» не подходит слоту «${choice.source}».` });
-  if (progress.classId === "fighter" && def.kind === "class" && choice.source === "class-feat" && progress.classId !== "fighter") {
+  if (!kindOk) issues.push({ kind: "build", message: `«${def.name}» не подходит этому слоту.` });
+  if (choice.source === "class-feat" && def.kind === "class" && def.classes && def.classes.length > 0 && !def.classes.includes(progress.classId)) {
     issues.push({ kind: "build", message: `«${def.name}» — черта другого класса.` });
+  }
+  if (choice.source === "ancestry-feat" && def.ancestries && def.ancestries.length > 0 && !def.ancestries.includes(progress.ancestryId)) {
+    issues.push({ kind: "build", message: `«${def.name}» — черта другого народа.` });
   }
   if (taken.has(choice.pick) && !def.repeatable) issues.push({ kind: "build", message: `«${def.name}» уже есть, повторно её не берут.` });
   if (def.skill && (ranks.get(def.skill) ?? "untrained") === "untrained") {
@@ -748,47 +848,14 @@ function applySkillMastery(
   else grantFeat(feat, feats, taken, issues, ranks);
 }
 
-function fighterSaves(level: number, canny: string, fighter: boolean): { fort: Rank; ref: Rank; will: Rank; perception: Rank } {
-  if (!fighter) return { fort: "trained", ref: "trained", will: "trained", perception: "trained" };
-  let will: Rank = level >= 3 ? "expert" : "trained";
-  let perception: Rank = level >= 7 ? "master" : "expert";
-  if (canny === "will") will = level >= 17 ? higher(will, "master") : higher(will, "expert");
-  if (canny === "perception") perception = level >= 17 ? higher(perception, "master") : higher(perception, "expert");
-  let fort: Rank = level >= 9 ? "master" : "expert";
-  let ref: Rank = level >= 15 ? "master" : "expert";
-  if (canny === "fort") fort = level >= 17 ? higher(fort, "master") : higher(fort, "expert");
-  if (canny === "ref") ref = level >= 17 ? higher(ref, "master") : higher(ref, "expert");
-  return { fort, ref, will, perception };
-}
-
-function fighterArmor(level: number): Rank {
-  if (level >= 17) return "master";
-  if (level >= 11) return "expert";
-  return "trained";
-}
-
-function fighterWeapon(level: number, category: string, group: string, chosen: string | null): Rank {
-  if (category === "advanced") {
-    if (level >= 19) return "master";
-    if (level >= 13) return chosen === group ? "master" : "expert";
-    if (level >= 5 && chosen === group) return "expert";
-    return "trained";
-  }
-  if (level >= 19) return "legendary";
-  if (level >= 13) return chosen === group ? "legendary" : "master";
-  if (level >= 5 && chosen === group) return "master";
-  return "expert";
-}
-
 function cannyDefense(byId: Map<string, BuildChoice>, level: number): string {
   const choice = [...byId.values()].find((item) => item.pick === "canny-acumen" && item.level <= level);
   return choice?.detail?.defense ?? "";
 }
 
-function specialization(level: number, rank: Rank): number {
-  if (rank === "untrained" || rank === "trained") return 0;
-  if (level >= 15) return rank === "legendary" ? 8 : rank === "master" ? 6 : 4;
-  return rank === "legendary" ? 4 : rank === "master" ? 3 : 2;
+function strikeDice(dice: string, extra: number): string {
+  if (extra <= 0) return dice;
+  return dice.replace(/^(\d+)d(\d+)/, (_, count: string, faces: string) => `${Number(count) + extra}d${faces}`);
 }
 
 function equippedArmor(items: ItemInst[]): ItemInst | undefined {
@@ -816,12 +883,14 @@ function bulkOf(items: ItemInst[]): number {
   return Math.round(items.reduce((sum, item) => sum + item.qty * item.weight, 0) * 10) / 10;
 }
 
-function saveStat(name: string, ability: Ability, rank: Rank, scores: Record<Ability, ScoreState>, level: number, penalty: number, extra: number): SkillStat {
+function saveStat(name: string, ability: Ability, rank: Rank, scores: Record<Ability, ScoreState>, level: number, penalty: number, extra: number, flat = 0, itemBonus = 0): SkillStat {
   const abilityMod = mod(scores[ability].score);
-  const totalPenalty = Math.max(penalty, extra);
-  const value = abilityMod + rankBonus(rank, level) - totalPenalty;
+  const totalPenalty = Math.max(penalty, extra) + flat;
+  const value = abilityMod + rankBonus(rank, level) - totalPenalty + itemBonus;
   const parts = [`${ABILITY_NAME[ability]} ${fmt(abilityMod)}`, `уровень ${level}`, `${RANK_WORD[rank]} ${fmt(RANK_EXTRA[rank])}`];
-  if (totalPenalty) parts.push(`штраф −${totalPenalty}`);
+  if (Math.max(penalty, extra)) parts.push(`штраф −${Math.max(penalty, extra)}`);
+  if (flat) parts.push(`проклятие −${flat}`);
+  if (itemBonus) parts.push(`руна устойчивости +${itemBonus}`);
   return { value, rank, ability, formula: line(name, value, parts), aside: [] };
 }
 
@@ -920,14 +989,14 @@ function actionsFor(taken: Set<string>, classId: string): Derived["actions"] {
       id: "doctors-visitation-1",
       name: "Визит доктора",
       cost: "1 действие",
-      traits: "архетип, усилие (flourish)",
+      traits: "архетип, усилие",
       effect: "Шаг на Скорость, затем Боевая медицина или Лечение яда. За раунд только одно действие с чертой «усилие».",
     });
     actions.push({
       id: "doctors-visitation-2",
       name: "Визит доктора",
       cost: "2 действия",
-      traits: "архетип, усилие (flourish)",
+      traits: "архетип, усилие",
       effect: "Шаг на Скорость, затем Первая помощь или Лечение состояния, если черта есть. Та же черта «усилие»: второй визит в этот раунд нельзя.",
     });
   }
@@ -951,13 +1020,42 @@ export function slotsForProgress(progress: Pf2eProgress, level: number): { id: s
   return slotsFor(progress, level);
 }
 
-export function optionsForSlot(source: string): { pick: string; name: string }[] {
+function resolveFeat(id: string): FeatDef | null {
+  const known = FEATS[id];
+  const indexed = FEAT_BY_ID.get(id);
+  if (known) return { ...known, classes: indexed?.classes, ancestries: indexed?.ancestries };
+  if (!indexed) return null;
+  return { name: indexed.name, kind: indexed.kind, level: indexed.level, modeled: false, classes: indexed.classes, ancestries: indexed.ancestries };
+}
+
+function rageDamage(progress: Pf2eProgress, level: number, toggles: Set<string>, path: PathOption | undefined, issues: Issue[]): number {
+  if (progress.classId !== "barbarian" || !toggles.has("rage")) return 0;
+  if (!path || path.rage.length === 0) {
+    issues.push({
+      kind: "limit",
+      message: path
+        ? `Инстинкт «${path.name}» не даёт безусловного числа урона ярости. К удару ничего не прибавлено.`
+        : "Ярость включена, но инстинкт не даёт числа. Базовое действие ярости в этой выгрузке отдельным полем не лежит.",
+    });
+    return 0;
+  }
+  const steps = path.rage.filter((step) => step.minLevel <= level);
+  if (!steps.length) {
+    issues.push({ kind: "limit", message: `Инстинкт «${path.name}» на этом уровне не поднимает урон ярости. К удару ничего не прибавлено.` });
+    return 0;
+  }
+  return steps[steps.length - 1].value;
+}
+
+export function optionsForSlot(source: string, ctx?: { classId?: string; ancestryId?: string; level?: number }): { pick: string; name: string }[] {
   if (source === "ancestry-boost" || source === "background-boost" || source === "class-boost" || source === "free-boost") {
     return ABILITIES.map((ability) => ({ pick: ability, name: ABILITY_NAME[ability] }));
   }
   if (source === "class-skill" || source === "heritage-skill" || source === "skill-increase") {
     return SKILLS.map((skill) => ({ pick: skill.id, name: skill.name }));
   }
+  if (source === "monk-save") return monkSaveOptions();
+  if (source === "doctrine") return doctrineOptions();
   if (source === "weapon-group") {
     return [
       { pick: "sword", name: "Мечи" },
@@ -968,10 +1066,36 @@ export function optionsForSlot(source: string): { pick: string; name: string }[]
       { pick: "hammer", name: "Молоты" },
     ];
   }
+  if (source === "instinct" || source === "style" || source === "mystery") {
+    return pathGroup(source)?.options.map((option) => ({ pick: option.id, name: option.name })) ?? [];
+  }
   const kind = source === "class-feat" ? "class" : source === "skill-feat" ? "skill" : source === "general-feat" ? "general" : source === "ancestry-feat" ? "ancestry" : source === "free-archetype" ? "archetype" : "";
-  return Object.entries(FEATS)
-    .filter(([, def]) => (source === "class-feat" ? def.kind === "class" || def.kind === "archetype" : def.kind === kind))
+  const modeled = Object.entries(FEATS).filter(([, def]) => {
+    const kindOk = source === "class-feat" ? def.kind === "class" || def.kind === "archetype" : def.kind === kind;
+    if (!kindOk) return false;
+    if (ctx?.level != null && def.level > ctx.level) return false;
+    return true;
+  });
+  const seen = new Set(modeled.map(([id]) => id));
+  const list = modeled
+    .filter(([id, def]) => {
+      if (source !== "class-feat" || def.kind !== "class" || !ctx?.classId) return true;
+      const classes = FEAT_BY_ID.get(id)?.classes ?? [];
+      return classes.length === 0 || classes.includes(ctx.classId);
+    })
     .map(([id, def]) => ({ pick: id, name: def.name }));
+  for (const feat of FEAT_INDEX) {
+    if (seen.has(feat.id)) continue;
+    const kindOk = source === "class-feat" ? feat.kind === "class" : feat.kind === kind;
+    if (!kindOk) continue;
+    if (ctx?.level != null && feat.level > ctx.level) continue;
+    if (source === "class-feat" && ctx?.classId && feat.classes.length > 0 && !feat.classes.includes(ctx.classId)) continue;
+    if (source === "ancestry-feat" && feat.ancestries.length === 0) continue;
+    if (source === "ancestry-feat" && ctx?.ancestryId && !feat.ancestries.includes(ctx.ancestryId)) continue;
+    seen.add(feat.id);
+    list.push({ pick: feat.id, name: feat.name });
+  }
+  return list;
 }
 
 export function snapshot(character: Character): Character {
@@ -996,7 +1120,9 @@ export function snapshot(character: Character): Character {
     abilities,
     skillRanks,
     speed: derived.speed.value,
-    perceptionRank: derived.perception.formula.includes("мастер") ? "master" : character.perceptionRank,
+    perceptionRank: derived.perception.rank,
+    classDcRank: derived.classDc?.rank ?? character.classDcRank,
+    spellRank: derived.spell?.rank ?? "untrained",
     saves: {
       ...character.saves,
       fort: derived.saves.fort.rank,
