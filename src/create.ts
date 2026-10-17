@@ -62,6 +62,20 @@ export const STEP_TITLE: Record<StepId, string> = {
   review: "Проверка",
 };
 
+export const STEP_HINT: Record<StepId, string> = {
+  system: "Сначала игра. Редакции не смешиваются.",
+  name: "Имя можно сменить потом на листе.",
+  ancestry: "Народ задаёт хиты, скорость и черту.",
+  background: "Происхождение — прошлое до приключения.",
+  class: "Класс решает, чем герой занят в бою.",
+  abilities: "Выберите один способ и доберите числа.",
+  skills: "Берите только то, что ещё не закрыто.",
+  feats: "Серая черта объясняет, почему её нельзя взять.",
+  gear: "Лавка не обрезается: листайте список вниз.",
+  spells: "Если класс не колдует, шаг сам пропустится.",
+  review: "Проверьте имя и числа, затем создайте лист.",
+};
+
 const m = (d: Draft, key: string) => d.multi[key] ?? [];
 const c = (d: Draft, key: string) => d.choices[key] ?? "";
 
@@ -330,7 +344,7 @@ function scores2(d: Draft, method: string): { ok: true; scores: Record<Ability, 
     if (!sameMultiset(ABILITIES.map((id) => d.scores[id]), d.pool)) return { ok: false, error: "Назначьте каждый бросок." };
     return { ok: true, scores: { ...d.scores } };
   }
-  if (method !== "boost") return { ok: false, error: "Для Pathfinder выберите повышения, набор или бросок." };
+  if (method !== "boost") return { ok: false, error: "Для ремастера выберите повышения, набор или бросок." };
   const scores = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
   const partial: Record<Ability, boolean> = { str: false, dex: false, con: false, int: false, wis: false, cha: false };
   const boost = (ability: Ability) => {

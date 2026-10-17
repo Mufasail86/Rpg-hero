@@ -10,6 +10,14 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <title>Герой — лист персонажа</title>
+    <script>
+      try {
+        var theme = localStorage.getItem("rpg-hero-theme") === "atlas" ? "atlas" : "tavern";
+        document.documentElement.dataset.theme = theme;
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "atlas" ? "#f3ecdf" : "#121820");
+      } catch (error) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

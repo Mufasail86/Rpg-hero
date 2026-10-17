@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CLASSES as CL5, GENERAL_FEATS, SKILLS as SK5 } from "../data/dnd5e";
 import { rulesCatalog } from "../data/catalog";
 import { RANK_NAME } from "../data/pf2e";
@@ -90,6 +90,11 @@ export function Sheet({
       : speedOf(character);
   const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [layout, setLayout] = useState<"page" | "sections">(() => (localStorage.getItem("rpg-hero-sheet-layout") === "sections" ? "sections" : "page"));
+  function chooseLayout(next: "page" | "sections") {
+    setLayout(next);
+    localStorage.setItem("rpg-hero-sheet-layout", next);
+  }
 
   function commit(next: Character) {
     onChange({ ...next, updatedAt: Date.now() });
@@ -141,6 +146,13 @@ export function Sheet({
           </div>
           {derived && <p className="tiny">{derived.attacks.find((attack) => attack.equipped)?.attack.formula}</p>}
           {dnd && <p className="tiny">{dnd.attacks.find((attack) => attack.equipped)?.attack.formula} · {dnd.attacks.find((attack) => attack.equipped)?.damage} · крит {dnd.crit}</p>}
+          <div className="seg" role="group" aria-label="Вид листа">
+            <button type="button" className={`pill ${layout === "page" ? "on" : ""}`} data-testid="sheet-page" onClick={() => chooseLayout("page")}>Весь лист</button>
+            <button type="button" className={`pill ${layout === "sections" ? "on" : ""}`} data-testid="sheet-sections" onClick={() => chooseLayout("sections")}>Разделы</button>
+          </div>
+          {layout === "page" ? (
+            <FullSheet character={character} commit={commit} />
+          ) : (
           <div className="stack">
             {PANELS.map(([id, name, mark, tone]) => (
               <button key={id} type="button" className={`big ${tone === "teal" ? "" : tone}`} data-testid={`open-${id}`} onClick={() => go(`#/c/${character.id}/${id}`)}>
@@ -184,6 +196,7 @@ export function Sheet({
               </span>
             </button>
           </div>
+          )}
           {confirmDelete ? (
             <div className="row">
               <button type="button" className="btn danger" onClick={onDelete}>Удалить насовсем</button>
@@ -217,6 +230,44 @@ export function Sheet({
   );
 }
 
+function FullSheet({ character, commit }: { character: Character; commit: (next: Character) => void }) {
+  const blocks: { id: string; title: string; open?: boolean; body: ReactNode }[] = [
+    { id: "abilities", title: "Характеристики", open: true, body: <Abilities character={character} commit={commit} /> },
+    { id: "skills", title: "Навыки", open: true, body: <Skills character={character} commit={commit} /> },
+    { id: "hp", title: "Хиты", open: true, body: <Health character={character} commit={commit} /> },
+    { id: "inventory", title: "Инвентарь", body: <Inventory character={character} commit={commit} /> },
+    { id: "xp", title: "Опыт", body: <Experience character={character} commit={commit} /> },
+    { id: "hero", title: character.system === "pf2e" ? "Очки героизма" : "Вдохновение", body: <Hero character={character} commit={commit} /> },
+    { id: "spells", title: "Заклинания", body: <Spells character={character} commit={commit} /> },
+    { id: "dice", title: "Броски", body: <DicePanel /> },
+    { id: "growth", title: "Развитие", body: character.dnd ? <DndAdvance character={character} onChange={commit} /> : character.progress ? <AdvancePanel character={character} onChange={commit} /> : <p className="tiny">Развитие 1–20 появится у героя, собранного конструктором.</p> },
+    { id: "combat", title: "Бой", body: character.system === "dnd5e" && character.dnd ? <DndCombatPanel character={character} onChange={commit} /> : character.progress ? <CombatTracker character={character} onChange={commit} /> : <p className="tiny">Боевой счётчик есть у героя, собранного конструктором.</p> },
+    { id: "notes", title: "Заметки", body: <Notes character={character} commit={commit} /> },
+    { id: "rules", title: "Редакция", body: <RulesPanel character={character} commit={commit} /> },
+  ];
+  return (
+    <div className="stack" data-testid="full-sheet">
+      <p className="tiny">Весь лист на одной странице. Раздел сворачивается. Кнопка «Разделы» открывает прежние большие кнопки.</p>
+      {blocks.map((block) => (
+        <SheetBlock key={block.id} title={block.title} startOpen={block.open}>{block.body}</SheetBlock>
+      ))}
+    </div>
+  );
+}
+
+function SheetBlock({ title, startOpen, children }: { title: string; startOpen?: boolean; children: ReactNode }) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    if (ref.current && startOpen) ref.current.open = true;
+  }, [startOpen]);
+  return (
+    <details ref={ref} className="card sheet-block">
+      <summary>{title}</summary>
+      <div className="stack">{children}</div>
+    </details>
+  );
+}
+
 function blurb(character: Character, id: string, max: number): string {
   if (id === "abilities") return ABILITIES.map((ability) => `${ABILITY_SHORT[ability]} ${fmt(mod(character.abilities[ability]))}`).join(" ");
   if (id === "skills") return "Проверка с кнопки сразу открывает кости";
@@ -240,6 +291,12 @@ function Stat({ label, value, info }: { label: string; value: string; info: stri
 
 function rollTo(character: Character, label: string, modifier: number, die = 20) {
   queueRoll({ label, mod: modifier, die, system: character.system });
+  const live = document.querySelector("[data-dice-live]");
+  if (live) {
+    window.dispatchEvent(new Event("rpg-roll"));
+    live.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   go(`#/c/${character.id}/dice`);
 }
 
@@ -460,7 +517,7 @@ function Health({ character, commit }: { character: Character; commit: (next: Ch
       next.slots = next.slots.map((slot) => ({ ...slot, used: 0 }));
       next.resources = next.resources.map((resource) => ({ ...resource, current: resource.max }));
       if (next.focus) next.focus.current = next.focus.max;
-      setHarmText(`Отдых Pathfinder лечит ${heal}, это уровень × максимум из 1 и Телосложения. Все хиты так не возвращаются.`);
+      setHarmText(`Отдых в ремастере лечит ${heal}, это уровень × максимум из 1 и Телосложения. Все хиты так не возвращаются.`);
       commit(next);
       return;
     }
@@ -890,7 +947,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
         <input inputMode="numeric" value={character.xp} onChange={(event) => commit({ ...character, xp: Math.max(0, Number(event.target.value) || 0) })} />
       </label>
       <p>{need == null ? "Дальше 20-го уровня лист не ведёт." : `До следующего уровня: ${need}. Сейчас ${character.level}.`}</p>
-      <Info title="Опыт" text={character.system === "pf2e" ? "В Pathfinder уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения. До +4 это +1 к модификатору. На +4 первое повышение частичное: броски и хиты не меняются, пока следующее отдельное повышение той же характеристики не закроет его." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
+      <Info title="Опыт" text={character.system === "pf2e" ? "В ремастере уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения. До +4 это +1 к модификатору. На +4 первое повышение частичное: броски и хиты не меняются, пока следующее отдельное повышение той же характеристики не закроет его." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
       {character.system === "dnd5e" && (
         <label className="field">
           <span>Подкласс открытого справочника</span>

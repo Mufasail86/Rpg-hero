@@ -1,8 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LICENSE_NOTICE, bestiaryCatalog, monsterByToken, type MonsterCard } from "../data/bestiary";
 import { EDITION_NAME, fold, type RulesEdition } from "../data/editions";
 import { dnd2014Guidance, dnd2024Budget, pfAward, pfBudget, pfCreatureXp, type Dnd2024Threat, type PfThreat } from "../encounter";
+import { ART, artSrc } from "./art";
 import { go, useHash } from "./common";
+
+const PAGE = 24;
 
 const MODE_KEY = "rpg-spoiler";
 type Edition = "pf-remaster" | "dnd-2024" | "dnd-2014";
@@ -34,6 +37,8 @@ export function Bestiary() {
   const [pfThreat, setPfThreat] = useState<PfThreat>("moderate");
   const [dndThreat, setDndThreat] = useState<Dnd2024Threat>("low");
   const [picked, setPicked] = useState<string[]>([]);
+  const [count, setCount] = useState(PAGE);
+  const sentinel = useRef<HTMLDivElement>(null);
   const all = useMemo(bestiaryCatalog, []);
   const focus = token ? monsterByToken(token) : undefined;
   const activeEdition: Edition = focus?.edition === "dnd-2024" || focus?.edition === "dnd-2014" || focus?.edition === "pf-remaster" ? focus.edition : edition;
@@ -55,6 +60,22 @@ export function Bestiary() {
   const party = Number.isNaN(parsedLevel) ? 1 : parsedLevel;
   const size = Math.max(1, Math.trunc(Number(partySize) || 1));
   const chosen = picked.map((id) => monsterByToken(id)).filter((row): row is MonsterCard => Boolean(row && row.edition === activeEdition));
+  const shown = filtered.slice(0, count);
+  const more = shown.length < filtered.length;
+
+  useEffect(() => {
+    setCount(PAGE);
+  }, [query, kind, trait, minLevel, maxLevel, activeEdition]);
+
+  useEffect(() => {
+    const node = sentinel.current;
+    if (!node || !more || focus) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) setCount((value) => value + PAGE);
+    }, { rootMargin: "240px" });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [more, count, focus, query, kind, trait, minLevel, maxLevel, activeEdition]);
 
   function pickMode(next: "player" | "gm") {
     setMode(next);
@@ -105,7 +126,7 @@ export function Bestiary() {
           <button type="button" className={`pill ${mode === "gm" ? "on" : ""}`} aria-pressed={mode === "gm"} data-testid="bestiary-gm" onClick={() => pickMode("gm")}>Режим ведущего</button>
         </div>
         <p className="tiny" data-testid="bestiary-count">
-          {EDITION_NAME[activeEdition as RulesEdition]}: показано {focus ? 1 : filtered.length} из {all.filter((row) => row.edition === activeEdition).length}.
+          {EDITION_NAME[activeEdition as RulesEdition]}: показано {focus ? 1 : shown.length} из {filtered.length}, в редакции {all.filter((row) => row.edition === activeEdition).length}.
         </p>
         {mode === "gm" && <Encounter edition={activeEdition} party={party} size={size} threat={pfThreat} dndThreat={dndThreat} chosen={chosen} onLevel={setPartyLevel} onSize={setPartySize} onPf={setPfThreat} onDnd={setDndThreat} onRemove={(index) => setPicked((current) => current.filter((_, item) => item !== index))} />}
         {focus && focus.edition === activeEdition ? (
@@ -114,7 +135,7 @@ export function Bestiary() {
           <>
             <label className="field">
               <span>Поиск</span>
-              <input data-testid="bestiary-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Например, гоблин или Aboleth" />
+              <input data-testid="bestiary-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Например, гоблин или аболеф" />
             </label>
             <label className="field">
               <span>Тип</span>
@@ -135,10 +156,13 @@ export function Bestiary() {
             </div>
             <label className="field">
               <span>Черта</span>
-              <input data-testid="bestiary-trait" value={trait} onChange={(event) => setTrait(event.target.value)} placeholder="Например, гоблинское или Evil" />
+              <input data-testid="bestiary-trait" value={trait} onChange={(event) => setTrait(event.target.value)} placeholder="Например, гоблинское или злой" />
             </label>
+            <figure className="figure-card">
+              <img src={artSrc(ART.drake)} alt="Речной змей, свой рисунок, не существо из книги" loading="lazy" decoding="async" />
+            </figure>
             <div className="library-grid">
-              {filtered.slice(0, 48).map((monster) => (
+              {shown.map((monster) => (
                 <article key={monster.token} className="card stack">
                   <b>{monster.name}</b>
                   <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>
@@ -147,7 +171,12 @@ export function Bestiary() {
                 </article>
               ))}
             </div>
-            {filtered.length > 48 && <p className="tiny">На экране первые 48. Сузьте поиск, тип или уровень.</p>}
+            {more && (
+              <button type="button" className="btn" data-testid="bestiary-more" onClick={() => setCount((value) => value + PAGE)}>
+                Показать ещё
+              </button>
+            )}
+            <div ref={sentinel} className="sentinel" />
             {filtered.length === 0 && <p>В этой редакции такого существа нет. Другая редакция в этот список не подмешивается.</p>}
           </>
         )}

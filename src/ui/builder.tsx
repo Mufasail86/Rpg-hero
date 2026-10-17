@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { VERSATILE } from "../data/versatile";
 import { EDITION_NAME, PACKS, editionsFor, filledEdition, resolveEdition, type RulesEdition } from "../data/editions";
-import { portraitSrc } from "./art";
+import { ART, artSrc, portraitSrc } from "./art";
 import { BACKGROUNDS as BG5, CLASSES as CL5, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, SPELLS as SP2, TRADITION_NAME } from "../data/pf2e";
 import {
@@ -16,6 +16,7 @@ import {
   scoresOf,
   skillNeed,
   spellBudget,
+  STEP_HINT,
   STEP_TITLE,
   stepsFor,
   STYLE_FEATS,
@@ -67,7 +68,7 @@ const ORDER5 = {
       id: "warden",
       name: "Страж",
       short: "Воинское оружие и средние доспехи вместо лишнего заговора.",
-      info: "Первозданный порядок стража. Вы владеете воинским оружием и средними доспехами. Лишнего заговора, как у мага, нет. Тяжёлые доспехи порядок не даёт. Металл в ремастере Pathfinder тут ни при чём: это порядок правил 2024 года.",
+      info: "Первозданный порядок стража. Вы владеете воинским оружием и средними доспехами. Лишнего заговора, как у мага, нет. Тяжёлые доспехи порядок не даёт. Металл в ремастере тут ни при чём: это порядок правил 2024 года.",
     },
   ],
 };
@@ -161,7 +162,7 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
         <div className="grow">
           <h1>{STEP_TITLE[step]}</h1>
           <div className="tiny">
-            Шаг {index + 1} из {steps.length}
+            Шаг {index + 1} из {steps.length}. {STEP_HINT[step]}
           </div>
         </div>
       </header>
@@ -235,14 +236,17 @@ function SystemStep({
 }) {
   return (
     <>
-      <p className="lead">Выберите игру и редакцию. Списки разных редакций не смешиваются.</p>
+      <figure className="figure-card">
+        <img src={artSrc(ART.castle)} alt="Ночной замок, свой рисунок" />
+      </figure>
+      <p className="lead">Выберите игру и редакцию. Дальше шаги идут по порядку: имя, народ, происхождение, класс, числа, навыки, черты, вещи.</p>
       <p className="tiny">Характеристика, навык, черта и владение — разные слова. <Info title="Как читать лист" text="Характеристика — Сила, Ловкость, Телосложение, Интеллект, Мудрость или Харизма. Навык — подготовка в одном деле. Черта — отдельное правило. Владение — бонус за обучение. Если на листе уже +7, к кости к20 прибавьте только 7. к20 — двадцатигранная кость, 2к6 — две шестигранные. СЛ — сложность, КБ — защита, ПЗ — здоровье. КБ и СЛ сами не бросают." /></p>
       <Choice
         id="dnd5e"
         testId="system-dnd5e"
         name="D&D"
         hint="открытый справочник, две редакции отдельно"
-        info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Сейчас заполнен справочник 5.2, правила 2024 года. Справочник 5.1, правила 2014 года, лежит отдельным пакетом и в этой сборке ещё без записей."
+        info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Справочник 5.2, правила 2024 года, и справочник 5.1, правила 2014 года, лежат отдельно. Конструктор считает лист по правилам 2024 года и не подставляет список 2014 года."
         on={system === "dnd5e"}
         onPick={() => onPick("dnd5e")}
       />
@@ -251,7 +255,7 @@ function SystemStep({
         testId="system-pf2e"
         name="Pathfinder"
         hint="ремастер и отдельно правила до него"
-        info="Три действия в ход, четыре ступени успеха и владение от необученного до легенды. Заполнен кусок открытого ядра игрока ремастера. Правила до ремастера — другой пакет и другая лицензия, их сюда не подмешивают. Предания мира — на своём экране, не в правилах."
+        info="Три действия в ход, четыре ступени успеха и владение от необученного до легенды. В конструкторе 16 народов и 16 классов ремастера. Правила до ремастера — другой пакет и другая лицензия, их сюда не подмешивают. Предания мира — на своём экране, не в правилах."
         on={system === "pf2e"}
         onPick={() => onPick("pf2e")}
       />
@@ -467,7 +471,7 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
       {list.map((item) => (
         <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
       ))}
-      <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для Pathfinder — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
+      <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для ремастера — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
       {draft.backgroundId === "custom" && draft.system === "dnd5e" && (
         <div className="card stack">
           <label className="field"><span>Название</span><input value={draft.customBackground.name} onChange={(event) => update({ customBackground: { ...draft.customBackground, name: event.target.value } })} /></label>
@@ -1009,6 +1013,7 @@ function FeatForm({ onAdd }: { onAdd: (feat: { name: string; info: string }) => 
 
 function GearStep({ draft, update }: { draft: Draft; update: (partial: Partial<Draft>) => void }) {
   const [query, setQuery] = useState("");
+  const [shown, setShown] = useState(24);
   const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
   if (draft.system && !filledEdition(edition)) {
     return (
@@ -1053,8 +1058,9 @@ function GearStep({ draft, update }: { draft: Draft; update: (partial: Partial<D
         <button type="button" className="btn" onClick={() => update({ gearMode: "gold" })}>Взять монеты и лавку</button>
       )}
       <p className={preview.ok ? "ok" : "bad"}>{preview.ok ? `Останется ${money(preview.copper)}` : preview.error}</p>
-      <input className="search" type="search" placeholder="Найти предмет" value={query} onChange={(event) => setQuery(event.target.value)} />
-      {items.slice(0, 40).map((item) => {
+      <input className="search" type="search" placeholder="Найти предмет" value={query} onChange={(event) => { setQuery(event.target.value); setShown(24); }} />
+      <p className="tiny">Показано {Math.min(shown, items.length)} из {items.length}</p>
+      {items.slice(0, shown).map((item) => {
         const qty = draft.bought.find((row) => row.id === item.id)?.qty ?? 0;
         return (
           <div key={item.id} className="item-row">
@@ -1071,6 +1077,11 @@ function GearStep({ draft, update }: { draft: Draft; update: (partial: Partial<D
           </div>
         );
       })}
+      {shown < items.length && (
+        <button type="button" className="btn" data-testid="gear-more" onClick={() => setShown((value) => value + 24)}>
+          Показать ещё
+        </button>
+      )}
       <CustomItems draft={draft} update={update} />
     </>
   );

@@ -4,6 +4,7 @@ import { artefolCharacter } from "../pf2e/artefol";
 import type { Character } from "../types";
 import { loadDraft } from "../storage";
 import { applySave, previewSave, serialize } from "../transfer";
+import { APP_BUILD } from "../build-id";
 import { systemTitle } from "../labels";
 import { ART, ART_CAPTION, artSrc, portraitSrc } from "./art";
 import { go } from "./common";
@@ -81,7 +82,7 @@ export function Home({
           </div>
         </figure>
         <p className="caption">{ART_CAPTION}</p>
-        <p className="lead">D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
+        <p className="lead">Игры D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
         <div className="cast">
           {[
             [ART.elf, "Эльф"],
@@ -119,6 +120,9 @@ export function Home({
           <button type="button" className="btn" data-testid="open-bestiary" onClick={() => go("#/bestiary")}>
             Бестиарий
           </button>
+          <button type="button" className="btn" data-testid="open-table" onClick={() => go("#/table")}>
+            Стол ведущего
+          </button>
         </div>
         {hasDraft && (
           <button type="button" className="btn" onClick={() => go("#/new")}>
@@ -127,7 +131,7 @@ export function Home({
         )}
         </div>
         <div className="stack">
-        {characters.length === 0 && <p className="muted">Пока никого нет. Создайте героя — лист откроется большими кнопками, каждый раздел на своём экране.</p>}
+        {characters.length === 0 && <p className="muted">Пока никого нет. Создание идёт по шагам. Готовый лист открывается целиком, разделы можно свернуть.</p>}
         {characters.map((hero) => {
           const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
           return (
@@ -192,7 +196,7 @@ export function Home({
           </div>
         )}
         {message && <p className="warn">{message}</p>}
-        <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, выгрузите файл и загрузите его там.</p>
+        <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, выгрузите файл и загрузите его там. Сборка {APP_BUILD}.</p>
         <button type="button" className="text-btn" onClick={() => setAbout((value) => !value)}>
           {about ? "Скрыть лицензии" : "Об игре и лицензиях"}
         </button>
