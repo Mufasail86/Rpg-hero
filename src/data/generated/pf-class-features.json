@@ -813,13 +813,13 @@
   "classId": "oracle",
   "level": 19,
   "originalName": "Oracular Clarity",
-  "name": "Оракульский ясность"
+  "name": "Оракульный ясность"
  },
  {
   "classId": "oracle",
   "level": 1,
   "originalName": "Oracular Curse",
-  "name": "Оракульский проклятие"
+  "name": "Оракульный проклятие"
  },
  {
   "classId": "oracle",
@@ -903,7 +903,7 @@
   "classId": "oracle",
   "level": 11,
   "originalName": "Oracular Senses",
-  "name": "Оракульский чувства"
+  "name": "Оракульный чувства"
  },
  {
   "classId": "guardian",

@@ -136,8 +136,8 @@ export function cardText(card: RuleCard): string {
   if (card.frequency) lines.push(`Частота: ${card.frequency}.`);
   if (card.trigger) lines.push(`Условие: ${card.trigger}.`);
   if (card.requirements) lines.push(`Нужно: ${card.requirements}.`);
-  lines.push(card.summary);
-  lines.push(card.page != null ? `${card.book}, с. ${card.page}.` : `${card.book}. Страница в выгрузке не указана.`);
+  if (card.summary) lines.push(card.summary);
+  lines.push(card.page != null ? `${card.book}, с. ${card.page}.` : card.book);
   return lines.join("\n");
 }
 

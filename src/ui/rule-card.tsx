@@ -1,17 +1,40 @@
-import { actionGlyph, actionLabel, CARD_BY_ID, cardText, prereqLine, TRAIT_BY_ID, type RuleCard } from "../data/cards";
+import { actionGlyph, CARD_BY_ID, prereqLine, TRAIT_BY_ID, type RuleCard } from "../data/cards";
 import { useInfo } from "./common";
 
-export function RuleCardView({ card }: { card: RuleCard }) {
+const CLASS_TRAITS = new Set([
+  "alchemist", "animist", "barbarian", "bard", "champion", "cleric", "commander", "druid", "exemplar",
+  "fighter", "guardian", "gunslinger", "inventor", "investigator", "kineticist", "magus", "monk",
+  "oracle", "psychic", "ranger", "rogue", "sorcerer", "summoner", "swashbuckler", "thaumaturge",
+  "witch", "wizard",
+]);
+
+export function kindTitle(card: RuleCard): string {
+  if (card.kind === "spell") return `Заклинание ${card.level}`;
+  if (card.kind === "focus") return `Фокус ${card.level}`;
+  if (card.kind === "ritual") return `Ритуал ${card.level}`;
+  if (card.kind === "dedication") return `Посвящение ${card.level}`;
+  if (card.traits.includes("general")) return `Общая черта ${card.level}`;
+  if (card.traits.includes("skill")) return `Черта навыка ${card.level}`;
+  if (card.traits.includes("ancestry") || card.traits.some((trait) => trait.endsWith("-ancestry"))) return `Черта народа ${card.level}`;
+  if (card.traits.some((trait) => CLASS_TRAITS.has(trait))) return `Черта класса ${card.level}`;
+  return `Черта ${card.level}`;
+}
+
+function Line({ label, value }: { label: string; value?: string }) {
+  if (!value) return null;
+  return <p><b>{label}.</b> {value}</p>;
+}
+
+export function RuleCardView({ card, sourceNote }: { card: RuleCard; sourceNote?: string }) {
   const open = useInfo();
   const glyph = actionGlyph(card.actions);
-  const rank = card.kind === "spell" || card.kind === "focus" ? `${card.level} круг` : card.kind === "ritual" ? `ритуал ${card.level}` : `уровень ${card.level}`;
   const pre = prereqLine(card);
+  const book = card.page != null ? `${card.book}, с. ${card.page}` : card.book;
   return (
     <div className="rule-card" data-testid={`rule-card-${card.id}`}>
       <p className="rule-meta">
-        {glyph && <span className="glyph">{glyph}</span>} {rank}. {actionLabel(card.actions)}.
+        {glyph && <span className="glyph">{glyph}</span>} {kindTitle(card)}
       </p>
-      {card.originalName && <p className="en-name">{card.originalName}</p>}
       {card.traits.length > 0 && (
         <div className="chips">
           {card.traits.map((id) => {
@@ -26,22 +49,23 @@ export function RuleCardView({ card }: { card: RuleCard }) {
           })}
         </div>
       )}
-      {card.traditions && card.traditions.length > 0 && <p>Традиции: {card.traditions.join(", ")}.</p>}
-      {card.cast && <p>Сотворение: {card.cast}.</p>}
-      {card.range && <p>Дистанция: {card.range}.</p>}
-      {card.area && <p>Область: {card.area}.</p>}
-      {card.targets && <p>Цели: {card.targets}.</p>}
-      {card.defense && <p>{card.defense}.</p>}
-      {card.duration && <p>Длительность: {card.duration}.</p>}
-      {card.heightened && <p>{card.heightened}</p>}
-      {pre && <p>Требования: {pre}.</p>}
-      {card.frequency && <p>Частота: {card.frequency}.</p>}
-      {card.trigger && <p>Условие: {card.trigger}.</p>}
-      {card.requirements && <p>Нужно: {card.requirements}.</p>}
-      <p>{card.summary}</p>
-      <p className="tiny">{card.page != null ? `${card.book}, с. ${card.page}.` : `${card.book}. Страница в выгрузке не указана.`}</p>
-      <p className="tiny">Своими словами по полям ORC. Абзац книги не скопирован.</p>
-      <span className="sr-only">{cardText(card)}</span>
+      <Line label="Требования" value={pre} />
+      <Line label="Частота" value={card.frequency} />
+      <Line label="Триггер" value={card.trigger} />
+      <Line label="Нужно" value={card.requirements} />
+      {card.traditions && card.traditions.length > 0 && <Line label="Традиции" value={card.traditions.join(", ")} />}
+      <Line label="Сотворение" value={card.cast} />
+      <Line label="Дистанция" value={card.range} />
+      <Line label="Область" value={card.area} />
+      <Line label="Цели" value={card.targets} />
+      <Line label="Защита" value={card.defense} />
+      <Line label="Длительность" value={card.duration} />
+      {card.summary && <p>{card.summary}</p>}
+      <Line label="Усиление" value={card.heightened} />
+      <details className="source-foot">
+        <summary>Источник</summary>
+        <p className="tiny">{book}.{sourceNote ? ` ${sourceNote}` : ""} Сверено по полям ORC, абзац книги не скопирован.</p>
+      </details>
     </div>
   );
 }

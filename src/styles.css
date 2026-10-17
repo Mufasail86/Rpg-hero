@@ -200,6 +200,13 @@ textarea { min-height: 88px; resize: vertical; }
 .rule-meta { color: var(--gold); font-size: 0.92rem; }
 .glyph { letter-spacing: 0.08em; }
 .en-name { color: var(--muted); font-size: 0.78rem; }
+.rule-card b { font-weight: 650; }
+.source-foot { margin-top: 4px; }
+.source-foot summary { cursor: pointer; color: var(--muted); font-size: 0.78rem; }
+.level-plan { display: grid; gap: 8px; }
+.level-row { display: grid; grid-template-columns: 1.6rem 1fr; gap: 8px; align-items: start; }
+.level-row > b { padding-top: 8px; }
+.slot-empty { border-color: var(--gold); color: var(--gold); }
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;

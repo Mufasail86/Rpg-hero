@@ -65,7 +65,8 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
   const slots = slotsForProgress(progress, character.level);
   const open = slots.filter((slot) => !progress.choices.some((choice) => choice.id === slot.id));
   const takenFeats = progress.choices.filter((choice) => choice.source.endsWith("-feat") || choice.source === "free-archetype").map((choice) => choice.pick);
-  const active = open.find((slot) => slot.id === openId) ?? open[0];
+  const active = open.find((slot) => slot.id === openId);
+  const levels = Array.from({ length: character.level }, (_, index) => index + 1);
 
   function commit(next: Character) {
     onChange(snapshot(next));
@@ -199,7 +200,30 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
 
   return (
     <div className="stack">
-      <p className="lead">Уровень {character.level}, опыт {character.xp} / 1000. Просмотр другого уровня не стирает план и не меняет текущий лист.</p>
+      <p className="lead">Уровень {character.level}, опыт {character.xp} / 1000. Пустой слот подсвечен. Нажатие открывает выбор.</p>
+      <div className="level-plan" data-testid="level-plan">
+        {levels.map((level) => {
+          const row = slots.filter((slot) => slot.level === level);
+          const features = featuresAt(progress.classId, level);
+          return (
+            <div key={level} className="level-row">
+              <b>{level}</b>
+              <div className="wrap">
+                {row.map((slot) => {
+                  const choice = progress.choices.find((item) => item.id === slot.id);
+                  return (
+                    <button key={slot.id} type="button" className={`pill ${choice ? "" : "slot-empty"} ${openId === slot.id ? "on" : ""}`} onClick={() => setOpenId(slot.id)}>
+                      {slot.label}{choice ? `: ${choiceCaption(choice)}` : ""}
+                    </button>
+                  );
+                })}
+                {features.map((feature) => <span key={feature.originalName} className="tiny">{feature.name}</span>)}
+                {row.length === 0 && features.length === 0 && <span className="tiny">без отдельного выбора</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
       <label className="field">
         <span>Посмотреть уровень</span>
         <input type="number" min={1} max={character.level} value={view} onChange={(event) => setView(Math.max(1, Math.min(character.level, Number(event.target.value) || 1)))} />

@@ -10,6 +10,7 @@ import json
 import re
 from pathlib import Path
 
+import paraphrase
 import ru_glossary as ru
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -291,13 +292,11 @@ def labeled(html: str) -> dict[str, str]:
     return found
 
 
-def phrase_or_stub(english: str, stub: str) -> str:
+def phrase_or_stub(english: str, stub: str = "") -> str:
+    del stub
     if not english:
         return ""
-    name = ru.compose(english)
-    if name and not re.search(r"[A-Za-z]", name):
-        return name[:1].lower() + name[1:] if name else ""
-    return stub
+    return paraphrase.paraphrase(english)
 
 
 def frequency_struct(raw) -> str:
@@ -353,11 +352,13 @@ def summarize_rules(rules: list) -> str:
             continue
         key = rule.get("key")
         if key == "FlatModifier":
-            selector = SEL_RU.get(str(rule.get("selector") or ""), "проверку")
-            bonus = TYPE_RU.get(str(rule.get("type") or ""), "без типа")
+            selector = str(rule.get("selector") or "")
             value = rule.get("value")
-            if isinstance(value, (int, float)):
-                lines.append(f"Пока условие включено, {selector} получает бонус {bonus} {value:+}.")
+            if isinstance(value, (int, float)) and selector == "ac":
+                lines.append(f"{value:+} к КБ против этой атаки.")
+            elif isinstance(value, (int, float)):
+                label = SEL_RU.get(selector, "проверку")
+                lines.append(f"{value:+} к показателю «{label}».")
         elif key == "Resistance" and rule.get("type") and rule.get("value") is not None:
             lines.append(f"Сопротивление указанному типу урона равно {rule.get('value')}.")
         elif key == "Weakness" and rule.get("value") is not None:
@@ -383,37 +384,22 @@ def summarize_rules(rules: list) -> str:
         elif key == "Aura":
             lines.append("Держит ауру с радиусом из поля.")
     unique = list(dict.fromkeys(lines))
-    if not unique and rules:
-        return "В полях есть формула эффекта. Лист прибавляет только те числа, которые уже умеет читать."
-    if not unique:
-        return "Постоянного числа в полях нет. Смысл остаётся в действии, чертах и имени."
     return " ".join(unique[:3])
 
 
 def spell_summary(system: dict, cast: str, defense: str, heightened: str) -> str:
-    bits = []
-    if cast:
-        bits.append(f"Сотворение: {cast}.")
+    del cast, defense, heightened
     damage = system.get("damage") if isinstance(system.get("damage"), dict) else {}
-    formula = ""
     for value in damage.values():
         if isinstance(value, dict) and value.get("formula"):
             formula = str(value["formula"])
             kinds = value.get("kinds") or []
             if "healing" in kinds and "damage" in kinds:
-                bits.append(f"Кость {formula} лечит живого или ранит нежить.")
-            elif "healing" in kinds:
-                bits.append(f"Лечение {formula}.")
-            else:
-                bits.append(f"Урон {formula}.")
-            break
-    if defense:
-        bits.append(defense + ".")
-    if heightened:
-        bits.append(heightened)
-    if not bits:
-        return "Круг, традиции и область задают эффект. Абзац книги не перенесён."
-    return " ".join(bits)
+                return f"Кость {formula} лечит живого или ранит нежить."
+            if "healing" in kinds:
+                return f"Лечение {formula}."
+            return f"Урон {formula}."
+    return ""
 
 
 def defense_text(system: dict) -> str:
@@ -440,9 +426,9 @@ def heightened_text(system: dict) -> str:
         if damage:
             dice = str(next(iter(damage.values())))
         if dice:
-            return f"Каждые {interval} круг прибавляется {dice}."
-        return f"Эффект растёт каждые {interval} круг."
-    return "На повышенном круге эффект сильнее. Точная ступень лежит в поле повышения."
+            return f"На каждом следующем круге +{dice}." if interval == 1 else f"Каждые {interval} круга +{dice}."
+        return "На повышенном круге эффект сильнее."
+    return "На повышенном круге эффект сильнее."
 
 
 def measure(value: str, kind: str) -> str:
@@ -532,10 +518,19 @@ def main() -> None:
             elif text.strip().lower() in by_english:
                 gates.append({"kind": "feat", "id": by_english[text.strip().lower()]})
         kind = "dedication" if "dedication" in traits else "feat"
-        missed = len(prereq_raw) - len(gates)
-        freq = frequency_struct(system.get("frequency")) or phrase_or_stub(labels.get("frequency", ""), "Частота задана полем, фраза не перенесена." if labels.get("frequency") else "")
-        trigger = phrase_or_stub(labels.get("trigger", ""), "Условие задано, фраза книги не перенесена." if labels.get("trigger") else "")
-        requirements = phrase_or_stub(labels.get("requirements", ""), "Нужное условие задано, фраза книги не перенесена." if labels.get("requirements") else "")
+        notes = []
+        for text in prereq_raw:
+            skill = re.fullmatch(r"(trained|expert|master|legendary) in ([A-Za-z][A-Za-z ]+)", text.strip())
+            ability = re.fullmatch(r"(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma) \+(\d+)", text.strip())
+            known = text.strip().lower() in dedications or text.strip().lower() in by_english
+            if (skill and skill.group(2).strip().lower() in SKILL_EN) or ability or known:
+                continue
+            said = paraphrase.paraphrase(text)
+            if said:
+                notes.append(said)
+        freq = frequency_struct(system.get("frequency")) or phrase_or_stub(labels.get("frequency", ""))
+        trigger = phrase_or_stub(labels.get("trigger", ""))
+        requirements = phrase_or_stub(labels.get("requirements", ""))
         composed = ru.compose(english)
         cards.append({
             "id": feat_id,
@@ -546,7 +541,7 @@ def main() -> None:
             "actions": action_of(system),
             "traits": traits,
             "gates": gates,
-            "prereqNote": "Есть ещё требование, его фраза в поля не разобрана." if missed else "",
+            "prereqNote": "; ".join(notes),
             "frequency": freq,
             "trigger": trigger,
             "requirements": requirements,
@@ -570,9 +565,14 @@ def main() -> None:
         cast = spell_cast(time) or ("особое время" if time else "")
         traditions = [TRADITION_RU[item] for item in ((system.get("traits") or {}).get("traditions") or []) if item in TRADITION_RU]
         area = system.get("area") if isinstance(system.get("area"), dict) else {}
-        area_text = measure(str(area.get("value") or area.get("type") or ""), "area") if area else ""
-        if isinstance(system.get("area"), dict) and system["area"].get("type") and not area_text:
-            area_text = {"burst": "взрыв", "cone": "конус", "line": "линия", "emanation": "эманация"}.get(str(system["area"].get("type")), "")
+        area_kind = {"burst": "взрыв", "cone": "конус", "line": "линия", "emanation": "эманация"}.get(str(area.get("type") or ""), "")
+        area_value = area.get("value")
+        if isinstance(area_value, int) and area_kind:
+            area_text = f"{area_kind} {area_value} футов"
+        elif area_kind:
+            area_text = area_kind
+        else:
+            area_text = measure(str(area_value or ""), "area") if area else ""
         target = system.get("target") if isinstance(system.get("target"), dict) else {}
         duration = system.get("duration") if isinstance(system.get("duration"), dict) else {}
         duration_text = "поддерживаемое" if duration.get("sustained") else measure(str(duration.get("value") or ""), "duration")
@@ -651,6 +651,14 @@ def main() -> None:
             name = "метка"
         info = TRAIT_INFO.get(trait, f"Метка «{name}». Сама по себе числа листа не меняет.")
         traits.append({"id": trait, "name": name[:1].upper() + name[1:], "info": info})
+
+    banned = ("не перенесена", "задано,", "Из полей", "Постоянного числа", "Абзац книги", "фраза в поля")
+    text_keys = ("prereqNote", "frequency", "trigger", "requirements", "summary", "cast", "range", "area", "targets", "defense", "duration", "heightened")
+    for row in cards:
+        for key in text_keys:
+            value = row.get(key)
+            if isinstance(value, str) and any(token in value for token in banned):
+                row[key] = ""
 
     cards.sort(key=lambda row: (row["kind"], row["name"].casefold(), row["id"]))
     (OUT / "pf-cards.json").write_text(json.dumps(cards, ensure_ascii=False, indent=1) + "\n")
