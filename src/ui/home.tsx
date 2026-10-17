@@ -6,7 +6,7 @@ import { loadDraft } from "../storage";
 import { applySave, previewSave, serialize } from "../transfer";
 import { APP_BUILD } from "../build-id";
 import { systemTitle } from "../labels";
-import { ART, ART_CAPTION, artSrc, portraitSrc } from "./art";
+import { ART, ART_CAPTION, PORTRAIT_PROVENANCE, artSrc, portraitSrc } from "./art";
 import { go } from "./common";
 import { LegalText } from "./legal";
 
@@ -137,7 +137,7 @@ export function Home({
           const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
           return (
           <div key={hero.id} className="card portrait-home">
-            {drawn ? <img className="avatar" src={drawn} alt="" /> : <div className="avatar" aria-hidden>⚔</div>}
+            {drawn ? <img className="avatar" src={drawn} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} /> : <div className="avatar" aria-hidden>⚔</div>}
             <div className="grow">
               {hero.readiness === "draft" && <span className="chip">Черновик, не проверен</span>}
               <button type="button" className="text-btn" onClick={() => go(`#/c/${hero.id}`)}>

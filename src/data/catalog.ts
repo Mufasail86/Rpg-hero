@@ -1,4 +1,4 @@
-import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5 } from "./dnd5e";
+import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
 import { LORE } from "./lore";
 import pfCorePack from "./generated/pf-core.json";
@@ -183,7 +183,27 @@ function rulesEntries(): RuleEntry[] {
     };
     list.push(entry.checkedOn ? entry : stampOrc(entry, item.originalName));
   }
-  for (const item of BG2) list.push(make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info));
+  for (const item of BG2) {
+    const entry = make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info);
+    entry.originalName = item.originalName;
+    entry.status = "verified-reference";
+    entry.checkedOn = ORC_CHECKED;
+    entry.sourceVersion = item.sourceVersion;
+    entry.sourceId = item.sourceId;
+    entry.license = packById(item.sourceId)?.license ?? entry.license;
+    entry.link = packById(item.sourceId)?.link ?? entry.link;
+    entry.location = "Поля Foundry, лицензия ORC, пометка ремастера. Абзац книги не копировался.";
+    list.push(entry);
+  }
+  for (const item of BG2014) {
+    const entry = make({ edition: "dnd-2014", sourceId: "srd-5.1", system: "dnd5e" }, "background", "Происхождение", item.id, item.name, item.short, item.info);
+    entry.originalName = "Acolyte";
+    entry.status = "verified-reference";
+    entry.checkedOn = ORC_CHECKED;
+    entry.sourceVersion = "5.1";
+    entry.location = "Справочник 5.1, шапка происхождения. Абзац книги не копировался.";
+    list.push(entry);
+  }
   for (const item of CL2) {
     const held = heldByPack.has(`class:${item.id}`);
     if (!held) {

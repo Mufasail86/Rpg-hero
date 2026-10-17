@@ -81,7 +81,7 @@ describe("единая модель редакций", () => {
     expect(counts["pf-player-core"]).toBeGreaterThan(0);
     expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(256);
-    expect(counts["pf-orc-more"]).toBe(9041);
+    expect(counts["pf-orc-more"]).toBe(9148);
     expect(counts["lore-golarion"]).toBe(68);
     expect(counts["lore-forgotten-realms"]).toBe(22);
     expect(counts["lore-other-settings"]).toBe(8);
@@ -108,7 +108,7 @@ describe("единая модель редакций", () => {
     expect(loreById.cormyr.status).toBe("verified-reference");
     expect(loreById["oppara-court"].status).toBe("verified-partial");
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(12464);
+    expect(verified.length).toBe(12595);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -164,9 +164,9 @@ describe("единая модель редакций", () => {
     expect(rulesCatalog().some((entry) => entry.edition === "dnd-2014")).toBe(true);
     expect(packCounts()).toEqual([
       { id: "srd-5.2", entered: 790, verified: 790 },
-      { id: "srd-5.1", entered: 572, verified: 572 },
-      { id: "pf-player-core", entered: 1805, verified: 1805 },
-      { id: "pf-orc-more", entered: 9041, verified: 9041 },
+      { id: "srd-5.1", entered: 573, verified: 573 },
+      { id: "pf-player-core", entered: 1828, verified: 1828 },
+      { id: "pf-orc-more", entered: 9148, verified: 9148 },
       { id: "pf-ogl", entered: 256, verified: 256 },
       { id: "pf-monster-core", entered: 492, verified: 492 },
       { id: "srd-5.2-monsters", entered: 330, verified: 330 },

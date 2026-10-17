@@ -4,7 +4,7 @@ import { armorClass, hpMax } from "../rules";
 import { CAMPAIGN_KEY, PROFILE_KEY, campaignFile, readCampaigns, readProfiles, tableSummary, type Campaign, type LocalProfile } from "../table";
 import type { Character } from "../types";
 import { uid } from "../types";
-import { portraitSrc } from "./art";
+import { PORTRAIT_PROVENANCE, portraitSrc } from "./art";
 import { go } from "./common";
 import { sheetDerived } from "./remaster";
 
@@ -182,7 +182,7 @@ function GmCard({ hero, playerName }: { hero: Character; playerName: string }) {
   const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
   return (
     <article className="card portrait-home">
-      {drawn ? <img className="avatar" src={drawn} alt="" /> : <div className="avatar" aria-hidden>⚔</div>}
+      {drawn ? <img className="avatar" src={drawn} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} /> : <div className="avatar" aria-hidden>⚔</div>}
       <div>
         <b>{hero.name}</b>
         <p className="tiny">{playerName || "Игрок не подписан"} · {hero.ancestryName} · {hero.className} · {hero.level} ур.</p>

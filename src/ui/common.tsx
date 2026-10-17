@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { PORTRAIT_PROVENANCE } from "./art";
 
 const InfoContext = createContext<(title: string, text: string) => void>(() => {});
 
@@ -117,7 +118,7 @@ export function Choice({
 }) {
   return (
     <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
-      {art ? <img className="option-art" src={art} alt="" loading="lazy" decoding="async" /> : null}
+      {art ? <img className="option-art" src={art} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} loading="lazy" decoding="async" /> : null}
       <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
         {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}

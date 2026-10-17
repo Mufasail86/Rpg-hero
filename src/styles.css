@@ -187,8 +187,8 @@ textarea { min-height: 88px; resize: vertical; }
 
 .hero-card { display: flex; gap: 14px; align-items: center; }
 .avatar, .avatar-btn {
-  width: 84px; height: 84px; border-radius: 28px; object-fit: contain;
-  background: var(--teal-2); display: grid; place-items: center;
+  width: 72px; height: 96px; aspect-ratio: 3 / 4; border-radius: 12px; object-fit: contain; object-position: center;
+  background: var(--well); display: grid; place-items: center;
   font-size: 1.8rem; border: 1px solid var(--line); overflow: hidden; flex: none;
 }
 .avatar-btn { padding: 0; }
@@ -333,7 +333,7 @@ textarea { min-height: 88px; resize: vertical; }
 .cast figcaption, .caption { margin-top: 4px; font-size: 0.72rem; color: var(--muted); }
 .figure-card { margin: 0; }
 .figure-card img { width: 100%; height: auto; max-height: 520px; object-fit: contain; object-position: center; border-radius: 16px; border: 1px solid var(--line); background: var(--well); }
-.option-art { width: 72px; height: 96px; object-fit: contain; object-position: center; flex: none; background: var(--well); border-radius: 12px; }
+.option-art { width: 72px; height: 96px; aspect-ratio: 3 / 4; object-fit: contain; object-position: center; flex: none; background: var(--well); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
 .card-art { width: 100%; height: auto; max-height: 280px; object-fit: contain; object-position: center; border-radius: 12px; background: var(--well); }
 .lede { margin: 0; color: var(--gold); }
 .library-grid { display: flex; flex-direction: column; gap: 12px; }
@@ -490,16 +490,17 @@ body:has(.board-app),
 .board-portrait {
   position: relative;
   width: 28px;
-  height: 28px;
+  height: 37px;
+  aspect-ratio: 3 / 4;
   border-radius: 8px;
   overflow: hidden;
-  background: var(--teal-2);
+  background: var(--well);
   border: 1px solid var(--line);
   display: grid;
   place-items: center;
   font-size: 14px;
 }
-.board-portrait img { width: 100%; height: 100%; object-fit: contain; }
+.board-portrait img { width: 100%; height: 100%; object-fit: contain; object-position: center; background: var(--well); }
 .board-portrait input {
   position: absolute;
   inset: 0;

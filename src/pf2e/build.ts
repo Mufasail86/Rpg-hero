@@ -1,6 +1,6 @@
 import { FEAT_BY_ID, FEAT_INDEX, pathGroup, pathOption, type PathOption } from "../data/pf-index";
 import { curseMax, curseMods, doctrineOptions, monkSaveOptions, resolveRanks } from "./progression";
-import { ANCESTRIES, BACKGROUNDS, CLASSES, SKILLS } from "../data/pf2e";
+import { ANCESTRIES, CLASSES, SKILLS, backgroundBoostCount, backgroundById, type BackgroundDef } from "../data/pf2e";
 import { CLASS_FEAT_LEVELS, SKILL_FEAT_LEVELS } from "../data/roster";
 import {
   ABILITIES,
@@ -184,11 +184,25 @@ export function derive(input: DeriveInput): Derived {
 
   const background = backgroundOf(progress.backgroundId);
   if (background) {
-    train(ranks, background.skill);
-    const loreId = `lore:${progress.backgroundId}`;
-    train(ranks, loreId);
-    loreNames.set(loreId, background.lore);
-    grantFeat(background.feat, feats, taken, issues, ranks);
+    for (const skill of background.skills) train(ranks, skill);
+    const chosenSkill = progress.choices.find((choice) => choice.source === "bg-skill" && choice.level <= level);
+    if (background.skillChoices.length) {
+      const allowed = background.skillChoices.includes("*") ? null : new Set(background.skillChoices);
+      if (chosenSkill && isSkillId(chosenSkill.pick) && (!allowed || allowed.has(chosenSkill.pick))) train(ranks, chosenSkill.pick);
+      else if (chosenSkill) issues.push({ kind: "build", message: "Навык происхождения не из списка этой карточки." });
+    }
+    background.lores.forEach((name, index) => {
+      const loreId = index === 0 ? `lore:${progress.backgroundId}` : `lore:${progress.backgroundId}:${index + 1}`;
+      train(ranks, loreId);
+      loreNames.set(loreId, name);
+    });
+    for (const feat of background.feats) grantFeat(feat.id, feats, taken, issues, ranks, feat.name);
+    const chosenFeat = progress.choices.find((choice) => choice.source === "bg-feat" && choice.level <= level);
+    if (chosenFeat) {
+      const named = background.featChoices.find((feat) => feat.id === chosenFeat.pick);
+      if (!named) issues.push({ kind: "build", message: "Черта происхождения не из списка этой карточки." });
+      else grantFeat(named.id, feats, taken, issues, ranks, named.name);
+    }
   }
   const classRow = CLASSES.find((item) => item.id === progress.classId);
   for (const id of classRow?.skillsFixed ?? []) train(ranks, id);
@@ -523,7 +537,7 @@ function abilityScores(progress: Pf2eProgress, level: number, issues: Issue[]): 
   if (ancestry?.flaw) scores[ancestry.flaw].score = Math.max(8, scores[ancestry.flaw].score - 2);
   const pools: { source: string; level: number; count: number }[] = [
     { source: "ancestry-boost", level: 1, count: ancestry?.freeBoosts ?? 0 },
-    { source: "background-boost", level: 1, count: 2 },
+    { source: "background-boost", level: 1, count: backgroundBoostCount(backgroundOf(progress.backgroundId)) },
     { source: "class-boost", level: 1, count: 1 },
   ];
   for (const boostLevel of [1, 5, 10, 15, 20]) {
@@ -551,10 +565,10 @@ function abilityScores(progress: Pf2eProgress, level: number, issues: Issue[]): 
       }
       boost(scores[choice.pick as Ability]);
     }
-    if (pool.source === "background-boost" && background && picks.length) {
+    if (pool.source === "background-boost" && background && background.abilities.length && picks.length) {
       const allowed = new Set(background.abilities);
       if (!picks.some((choice) => allowed.has(choice.pick as Ability))) {
-        issues.push({ kind: "build", message: "Одно повышение происхождения должно быть из его пары характеристик." });
+        issues.push({ kind: "build", message: "Одно повышение происхождения должно быть из его списка характеристик." });
       }
     }
   }
@@ -605,8 +619,13 @@ function slotsFor(progress: Pf2eProgress, level: number): Slot[] {
   };
   const ancestry = ANCESTRIES.find((item) => item.id === progress.ancestryId);
   for (let i = 0; i < (ancestry?.freeBoosts ?? 0); i += 1) push(`boost-1-ancestry-${i}`, 1, "ancestry-boost", "Свободное повышение народа");
-  push("boost-1-background-0", 1, "background-boost", "Повышение происхождения");
-  push("boost-1-background-1", 1, "background-boost", "Свободное повышение происхождения");
+  const background = backgroundOf(progress.backgroundId);
+  const backgroundBoosts = backgroundBoostCount(background);
+  for (let index = 0; index < backgroundBoosts; index += 1) {
+    push(`boost-1-background-${index}`, 1, "background-boost", index === 0 && background?.abilities.length ? "Повышение происхождения" : "Свободное повышение происхождения");
+  }
+  if (background?.skillChoices.length) push("bg-skill", 1, "bg-skill", "Навык происхождения");
+  if (background?.featChoices.length) push("bg-feat", 1, "bg-feat", "Черта происхождения");
   push("boost-1-class", 1, "class-boost", "Классовое повышение");
   for (const boostLevel of [1, 5, 10, 15, 20]) {
     for (let i = 0; i < 4; i += 1) push(`boost-${boostLevel}-free-${i}`, boostLevel, "free-boost", "Свободное повышение");
@@ -639,10 +658,8 @@ function slotsFor(progress: Pf2eProgress, level: number): Slot[] {
   return slots;
 }
 
-function backgroundOf(id: string): { abilities: Ability[]; skill: string; lore: string; feat: string } | null {
-  const found = BACKGROUNDS.find((item) => item.id === id);
-  if (!found) return null;
-  return { abilities: found.abilities, skill: found.skill, lore: found.lore, feat: found.feat };
+function backgroundOf(id: string): BackgroundDef | null {
+  return backgroundById(id) ?? null;
 }
 
 function isSkillId(id: string): boolean {
@@ -685,6 +702,7 @@ function detailWord(value: string): string {
 export function choiceCaption(choice: { pick: string; source: string; detail?: Record<string, string> }): string {
   const named = FEATS[choice.pick]?.name
     ?? FEAT_BY_ID.get(choice.pick)?.name
+    ?? SKILLS.find((skill) => skill.id === choice.pick)?.name
     ?? pathOption(choice.source, choice.pick)?.name
     ?? optionsForSlot(choice.source).find((option) => option.pick === choice.pick)?.name
     ?? (choice.pick.startsWith("lore:") ? "знание" : "выбор");
@@ -697,13 +715,13 @@ function skillAbility(id: string): Ability {
   return SKILLS.find((skill) => skill.id === id)?.ability ?? (id.startsWith("lore:") ? "int" : "str");
 }
 
-function grantFeat(id: string, feats: { id: string; name: string; modeled: boolean }[], taken: Set<string>, issues: Issue[], ranks: Map<string, Rank>) {
+function grantFeat(id: string, feats: { id: string; name: string; modeled: boolean }[], taken: Set<string>, issues: Issue[], ranks: Map<string, Rank>, displayName = "") {
   if (!id || taken.has(id)) return;
   const def = FEATS[id];
   if (!def) {
     issues.push({ kind: "limit", message: "Черта есть в листе, но справочник приложения её не знает." });
     taken.add(id);
-    feats.push({ id, name: "черта без имени", modeled: false });
+    feats.push({ id, name: displayName || "черта без имени", modeled: false });
     return;
   }
   if (def.skill && (ranks.get(def.skill) ?? "untrained") === "untrained") {

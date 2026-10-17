@@ -7,7 +7,7 @@ import { ruSort } from "../sort";
 import { PickList } from "./feat-picker";
 import { EDITION_NAME, PACKS, editionsFor, filledEdition, resolveEdition, type RulesEdition } from "../data/editions";
 import { ART, artSrc, portraitSrc } from "./art";
-import { BACKGROUNDS as BG5, CLASSES as CL5, GENERAL_FEATS, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
+import { BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014, CLASSES as CL5, GENERAL_FEATS, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, SPELLS as SP2, TRADITION_NAME } from "../data/pf2e";
 import {
   blankScoresFor,
@@ -274,7 +274,7 @@ function SystemStep({
               </button>
             ))}
           </div>
-          {edition && !filledEdition(edition) && <p className="tiny">{edition === "pf-legacy" ? "Карточки до ремастера лежат в справочнике. Конструктор их в расчёт не подставляет, чтобы не смешать с ремастером." : "Эта редакция в конструктор не подставляется. Чужой список здесь не показан."}</p>}
+          {edition && !filledEdition(edition) && <p className="tiny">{edition === "pf-legacy" ? "Карточки до ремастера лежат в справочнике. Конструктор их в расчёт не подставляет, чтобы не смешать с ремастером." : "Народы и классы 2014 года в расчёт не входят. Происхождение справочника 5.1 выбирается отдельно и с правилами 2024 года не смешивается."}</p>}
           {edition && <BookLine edition={edition} />}
         </>
       )}
@@ -469,15 +469,44 @@ function CustomAncestry({ draft, update, speedLabel }: { draft: Draft; update: (
 
 function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (partial: Partial<Draft>) => void; setChoice: (key: string, value: string) => void }) {
   const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
-  const unfilled = Boolean(draft.system && !filledEdition(edition));
-  const source = draft.system === "pf2e" ? BG2 : BG5;
-  const list = unfilled ? [] : [...source].sort((left, right) => left.name.localeCompare(right.name, "ru"));
+  const legacyDnd = edition === "dnd-2014";
+  const unfilled = Boolean(draft.system && !filledEdition(edition) && !legacyDnd);
+  const source = draft.system === "pf2e" ? BG2 : legacyDnd ? BG2014 : BG5;
+  const list = unfilled ? [] : [...source].sort((left, right) => left.name.localeCompare(right.name, "ru") || left.id.localeCompare(right.id));
+  const picked = draft.system === "pf2e" ? BG2.find((item) => item.id === draft.backgroundId) : undefined;
+  const skillOptions = picked?.skillChoices.includes("*") ? SK2.map((skill) => skill.id) : picked?.skillChoices ?? [];
   return (
     <>
+      {legacyDnd && <p className="lead">В справочнике 5.1 одно происхождение. Классы 2014 года в расчёт не входят и с правилами 2024 года не смешиваются.</p>}
       {unfilled && <UnfilledNote edition={edition} />}
       {list.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
+      {picked && skillOptions.length > 0 && (
+        <>
+          <p className="kicker">Навык происхождения</p>
+          {skillOptions.map((id) => {
+            const skill = SK2.find((item) => item.id === id);
+            return skill ? <Choice key={id} id={`bg-skill-${id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.bgSkill === id} onPick={() => setChoice("bgSkill", id)} /> : null;
+          })}
+        </>
+      )}
+      {picked && picked.featChoices.length > 0 && (
+        <>
+          <p className="kicker">Черта происхождения</p>
+          {picked.featChoices.map((feat) => (
+            <Choice key={feat.id} id={`bg-feat-${feat.id}`} name={feat.name} info="Одна черта из поля происхождения. Если у неё нет отдельного числа, лист его не выдумывает." on={draft.choices.bgFeat === feat.id} onPick={() => setChoice("bgFeat", feat.id)} />
+          ))}
+        </>
+      )}
+      {picked && picked.craftChoices.length > 0 && (
+        <>
+          <p className="kicker">Специальность ремесла</p>
+          {picked.craftChoices.map((craft) => (
+            <Choice key={craft.id} id={`bg-craft-${craft.id}`} name={craft.name} info="Узкое ремесло записывает эту специальность. Цену изделия лист сам не меняет." on={draft.choices.bgCraft === craft.id} onPick={() => setChoice("bgCraft", craft.id)} />
+          ))}
+        </>
+      )}
       <Choice id="custom" name="Своя запись" info="Своё происхождение. Для правил 2024 года укажите три характеристики, если хотите прибавки +2/+1 или +1 трижды. Для ремастера — две характеристики и навык." on={draft.backgroundId === "custom"} onPick={() => update({ backgroundId: "custom" })} />
       {draft.backgroundId === "custom" && draft.system === "dnd5e" && (
         <div className="card stack">
@@ -774,6 +803,8 @@ function Boosts({
   const free = draft.ancestryId === "custom" || draft.choices.ancestryMode === "free" || !ancestry || ancestry.boosts.length === 0;
   const options = originAbilities(draft);
   const key = classKey(draft);
+  const background = BG2.find((item) => item.id === draft.backgroundId);
+  const backgroundFrees = background?.freeBoosts ?? 1;
   return (
     <div className="stack">
       <div className="card stack">
@@ -789,8 +820,34 @@ function Boosts({
       </div>
       <div className="card stack">
         <b>Происхождение</b>
-        <AbilityRow label="Одно из двух" value={draft.choices.bgFixed ?? ""} allowed={options} onPick={(ability) => setChoice("bgFixed", ability)} />
-        <AbilityRow label="Другое свободное" value={draft.choices.bgFree ?? ""} blocked={draft.choices.bgFixed ? [draft.choices.bgFixed as Ability] : []} onPick={(ability) => setChoice("bgFree", ability)} />
+        {background && background.abilities.length !== 2 ? (
+          <>
+            {background.abilities.length > 0 && (
+              <AbilityRow label="Из списка происхождения" value={draft.choices.bgFixed ?? ""} allowed={background.abilities} onPick={(ability) => setChoice("bgFixed", ability)} />
+            )}
+            {Array.from({ length: backgroundFrees }, (_, index) => {
+              const keyName = (["bgFree", "bgFree2", "bgFree3"] as const)[index];
+              const blocked = (["bgFixed", "bgFree", "bgFree2", "bgFree3"] as const)
+                .filter((key) => key !== keyName)
+                .map((key) => draft.choices[key])
+                .filter((value): value is Ability => Boolean(value));
+              return (
+                <AbilityRow
+                  key={keyName}
+                  label={backgroundFrees > 1 ? `Свободное ${index + 1}` : "Свободное"}
+                  value={draft.choices[keyName] ?? ""}
+                  blocked={blocked}
+                  onPick={(ability) => setChoice(keyName, ability)}
+                />
+              );
+            })}
+          </>
+        ) : (
+          <>
+            <AbilityRow label="Одно из двух" value={draft.choices.bgFixed ?? ""} allowed={options} onPick={(ability) => setChoice("bgFixed", ability)} />
+            <AbilityRow label="Другое свободное" value={draft.choices.bgFree ?? ""} blocked={draft.choices.bgFixed ? [draft.choices.bgFixed as Ability] : []} onPick={(ability) => setChoice("bgFree", ability)} />
+          </>
+        )}
       </div>
       <div className="card">
         <b>Ключ класса: {key ? ABILITY_NAME[key] : "ещё не выбран"}</b>

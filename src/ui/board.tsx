@@ -16,7 +16,7 @@ import {
   mod,
   uid,
 } from "../types";
-import { portraitSrc } from "./art";
+import { PORTRAIT_PROVENANCE, portraitSrc } from "./art";
 import { useInfo } from "./common";
 import { sheetDerived } from "./remaster";
 
@@ -103,7 +103,7 @@ export function CharacterBoard({ character, commit }: { character: Character; co
       <header className="board-head">
         <label className="board-portrait" title="Портрет">
           {(character.photo || portraitSrc(character.ancestryId, character.classId)) ? (
-            <img src={character.photo || portraitSrc(character.ancestryId, character.classId) || ""} alt="" />
+            <img src={character.photo || portraitSrc(character.ancestryId, character.classId) || ""} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} />
           ) : (
             <span aria-hidden>⚔</span>
           )}
