@@ -1,4 +1,5 @@
 import { actionGlyph, CARD_BY_ID, prereqLine, TRAIT_BY_ID, type RuleCard } from "../data/cards";
+import { plainWords, traitPlain } from "../beginner";
 import { useInfo } from "./common";
 
 const CLASS_TRAITS = new Set([
@@ -32,6 +33,7 @@ export function RuleCardView({ card, sourceNote }: { card: RuleCard; sourceNote?
   const book = card.page != null ? `${card.book}, с. ${card.page}` : card.book;
   return (
     <div className="rule-card" data-testid={`rule-card-${card.id}`}>
+      <p className="plain-line"><b>Простыми словами.</b> {plainWords(card)}</p>
       <p className="rule-meta">
         {glyph && <span className="glyph">{glyph}</span>} {kindTitle(card)}
       </p>
@@ -40,7 +42,7 @@ export function RuleCardView({ card, sourceNote }: { card: RuleCard; sourceNote?
           {card.traits.map((id) => {
             const trait = TRAIT_BY_ID.get(id);
             const title = trait?.name ?? id;
-            const info = trait?.info ?? "Метка правила.";
+            const info = traitPlain(id, trait?.info ?? "Метка правила. Сама по себе число на листе не меняет.");
             return (
               <button key={id} type="button" className="chip trait-chip" onClick={(event) => { event.stopPropagation(); open(title, info); }}>
                 {title}

@@ -17,13 +17,14 @@ import {
   uid,
 } from "../types";
 import { PORTRAIT_PROVENANCE, portraitSrc } from "./art";
-import { useInfo } from "./common";
+import { go, useInfo } from "./common";
 import { sheetDerived } from "./remaster";
+import { TurnHints } from "./beginner";
 
 const PF_RANKS = ["untrained", "trained", "expert", "master", "legendary"] as const;
 const PIP_LETTER = ["О", "Э", "М", "Л"];
 
-export function CharacterBoard({ character, commit }: { character: Character; commit: (next: Character) => void }) {
+export function CharacterBoard({ character, commit, hints = false }: { character: Character; commit: (next: Character) => void; hints?: boolean }) {
   const open = useInfo();
   const derived = sheetDerived(character);
   const dnd = sheetDnd(character);
@@ -98,8 +99,10 @@ export function CharacterBoard({ character, commit }: { character: Character; co
     commit({ ...character, conditionValues, conditions });
   }
 
+  const attack = melee[0]?.attack ?? ranged[0]?.attack ?? 0;
   return (
     <section className="character-board" data-testid="character-board">
+      {hints && <TurnHints pf={pf} attack={attack} onRoll={roll} onGrowth={() => go(`#/c/${character.id}/growth`)} />}
       <header className="board-head">
         <label className="board-portrait" title="Портрет">
           {(character.photo || portraitSrc(character.ancestryId, character.classId)) ? (

@@ -776,6 +776,55 @@ body:has(.board-app),
 }
 .board-foot p { margin: 0; min-width: 0; }
 .actions-legend { display: flex; gap: 6px; flex: none; }
+.character-board { position: relative; }
+.explain { margin: 0 0 8px; }
+.explain p { margin: 0 0 4px; }
+.term-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.term {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: var(--gold-2);
+  color: var(--gold);
+  padding: 0;
+  line-height: 1;
+}
+.advise { display: grid; gap: 6px; margin-bottom: 8px; }
+.advise-row, .plain-line {
+  text-align: left;
+}
+.advise-row {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--gold);
+  background: var(--gold-2);
+  color: var(--ink);
+}
+.advise-row small, .plain-line { color: var(--muted); }
+.pill.advise { border-color: var(--gold); }
+.plain-line { margin: 0 0 6px; }
+.hint-layer {
+  position: absolute;
+  z-index: 4;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  max-height: 46%;
+  overflow: auto;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--gold);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  box-shadow: var(--shadow);
+}
+.hint-layer p { margin: 4px 0; }
+.board-tabs button.hint-toggle { flex: 0 0 auto; padding-inline: 6px; }
+.tour .info-card h2 { margin-top: 0; }
 
 @media (min-width: 900px), (max-height: 520px) and (min-width: 700px) {
   .quickbar.slim { width: 100%; }

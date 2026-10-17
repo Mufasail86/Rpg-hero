@@ -9,6 +9,7 @@ import { fmt, uid } from "../types";
 import { hpMax, refreshSlots } from "../rules";
 import { useCompact } from "./common";
 import { PickList } from "./feat-picker";
+import { LevelWizard } from "./beginner";
 
 function detailFor(pick: string): Record<string, string> | undefined {
   if (pick === "canny-acumen") return { defense: "will" };
@@ -200,7 +201,35 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
 
   return (
     <div className="stack">
-      <p className="lead">Уровень {character.level}, опыт {character.xp} / 1000. Пустой слот подсвечен. Нажатие открывает выбор.</p>
+      <p className="lead">Уровень {character.level}, опыт {character.xp} / 1000. Сначала один шаг. Весь план по уровням открывается ниже.</p>
+      <LevelWizard
+        level={character.level}
+        open={open}
+        optionsFor={(slot) => {
+          const taken = new Set(progress.choices.map((choice) => choice.pick));
+          const options = optionsForSlot(slot.source, {
+            classId: progress.classId,
+            ancestryId: progress.ancestryId,
+            level: slot.level,
+            taken: takenFeats,
+            ranks: character.skillRanks,
+            scores: character.abilities,
+            skillInGeneral: slot.source === "general-feat",
+          }).filter((option) => !taken.has(option.pick));
+          return options.length ? options : optionsForSlot(slot.source, {
+            classId: progress.classId,
+            ancestryId: progress.ancestryId,
+            level: slot.level,
+            taken: takenFeats,
+            ranks: character.skillRanks,
+            scores: character.abilities,
+            skillInGeneral: slot.source === "general-feat",
+          });
+        }}
+        onPick={(slot, pick) => fill(slot, pick)}
+      />
+      <details className="card">
+        <summary>Весь план по уровням</summary>
       <div className="level-plan" data-testid="level-plan">
         {levels.map((level) => {
           const row = slots.filter((slot) => slot.level === level);
@@ -224,6 +253,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
           );
         })}
       </div>
+      </details>
       <label className="field">
         <span>Посмотреть уровень</span>
         <input type="number" min={1} max={character.level} value={view} onChange={(event) => setView(Math.max(1, Math.min(character.level, Number(event.target.value) || 1)))} />

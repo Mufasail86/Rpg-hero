@@ -11,14 +11,17 @@ import { Bestiary } from "./ui/bestiary";
 import { QuickBar } from "./ui/quickbar";
 import { Table } from "./ui/table";
 import { ThemeToggle } from "./ui/theme";
+import { GlossaryPage, QuickStart } from "./ui/beginner";
 
-function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library" | "lore" | "bestiary" | "table"; id?: string; panel?: string | null } {
+function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "sheet" | "library" | "lore" | "bestiary" | "table"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
   if (parts[0] === "library") return { page: "library" };
   if (parts[0] === "lore") return { page: "lore" };
   if (parts[0] === "bestiary") return { page: "bestiary", id: parts[1] ? decodeURIComponent(parts[1]) : undefined };
   if (parts[0] === "table") return { page: "table" };
   if (parts[0] === "new") return { page: "new" };
+  if (parts[0] === "quick") return { page: "quick" };
+  if (parts[0] === "glossary") return { page: "glossary" };
   if (parts[0] === "c" && parts[1]) return { page: "sheet", id: decodeURIComponent(parts[1]), panel: parts[2] ? decodeURIComponent(parts[2]) : null };
   return { page: "home" };
 }
@@ -67,6 +70,15 @@ export function App() {
           }}
         />
       )}
+      {route.page === "quick" && (
+        <QuickStart
+          onDone={(character) => {
+            upsert(character);
+            go(`#/c/${character.id}`);
+          }}
+        />
+      )}
+      {route.page === "glossary" && <GlossaryPage />}
       {route.page === "sheet" && hero && (
         <Sheet
           character={hero}
@@ -80,7 +92,8 @@ export function App() {
       )}
       {route.page === "sheet" && !hero && (
         <div className="app screen">
-          <p>Этого персонажа на телефоне нет.</p>
+          <p>Этого героя на телефоне нет. Вернитесь на главную и соберите нового: быстрый старт или шаги конструктора.</p>
+          <button type="button" className="btn primary" onClick={() => go("#/quick")}>Быстрый старт</button>
           <button type="button" className="btn" onClick={() => go("#/")}>На главную</button>
         </div>
       )}

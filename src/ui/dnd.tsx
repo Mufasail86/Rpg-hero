@@ -6,6 +6,7 @@ import { hpMax, refreshSlots } from "../rules";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
 import { useCompact } from "./common";
+import { LevelWizard } from "./beginner";
 
 export function DndBanner({ character }: { character: Character }) {
   const derived = sheetDnd(character);
@@ -126,7 +127,13 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
 
   return (
     <div className="stack">
-      <p className="lead">Уровень {character.level}. Просмотр другого уровня не стирает план и не тратит опыт.</p>
+      <p className="lead">Уровень {character.level}. Сначала один шаг того, что нового. Полный список выборов остаётся ниже.</p>
+      <LevelWizard
+        level={character.level}
+        open={open}
+        optionsFor={(slot) => optionsFor(slot.source, character)}
+        onPick={(slot, pick) => fill(slot, pick)}
+      />
       <button type="button" className="btn primary" data-testid="dnd-level-up" disabled={character.level >= 20} onClick={() => applyLevel(character.level + 1, false)}>
         Повысить уровень
       </button>

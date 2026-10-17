@@ -232,7 +232,7 @@ export function Library() {
             <EntryCard key={row.token} entry={row} fav={favs.includes(row.token)} compared={compare.includes(row.token)} onFav={() => toggleFav(row.token)} onCompare={() => toggleCompare(row.token)} />
           ))}
         </div>
-        {filtered.length === 0 && <p>Ничего не нашлось. Смените слова, редакцию или снимите фильтр «только сверенное».</p>}
+        {filtered.length === 0 && <p>Ничего не нашлось. Попробуйте «Лечение» или Heal. Если пусто снова, снимите «Только сверенное» или смените редакцию.</p>}
         {more && (
           <button type="button" className="btn" data-testid="library-more" onClick={() => setCount((value) => value + PAGE)}>
             Показать ещё
