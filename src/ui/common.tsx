@@ -25,8 +25,12 @@ export function InfoProvider({ children }: { children: ReactNode }) {
   );
 }
 
+export function useInfo(): (title: string, text: string) => void {
+  return useContext(InfoContext);
+}
+
 export function Info({ title, text }: { title: string; text: string }) {
-  const open = useContext(InfoContext);
+  const open = useInfo();
   return (
     <button type="button" className="info-btn" aria-label={`Справка: ${title}`} onClick={(event) => { event.stopPropagation(); open(title, text); }}>
       ℹ️

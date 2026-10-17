@@ -186,6 +186,10 @@ export interface Character {
   id: string;
   system: SystemId;
   name: string;
+  /** Имя игрока на бланке. В формулы не входит. */
+  player?: string;
+  /** Короткая строка сопротивлений. В формулы не входит. */
+  resistances?: string;
   photo?: string;
   level: number;
   xp: number;

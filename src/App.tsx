@@ -90,6 +90,7 @@ export function App() {
         roster={characters}
         allowSwitch={route.page !== "sheet"}
         raised={route.page === "new"}
+        compact={route.page === "sheet" && !route.panel}
         onChange={upsert}
       />
     </InfoProvider>

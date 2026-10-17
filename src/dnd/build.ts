@@ -36,7 +36,7 @@ export interface DndDerived {
   initiative: Stat;
   saves: Record<Ability, Stat & { proficient: boolean }>;
   skills: Record<string, Stat & { ability: Ability; rank: string; name: string }>;
-  attacks: { name: string; attack: Stat; damage: string; equipped: boolean }[];
+  attacks: { name: string; attack: Stat; damage: string; equipped: boolean; traits: string; ranged: boolean }[];
   attacksPerAction: number;
   resources: { id: string; name: string; max: number; info: string }[];
   slots: { rank: number; max: number }[];
@@ -368,6 +368,8 @@ function deriveNumbers(input: NumberInput): DndDerived {
     return {
       name: item.name,
       equipped: item.equipped,
+      traits: [weapon.traits, weapon.mastery].filter(Boolean).join(", "),
+      ranged: Boolean(weapon.ranged),
       attack: { value: attack, formula: line(item.name, attack, parts), aside },
       damage,
     };

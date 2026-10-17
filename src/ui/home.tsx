@@ -132,7 +132,7 @@ export function Home({
         )}
         </div>
         <div className="stack">
-        {characters.length === 0 && <p className="muted">Пока никого нет. Создание идёт по шагам. Готовый лист открывается целиком, разделы можно свернуть.</p>}
+        {characters.length === 0 && <p className="muted">Пока никого нет. Создание идёт по шагам. Готовый лист помещается на один экран. Сумка, магия, черты и памятка открываются отдельными страницами.</p>}
         {characters.map((hero) => {
           const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
           return (

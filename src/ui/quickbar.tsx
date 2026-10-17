@@ -24,12 +24,14 @@ export function QuickBar({
   roster,
   allowSwitch,
   raised,
+  compact,
   onChange,
 }: {
   character: Character | null;
   roster: Character[];
   allowSwitch: boolean;
   raised: boolean;
+  compact?: boolean;
   onChange: (character: Character) => void;
 }) {
   const [open, setOpen] = useState<Tab | null>(null);
@@ -85,7 +87,7 @@ export function QuickBar({
           </div>
         </div>
       )}
-      <nav className={`quickbar ${raised ? "raised" : ""}`} aria-label="Быстрый доступ">
+      <nav className={`quickbar ${raised ? "raised" : ""} ${compact ? "slim" : ""}`} aria-label="Быстрый доступ">
         <button type="button" className="btn" data-testid="quick-skills" onClick={() => setOpen("skills")}>
           Навыки
         </button>
@@ -243,7 +245,7 @@ function SkillRow({
   );
 }
 
-function ReminderPane({ character, onChange }: { character: Character; onChange: (character: Character) => void }) {
+export function ReminderPane({ character, onChange }: { character: Character; onChange: (character: Character) => void }) {
   const reminder = reminderOf(character);
   const [edit, setEdit] = useState<"story" | "deity" | null>(reminderFilled(reminder) ? null : "story");
   function write(next: typeof reminder) {
