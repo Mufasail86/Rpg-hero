@@ -42,6 +42,7 @@ import { DndAdvance, DndCombatPanel } from "./dnd";
 import { KNOWN_SUBCLASSES, sheetDnd, subclassIdOf } from "../dnd/build";
 import { rulesOf } from "../data/editions";
 import { RulesPanel } from "./rules";
+import { useHints } from "./beginner";
 
 const PANELS = [
   ["abilities", "Характеристики", "Сил", "teal"],
@@ -69,6 +70,7 @@ export function Sheet({
 }) {
   const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : panel === "feats" ? "Черты" : panel === "reminder" ? "Памятка" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [hints, toggleHints] = useHints();
 
   function commit(next: Character) {
     onChange({ ...next, updatedAt: Date.now() });
@@ -80,11 +82,16 @@ export function Sheet({
         <button type="button" className="icon-btn" aria-label={panel ? "К листу" : "К списку"} onClick={() => go(panel ? `#/c/${character.id}` : "#/")}>
           ←
         </button>
+        {!panel && (
+          <button type="button" className={`icon-btn hint-toggle ${hints ? "on" : ""}`} data-testid="hints-toggle" aria-pressed={hints} aria-label="Подсказки" title="Подсказки" onClick={toggleHints}>
+            ?
+          </button>
+        )}
         {panel ? <h1 className="grow">{title}</h1> : <SheetTabs id={character.id} panel={panel} />}
       </header>
       {!panel && (
         <main className="board-screen">
-          <CharacterBoard character={character} commit={commit} />
+          <CharacterBoard character={character} commit={commit} hints={hints} />
         </main>
       )}
       {panel && (
@@ -845,11 +852,11 @@ function Experience({ character, commit }: { character: Character; commit: (next
           ))}
         </div>
       )}
-      {character.progress ? (
-        <p className="tiny">Уровень и выборы ремастера открываются в разделе «Развитие». Эта кнопка не прибавляет характеристики вторым способом.</p>
+      {character.progress || character.dnd ? (
+        <button type="button" className="btn" data-testid="open-growth" onClick={() => go(`#/c/${character.id}/growth`)}>Что нового на этом уровне</button>
       ) : (
       <button type="button" className="btn primary" disabled={!canLevel(character) || (wantsBoosts && boosts.length !== 4)} onClick={level}>
-        Получить уровень
+        Повысить уровень
       </button>
       )}
       {character.pendingAsi && (

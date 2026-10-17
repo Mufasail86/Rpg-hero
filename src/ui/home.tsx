@@ -9,6 +9,7 @@ import { systemTitle } from "../labels";
 import { ART, ART_CAPTION, PORTRAIT_PROVENANCE, artSrc, portraitSrc } from "./art";
 import { go } from "./common";
 import { LegalText } from "./legal";
+import { maybeTour, Tour } from "./beginner";
 
 export function Home({
   characters,
@@ -24,6 +25,7 @@ export function Home({
   const [about, setAbout] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ text: string; rows: { id: string; name: string; system: string; level: number }[] } | null>(null);
+  const [tour, setTour] = useState(maybeTour);
   const draft = loadDraft();
   const hasDraft = Boolean(draft && (draft.system || draft.name));
 
@@ -84,6 +86,7 @@ export function Home({
         </figure>
         <p className="caption">{ART_CAPTION}</p>
         <p className="lead">Игры D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
+        <p className="tiny">Первый раз здесь? <button type="button" className="text-btn" onClick={() => go("#/glossary")}>Словарь новичка</button> объясняет КБ, СЛ и другие слова.</p>
         <div className="cast">
           {[
             [ART.elf, "Эльф"],
@@ -98,9 +101,13 @@ export function Home({
             </figure>
           ))}
         </div>
-        <button type="button" className="btn primary" data-testid="new-character" onClick={() => go("#/new")}>
-          Новый персонаж
+        <button type="button" className="btn primary" data-testid="quick-start" onClick={() => go("#/quick")}>
+          Быстрый старт
         </button>
+        <button type="button" className="btn" data-testid="new-character" onClick={() => go("#/new")}>
+          Новый персонаж, шаг за шагом
+        </button>
+        <p className="tiny">Кнопки ниже — контрольные воины для проверки правил. Для первой игры они не нужны.</p>
         {!characters.some((hero) => hero.id === "artefol-pobochka") && (
           <button type="button" className="btn" data-testid="add-artefol" onClick={() => onCommit([artefolCharacter(), ...characters])}>
             Контрольный воин: Артефол Побочка
@@ -132,7 +139,7 @@ export function Home({
         )}
         </div>
         <div className="stack">
-        {characters.length === 0 && <p className="muted">Пока никого нет. Создание идёт по шагам. Готовый лист помещается на один экран. Сумка, магия, черты и памятка открываются отдельными страницами.</p>}
+        {characters.length === 0 && <p className="muted">Пока никого нет. Нажмите «Быстрый старт», если нужен готовый герой, или «Новый персонаж», если хотите выбрать всё сами.</p>}
         {characters.map((hero) => {
           const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
           return (
@@ -205,6 +212,7 @@ export function Home({
         </div>
         </div>
       </main>
+      {tour && <Tour onDone={() => setTour(false)} />}
     </div>
   );
 }

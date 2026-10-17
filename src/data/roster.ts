@@ -130,7 +130,7 @@ export const COMPANIONS = roster.companions as CompanionOption[];
 export const CALLINGS = roster.callings as CallingOption[];
 export const EXCLUDED = roster.excluded as ExcludedOption[];
 
-/** Английское имя из поля Foundry. На экран оно не выводится. */
+/** Английское имя из поля Foundry. На экране оно вторая строка, поиск его тоже видит. */
 export const ORC_ORIGINAL_NAME: Record<string, string> = {
   athamaru: "Athamaru",
   automaton: "Automaton",
@@ -163,3 +163,42 @@ export const ORC_ORIGINAL_NAME: Record<string, string> = {
   summoner: "Summoner",
   thaumaturge: "Thaumaturge",
 };
+
+const CORE_ENGLISH: Record<string, string> = {
+  dwarf: "Dwarf",
+  elf: "Elf",
+  gnome: "Gnome",
+  goblin: "Goblin",
+  halfling: "Halfling",
+  human: "Human",
+  leshy: "Leshy",
+  orc: "Orc",
+  catfolk: "Catfolk",
+  hobgoblin: "Hobgoblin",
+  kholo: "Kholo",
+  kobold: "Kobold",
+  lizardfolk: "Lizardfolk",
+  ratfolk: "Ratfolk",
+  tengu: "Tengu",
+  tripkee: "Tripkee",
+  alchemist: "Alchemist",
+  barbarian: "Barbarian",
+  bard: "Bard",
+  champion: "Champion",
+  cleric: "Cleric",
+  druid: "Druid",
+  fighter: "Fighter",
+  investigator: "Investigator",
+  monk: "Monk",
+  oracle: "Oracle",
+  ranger: "Ranger",
+  rogue: "Rogue",
+  sorcerer: "Sorcerer",
+  swashbuckler: "Swashbuckler",
+  witch: "Witch",
+  wizard: "Wizard",
+};
+
+export function englishName(id: string): string {
+  return ORC_ORIGINAL_NAME[id] ?? CORE_ENGLISH[id] ?? "";
+}

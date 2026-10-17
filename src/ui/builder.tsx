@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { VERSATILE } from "../data/versatile";
-import { CALLINGS, COMPANIONS } from "../data/roster";
+import { CALLINGS, COMPANIONS, englishName } from "../data/roster";
 import { featChoices, featInfo } from "../data/pf-index";
 import { rulesCatalog } from "../data/catalog";
 import { ruSort } from "../sort";
@@ -46,6 +46,8 @@ import {
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
+import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
+import { ancestryAdvice, backgroundAdvice, featAdvice, recommendedBoosts, spellAdvice } from "../beginner";
 
 const ORDER5 = {
   cleric: [
@@ -175,6 +177,10 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
         <i style={{ width: `${((index + 1) / steps.length) * 100}%` }} />
       </div>
       <main className="screen pad-dock stack">
+        <StepExplain step={step} />
+        {(step === "abilities" || step === "skills" || step === "feats" || step === "spells" || step === "gear") && (
+          <FillButton draft={draft} step={step} onFill={update} />
+        )}
         {step === "system" && (
           <SystemStep
             system={draft.system}
@@ -339,9 +345,16 @@ function AncestryStep({
       );
     }
     const species = SPECIES.find((item) => item.id === draft.ancestryId);
+    const people = ruSort(SPECIES, (item) => item.name);
+    const advised = new Set(ancestryAdvice("dnd5e").map((item) => item.id));
     return (
       <>
-        {ruSort(SPECIES, (item) => item.name).map((item) => (
+        <p className="kicker">Советуем новичку</p>
+        {people.filter((item) => advised.has(item.id)).map((item) => (
+          <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
+        ))}
+        <p className="kicker">Все народы</p>
+        {people.filter((item) => !advised.has(item.id)).map((item) => (
           <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
         <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
@@ -401,10 +414,16 @@ function AncestryStep({
   const ancestry = ANCESTRIES.find((item) => item.id === draft.ancestryId);
   const free = !ancestry || ancestry.boosts.length === 0 || draft.choices.ancestryMode === "free" || draft.ancestryId === "custom";
   const people = ruSort(ANCESTRIES, (item) => item.name);
+  const advised = new Set(ancestryAdvice("pf2e").map((item) => item.id));
   return (
     <div data-testid="ancestry-list">
-      {people.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+      <p className="kicker">Советуем новичку</p>
+      {people.filter((item) => advised.has(item.id)).map((item) => (
+        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+      ))}
+      <p className="kicker">Все народы</p>
+      {people.filter((item) => !advised.has(item.id)).map((item) => (
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
       {ancestry && (
@@ -475,12 +494,20 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
   const list = unfilled ? [] : [...source].sort((left, right) => left.name.localeCompare(right.name, "ru") || left.id.localeCompare(right.id));
   const picked = draft.system === "pf2e" ? BG2.find((item) => item.id === draft.backgroundId) : undefined;
   const skillOptions = picked?.skillChoices.includes("*") ? SK2.map((skill) => skill.id) : picked?.skillChoices ?? [];
+  const game = draft.system === "dnd5e" ? "dnd5e" : "pf2e";
+  const advice = backgroundAdvice(game);
+  const advised = new Set(advice.map((item) => item.id));
   return (
     <>
       {legacyDnd && <p className="lead">В справочнике 5.1 одно происхождение. Классы 2014 года в расчёт не входят и с правилами 2024 года не смешиваются.</p>}
       {unfilled && <UnfilledNote edition={edition} />}
-      {list.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+      <p className="kicker">Советуем новичку</p>
+      {list.filter((item) => advised.has(item.id)).map((item) => (
+        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("background", game, item.id)} english={"originalName" in item ? item.originalName : undefined} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+      ))}
+      <p className="kicker">Все происхождения</p>
+      {list.filter((item) => !advised.has(item.id)).map((item) => (
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={"originalName" in item ? item.originalName : undefined} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
       {picked && skillOptions.length > 0 && (
         <>
@@ -556,11 +583,25 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
   }
   if (draft.system === "dnd5e") {
     const orders = ORDER5[draft.classId as keyof typeof ORDER5];
+    const sorted = ruSort(CL5, (item) => item.name);
+    const { top, rest } = orderedIds("dnd5e", sorted.map((item) => item.id));
+    const byId = new Map(sorted.map((item) => [item.id, item]));
+    function card(id: string, recommended: boolean) {
+      const item = byId.get(id);
+      if (!item) return null;
+      const face = classChips("dnd5e", item.id);
+      return (
+        <Choice key={id} id={item.id} name={item.name} english={englishName(item.id) || undefined} chips={face.chips} reason={face.reason} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+      );
+    }
     return (
       <>
-        {ruSort(CL5, (item) => item.name).map((item) => (
-          <Choice key={item.id} id={item.id} name={item.name} hint={`${item.hint} · ${item.subclass.name}`} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} />
-        ))}
+        <div data-testid="class-list">
+          <p className="kicker">Советуем новичку</p>
+          {top.map((id) => card(id, true))}
+          <p className="kicker">Все классы</p>
+          {rest.map((id) => card(id, false))}
+        </div>
         <CustomClassCard draft={draft} update={update} />
         {orders && (
           <>
@@ -574,11 +615,25 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
     );
   }
   const cls = CL2.find((item) => item.id === draft.classId);
+  const sorted = ruSort(CL2, (item) => item.name);
+  const { top, rest } = orderedIds("pf2e", sorted.map((item) => item.id));
+  const byId = new Map(sorted.map((item) => [item.id, item]));
+  function card(id: string, recommended: boolean) {
+    const item = byId.get(id);
+    if (!item) return null;
+    const face = classChips("pf2e", item.id);
+    return (
+      <Choice key={id} id={item.id} name={item.name} english={englishName(item.id) || undefined} chips={face.chips} reason={face.reason} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+    );
+  }
   return (
     <>
-      {ruSort(CL2, (item) => item.name).map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} />
-      ))}
+      <div data-testid="class-list">
+        <p className="kicker">Советуем новичку</p>
+        {top.map((id) => card(id, true))}
+        <p className="kicker">Все классы</p>
+        {rest.map((id) => card(id, false))}
+      </div>
       <CustomClassCard draft={draft} update={update} />
       {cls?.choices.map((choice) => (
         <div key={choice.id} className="stack">
@@ -700,6 +755,7 @@ function AbilityStep({
       {method === "pointbuy" && <PointBuy draft={draft} update={update} />}
       {(method === "standard" || method === "roll") && <ArrayAssign draft={draft} update={update} />}
       {method === "boost" && <Boosts draft={draft} setChoice={setChoice} toggleMulti={toggleMulti} />}
+      {draft.classId && <p className="tiny">Для этого класса советуем поднять: {recommendedBoosts(draft).map((ability) => ABILITY_NAME[ability]).join(" и ") || "ключ класса"}.</p>}
       {draft.system === "dnd5e" && method && <BackgroundBoosts draft={draft} setChoice={setChoice} />}
       <div className="card">
         <b>Итог</b>
@@ -803,6 +859,7 @@ function Boosts({
   const free = draft.ancestryId === "custom" || draft.choices.ancestryMode === "free" || !ancestry || ancestry.boosts.length === 0;
   const options = originAbilities(draft);
   const key = classKey(draft);
+  const marks = recommendedBoosts(draft);
   const background = BG2.find((item) => item.id === draft.backgroundId);
   const backgroundFrees = background?.freeBoosts ?? 1;
   return (
@@ -810,11 +867,11 @@ function Boosts({
       <div className="card stack">
         <b>Народ</b>
         {free ? (
-          <MultiAbilities group="anc" label="Два разных повышения" picked={draft.multi.ancestryBoosts ?? []} max={2} onToggle={(ability) => toggleMulti("ancestryBoosts", ability, 2)} />
+          <MultiAbilities group="anc" label="Два разных повышения" picked={draft.multi.ancestryBoosts ?? []} max={2} marks={marks} onToggle={(ability) => toggleMulti("ancestryBoosts", ability, 2)} />
         ) : (
           <>
             <p className="tiny">Уже дано: {ancestry?.boosts.map((ability) => ABILITY_NAME[ability]).join(", ")}. Изъян: {ancestry?.flaw ? ABILITY_NAME[ancestry.flaw] : "нет"}.</p>
-            <AbilityRow label="Свободное, не из списка" value={draft.choices.ancFree ?? ""} blocked={ancestry?.boosts} onPick={(ability) => setChoice("ancFree", ability)} />
+            <AbilityRow label="Свободное, не из списка" value={draft.choices.ancFree ?? ""} blocked={ancestry?.boosts} marks={marks} onPick={(ability) => setChoice("ancFree", ability)} />
           </>
         )}
       </div>
@@ -823,7 +880,7 @@ function Boosts({
         {background && background.abilities.length !== 2 ? (
           <>
             {background.abilities.length > 0 && (
-              <AbilityRow label="Из списка происхождения" value={draft.choices.bgFixed ?? ""} allowed={background.abilities} onPick={(ability) => setChoice("bgFixed", ability)} />
+              <AbilityRow label="Из списка происхождения" value={draft.choices.bgFixed ?? ""} allowed={background.abilities} marks={marks} onPick={(ability) => setChoice("bgFixed", ability)} />
             )}
             {Array.from({ length: backgroundFrees }, (_, index) => {
               const keyName = (["bgFree", "bgFree2", "bgFree3"] as const)[index];
@@ -837,6 +894,7 @@ function Boosts({
                   label={backgroundFrees > 1 ? `Свободное ${index + 1}` : "Свободное"}
                   value={draft.choices[keyName] ?? ""}
                   blocked={blocked}
+                  marks={marks}
                   onPick={(ability) => setChoice(keyName, ability)}
                 />
               );
@@ -844,8 +902,8 @@ function Boosts({
           </>
         ) : (
           <>
-            <AbilityRow label="Одно из двух" value={draft.choices.bgFixed ?? ""} allowed={options} onPick={(ability) => setChoice("bgFixed", ability)} />
-            <AbilityRow label="Другое свободное" value={draft.choices.bgFree ?? ""} blocked={draft.choices.bgFixed ? [draft.choices.bgFixed as Ability] : []} onPick={(ability) => setChoice("bgFree", ability)} />
+            <AbilityRow label="Одно из двух" value={draft.choices.bgFixed ?? ""} allowed={options} marks={marks} onPick={(ability) => setChoice("bgFixed", ability)} />
+            <AbilityRow label="Другое свободное" value={draft.choices.bgFree ?? ""} blocked={draft.choices.bgFixed ? [draft.choices.bgFixed as Ability] : []} marks={marks} onPick={(ability) => setChoice("bgFree", ability)} />
           </>
         )}
       </div>
@@ -854,7 +912,7 @@ function Boosts({
         <p className="tiny">Повышение ключа применяется само. У воина и следопыта ключ выбирается на шаге класса.</p>
       </div>
       <div className="card">
-        <MultiAbilities group="free" label="Четыре свободных в разные характеристики" picked={draft.multi.freeBoosts ?? []} max={4} onToggle={(ability) => toggleMulti("freeBoosts", ability, 4)} />
+        <MultiAbilities group="free" label="Четыре свободных в разные характеристики" picked={draft.multi.freeBoosts ?? []} max={4} marks={marks} onToggle={(ability) => toggleMulti("freeBoosts", ability, 4)} />
       </div>
     </div>
   );
@@ -912,6 +970,43 @@ function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: st
   );
 }
 
+const FEAT_SLOT: Record<string, string> = {
+  "sudden-charge": "classFeat",
+  "reactive-shield": "classFeat",
+  exacting: "classFeat",
+  "shield-block": "generalFeat",
+  fleet: "generalFeat",
+  toughness: "generalFeat",
+  "battle-medicine": "skillFeat",
+  "natural-ambition": "ancestryFeat",
+  defense: "style",
+  alert: "humanFeat",
+};
+
+const FEAT_NAME: Record<string, string> = {
+  "sudden-charge": "Внезапный рывок",
+  "reactive-shield": "Реактивный щит",
+  exacting: "Точный замах",
+  "shield-block": "Блок щитом",
+  fleet: "Быстроногий",
+  toughness: "Живучесть",
+  "battle-medicine": "Боевая медицина",
+  "natural-ambition": "Природная амбиция",
+  defense: "Оборона",
+  alert: "Бдительный",
+};
+
+function FeatAdvise({ draft, setChoice }: { draft: Draft; setChoice: (key: string, value: string) => void }) {
+  const rows = featAdvice().filter((row) => draft.system === "dnd5e" ? row.id === "defense" || row.id === "alert" : row.id !== "defense" && row.id !== "alert").slice(0, 5);
+  return (
+    <Advise
+      items={rows.map((row) => ({ id: row.id, name: FEAT_NAME[row.id] ?? row.id }))}
+      advice={rows}
+      onPick={(id) => setChoice(FEAT_SLOT[id] ?? "classFeat", id)}
+    />
+  );
+}
+
 function FeatStep({
   draft,
   update,
@@ -933,6 +1028,7 @@ function FeatStep({
     const proficient = [...new Set([...fixedSkills(draft), ...(draft.multi.skills ?? [])])];
     return (
       <>
+        <FeatAdvise draft={draft} setChoice={setChoice} />
         {bg && <p className="tiny">Происхождение уже даёт черту. Её не выбирают второй раз, если народ не человек.</p>}
         {draft.ancestryId === "human" && (
           <>
@@ -1027,6 +1123,7 @@ function FeatStep({
   }
   return (
     <>
+      <FeatAdvise draft={draft} setChoice={setChoice} />
       {draft.heritageId === "skilled" && <p className="tiny">Навык умелого наследия выбирается на шаге народа.</p>}
       <p className="tiny">Черта 1 уровня закрывает слот создания. Черта другого уровня записывается на лист текстом и не подменяет слот 1 уровня.</p>
       <PickList
@@ -1311,6 +1408,17 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
     <>
       {unfilled && <UnfilledNote edition={edition} />}
       {draft.system === "dnd5e" && edition === "dnd-2024" && <p className="tiny">В стартовый лист обычно входят заговоры и 1-й круг. Остальные круги справочника тоже в списке: выберите круг или оставьте «все».</p>}
+      <Advise
+        items={spells}
+        advice={draft.system === "pf2e" || draft.system === "dnd5e" ? spellAdvice(draft.system) : []}
+        onPick={(id) => {
+          const spell = spells.find((item) => item.id === id);
+          const known = draft.knownSpells.includes(id) ? draft.knownSpells : [...draft.knownSpells, id];
+          const prepare = Boolean(spell && spell.level > 0 && (budget?.kind === "prepared" || budget?.kind === "book"));
+          const prepared = prepare && !draft.preparedSpells.includes(id) ? [...draft.preparedSpells, id] : draft.preparedSpells;
+          update({ knownSpells: known, preparedSpells: prepared });
+        }}
+      />
       {budget && (
         <p className="lead">
           Заговоры {cantrips} из {budget.cantrips}. Заклинания 1-го круга в запасе {leveled}
@@ -1392,6 +1500,18 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
           <p className="tiny">Фото сжимается и остаётся в памяти телефона. В сеть оно не уходит.</p>
         </div>
       </div>
+      <div className="card stack">
+        <label className="field">
+          <span>Собрать сразу до уровня</span>
+          <input data-testid="build-level" type="number" min={1} max={20} value={draft.choices.buildLevel || "1"} onChange={(event) => update({ choices: { ...draft.choices, buildLevel: String(Math.max(1, Math.min(20, Number(event.target.value) || 1))) } })} />
+        </label>
+        {draft.system === "pf2e" && (
+          <button type="button" className={`pill ${draft.choices.freeArchetype === "yes" ? "on" : ""}`} data-testid="free-archetype" onClick={() => update({ choices: { ...draft.choices, freeArchetype: draft.choices.freeArchetype === "yes" ? "" : "yes" } })}>
+            Свободный архетип {draft.choices.freeArchetype === "yes" ? "включён" : "выключен"}
+          </button>
+        )}
+        <p className="tiny">Уровень 1 собирается здесь. Остальные слоты закрываются в разделе «Развитие».</p>
+      </div>
       <div className="card">
         <p>{draft.system ? systemTitle(draft.system) : "Своя игра"}</p>
         <p className="tiny">Готовый лист не называется полностью проверенным: черта без расчёта в развитии всё ещё требует руки.</p>
@@ -1411,12 +1531,14 @@ function AbilityRow({
   onPick,
   allowed,
   blocked,
+  marks,
 }: {
   label: string;
   value: string;
   onPick: (ability: Ability) => void;
   allowed?: Ability[];
   blocked?: Ability[];
+  marks?: Ability[];
 }) {
   const list = (allowed ?? ABILITIES).filter((ability) => !blocked?.includes(ability));
   return (
@@ -1424,8 +1546,8 @@ function AbilityRow({
       <p className="kicker">{label}</p>
       <div className="wrap">
         {list.map((ability) => (
-          <button key={ability} type="button" className={`pill ${value === ability ? "on" : ""}`} data-testid={`abs-${label}-${ability}`} onClick={() => onPick(ability)}>
-            {ABILITY_SHORT[ability]}
+          <button key={ability} type="button" className={`pill ${value === ability ? "on" : ""} ${marks?.includes(ability) ? "advise" : ""}`} data-testid={`abs-${label}-${ability}`} onClick={() => onPick(ability)}>
+            {ABILITY_SHORT[ability]}{marks?.includes(ability) ? " ·" : ""}
           </button>
         ))}
       </div>
@@ -1433,14 +1555,14 @@ function AbilityRow({
   );
 }
 
-function MultiAbilities({ group, label, picked, max, onToggle }: { group: string; label: string; picked: string[]; max: number; onToggle: (ability: Ability) => void }) {
+function MultiAbilities({ group, label, picked, max, onToggle, marks }: { group: string; label: string; picked: string[]; max: number; onToggle: (ability: Ability) => void; marks?: Ability[] }) {
   return (
     <div>
       <p className="kicker">{label}: {picked.length} из {max}</p>
       <div className="wrap">
         {ABILITIES.map((ability) => (
-          <button key={ability} type="button" className={`pill ${picked.includes(ability) ? "on" : ""}`} data-testid={`multi-${group}-${ability}`} onClick={() => onToggle(ability)}>
-            {ABILITY_SHORT[ability]}
+          <button key={ability} type="button" className={`pill ${picked.includes(ability) ? "on" : ""} ${marks?.includes(ability) ? "advise" : ""}`} data-testid={`multi-${group}-${ability}`} onClick={() => onToggle(ability)}>
+            {ABILITY_SHORT[ability]}{marks?.includes(ability) ? " ·" : ""}
           </button>
         ))}
       </div>

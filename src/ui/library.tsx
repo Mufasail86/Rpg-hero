@@ -5,6 +5,7 @@ import { SYSTEM_DND, SYSTEM_PF } from "../labels";
 import { ruSort } from "../sort";
 import { ART, ART_CAPTION, artSrc, cardArt } from "./art";
 import { go, useHash } from "./common";
+import { cardFor, RuleCardView } from "./rule-card";
 
 const SECTIONS: { id: string; title: string; categories: string[] }[] = [
   { id: "ancestry", title: "Народы", categories: ["species", "ancestry", "lineage"] },
@@ -231,7 +232,7 @@ export function Library() {
             <EntryCard key={row.token} entry={row} fav={favs.includes(row.token)} compared={compare.includes(row.token)} onFav={() => toggleFav(row.token)} onCompare={() => toggleCompare(row.token)} />
           ))}
         </div>
-        {filtered.length === 0 && <p>Ничего не нашлось. Смените слова, редакцию или снимите фильтр «только сверенное».</p>}
+        {filtered.length === 0 && <p>Ничего не нашлось. Попробуйте «Лечение» или Heal. Если пусто снова, снимите «Только сверенное» или смените редакцию.</p>}
         {more && (
           <button type="button" className="btn" data-testid="library-more" onClick={() => setCount((value) => value + PAGE)}>
             Показать ещё
@@ -247,25 +248,33 @@ function EntryCard({
   entry,
   fav,
   compared,
+  showTitle = true,
   onFav,
   onCompare,
 }: {
   entry: RuleEntry;
   fav: boolean;
   compared: boolean;
+  showTitle?: boolean;
   onFav: () => void;
   onCompare: () => void;
 }) {
   const art = cardArt(entry.localId.split(":").pop() ?? entry.localId) ?? cardArt(entry.localId);
   const pack = packById(entry.sourceId);
+  const card = cardFor(entry.localId);
+  const sourceNote = `${systemName(entry.system)} · ${editionLabel(entry)} · ${entry.categoryTitle} · ${pack?.title ?? entry.sourceId}. ${STATUS_NAME[entry.status]} · ${licenseCaption(entry.license)}.`;
   return (
     <article className="card stack">
       {art && <img className="card-art" src={art} alt="" loading="lazy" decoding="async" />}
-      <b>{entry.name}</b>
-      <p className="tiny">{systemName(entry.system)} · {editionLabel(entry)} · {entry.categoryTitle} · {pack?.title ?? entry.sourceId}</p>
-      <p className="tiny">{STATUS_NAME[entry.status]} · {licenseCaption(entry.license)}{entry.originalName ? ` · ${entry.originalName}` : ""}</p>
-      {entry.short && <p className="lede">{entry.short}</p>}
-      <p>{entry.text}</p>
+      {showTitle && <b>{entry.name}</b>}
+      {card ? <p className="en-name">{card.originalName}</p> : entry.originalName ? <p className="en-name">{entry.originalName}</p> : null}
+      {card ? <RuleCardView card={card} sourceNote={sourceNote} /> : (
+        <>
+          <p className="tiny">{sourceNote}</p>
+          {entry.short && <p className="lede">{entry.short}</p>}
+          <p>{entry.text}</p>
+        </>
+      )}
       {entry.relations.length > 0 && (
         <p className="tiny">Связанные записи: {entry.relations.map((id) => entryByToken(id)?.name ?? id).join(", ")}</p>
       )}

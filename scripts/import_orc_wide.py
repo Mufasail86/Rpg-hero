@@ -50,7 +50,7 @@ ANCESTRY_RU = {
     "human": "Человек",
     "elf": "Эльф",
     "yaksha": "Якша",
-    "yaoguai": "Ягуай",
+    "yaoguai": "Яогуай",
     "bugbear": "Багбир",
     "fetchling": "Фетчлинг",
     "strix": "Стрикс",
@@ -79,10 +79,10 @@ CLASS_RU = {
     "gunslinger": "Стрелок",
     "thaumaturge": "Тауматург",
     "sorcerer": "Чародей",
-    "exemplar": "Экземпляр",
+    "exemplar": "Экземплар",
     "psychic": "Экстрасенс",
     "magus": "Колдун",
-    "champion": "Чемпион",
+    "champion": "Поборник",
     "rogue": "Плут",
 }
 ABILITY = {

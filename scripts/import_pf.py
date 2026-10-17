@@ -249,7 +249,7 @@ SKILL = {
 CLASS_RU = {
     "alchemist": "Алхимик",
     "barbarian": "Варвар",
-    "champion": "Чемпион",
+    "champion": "Поборник",
     "investigator": "Сыщик",
     "monk": "Монах",
     "oracle": "Оракул",

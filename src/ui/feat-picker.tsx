@@ -1,12 +1,15 @@
 import { useMemo, useState } from "react";
+import { CARD_BY_ID } from "../data/cards";
 import { byRu } from "../sort";
 import { Choice } from "./common";
+import { RuleCardView } from "./rule-card";
 
 export interface PickRow {
   id: string;
   name: string;
   info: string;
   hint?: string;
+  english?: string;
   level?: number;
 }
 
@@ -38,7 +41,8 @@ export function PickList({
     const unique = new Map<string, PickRow>();
     for (const row of rows) {
       if (level != null && level !== 0 && row.level != null && row.level !== level) continue;
-      if (needle && !`${row.name} ${row.hint ?? ""}`.toLocaleLowerCase("ru").includes(needle)) continue;
+      const english = row.english ?? CARD_BY_ID.get(row.id)?.originalName ?? "";
+      if (needle && !`${row.name} ${row.hint ?? ""} ${english}`.toLocaleLowerCase("ru").includes(needle)) continue;
       if (!unique.has(row.id)) unique.set(row.id, row);
     }
     return [...unique.values()].sort(byRu((row) => row.name));
@@ -51,7 +55,7 @@ export function PickList({
       <input
         className="search"
         type="search"
-        placeholder="Найти по имени"
+        placeholder="Найти по русскому или английскому имени"
         value={query}
         aria-label={title}
         onChange={(event) => { setQuery(event.target.value); setShown(24); }}
@@ -69,17 +73,23 @@ export function PickList({
       )}
       <p className="tiny">Показано {page.length} из {filtered.length}</p>
       {filtered.length === 0 && <p className="tiny">{empty ?? "В этом срезе черт нет. Смените уровень или запрос."}</p>}
-      {page.map((row) => (
-        <Choice
-          key={row.id}
-          id={row.id}
-          name={row.name}
-          hint={row.hint}
-          info={row.info}
-          on={selected === row.id}
-          onPick={() => onPick(row)}
-        />
-      ))}
+      {page.map((row) => {
+        const card = CARD_BY_ID.get(row.id);
+        return (
+          <div key={row.id} className="stack">
+            <Choice
+              id={row.id}
+              name={row.name}
+              hint={row.hint}
+              english={row.english ?? card?.originalName}
+              info={card ? `${row.info}\n\n${card.originalName}` : row.info}
+              on={selected === row.id}
+              onPick={() => onPick(row)}
+            />
+            {card && <RuleCardView card={card} />}
+          </div>
+        );
+      })}
       {shown < filtered.length && (
         <button type="button" className="btn" onClick={() => setShown((value) => value + 24)}>Показать ещё</button>
       )}

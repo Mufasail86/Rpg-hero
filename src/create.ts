@@ -5,7 +5,8 @@ import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
 import { FEAT_BY_ID, levelOneClassFeats } from "./data/pf-index";
 import { extraGear } from "./data/shop";
-import { derive } from "./pf2e/build";
+import { derive, snapshot } from "./pf2e/build";
+import { snapshotDnd } from "./dnd/build";
 import {
   ABILITIES,
   ABILITY_NAME,
@@ -663,7 +664,15 @@ export function createCharacter(d: Draft): { ok: true; character: Character } | 
   const scored = scoresOf(d);
   if (!scored.ok) return scored;
   const character = d.system === "dnd5e" ? build5(d, scored.scores) : build2(d, scored.scores);
-  const withSlots = refreshSlots(character);
+  character.level = targetLevel(d);
+  if (character.system === "dnd5e" && character.level > 1) {
+    const average = Math.floor(character.hitDie / 2) + 1;
+    character.hpRolls = Array.from({ length: character.level }, (_, index) => character.hpRolls[index] ?? average);
+    character.hitDice = { ...character.hitDice, max: character.level, current: character.level };
+  }
+  let withSlots = refreshSlots(character);
+  if (withSlots.system === "pf2e" && withSlots.progress) withSlots = snapshot(withSlots);
+  if (withSlots.system === "dnd5e" && withSlots.dnd) withSlots = snapshotDnd(withSlots);
   withSlots.hpCurrent = hpMax(withSlots);
   withSlots.hpTemp = 0;
   if (d.system) {
@@ -851,7 +860,7 @@ function seedPf(d: Draft, scores: Record<Ability, number>): Pf2eProgress | undef
     if (pick) push(`class-${choice.id}`, choice.id, pick);
   }
   const progress: Pf2eProgress = {
-    freeArchetype: false,
+    freeArchetype: d.choices.freeArchetype === "yes",
     ancestryId: d.ancestryId,
     heritageId: d.heritageId,
     backgroundId: d.backgroundId,
@@ -1011,6 +1020,12 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+}
+
+function targetLevel(d: Draft): number {
+  const raw = Number(d.choices.buildLevel);
+  if (!Number.isFinite(raw)) return 1;
+  return Math.max(1, Math.min(20, Math.floor(raw)));
 }
 
 function resources5(d: Draft, scores: Record<Ability, number>): Character["resources"] {
