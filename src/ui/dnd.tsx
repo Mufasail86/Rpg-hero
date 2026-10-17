@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
+import { EPIC_BOONS, GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
 import { describeDndChoice, KNOWN_SUBCLASSES, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
@@ -282,7 +282,13 @@ function optionsFor(source: string, character?: Character): { pick: string; name
   if (source === "style") return [...STYLE_FEATS.map((feat) => ({ pick: feat.id, name: feat.name })), { pick: "dueling", name: "Дуэль" }, { pick: "protection", name: "Защита" }];
   if (source === "feat") return [...ORIGIN_FEATS, ...GENERAL_FEATS].map((feat) => ({ pick: `feat:${feat.id}`, name: feat.name }));
   if (source === "mastery") return ITEMS.filter((item) => item.kind === "weapon").map((item) => ({ pick: item.id, name: item.name }));
-  if (source === "epic") return ABILITIES.map((ability) => ({ pick: `boon:combat-prowess|${ability}`, name: `+1 к ${ABILITY_NAME[ability]}` }));
+  if (source === "epic") {
+    return EPIC_BOONS.flatMap((boon) => {
+      if (boon.id === "spell-recall" && character && !character.spellcasting) return [];
+      const abilities: Ability[] = boon.id === "irresistible-offense" ? ["str", "dex"] : boon.id === "spell-recall" ? ["int", "wis", "cha"] : ABILITIES;
+      return abilities.map((ability) => ({ pick: `boon:${boon.id}|${ability}`, name: `${boon.name}: +1 к ${ABILITY_NAME[ability]}` }));
+    });
+  }
   if (source === "asi") {
     const list = ABILITIES.map((ability) => ({ pick: `${ability}+2`, name: `${ABILITY_NAME[ability]} +2` }));
     for (let i = 0; i < ABILITIES.length; i += 1) {

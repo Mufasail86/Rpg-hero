@@ -3,6 +3,7 @@ import { ABILITIES, ABILITY_NAME, type Ability, type Character, type ItemInst, m
 import { SKILLS as SKILLS5, skillById as skill5, XP_THRESHOLDS, fullSlots, halfSlots, pactSlots } from "./data/dnd5e";
 import { SKILLS as SKILLS2, skillById as skill2, RANK_NAME } from "./data/pf2e";
 import { derive } from "./pf2e/build";
+import slotsTable from "./data/generated/pf-slots.json";
 import { spellSlotFacts } from "./pf2e/progression";
 
 export const POINT_BUY_BUDGET = 27;
@@ -345,18 +346,57 @@ export function refreshSlots(c: Character): Character {
   return next;
 }
 
+interface SlotTable {
+  cantrips: number;
+  ranks: number[][];
+  tenthNote: string;
+  font?: boolean;
+  curriculum?: boolean;
+}
+
+const SLOT_TABLES = slotsTable.classes as Record<string, SlotTable>;
+
+export function pfSlotRow(classId: string, level: number): number[] | null {
+  const table = SLOT_TABLES[classId];
+  if (!table) return null;
+  const index = Math.min(20, Math.max(1, level)) - 1;
+  return table.ranks[index] ?? null;
+}
+
+function wizardSchool(c: Character): string | null {
+  const choice = c.progress?.choices.find((item) => item.source === "school" || item.id === "school" || item.id === "class-school");
+  return choice?.pick ?? null;
+}
+
 function pfSpellSlots(c: Character): Character["slots"] {
-  const facts = spellSlotFacts(c.classId);
-  const slots: Character["slots"] = [];
-  if (c.level === 1 && facts.rank1) slots.push({ rank: 1, max: facts.rank1, used: 0, note: "1 круг" });
-  if (c.classId === "cleric") {
-    const font = c.level >= 15 ? 6 : c.level >= 5 ? 5 : 4;
-    if (c.level === 1) slots.push({ rank: 1, max: font, used: 0, note: "шрифт" });
-    else slots.push({ rank: 0, max: font, used: 0, note: `шрифт: ${font} ячеек высшего круга, сам круг в выгрузке не указан` });
+  const table = SLOT_TABLES[c.classId];
+  const row = pfSlotRow(c.classId, c.level);
+  if (!table || !row) {
+    const facts = spellSlotFacts(c.classId);
+    if (c.level === 1 && facts.rank1) return [{ rank: 1, max: facts.rank1, used: 0, note: "1 круг" }];
+    return [];
   }
-  if (facts.tenthAt && c.level >= facts.tenthAt) slots.push({ rank: 10, max: 1, used: 0, note: "ясность оракула" });
-  if (c.level > 1 && facts.rank1) {
-    slots.push({ rank: 0, max: 0, used: 0, note: `таблица ячеек по дням в выгрузке не лежит. На 1 уровне было ${facts.rank1}` });
+  const school = c.classId === "wizard" ? wizardSchool(c) : null;
+  const curriculum = table.curriculum && school != null && school !== "unified";
+  const slots: Character["slots"] = [];
+  row.forEach((max, index) => {
+    if (!max) return;
+    const extra = curriculum ? 1 : 0;
+    const note = index === 9
+      ? (extra ? `${table.tenthNote}, включая учебную ячейку школы` : table.tenthNote)
+      : (extra ? "включая учебную ячейку школы" : undefined);
+    slots.push({ rank: index + 1, max: max + extra, used: 0, note });
+  });
+  if (table.font) {
+    const font = c.level >= 15 ? 6 : c.level >= 5 ? 5 : 4;
+    const highest = [...row.keys()].reverse().find((index) => row[index] > 0);
+    if (highest != null) slots.push({ rank: highest + 1, max: font, used: 0, note: "шрифт" });
+  }
+  if (table.curriculum && school == null) {
+    slots.push({ rank: 0, max: 0, used: 0, note: "школа не выбрана, учебные ячейки не добавлены" });
+  }
+  if (school === "unified") {
+    slots.push({ rank: 0, max: 0, used: 0, note: "единая теория не даёт учебных ячеек" });
   }
   return slots;
 }
@@ -384,7 +424,11 @@ function prepareLimit(c: Character): number {
 function knownLimit(c: Character): number {
   if (!c.spellcasting) return 0;
   if (c.system === "pf2e") {
-    if (c.classId === "bard") return 1 + c.level;
+    const row = pfSlotRow(c.classId, c.level);
+    if (row && (c.classId === "bard" || c.classId === "oracle" || c.classId === "sorcerer")) {
+      const slots = row.reduce((sum, max) => sum + max, 0);
+      return c.level >= 19 ? slots + 1 : slots;
+    }
     if (c.classId === "wizard") return 8 + c.level * 2;
     return 99;
   }
@@ -396,7 +440,12 @@ function knownLimit(c: Character): number {
 
 function cantripLimit(c: Character): number {
   if (!c.spellcasting) return 0;
-  if (c.system === "pf2e") return 5;
+  if (c.system === "pf2e") {
+    const table = SLOT_TABLES[c.classId];
+    if (!table) return 0;
+    if (c.classId === "wizard" && wizardSchool(c) && wizardSchool(c) !== "unified") return table.cantrips + 1;
+    return table.cantrips;
+  }
   if (c.classId === "custom") return 4 + Math.floor((Math.max(1, c.level) - 1) / 4);
   const base = c.classId === "sorcerer" ? 4 : c.classId === "wizard" || c.classId === "cleric" ? 3 : c.classId === "bard" || c.classId === "druid" || c.classId === "warlock" ? 2 : 0;
   const extra = c.features.some((f) => f.name === "Дополнительный заговор") ? 1 : 0;

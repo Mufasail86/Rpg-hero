@@ -213,10 +213,6 @@ export function resolveRanks(progress: Pf2eProgress, level: number, armorCategor
   if (row.gaps.some((gap) => gap.includes("Weapon Mastery"))) {
     notes.push("Особенность мастерства оружия в выгрузке не содержит фразы для этого класса. Ранг оружия из неё не поднят.");
   }
-  if (row.spell.rank1 != null && level > 1) {
-    const tenth = row.spell.tenthAt != null && level >= row.spell.tenthAt ? " На 19 уровне есть одна ячейка 10 круга." : "";
-    notes.push(`Таблица ячеек по дням в выгрузке не лежит. На 1 уровне сверено ${row.spell.rank1} ячеек 1 круга. Выше лист число кругов не подставляет.${tenth}`);
-  }
 
   if (canny === "fort" || canny === "ref" || canny === "will") {
     saves[canny] = higher(saves[canny], level >= 17 ? "master" : "expert");

@@ -1,0 +1,3425 @@
+{
+  "dnd-2024~species~dragonborn": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Dragonborn",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~dragonborn:black": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Black Dragon",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~dragonborn:blue": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Blue Dragon",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~dragonborn:brass": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Brass Dragon",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~dragonborn:green": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Green Dragon",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~dragonborn:white": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "White Dragon",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~dwarf": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Dwarf",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~elf": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Elf",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~elf:drow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Drow",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~elf:high": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "High Elf",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~elf:wood": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Wood Elf",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~gnome": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Gnome",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~gnome:forest": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Forest Gnome",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~gnome:rock": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Rock Gnome",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~goliath": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Goliath",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~goliath:cloud": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Cloud Giant",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~goliath:fire": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Fire Giant",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~goliath:frost": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Frost Giant",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~goliath:hill": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Hill Giant",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~goliath:stone": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Stone Giant",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~goliath:storm": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Storm Giant",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~halfling": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Halfling",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~human": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Human",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~orc": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Orc",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~species~tiefling": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Tiefling",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~tiefling:abyssal": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Abyssal",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~tiefling:chthonic": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Chthonic",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~lineage~tiefling:infernal": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Infernal",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~background~acolyte": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Acolyte",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~background~criminal": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Criminal",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~background~sage": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sage",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~background~soldier": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Soldier",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~class~barbarian": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Barbarian",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~barbarian-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Path of the Berserker",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~bard": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Bard",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~bard-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "College of Lore",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~cleric": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Cleric",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~cleric-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Life Domain",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~druid": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Druid",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~druid-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Circle of the Land",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~fighter": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Fighter",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~fighter-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Champion",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~monk": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Monk",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~monk-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Warrior of the Open Hand",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~paladin": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Paladin",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~paladin-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Oath of Devotion",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~ranger": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Ranger",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~ranger-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Hunter",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~rogue": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Rogue",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~rogue-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Thief",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~sorcerer": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sorcerer",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~sorcerer-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Draconic Sorcery",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~warlock": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Warlock",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~warlock-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Fiend Patron",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~class~wizard": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Wizard",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~subclass~wizard-sub": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Evoker",
+    "location": "SRD 5.2.1, класс. Кость хитов и текст подкласса сверены; не каждая строка таблицы уровней."
+  },
+  "dnd-2024~origin-feat~alert": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Alert",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~origin-feat~magic-cleric": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Magic Initiate (Cleric)",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~origin-feat~magic-wizard": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Magic Initiate (Wizard)",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~origin-feat~magic-druid": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Magic Initiate (Druid)",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~origin-feat~savage": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Savage Attacker",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~origin-feat~skilled": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Skilled",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~style~archery": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Archery",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~style~defense": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Defense",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~style~gwf": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Great Weapon Fighting",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~style~twf": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Two-Weapon Fighting",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~general-feat~asi": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Ability Score Improvement",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~general-feat~grappler": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Grappler",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~combat-prowess": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of Combat Prowess",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~dimensional-travel": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of Dimensional Travel",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~fate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of Fate",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~irresistible-offense": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of Irresistible Offense",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~spell-recall": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of Spell Recall",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~night-spirit": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of the Night Spirit",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~epic-boon~truesight": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Boon of Truesight",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~skill~acrobatics": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Acrobatics",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~animal": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Animal Handling",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~arcana": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Arcana",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~athletics": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Athletics",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~deception": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Deception",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~history": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "History",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~insight": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Insight",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~intimidation": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Intimidation",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~investigation": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Investigation",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~medicine": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Medicine",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~nature": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Nature",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~perception": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Perception",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~performance": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Performance",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~persuasion": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Persuasion",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~religion": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Religion",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~sleight": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sleight of Hand",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~stealth": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Stealth",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~skill~survival": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Survival",
+    "location": "SRD 5.2.1, навык. Характеристика сверена, пояснение своё."
+  },
+  "dnd-2024~condition~blinded": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Blinded",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~charmed": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Charmed",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~deafened": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Deafened",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~frightened": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Frightened",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~grappled": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Grappled",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~incapacitated": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Incapacitated",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~invisible": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Invisible",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~paralyzed": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Paralyzed",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~petrified": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Petrified",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~poisoned": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Poisoned",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~prone": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Prone",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~restrained": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Restrained",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~stunned": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Stunned",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~unconscious": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Unconscious",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~condition~bloodied": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Bloodied",
+    "location": "SRD 5.2.1, словарь состояний. Краткий пересказ, не дословная статья."
+  },
+  "dnd-2024~spell~acid-splash": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Acid Splash",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~chill-touch": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Chill Touch",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~dancing-lights": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Dancing Lights",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~druidcraft": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Druidcraft",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~eldritch-blast": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Eldritch Blast",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~fire-bolt": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Fire Bolt",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~guidance": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Guidance",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~light": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Light",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~mage-hand": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Mage Hand",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~mending": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Mending",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~message": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Message",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~minor-illusion": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Minor Illusion",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~poison-spray": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Poison Spray",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~prestidigitation": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Prestidigitation",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~ray-of-frost": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Ray of Frost",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~resistance": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Resistance",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~sacred-flame": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sacred Flame",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~shocking-grasp": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Shocking Grasp",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~spare-dying": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Spare the Dying",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~thaumaturgy": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Thaumaturgy",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~true-strike": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "True Strike",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~vicious-mockery": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Vicious Mockery",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~alarm": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Alarm",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~bane": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Bane",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~bless": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Bless",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~burning-hands": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Burning Hands",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~charm-person": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Charm Person",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~command": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Command",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~detect-magic": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Detect Magic",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~disguise-self": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Disguise Self",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~faerie-fire": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Faerie Fire",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~feather-fall": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Feather Fall",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~fog-cloud": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Fog Cloud",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~grease": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Grease",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~guiding-bolt": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Guiding Bolt",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~healing-word": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Healing Word",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~hellish-rebuke": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Hellish Rebuke",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~hex": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Hex",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~hunters-mark": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Hunter's Mark",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~inflict-wounds": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Inflict Wounds",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~longstrider": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Longstrider",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~mage-armor": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Mage Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~magic-missile": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Magic Missile",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~shield": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Shield",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~shield-of-faith": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Shield of Faith",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~silent-image": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Silent Image",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~sleep": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sleep",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~speak-animals": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Speak with Animals",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~thunderwave": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Thunderwave",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~entangle": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Entangle",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~goodberry": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Goodberry",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~animal-friendship": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Animal Friendship",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~sanctuary": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sanctuary",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~heroism": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Heroism",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~divine-favor": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Divine Favor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~identify": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Identify",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~spell~find-familiar": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Find Familiar",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~dagger": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Dagger",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~handaxe": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Handaxe",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~mace": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Mace",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~quarterstaff": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Quarterstaff",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~spear": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Spear",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~sickle": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sickle",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~javelin": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Javelin",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~greatclub": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Greatclub",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~club": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Club",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~light-crossbow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Light Crossbow",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~shortbow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Shortbow",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~sling": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sling",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~dart": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Dart",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~greataxe": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Greataxe",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~greatsword": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Greatsword",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~longsword": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Longsword",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~shortsword": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Shortsword",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~scimitar": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Scimitar",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~rapier": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Rapier",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~flail": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Flail",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~battleaxe": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Battleaxe",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~glaive": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Glaive",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~longbow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Longbow",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~unarmed": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Unarmed Strike",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~padded": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Padded Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~leather": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Leather Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~studded": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Studded Leather Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~hide": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Hide Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~chainshirt": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Chain Shirt",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~scale": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Scale Mail",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~breastplate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Breastplate",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~halfplate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Half Plate Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~chainmail": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Chain Mail",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~splint": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Splint Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~plate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Plate Armor",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~shield": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Shield",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~arrow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Arrow",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~quiver": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Quiver",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~bolt": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Bolt",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~holy": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Holy Symbol (Amulet)",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~crystal": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Crystal",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~orb": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Orb",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~focus": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Sprig of Mistletoe",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~spellbook": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Spellbook",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~robe": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Robe",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~clothes": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Traveler's Clothes",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~calligrapher": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Calligrapher's Supplies",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~thieves": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Thieves' Tools",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~herbalism": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Herbalism Kit",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~healer": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Healer's Kit",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~crowbar": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Crowbar",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~pouch": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Pouch",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~book": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Book",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~parchment": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Parchment",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~gaming": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Gaming Set (Dragonchess)",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~instrument": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Lute",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~artisan": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Artisan's Tools",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~backpack": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Backpack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~bedroll": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Bedroll",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~torch": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Torch",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~rations": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Rations",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~waterskin": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Waterskin",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~tinderbox": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Tinderbox",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~potion": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Potion of Healing",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~explorer": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Explorer's Pack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~dungeoneer": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Dungeoneer's Pack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~burglar": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Burglar's Pack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~entertainer": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Entertainer's Pack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~priest": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Priest's Pack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "dnd-2024~item~scholar": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "5.2.1",
+    "originalName": "Scholar's Pack",
+    "location": "SRD 5.2.1, сверка 2026-10-16"
+  },
+  "pf-remaster~heritage~dwarf:ancient": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Ancient-Blooded Dwarf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~dwarf:forge": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Forge Dwarf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~dwarf:rock": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Rock Dwarf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~dwarf:strong": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Strong-Blooded Dwarf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~dwarf-doughty": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dwarven Doughtiness",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~dwarf-lore": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dwarven Lore",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~elf:arctic": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Arctic Elf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~elf:cavern": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Cavern Elf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~elf:woodland": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Woodland Elf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~elf:seer": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Seer Elf",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~elf-lore": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Elven Lore",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~nimble": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Nimble Elf",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~gnome:chameleon": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Chameleon Gnome",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~gnome:fey": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fey-Touched Gnome",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~gnome:wellspring": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Wellspring Gnome",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~gnome:umbral": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Umbral Gnome",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~gnome-lore": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Gnome Lore",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~animal-elocution": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Animal Elocutionist",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~goblin:charhide": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Charhide Goblin",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~goblin:irongut": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Irongut Goblin",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~goblin:razortooth": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Razortooth Goblin",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~goblin:unbreakable": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Unbreakable Goblin",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~goblin-lore": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Goblin Lore",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~burn-it": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Burn It!",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~halfling:gutsy": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Gutsy Halfling",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~halfling:hillock": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hillock Halfling",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~halfling:nomadic": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Nomadic Halfling",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~halfling:wildwood": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Wildwood Halfling",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~halfling-luck": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Halfling Luck",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~sure-feet": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sure Feet",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~human:skilled": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Skilled Human",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~human:versatile": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Versatile Human",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~natural-ambition": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Natural Ambition",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~general-training": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "General Training",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~leshy:fungus": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fungus Leshy",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~leshy:gourd": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Gourd Leshy",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~leshy:leaf": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Leaf Leshy",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~leshy:root": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Root Leshy",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~leshy-lore": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Leshy Lore",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~seedpod": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Seedpod",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~heritage~orc:battle": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Battle-Ready Orc",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~orc:holdscar": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hold-Scarred Orc",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~orc:winter": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Winter Orc",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~heritage~orc:deep": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Deep Orc",
+    "location": "Foundry, наследие Player Core. Хиты и названный бонус сверены, остальное — пересказ."
+  },
+  "pf-remaster~ancestry-feat~orc-ferocity": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Orc Ferocity",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~ancestry-feat~iron-fists": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Iron Fists",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~background~acolyte": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Acolyte",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~acrobat": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Acrobat",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~criminal": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Criminal",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~entertainer": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Entertainer",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~guard": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Guard",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~hunter": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hunter",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~laborer": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Laborer",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~merchant": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Merchant",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~noble": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Noble",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~scholar": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Scholar",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~scout": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Scout",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~street": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Street Urchin",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~warrior": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Warrior",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~hermit": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hermit",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~sailor": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sailor",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~farmhand": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Farmhand",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~background~field-medic": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Field Medic",
+    "location": "Foundry, происхождение Player Core. Навык и черта сверены, биография — своя."
+  },
+  "pf-remaster~class-choice~bard:muse:maestro": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Maestro",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~bard:muse:polymath": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Polymath",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~bard:muse:warrior": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Warrior",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~bard:muse:enigma": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Enigma",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~cleric:doctrine:cloister": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Cloistered Cleric",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~cleric:doctrine:war": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Warpriest",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~cleric:font:heal": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Healing Font",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~cleric:font:harm": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Harmful Font",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~cleric:deity:light": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Light and healing (sample domain)",
+    "location": "Свой образец домена, не блок божества. Числа шрифта и доктрины сверены отдельно."
+  },
+  "pf-remaster~class-choice~cleric:deity:knowledge": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Knowledge (sample domain)",
+    "location": "Свой образец домена, не блок божества. Числа шрифта и доктрины сверены отдельно."
+  },
+  "pf-remaster~class-choice~cleric:deity:war": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Valor (sample domain)",
+    "location": "Свой образец домена, не блок божества. Числа шрифта и доктрины сверены отдельно."
+  },
+  "pf-remaster~class-choice~cleric:deity:nature": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Nature (sample domain)",
+    "location": "Свой образец домена, не блок божества. Числа шрифта и доктрины сверены отдельно."
+  },
+  "pf-remaster~class-choice~cleric:deity:secret": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Secrets (sample domain)",
+    "location": "Свой образец домена, не блок божества. Числа шрифта и доктрины сверены отдельно."
+  },
+  "pf-remaster~class-choice~druid:order:animal": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Animal Order",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~druid:order:leaf": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Leaf Order",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~druid:order:storm": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Storm Order",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-feat~druid:animal-companion": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Animal Companion",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~druid:leshy-familiar": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Leshy Familiar",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~druid:storm-born": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Storm Born",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-choice~fighter:key:str": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Strength",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~fighter:key:dex": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dexterity",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-feat~fighter:double-slice": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Double Slice",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~fighter:exacting": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Exacting Strike",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~fighter:sudden-charge": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sudden Charge",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~fighter:point-blank": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Point-Blank Stance",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~fighter:reactive-shield": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Reactive Shield",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-choice~ranger:key:str": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Strength",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~ranger:key:dex": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dexterity",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~ranger:edge:flurry": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Flurry",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~ranger:edge:precision": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Precision",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~ranger:edge:outwit": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Outwit",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-feat~ranger:hunted-shot": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hunted Shot",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~ranger:twin-takedown": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Twin Takedown",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~ranger:animal-companion": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Animal Companion",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-feat~ranger:gravity-weapon": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Gravity Weapon",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~class-choice~rogue:racket:thief": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Thief",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~rogue:racket:ruffian": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Ruffian",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~rogue:racket:scoundrel": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Scoundrel",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~witch:patron:rune": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Rune",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~witch:patron:faith": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Faith",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~witch:patron:wild": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Wild",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~witch:patron:fate": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fate",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:school:battle": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Battle Magic",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:school:ward": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Ward",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:school:mental": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Mentalism",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:school:unified": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Unified Theory",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:thesis:familiar": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Improved Familiar Attunement",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:thesis:staff": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Staff Nexus",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~wizard:thesis:blend": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Spell Blending",
+    "location": "Foundry, Player Core, выбор класса. Числа, которые карточка называет, сверены; это не полная способность."
+  },
+  "pf-remaster~class-choice~sorcerer:bloodline:arcane": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core 2",
+    "originalName": "Arcane bloodline",
+    "location": "Ядро игрока 2, линия крови. Карточка — пересказ традиции, не полный список заклинаний."
+  },
+  "pf-remaster~class-choice~sorcerer:bloodline:divine": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core 2",
+    "originalName": "Divine bloodline",
+    "location": "Ядро игрока 2, линия крови. Карточка — пересказ традиции, не полный список заклинаний."
+  },
+  "pf-remaster~class-choice~sorcerer:bloodline:occult": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core 2",
+    "originalName": "Occult bloodline",
+    "location": "Ядро игрока 2, линия крови. Карточка — пересказ традиции, не полный список заклинаний."
+  },
+  "pf-remaster~class-choice~sorcerer:bloodline:primal": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core 2",
+    "originalName": "Primal bloodline",
+    "location": "Ядро игрока 2, линия крови. Карточка — пересказ традиции, не полный список заклинаний."
+  },
+  "pf-remaster~skill-feat~cat-fall": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Cat Fall",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~student-canon": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Student of the Canon",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~experienced-smuggler": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Experienced Smuggler",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~fascinating": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fascinating Performance",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~quick-coercion": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Quick Coercion",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~survey": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Survey Wildlife",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~hefty": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hefty Hauler",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~bargain": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Bargain Hunter",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~courtly": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Courtly Graces",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~assurance": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Assurance",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~forager": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Forager",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~pickpocket": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Pickpocket",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~glare": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Intimidating Glare",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~dubious": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dubious Knowledge",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~underwater": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Underwater Marauder",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~battle-medicine": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Battle Medicine",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~toughness": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Toughness",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~diehard": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Diehard",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill-feat~shield-block": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Shield Block",
+    "location": "Foundry, черта Player Core. Противоречия чисел исправлены, карточка остаётся пересказом."
+  },
+  "pf-remaster~skill~acrobatics": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Acrobatics",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~arcana": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Arcana",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~athletics": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Athletics",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~crafting": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Crafting",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~deception": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Deception",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~diplomacy": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Diplomacy",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~intimidation": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Intimidation",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~medicine": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Medicine",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~nature": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Nature",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~occultism": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Occultism",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~performance": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Performance",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~religion": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Religion",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~society": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Society",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~stealth": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Stealth",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~survival": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Survival",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~skill~thievery": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Thievery",
+    "location": "Ядро игрока, навык. Характеристика сверена, пояснение своё."
+  },
+  "pf-remaster~condition~blinded": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Blinded",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~clumsy": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Clumsy",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~dazzled": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dazzled",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~deafened": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Deafened",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~doomed": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Doomed",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~drained": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Drained",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~dying": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dying",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~encumbered": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Encumbered",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~enfeebled": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Enfeebled",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~fascinated": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fascinated",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~fatigued": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fatigued",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~frightened": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Frightened",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~grabbed": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Grabbed",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~immobilized": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Immobilized",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~offguard": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Off-Guard",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~prone": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Prone",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~sickened": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sickened",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~slowed": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Slowed",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~stunned": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Stunned",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~stupefied": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Stupefied",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~unconscious": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Unconscious",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~condition~wounded": {
+    "status": "verified-partial",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Wounded",
+    "location": "Foundry, состояние Player Core. Краткий пересказ степеней, не дословная статья."
+  },
+  "pf-remaster~spell~acid-splash": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Acid Splash",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~detect-magic": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Detect Magic",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~electric-arc": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Electric Arc",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~guidance": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Guidance",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~light": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Light",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~prestidigitation": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Prestidigitation",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~produce-flame": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Ignition",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~ray-frost": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Frostbite",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~read-aura": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Read Aura",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~shield": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Shield",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~stabilize": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Stabilize",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~telekinetic-projectile": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Telekinetic Projectile",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~vitality-lash": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Vitality Lash",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~void-warp": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Void Warp",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~courageous-anthem": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Courageous Anthem",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~protect-companion": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Rallying Anthem",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~fear": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fear",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~heal": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Heal",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~harm": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Harm",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~magic-missile": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Force Barrage",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~mystic-armor": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Mystic Armor",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~sure-strike": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sure Strike",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~sleep": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sleep",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~command": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Command",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~bless": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Bless",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~sanctuary": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sanctuary",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~grease": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Grease",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~breathe-fire": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Breathe Fire",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~hydraulic-push": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hydraulic Push",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~runic-weapon": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Runic Weapon",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~alarm": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Alarm",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~fleet-step": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fleet Step",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~mage-hand": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Telekinetic Hand",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~tanglefoot": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Tangle Vine",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~forbidding-ward": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Forbidding Ward",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~pocket-library": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Pocket Library",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~soothe": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Soothe",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~spell~phantom-pain": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Phantom Pain",
+    "location": "Foundry, Player Core, поля урона, дистанции и действий, 2026-10-16"
+  },
+  "pf-remaster~item~dagger": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Dagger",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~club": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Club",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~staff": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Staff",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~spear": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Spear",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~mace": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Mace",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~sickle": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Sickle",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~shortsword": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Shortsword",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~rapier": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Rapier",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~longsword": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Longsword",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~hatchet": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hatchet",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~greatsword": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Greatsword",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~shortbow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Shortbow",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~longbow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Longbow",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~crossbow": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Crossbow",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~unarmed": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Fist",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~explorer-clothes": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Explorer's Clothing",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~leather": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Leather Armor",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~studded": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Studded Leather Armor",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~chain-shirt": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Chain Shirt",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~hide": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Hide Armor",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~scale-mail": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Scale Mail",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~breastplate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Breastplate",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~chainmail": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Chain Mail",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~half-plate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Half Plate",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~full-plate": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Full Plate",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~wooden-shield": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Wooden Shield",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~steel-shield": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Steel Shield",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~arrows": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Arrows",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~backpack": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Backpack",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~bedroll": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Bedroll",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~rations": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Rations",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~rope": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Rope",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~torch": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Torch",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~waterskin": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Waterskin",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~flint": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Flint and Steel",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~healer-tools": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Healer's Toolkit",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~thieves-tools": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Thieves' Toolkit",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~writing": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Writing Set",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~spellbook": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Spellbook (Blank)",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~instrument": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Musical Instrument (Handheld)",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~symbol": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Religious Symbol (Wooden)",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~grappling": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Grappling Hook",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  },
+  "pf-remaster~item~caltrops": {
+    "status": "verified-reference",
+    "checkedOn": "2026-10-16",
+    "sourceVersion": "Player Core",
+    "originalName": "Caltrops",
+    "location": "Foundry, Player Core, цена, объём и кости урона, 2026-10-16"
+  }
+}

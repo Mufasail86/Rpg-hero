@@ -1,5 +1,5 @@
 {
-  "source": "Foundry pf2e class and class-feature packs, ORC. Ranks are taken from the class-scoped sentence. The spells-per-day table is cited and not present, so only the written 1st-rank count is stored.",
+  "source": "Foundry pf2e class packs, ORC, plus Archives of Nethys class pages fetched 2026-10-16 for the spells-per-day tables and for perception and weapon ranks whose feature files were missing.",
   "classes": {
     "alchemist": {
       "name": "Alchemist",
@@ -559,6 +559,17 @@
             "fort"
           ],
           "feature": "Sacred Body"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Mastery"
         }
       ],
       "weaponSpec": 7,
@@ -569,9 +580,7 @@
         "cantrips": null,
         "tenthAt": null
       },
-      "gaps": [
-        "13 Weapon Mastery: в тексте нет фразы для этого класса"
-      ],
+      "gaps": [],
       "notes": []
     },
     "cleric": {
@@ -1129,6 +1138,35 @@
             "will"
           ],
           "feature": "Greater Dogged Will"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Mastery"
+        },
+        {
+          "level": 7,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Vigilant Senses"
+        },
+        {
+          "level": 13,
+          "rank": "legendary",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Incredible Senses"
         }
       ],
       "weaponSpec": 7,
@@ -1139,11 +1177,7 @@
         "cantrips": null,
         "tenthAt": null
       },
-      "gaps": [
-        "13 Incredible Senses: файла особенности нет",
-        "13 Weapon Mastery: в тексте нет фразы для этого класса",
-        "7 Vigilant Senses: файла особенности нет"
-      ],
+      "gaps": [],
       "notes": []
     },
     "monk": {
@@ -1586,6 +1620,17 @@
             "perception"
           ],
           "feature": "Perception Mastery"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Martial Weapon Mastery"
         }
       ],
       "weaponSpec": 7,
@@ -1596,9 +1641,7 @@
         "cantrips": null,
         "tenthAt": null
       },
-      "gaps": [
-        "13 Weapon Mastery: в тексте нет фразы для этого класса"
-      ],
+      "gaps": [],
       "notes": []
     },
     "rogue": {
@@ -1985,6 +2028,26 @@
             "classDc"
           ],
           "feature": "Swashbuckler Expertise"
+        },
+        {
+          "level": 13,
+          "rank": "master",
+          "kind": "weapon",
+          "keys": [
+            "simple",
+            "martial",
+            "unarmed"
+          ],
+          "feature": "Weapon Mastery"
+        },
+        {
+          "level": 11,
+          "rank": "master",
+          "kind": "perception",
+          "keys": [
+            "perception"
+          ],
+          "feature": "Perception Mastery"
         }
       ],
       "weaponSpec": 7,
@@ -1995,10 +2058,7 @@
         "cantrips": null,
         "tenthAt": null
       },
-      "gaps": [
-        "11 Vigilant Senses: файла особенности нет",
-        "13 Weapon Mastery: в тексте нет фразы для этого класса"
-      ],
+      "gaps": [],
       "notes": []
     },
     "witch": {

@@ -1,4 +1,4 @@
-import { CLASSES as CL5, CONDITIONS as COND5, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5 } from "./dnd5e";
+import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
 import { LORE } from "./lore";
 import pfCorePack from "./generated/pf-core.json";
@@ -125,6 +125,7 @@ function rulesEntries(): RuleEntry[] {
   for (const item of ORIGIN_FEATS) list.push(make(dnd, "origin-feat", "Черта происхождения", item.id, item.name, item.short, item.info));
   for (const item of STYLE_FEATS) list.push(make(dnd, "style", "Боевой стиль", item.id, item.name, item.short, item.info));
   for (const item of GENERAL_FEATS) list.push(make(dnd, "general-feat", "Общая черта", item.id, item.name, item.short, item.info));
+  for (const item of EPIC_BOONS) list.push(make(dnd, "epic-boon", "Эпический дар", item.id, item.name, item.short, item.info));
   for (const item of SK5) list.push(make(dnd, "skill", "Навык", item.id, item.name, item.short, item.info));
   for (const [id, item] of Object.entries(MASTERY)) list.push(make(dnd, "mastery", "Свойство оружия", id, item.name, item.short, item.info));
   for (const item of COND5) list.push(make(dnd, "condition", "Состояние", item.id, item.name, item.short, item.info));

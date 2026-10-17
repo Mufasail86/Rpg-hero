@@ -1,4 +1,4 @@
-import { fullSlots, GENERAL_FEATS, halfSlots, ITEMS, ORIGIN_FEATS, pactSlots, SKILLS, STYLE_FEATS } from "../data/dnd5e";
+import { EPIC_BOONS, fullSlots, GENERAL_FEATS, halfSlots, ITEMS, ORIGIN_FEATS, pactSlots, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import {
   ABILITY_NAME,
   type Ability,
@@ -188,10 +188,13 @@ function applyAsi(choice: BuildChoice, scores: Record<Ability, number>, feats: S
     return;
   }
   if (pick.startsWith("boon:")) {
+    const id = pick.slice("boon:".length);
+    feats.add(id);
     const ability = choice.detail?.ability as Ability | undefined;
     if (!ability || !ABILITIES.includes(ability)) issues.push({ kind: "build", message: "Эпический дар должен назвать характеристику для +1." });
     else scores[ability] = Math.min(30, scores[ability] + 1);
-    issues.push({ kind: "limit", message: "Особый эффект эпического дара, кроме +1 к характеристике, в постоянные числа не входит." });
+    if (id === "spell-recall") issues.push({ kind: "limit", message: "Дар памяти заклинаний требует особенность заклинаний. Возврат ячейки по 1d4 в постоянные числа не входит." });
+    else issues.push({ kind: "limit", message: "Особый эффект эпического дара, кроме +1 к характеристике, в постоянные числа не входит." });
     return;
   }
   const parts = pick.split(",").filter(Boolean);
@@ -630,6 +633,7 @@ function featLabel(id: string): string {
   return ORIGIN_FEATS.find((feat) => feat.id === id)?.name
     ?? GENERAL_FEATS.find((feat) => feat.id === id)?.name
     ?? STYLE_FEATS.find((feat) => feat.id === id)?.name
+    ?? EPIC_BOONS.find((feat) => feat.id === id)?.name
     ?? EXTRA_FEAT_NAMES[id]
     ?? "черта";
 }
@@ -648,9 +652,11 @@ export function describeDndChoice(choice: { pick: string; source: string; detail
     return name;
   }
   if (pick.startsWith("boon:") || choice.source === "epic") {
+    const id = pick.startsWith("boon:") ? pick.slice("boon:".length) : "";
+    const name = EPIC_BOONS.find((feat) => feat.id === id)?.name ?? "эпический дар";
     const ability = choice.detail?.ability;
-    if (ability && ABILITIES.includes(ability as Ability)) return `эпический дар, +1 к ${ABILITY_NAME[ability as Ability]}`;
-    return "эпический дар";
+    if (ability && ABILITIES.includes(ability as Ability)) return `${name}, +1 к ${ABILITY_NAME[ability as Ability]}`;
+    return name;
   }
   const bits = pick.split(",").filter(Boolean).map((part) => {
     const [ability, raw] = part.split("+");

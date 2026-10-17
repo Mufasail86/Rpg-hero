@@ -82,21 +82,25 @@ describe("единая модель редакций", () => {
     expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(256);
     expect(counts["pf-orc-more"]).toBe(2274);
-    expect(counts["lore-golarion"]).toBe(6);
-    expect(counts["lore-forgotten-realms"]).toBe(4);
+    expect(counts["lore-golarion"]).toBe(15);
+    expect(counts["lore-forgotten-realms"]).toBe(8);
     expect(counts["lore-srd-settings"]).toBe(1);
-    expect(loreCatalog()).toHaveLength(11);
-    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(10);
+    expect(loreCatalog()).toHaveLength(24);
+    expect(loreCatalog().filter((entry) => entry.spoiler !== "gm")).toHaveLength(23);
     expect(loreCatalog().some((entry) => entry.localId === "oppara-court" && entry.spoiler === "gm")).toBe(true);
     expect(loreCatalog().every((entry) => entry.settingId === "golarion" || entry.settingId === "forgotten-realms" || entry.settingId === "srd")).toBe(true);
     const loreById = Object.fromEntries(loreCatalog().map((entry) => [entry.localId, entry]));
     expect(loreById.absalom.status).toBe("verified-reference");
     expect(loreById.waterdeep.status).toBe("verified-reference");
     expect(loreById["open-srd"].status).toBe("verified-reference");
-    expect(loreById.golarion.status).toBe("pending");
-    expect(loreById.faerun.status).toBe("pending");
+    expect(loreById.golarion.status).toBe("verified-partial");
+    expect(loreById.faerun.status).toBe("verified-partial");
+    expect(loreById.cheliax.status).toBe("verified-reference");
+    expect(loreById.sarenrae.status).toBe("verified-reference");
+    expect(loreById.cormyr.status).toBe("verified-reference");
+    expect(loreById["oppara-court"].status).toBe("verified-partial");
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(5208);
+    expect(verified.length).toBe(5697);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -135,18 +139,22 @@ describe("единая модель редакций", () => {
     expect(byToken["pf-remaster~ancestry~dwarf"].status).toBe("verified-partial");
     expect(byToken["pf-remaster~class~fighter"].status).toBe("verified-partial");
     expect(byToken["pf-remaster~ancestry~dwarf"].text).toContain("10 хит");
-    expect(byToken["dnd-2024~species~human"].status).toBe("pending");
+    expect(byToken["dnd-2024~species~human"].status).toBe("verified-reference");
+    expect(byToken["dnd-2024~species~human"].text).toContain("ещё два языка");
+    expect(byToken["dnd-2024~item~dagger"].text).toContain("2");
+    expect(byToken["pf-remaster~item~dagger"].text).toContain("2 см");
+    expect(byToken["dnd-2024~epic-boon~truesight"].status).toBe("verified-reference");
     expect(rulesCatalog().every((entry) => entry.edition === "dnd-2024" || entry.edition === "dnd-2014" || entry.edition === "pf-remaster" || entry.edition === "pf-legacy")).toBe(true);
     expect(rulesCatalog().some((entry) => entry.edition === "pf-legacy")).toBe(true);
     expect(rulesCatalog().some((entry) => entry.edition === "dnd-2014")).toBe(true);
     expect(packCounts()).toEqual([
-      { id: "srd-5.2", entered: 783, verified: 555 },
+      { id: "srd-5.2", entered: 790, verified: 790 },
       { id: "srd-5.1", entered: 572, verified: 572 },
-      { id: "pf-player-core", entered: 1805, verified: 1551 },
+      { id: "pf-player-core", entered: 1805, verified: 1805 },
       { id: "pf-orc-more", entered: 2274, verified: 2274 },
       { id: "pf-ogl", entered: 256, verified: 256 },
-      { id: "lore-golarion", entered: 6, verified: 1 },
-      { id: "lore-forgotten-realms", entered: 4, verified: 1 },
+      { id: "lore-golarion", entered: 15, verified: 15 },
+      { id: "lore-forgotten-realms", entered: 8, verified: 8 },
       { id: "lore-srd-settings", entered: 1, verified: 1 },
     ]);
   });
