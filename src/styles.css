@@ -939,3 +939,26 @@ body:has(.board-app),
   .board-foot { font-size: 9px; line-height: 1.15; min-height: 36px; }
   .cast .cast-portrait { height: 72px; }
 }
+.play-scenes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.play-scenes button {
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.play-scenes button.on {
+  background: var(--gold-2);
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.play-places { display: flex; flex-wrap: wrap; gap: 8px; }
+.play-now .card p { margin: 4px 0 0; }
+.play-now article.card b { display: block; }
