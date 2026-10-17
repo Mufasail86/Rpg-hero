@@ -785,6 +785,11 @@ function seedPf(d: Draft, scores: Record<Ability, number>): Pf2eProgress | undef
   if (c(d, "instinct")) push("class-path", "instinct", c(d, "instinct"));
   if (cls.id === "swashbuckler" && c(d, "style")) push("class-path", "style", c(d, "style"));
   if (c(d, "mystery")) push("class-path", "mystery", c(d, "mystery"));
+  for (const choice of cls.choices) {
+    if (choice.id === "instinct" || choice.id === "style" || choice.id === "mystery") continue;
+    const pick = c(d, choice.id);
+    if (pick) push(`class-${choice.id}`, choice.id, pick);
+  }
   const progress: Pf2eProgress = {
     freeArchetype: false,
     ancestryId: d.ancestryId,

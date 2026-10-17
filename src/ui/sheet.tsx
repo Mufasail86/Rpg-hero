@@ -952,7 +952,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
               ))}
             </div>
           )}
-          {asiMode === "feat" && [...GENERAL_FEATS.map((feat) => ({ id: feat.id, name: feat.name })), ...rulesCatalog().filter((entry) => entry.edition === rulesOf(character).edition && (entry.category === "origin-feat" || entry.category === "general-feat" || entry.category === "style") && !GENERAL_FEATS.some((feat) => feat.id === entry.localId)).map((entry) => ({ id: entry.localId, name: entry.name }))].map((feat) => (
+          {asiMode === "feat" && [...GENERAL_FEATS.map((feat) => ({ id: feat.id, name: feat.name })), ...rulesCatalog().filter((entry) => entry.edition === rulesOf(character).edition && (entry.category === "origin-feat" || entry.category === "general-feat" || entry.category === "style" || (entry.category === "epic-boon" && character.level >= 19)) && !GENERAL_FEATS.some((feat) => feat.id === entry.localId)).map((entry) => ({ id: entry.localId, name: entry.name }))].map((feat) => (
             <button key={feat.id} type="button" className={`pill ${featId === feat.id ? "on" : ""}`} onClick={() => setFeatId(feat.id)}>{feat.name}</button>
           ))}
           <button type="button" className="btn primary" onClick={applyAsi}>Записать</button>
@@ -1024,7 +1024,7 @@ function Spells({ character, commit }: { character: Character; commit: (next: Ch
               <button type="button" onClick={() => useSlot(index, 1)}>+</button>
             </div>
           )}
-          <Info title={slot.rank > 0 ? `Ячейки ${slot.rank} круга` : "Ячейки"} text={slot.rank > 0 ? "Ячейка тратится, когда вы творите заклинание этого круга. Отдых возвращает их. Заговор ячейку не тратит." : "Число этого круга в выгрузке класса не лежало, поэтому лист его не подставляет."} />
+          <Info title={slot.rank > 0 ? `Ячейки ${slot.rank} круга` : "Ячейки"} text={[slot.note, slot.rank > 0 ? "Ячейка тратится, когда вы творите заклинание этого круга. Отдых возвращает их. Заговор ячейку не тратит." : ""].filter(Boolean).join(" ")} />
         </div>
       ))}
       {character.focus && (

@@ -161,15 +161,41 @@ describe("ячейки только из текста класса", () => {
     } as never);
   }
 
-  it("оракул и чародей на 1 уровне имеют три ячейки, а таблицу выше не выдумывают", () => {
+  it("ячейки 1–10 круга взяты из таблиц классов", () => {
     expect(caster("oracle", 1).find((slot) => slot.rank === 1)?.max).toBe(3);
     expect(caster("sorcerer", 1).find((slot) => slot.rank === 1)?.max).toBe(3);
     expect(caster("wizard", 1).find((slot) => slot.rank === 1)?.max).toBe(2);
     expect(caster("bard", 1).find((slot) => slot.rank === 1)?.max).toBe(2);
     const later = caster("oracle", 5);
-    expect(later.some((slot) => slot.rank === 3)).toBe(false);
-    expect(later.some((slot) => slot.note?.includes("не лежит"))).toBe(true);
+    expect(later.find((slot) => slot.rank === 1)?.max).toBe(4);
+    expect(later.find((slot) => slot.rank === 2)?.max).toBe(4);
+    expect(later.find((slot) => slot.rank === 3)?.max).toBe(3);
+    expect(later.some((slot) => slot.rank === 4)).toBe(false);
+    const bard = caster("bard", 5);
+    expect(bard.find((slot) => slot.rank === 1)?.max).toBe(3);
+    expect(bard.find((slot) => slot.rank === 3)?.max).toBe(2);
     expect(caster("oracle", 19).find((slot) => slot.rank === 10)?.max).toBe(1);
+    expect(caster("wizard", 19).find((slot) => slot.rank === 10)?.note).toBe("мастерство архимага");
+    expect(caster("cleric", 19).find((slot) => slot.note === "шрифт")?.rank).toBe(10);
+  });
+
+  it("у сыщика, сорвиголовы, чемпиона и следопыта растут восприятие и оружие", () => {
+    const perception = (classId: string, level: number) => derive({ progress: bare(classId), items: [], level }).perception.rank;
+    const weaponRank = (classId: string, level: number) => derive({ progress: bare(classId), items: [weapon("martial")], level }).attacks[0]?.rank;
+    expect(perception("investigator", 1)).toBe("expert");
+    expect(perception("investigator", 7)).toBe("master");
+    expect(perception("investigator", 13)).toBe("legendary");
+    expect(weaponRank("investigator", 13)).toBe("master");
+    expect(perception("swashbuckler", 1)).toBe("expert");
+    expect(perception("swashbuckler", 11)).toBe("master");
+    expect(weaponRank("swashbuckler", 5)).toBe("expert");
+    expect(weaponRank("swashbuckler", 13)).toBe("master");
+    expect(perception("champion", 1)).toBe("trained");
+    expect(perception("champion", 11)).toBe("expert");
+    expect(weaponRank("champion", 13)).toBe("master");
+    expect(perception("ranger", 7)).toBe("master");
+    expect(perception("ranger", 15)).toBe("legendary");
+    expect(weaponRank("ranger", 13)).toBe("master");
   });
 
   it("шрифт жреца на 1 уровне — четыре ячейки 1 круга, не модификатор Харизмы", () => {
