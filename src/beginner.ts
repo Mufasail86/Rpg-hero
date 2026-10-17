@@ -25,6 +25,7 @@ import {
 
 export const TOUR_KEY = "rpg-hero-tour";
 export const HINTS_KEY = "rpg-hero-hints";
+export const TURN_SEEN_KEY = "rpg-hero-turn-seen";
 
 export interface Gloss {
   id: string;
@@ -147,7 +148,7 @@ export interface ClassFace {
 }
 
 const PF_FACE: Record<string, ClassFace> = {
-  fighter: { difficulty: "простой", role: "боец", reason: "простой и прочный, мало правил", recommend: true },
+  fighter: { difficulty: "простой", role: "боец", reason: "крепкий, мало правил", recommend: true },
   champion: { difficulty: "простой", role: "боец", reason: "щит, доспех и защита союзника", recommend: true },
   rogue: { difficulty: "средний", role: "разведчик", reason: "ловкий удар и много навыков", recommend: true },
   cleric: { difficulty: "средний", role: "целитель", reason: "лечит и держит союзников", recommend: true },
@@ -166,7 +167,7 @@ const PF_FACE: Record<string, ClassFace> = {
 };
 
 const DND_FACE: Record<string, ClassFace> = {
-  fighter: { difficulty: "простой", role: "боец", reason: "простой и прочный, мало правил", recommend: true },
+  fighter: { difficulty: "простой", role: "боец", reason: "крепкий, мало правил", recommend: true },
   cleric: { difficulty: "средний", role: "целитель", reason: "лечит и носит доспех", recommend: true },
   rogue: { difficulty: "средний", role: "разведчик", reason: "точный удар из тени", recommend: true },
   wizard: { difficulty: "сложный", role: "маг", reason: "книга и сильные заклинания", recommend: true },
@@ -937,6 +938,23 @@ export function hintsDefaultOn(): boolean {
     return localStorage.getItem(HINTS_KEY) !== "0";
   } catch {
     return true;
+  }
+}
+
+/** First visit shows the full turn panel. Later visits start from one line. */
+export function turnPanelStartsOpen(): boolean {
+  try {
+    return localStorage.getItem(TURN_SEEN_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+export function markTurnPanelSeen(): void {
+  try {
+    localStorage.setItem(TURN_SEEN_KEY, "1");
+  } catch {
+    /* приватный режим */
   }
 }
 

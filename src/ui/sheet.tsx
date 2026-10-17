@@ -82,7 +82,12 @@ export function Sheet({
         <button type="button" className="icon-btn" aria-label={panel ? "К листу" : "К списку"} onClick={() => go(panel ? `#/c/${character.id}` : "#/")}>
           ←
         </button>
-        {panel ? <h1 className="grow">{title}</h1> : <SheetTabs id={character.id} panel={panel} hints={hints} onHints={toggleHints} />}
+        {!panel && (
+          <button type="button" className={`icon-btn hint-toggle ${hints ? "on" : ""}`} data-testid="hints-toggle" aria-pressed={hints} aria-label="Подсказки" title="Подсказки" onClick={toggleHints}>
+            ?
+          </button>
+        )}
+        {panel ? <h1 className="grow">{title}</h1> : <SheetTabs id={character.id} panel={panel} />}
       </header>
       {!panel && (
         <main className="board-screen">
@@ -121,7 +126,7 @@ export function Sheet({
   );
 }
 
-function SheetTabs({ id, panel, hints, onHints }: { id: string; panel: string | null; hints?: boolean; onHints?: () => void }) {
+function SheetTabs({ id, panel }: { id: string; panel: string | null }) {
   const tabs = [
     ["", "Лист"],
     ["inventory", "Сумка"],
@@ -142,11 +147,6 @@ function SheetTabs({ id, panel, hints, onHints }: { id: string; panel: string | 
           {label}
         </button>
       ))}
-      {onHints && (
-        <button type="button" className={`hint-toggle ${hints ? "on" : ""}`} data-testid="hints-toggle" aria-pressed={Boolean(hints)} onClick={onHints}>
-          Подсказки
-        </button>
-      )}
     </nav>
   );
 }

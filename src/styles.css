@@ -137,7 +137,8 @@ h1.display { font-size: 2rem; line-height: 1.05; margin: 0 0 8px; letter-spacing
   flex: 1; text-align: left; background: transparent; border: 0; padding: 12px 8px 12px 14px;
 }
 .option-main b { display: block; }
-.option-main small { color: var(--muted); }
+.option-main small, .option-main .en-name { display: block; color: var(--muted); margin-top: 2px; }
+.option-main .chips { margin-top: 6px; }
 
 .btn, .text-btn, .icon-btn {
   border-radius: 14px; border: 1px solid var(--line); background: var(--paper);
@@ -434,7 +435,7 @@ body:has(.board-app),
 }
 .board-tabs {
   display: flex;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   min-width: 0;
 }
@@ -442,12 +443,13 @@ body:has(.board-app),
   flex: 1;
   min-width: 0;
   min-height: 26px;
-  padding: 2px 3px;
+  padding: 2px 6px;
   border-radius: 8px;
   border: 1px solid var(--line);
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 .board-tabs button.on {
   background: var(--gold-2);
@@ -823,7 +825,43 @@ body:has(.board-app),
   box-shadow: var(--shadow);
 }
 .hint-layer p { margin: 4px 0; }
-.board-tabs button.hint-toggle { flex: 0 0 auto; padding-inline: 6px; }
+.hint-layer.collapsed { max-height: none; padding: 4px 10px; overflow: hidden; }
+.hint-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.hint-summary span { color: var(--gold); font-size: 0.78rem; }
+.board-top .hint-toggle.on {
+  background: var(--gold-2);
+  color: var(--gold);
+  border-color: var(--gold);
+}
+@media (max-width: 520px) {
+  .board-top { flex-wrap: wrap; row-gap: 4px; }
+  .board-tabs { flex: 1 0 100%; }
+  .board-tabs button { font-size: 12px; padding: 2px 4px; }
+  body:has(.board-app) .theme-toggle {
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
+    font-size: 0;
+  }
+  body:has(.board-app) .theme-toggle::before {
+    content: "☾";
+    font-size: 16px;
+    line-height: 1;
+  }
+  .board-top { padding-right: 48px; }
+}
 .tour .info-card h2 { margin-top: 0; }
 
 @media (min-width: 900px), (max-height: 520px) and (min-width: 700px) {

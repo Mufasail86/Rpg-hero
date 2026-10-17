@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   HINTS_KEY,
   STEP_EXPLAIN,
@@ -11,6 +11,7 @@ import {
   featAdvice,
   fillStep,
   hintsDefaultOn,
+  markTurnPanelSeen,
   premades,
   recommendedClasses,
   slotTitle,
@@ -18,6 +19,7 @@ import {
   spellAdvice,
   starterDraft,
   termById,
+  turnPanelStartsOpen,
   tourSeen,
   TERMS,
   type BeginnerRole,
@@ -99,10 +101,9 @@ export function FillButton({ draft, step, onFill }: { draft: Draft; step: StepId
   );
 }
 
-export function classHint(system: "pf2e" | "dnd5e", id: string, fallback: string): string {
+export function classChips(system: "pf2e" | "dnd5e", id: string): { chips: string[]; reason: string } {
   const face = classFace(system, id);
-  const base = `${face.difficulty} · ${face.role}`;
-  return face.recommend ? `${base}. ${face.reason}` : `${fallback} · ${base}`;
+  return { chips: [face.difficulty, face.role], reason: face.reason };
 }
 
 export function orderedIds(system: "pf2e" | "dnd5e", ids: string[]): { top: string[]; rest: string[] } {
@@ -138,24 +139,35 @@ export function TurnHints({
   onRoll: (label: string, modifier: number) => void;
   onGrowth: () => void;
 }) {
+  const [open, setOpen] = useState(turnPanelStartsOpen);
+  useEffect(() => {
+    markTurnPanelSeen();
+  }, []);
   return (
-    <aside className="hint-layer" data-testid="hint-layer">
-      <b>Что я могу сделать в свой ход</b>
-      {pf ? (
-        <p>Три действия ◆ <Term id="actions" />. Удар — одно, шаг — одно, много заклинаний — два. Реакция ↺ ждёт чужого хода.</p>
-      ) : (
-        <p>Есть действие, бонусное действие и перемещение <Term id="turn" />. Атака обычно занимает действие.</p>
+    <aside className={`hint-layer ${open ? "" : "collapsed"}`} data-testid="hint-layer" data-open={open ? "1" : "0"}>
+      <button type="button" className="hint-summary" data-testid="hint-collapse" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        <b>Что я могу сделать в свой ход</b>
+        <span>{open ? "Свернуть" : "Открыть"}</span>
+      </button>
+      {open && (
+        <>
+          {pf ? (
+            <p>Три действия ◆ <Term id="actions" />. Удар — одно, шаг — одно, много заклинаний — два. Реакция ↺ ждёт чужого хода.</p>
+          ) : (
+            <p>Есть действие, бонусное действие и перемещение <Term id="turn" />. Атака обычно занимает действие.</p>
+          )}
+          <div className="wrap">
+            <button type="button" className="pill" data-testid="hint-strike" onClick={() => onRoll(pf ? "Удар" : "Атака", attack)}>
+              {pf ? "Удар" : "Атака"}, к20
+            </button>
+            <button type="button" className="pill" onClick={() => onRoll(pf ? "Восприятие" : "Инициатива", attack)}>
+              {pf ? "Заметить" : "Кто ходит первым"}
+            </button>
+          </div>
+          <p className="tiny">КБ <Term id="ac" /> — насколько трудно попасть. Спасбросок <Term id="save" /> — бросок, когда опасность уже летит в вас. Хиты — сколько ещё держитесь.</p>
+          <button type="button" className="text-btn" data-testid="hint-growth" onClick={onGrowth}>Что нового на следующем уровне</button>
+        </>
       )}
-      <div className="wrap">
-        <button type="button" className="pill" data-testid="hint-strike" onClick={() => onRoll(pf ? "Удар" : "Атака", attack)}>
-          {pf ? "Удар" : "Атака"}, к20
-        </button>
-        <button type="button" className="pill" onClick={() => onRoll(pf ? "Восприятие" : "Инициатива", attack)}>
-          {pf ? "Заметить" : "Кто ходит первым"}
-        </button>
-      </div>
-      <p className="tiny">КБ <Term id="ac" /> — насколько трудно попасть. Спасбросок <Term id="save" /> — бросок, когда опасность уже летит в вас. Хиты — сколько ещё держитесь.</p>
-      <button type="button" className="text-btn" data-testid="hint-growth" onClick={onGrowth}>Что нового на следующем уровне</button>
     </aside>
   );
 }
@@ -164,7 +176,7 @@ const TOUR = [
   { title: "Лист в кармане", text: "Здесь герой для D&D или Pathfinder. Две игры не смешиваются. Аккаунт не нужен." },
   { title: "Быстрый старт", text: "Выберите игру, роль и имя. Получите готового героя 1 уровня. Потом любое число можно сменить." },
   { title: "Если хотите сами", text: "«Новый персонаж» ведёт по шагам. У каждого шага есть фраза, зачем он. Знак «?» объясняет слово." },
-  { title: "За столом", text: "Лист — один экран. «Подсказки» говорят, что делать в свой ход, и бросают кость. Их можно выключить." },
+  { title: "За столом", text: "Лист — один экран. Знак «?» в шапке включает подсказки: что делать в свой ход. Их можно выключить." },
 ];
 
 export function Tour({ onDone }: { onDone: () => void }) {

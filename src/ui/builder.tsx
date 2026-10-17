@@ -46,7 +46,7 @@ import {
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
-import { Advise, classHint, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
+import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
 import { ancestryAdvice, backgroundAdvice, featAdvice, recommendedBoosts, spellAdvice } from "../beginner";
 
 const ORDER5 = {
@@ -589,8 +589,9 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
     function card(id: string, recommended: boolean) {
       const item = byId.get(id);
       if (!item) return null;
+      const face = classChips("dnd5e", item.id);
       return (
-        <Choice key={id} id={item.id} name={item.name} hint={classHint("dnd5e", item.id, `${item.hint} · ${item.subclass.name}`)} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+        <Choice key={id} id={item.id} name={item.name} english={englishName(item.id) || undefined} chips={face.chips} reason={face.reason} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
       );
     }
     return (
@@ -620,8 +621,9 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
   function card(id: string, recommended: boolean) {
     const item = byId.get(id);
     if (!item) return null;
+    const face = classChips("pf2e", item.id);
     return (
-      <Choice key={id} id={item.id} name={item.name} hint={classHint("pf2e", item.id, item.hint ?? "")} english={englishName(item.id)} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+      <Choice key={id} id={item.id} name={item.name} english={englishName(item.id) || undefined} chips={face.chips} reason={face.reason} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
     );
   }
   return (

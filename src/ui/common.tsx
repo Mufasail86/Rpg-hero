@@ -104,6 +104,7 @@ export function Choice({
   testId,
   disabled,
   reason,
+  chips,
 }: {
   id: string;
   name: string;
@@ -117,6 +118,7 @@ export function Choice({
   testId?: string;
   disabled?: boolean;
   reason?: string;
+  chips?: string[];
 }) {
   return (
     <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
@@ -124,6 +126,11 @@ export function Choice({
       <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
         {english ? <small className="en-name">{english}</small> : null}
+        {chips && chips.length > 0 ? (
+          <span className="chips">
+            {chips.map((chip) => <span key={chip} className="chip">{chip}</span>)}
+          </span>
+        ) : null}
         {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}
       </button>
       <Info title={name} text={short ? `${short}\n\n${info}` : info} />
