@@ -8,6 +8,7 @@ import {
   spellBudget,
   type StepId,
 } from "./create";
+import { skillPlan } from "./skills/picks";
 import {
   ANCESTRIES,
   CLASSES as CL2,
@@ -309,7 +310,7 @@ function pfFighter(name: string): Draft {
   draft.heritageId = "skilled";
   draft.choices = {
     ancestryMode: "free",
-    humanSkill: "society",
+    humanSkill: "survival",
     ancestryFeat: "natural-ambition",
     skillFeat: "glare",
     classFeat: "sudden-charge",
@@ -495,7 +496,7 @@ function dndRogue(name: string): Draft {
   const draft = base("dnd5e", name);
   dndHuman(draft, "perception");
   draft.choices.humanFeat = "skilled";
-  draft.multi.hskilled = ["athletics", "history", "investigation"];
+  draft.multi.hskilled = ["athletics", "intimidation", "investigation"];
   draft.backgroundId = "criminal";
   draft.classId = "rogue";
   draft.choices.abilityMethod = "standard";
@@ -546,7 +547,7 @@ function dndWizard(name: string): Draft {
   draft.choices.bgc2 = "mage-hand";
   draft.choices.bgAbility = "int";
   draft.scores = { str: 8, dex: 12, con: 14, int: 15, wis: 13, cha: 10 };
-  draft.multi.skills = ["insight", "medicine"];
+  draft.multi.skills = ["insight", "religion"];
   draft.gearMode = "a";
   draft.knownSpells = ["fire-bolt", "mage-hand", "light", "magic-missile", "shield", "mage-armor", "sleep", "detect-magic", "burning-hands"];
   draft.preparedSpells = ["magic-missile", "shield", "mage-armor", "sleep"];
@@ -582,8 +583,8 @@ export function premades(system: "pf2e" | "dnd5e"): Premade[] {
   if (system === "pf2e") {
     return [
       pack("pf-fighter", "pf2e", "боец", "Марта Щит", "Воин в кольчуге. Бьёт мечом и закрывается щитом.", [
-        "Народ человек: свободные повышения в Силу и Телосложение.",
-        "Происхождение «Боец» даёт Запугивание.",
+        "Народ человек, наследие «Умелый»: лишний навык Выживание.",
+        "Происхождение «Боец» даёт Запугивание и Знание войны.",
         "Ключ — Сила. Черта «Внезапный рывок»: подбежать и ударить.",
         "Набор класса: кольчуга, щит и меч.",
       ], pfFighter("Марта Щит")),
@@ -635,11 +636,11 @@ export function premades(system: "pf2e" | "dnd5e"): Premade[] {
       "В книге шесть заклинаний, на день готовятся четыре.",
       "Набор «Книга и посох».",
     ], dndWizard("Искра")),
-    pack("dnd-bard", "dnd5e", "поддержка", "Лира", "Бард. Вдохновение союзнику и пара заклинаний.", [
-      "Харизма выше остальных чисел.",
-      "Насмешка и лечащее слово.",
-      "Набор «Кожа и песня».",
-    ], dndBard("Лира")),
+      pack("dnd-bard", "dnd5e", "поддержка", "Лира", "Бард при храме. Поёт союзникам и умеет лечить.", [
+        "Происхождение послушника: из готовых начал только оно поднимает Харизму.",
+        "От него же жреческая магия: насмешка рядом с лечащим словом.",
+        "Набор «Кожа и песня».",
+      ], dndBard("Лира")),
   ];
 }
 
@@ -695,11 +696,16 @@ const WIZARD_ARCHETYPE: { id: string; reason: string }[] = [
 ];
 
 /** A few legal picks a new player can understand. The full list stays in the level plan. */
-export function wizardOptions(source: string, options: { pick: string; name: string }[]): { pick: string; name: string; reason: string }[] {
-  const withReason = (option: { pick: string; name: string }, reason?: string) => ({
+export function wizardOptions(
+  source: string,
+  options: { pick: string; name: string }[],
+  advice?: { pick: string; reason: string }[],
+): { pick: string; name: string; reason: string; advised?: boolean }[] {
+  const withReason = (option: { pick: string; name: string }, reason?: string, advised?: boolean) => ({
     pick: option.pick,
     name: option.name,
     reason: reason ?? slotReason(source, option.name),
+    advised,
   });
   if (source.includes("boost")) return options.map((option) => withReason(option));
   if (source === "asi") {
@@ -709,6 +715,14 @@ export function wizardOptions(source: string, options: { pick: string; name: str
     return shown.map((option) => withReason(option, WIZARD_FEATS.find((row) => row.id === option.pick)?.reason));
   }
   if (source === "class-skill" || source === "heritage-skill" || source === "skill-increase" || source === "skill" || source === "expertise") {
+    if (advice?.length) {
+      const byPick = new Map(options.map((option) => [option.pick, option]));
+      const advised = advice.flatMap((row) => {
+        const option = byPick.get(row.pick);
+        return option ? [withReason(option, row.reason, true)] : [];
+      }).slice(0, 4);
+      if (advised.length) return advised;
+    }
     const prefer = ["athletics", "acrobatics", "medicine", "stealth", "perception", "intimidation"];
     const ranked = [...options].sort((left, right) => {
       const leftAt = prefer.indexOf(left.pick);
@@ -826,7 +840,19 @@ function fillSkills(draft: Draft): Partial<Draft> {
     .map((skill) => skill.id)
     .filter((id) => !fixed.has(id))
     .filter((id) => allowed === "any" || !allowed || allowed.includes(id));
-  const prefer = [...PREFER_SKILLS.filter((id) => pool.includes(id)), ...pool];
+  const key = classKey(draft) ?? "str";
+  const plan = skillPlan({
+    system: draft.system,
+    classId: draft.classId,
+    keyAbility: key,
+    role: classFace(draft.system, draft.classId).role,
+    scores: scored.scores,
+  });
+  const prefer = [
+    ...plan.grow.map((row) => row.id).filter((id) => pool.includes(id)),
+    ...PREFER_SKILLS.filter((id) => pool.includes(id)),
+    ...pool,
+  ];
   const skills: string[] = [];
   for (const id of prefer) {
     if (skills.length >= need) break;

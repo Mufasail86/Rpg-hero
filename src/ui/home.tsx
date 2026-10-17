@@ -96,7 +96,7 @@ export function Home({
             [ART.goblin, "Гоблин"],
           ].map(([file, label]) => (
             <figure key={file}>
-              <div className="face"><img src={artSrc(file)} alt={label} loading="lazy" decoding="async" /></div>
+              <div className="cast-portrait"><img src={artSrc(file)} alt={label} loading="lazy" decoding="async" /></div>
               <figcaption>{label}</figcaption>
             </figure>
           ))}

@@ -48,6 +48,8 @@ import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
 import { ancestryAdvice, backgroundAdvice, featAdvice, recommendedBoosts, spellAdvice } from "../beginner";
+import { planForDraft, SkillPicks } from "./skill-guide";
+import { skillTitle } from "../skills/picks";
 
 const ORDER5 = {
   cleric: [
@@ -949,15 +951,39 @@ function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: st
   const skills = draft.system === "pf2e" ? SK2 : SK5;
   const cls = CL5.find((item) => item.id === draft.classId);
   const allowed = draft.system === "dnd5e" && cls && cls.skillChoices !== "any" ? new Set(cls.skillChoices) : null;
+  const visible = skills.filter((skill) => !allowed || allowed.has(skill.id));
+  const plan = draft.system && draft.classId
+    ? planForDraft({
+      system: draft.system,
+      classId: draft.classId,
+      keyAbility: classKey(draft) ?? "str",
+      scores: scored.ok ? scored.scores : undefined,
+    })
+    : null;
+  const growIds = new Set(plan?.grow.map((row) => row.id) ?? []);
+  const reason = new Map(plan?.grow.map((row) => [row.id, row.reason]) ?? []);
+  const ordered = [...visible].sort((left, right) => Number(growIds.has(right.id)) - Number(growIds.has(left.id)) || left.name.localeCompare(right.name, "ru"));
   return (
     <>
       <p className="lead">Нужно выбрать {need}. Уже дано и повторно брать нельзя: {[...fixed].map((id) => skills.find((skill) => skill.id === id)?.name ?? id).join(", ") || "пока ничего"}.</p>
-      {ruSort(skills.filter((skill) => !allowed || allowed.has(skill.id)), (skill) => skill.name).map((skill) => (
+      {plan && (
+        <div className="card stack" data-testid="builder-skill-plan">
+          <b>Тебе советуем развивать</b>
+          {plan.grow.map((row) => <p key={row.id} className="plain-line"><b>{skillTitle(draft.system!, row.id)}. </b>{row.reason}</p>)}
+          <p className="tiny">Можно не вкладываться: {plan.skip.map((row) => skillTitle(draft.system!, row.id)).join(", ")}.</p>
+        </div>
+      )}
+      <details className="card" data-testid="builder-skill-guide">
+        <summary>Какие навыки брать</summary>
+        {draft.system ? <SkillPicks system={draft.system} catalog /> : <p>Сначала выберите игру.</p>}
+      </details>
+      {ordered.map((skill) => (
         <Choice
           key={skill.id}
           id={skill.id}
           name={skill.name}
           hint={fixed.has(skill.id) ? "уже есть" : ABILITY_SHORT[skill.ability]}
+          reason={reason.get(skill.id)}
           info={skill.info} short={skill.short}
           on={picked.includes(skill.id)}
           onPick={() => {

@@ -25,6 +25,7 @@
   font-family: "Avenir Next", "Segoe UI", "Nunito Sans", system-ui, sans-serif;
   font-size: 17px;
   line-height: 1.45;
+  scroll-padding-top: 72px;
 }
 
 html[data-theme="atlas"] {
@@ -87,8 +88,8 @@ h1, h2, .display { font-family: Palatino, "Iowan Old Style", Georgia, serif; fon
 .topbar h1 { font-size: 1.15rem; margin: 0; letter-spacing: -0.02em; }
 .grow { flex: 1; }
 .screen { padding: 8px 16px 28px; }
-.screen.pad-dock { padding-bottom: 118px; }
-.has-quickbar .screen { padding-bottom: 96px; }
+.screen.pad-dock { padding-bottom: calc(118px + env(safe-area-inset-bottom)); }
+.has-quickbar .screen { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
 .has-quickbar.creating .screen.pad-dock { padding-bottom: 190px; }
 
 .kicker { color: var(--muted); font-size: 0.86rem; margin: 0 0 4px; }
@@ -333,6 +334,10 @@ textarea { min-height: 88px; resize: vertical; }
 .banner { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--well); }
 .banner-art { position: relative; background: #121820; }
 .banner img { width: 100%; height: auto; max-height: 520px; object-fit: contain; object-position: center; display: block; background: #121820; }
+@media (max-height: 720px) {
+  .banner img { max-height: 168px; }
+  .cast .cast-portrait { height: 64px; }
+}
 .banner .copy { position: static; padding: 12px 14px 0; }
 .spark {
   position: absolute; z-index: 2; width: 7px; height: 7px; border-radius: 50%; pointer-events: none;
@@ -345,7 +350,7 @@ textarea { min-height: 88px; resize: vertical; }
 @keyframes glow { 50% { opacity: 0.45; transform: translateY(-3px); } }
 .cast { display: flex; gap: 8px; }
 .cast figure { flex: 1; min-width: 0; margin: 0; }
-.cast .face, .thumb {
+.cast .cast-portrait, .thumb {
   height: 92px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--well);
 }
 .cast img, .thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; background: var(--well); }
@@ -399,7 +404,7 @@ textarea { min-height: 88px; resize: vertical; }
   .home-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; align-items: start; }
   .library-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .banner img { max-height: 640px; }
-  .cast .face { height: 140px; }
+  .cast .cast-portrait { height: 140px; }
 }
 
 html:has(.board-app),
@@ -521,7 +526,7 @@ body:has(.board-app),
   font-size: 14px;
 }
 /* Иконка 28 px: показываем лицо; полный рисунок 16:9 виден в списке народов и в карточке. */
-.board-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; background: var(--well); }
+.board-portrait img { width: 100%; height: 100%; object-fit: contain; object-position: center; background: var(--well); }
 .board-portrait input {
   position: absolute;
   inset: 0;
@@ -629,8 +634,10 @@ body:has(.board-app),
 .board-defense {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 2px;
+  min-height: 0;
+  overflow: hidden;
 }
 .ac-box, .save-row, .sense-row {
   display: grid;
@@ -676,14 +683,17 @@ body:has(.board-app),
   gap: 4px;
   align-items: center;
   min-width: 0;
+  flex: 0 0 auto;
 }
 .line-btn {
   border: 0;
   padding: 0;
+  min-height: 16px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.partial { font-style: normal; color: var(--gold); font-size: 8px; margin-left: 1px; }
 .line-field span { color: var(--muted); flex: none; font-size: 10px; }
 .line-field input { flex: 1; min-width: 0; }
 .board-skills {
@@ -691,7 +701,12 @@ body:has(.board-app),
   flex-direction: column;
   gap: 2px;
 }
-.board-skills > b { flex: none; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.board-skills > b, .skill-head b { flex: none; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.skill-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 0; }
+.skill-head .text-btn { min-height: 0; padding: 0; font-size: 11px; }
+.skill-picks summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; }
+.skill-picks h2 { margin: 8px 0 0; font-size: 1.05rem; }
+[data-testid="level-wizard"] { scroll-margin-top: 72px; }
 .skill-grid {
   flex: 1;
   min-height: 0;
@@ -763,8 +778,9 @@ body:has(.board-app),
 }
 .strike span, .strike small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .strike small { color: var(--muted); font-size: 9px; }
+.strike small:first-of-type { white-space: normal; overflow: visible; text-overflow: unset; }
 .strike small:last-child { grid-column: 1 / -1; }
-.tiny-ranks { margin: 0; color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tiny-ranks { margin: 0; color: var(--muted); font-size: 9px; white-space: normal; line-height: 1.25; }
 .board-foot {
   display: flex;
   justify-content: space-between;
@@ -826,6 +842,25 @@ body:has(.board-app),
 }
 .hint-layer p { margin: 4px 0; }
 .hint-layer.collapsed { max-height: none; padding: 4px 10px; overflow: hidden; }
+.character-board.has-hint {
+  grid-template-rows: auto auto minmax(0, 0.9fr) minmax(0, 1.05fr) auto auto auto;
+  grid-template-areas:
+    "head head"
+    "meta meta"
+    "abil defense"
+    "skills skills"
+    "strikes strikes"
+    "foot foot"
+    "hint hint";
+}
+.character-board.has-hint .hint-layer.collapsed {
+  position: static;
+  grid-area: hint;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  box-shadow: none;
+}
 .hint-summary {
   display: flex;
   align-items: center;
@@ -876,6 +911,15 @@ body:has(.board-app),
       "abil defense skills strikes"
       "foot foot foot foot";
   }
+  .character-board.has-hint {
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "head head head head"
+      "meta meta meta meta"
+      "abil defense skills strikes"
+      "foot foot foot foot"
+      "hint hint hint hint";
+  }
   .board-meta { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .skill-grid { grid-template-columns: 1fr; }
   .board-abil { padding: 6px; }
@@ -893,4 +937,5 @@ body:has(.board-app),
 }
 @media (max-width: 699px) {
   .board-foot { font-size: 9px; line-height: 1.15; min-height: 36px; }
+  .cast .cast-portrait { height: 72px; }
 }

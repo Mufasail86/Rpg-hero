@@ -60,7 +60,10 @@ export function CharacterBoard({ character, commit, hints = false }: { character
   const heritage = ancestry?.heritages.find((item) => item.id === character.progress?.heritageId)?.name ?? "";
   const versatileId = character.versatileHeritageId || character.progress?.versatileHeritageId || "";
   const versatile = VERSATILE.find((item) => item.id === versatileId)?.name ?? "";
-  const heritageLine = [heritage, versatile].filter(Boolean).join(", ") || (pf ? "наследие не выбрано" : character.subclassName || "подкласс не выбран");
+  const heritageSkillId = character.progress?.choices.find((choice) => choice.source === "heritage-skill")?.pick ?? "";
+  const heritageSkill = PF_SKILLS.find((skill) => skill.id === heritageSkillId)?.name ?? "";
+  const heritageCore = [heritage, heritage === "Умелый" && heritageSkill ? heritageSkill : "", versatile].filter(Boolean).join(" · ");
+  const heritageLine = heritageCore || (pf ? "наследие не выбрано" : character.subclassName || "подкласс не выбран");
   const maxHp = derived?.hp.value ?? dnd?.hp.value ?? character.hpCurrent;
   const ac = derived
     ? { value: derived.ac.value, text: [derived.ac.formula, ...derived.ac.aside].join("\n") }
@@ -101,7 +104,7 @@ export function CharacterBoard({ character, commit, hints = false }: { character
 
   const attack = melee[0]?.attack ?? ranged[0]?.attack ?? 0;
   return (
-    <section className="character-board" data-testid="character-board">
+    <section className={`character-board${hints ? " has-hint" : ""}`} data-testid="character-board">
       {hints && <TurnHints pf={pf} attack={attack} onRoll={roll} onGrowth={() => go(`#/c/${character.id}/growth`)} />}
       <header className="board-head">
         <label className="board-portrait" title="Портрет">
@@ -172,7 +175,7 @@ export function CharacterBoard({ character, commit, hints = false }: { character
               <button type="button" className="num" data-testid={`num-${ability}`} onClick={() => tell(ABILITY_NAME[ability], row && "formula" in row ? row.formula : `${ABILITY_NAME[ability]} ${score}, модификатор ${fmt(value)}.`)}>
                 {fmt(value)}
               </button>
-              <small>{score}{partial ? " ◇" : ""}</small>
+              <small>{score}{partial ? <i className="partial" title="Частичное повышение: модификатор вырастет со следующим повышением этой характеристики">½</i> : null}</small>
             </div>
           );
         })}
@@ -274,7 +277,10 @@ export function CharacterBoard({ character, commit, hints = false }: { character
       </div>
 
       <div className="board-skills">
-        <b>Навыки</b>
+        <div className="skill-head">
+          <b>Навыки</b>
+          <button type="button" className="text-btn" data-testid="open-skill-picks" onClick={() => go(`#/c/${character.id}/skill-picks`)}>Какие брать</button>
+        </div>
         <div className="skill-grid">
           {skills.map((skill) => (
             <div key={skill.id} className="skill-line" data-testid={`skill-${skill.id}`}>
@@ -311,7 +317,7 @@ export function CharacterBoard({ character, commit, hints = false }: { character
         )}
         {derived && (
           <p className="tiny-ranks">
-            Оружие: простое {rankShort(derived.weaponRanks.simple)}, воинское {rankShort(derived.weaponRanks.martial)}, без оружия {rankShort(derived.weaponRanks.unarmed)}, продвинутое {rankShort(derived.weaponRanks.advanced)}
+            Оружие: простое — {rankLong(derived.weaponRanks.simple)}, воинское — {rankLong(derived.weaponRanks.martial)}, без оружия — {rankLong(derived.weaponRanks.unarmed)}, продвинутое — {rankLong(derived.weaponRanks.advanced)}
           </p>
         )}
       </div>
@@ -445,7 +451,8 @@ function skillLines(character: Character, derived: ReturnType<typeof sheetDerive
       const named = PF_SKILLS.find((skill) => skill.id === id)?.name;
       const head = (row?.formula ?? id).split(" = ")[0] ?? id;
       const name = named ?? head.replace(/\s[+\u2212-]?\d+$/, "");
-      return { id, name, ability: row?.ability ?? "int", value: row?.value ?? 0, rank: row?.rank ?? "untrained", formula: row?.formula ?? name };
+      const formula = [row?.formula, ...(row?.aside ?? [])].filter(Boolean).join("\n") || name;
+      return { id, name, ability: row?.ability ?? "int", value: row?.value ?? 0, rank: row?.rank ?? "untrained", formula };
     });
   }
   if (dnd) {
@@ -463,6 +470,14 @@ function conditionSummary(character: Character): string {
   const parts = Object.entries(character.conditionValues).filter(([, value]) => value > 0).map(([id, value]) => `${names.get(id) ?? id} ${value}`);
   const flags = character.conditions.filter((id) => (character.conditionValues[id] ?? 0) <= 0).map((id) => names.get(id) ?? id);
   return [...parts, ...flags].join(", ");
+}
+
+function rankLong(rank: string): string {
+  if (rank === "trained") return "обученное";
+  if (rank === "expert") return "экспертное";
+  if (rank === "master") return "мастерское";
+  if (rank === "legendary") return "легендарное";
+  return "необученное";
 }
 
 function rankShort(rank: string): string {

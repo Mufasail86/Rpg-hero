@@ -31,7 +31,10 @@ describe("Артефол Побочка", () => {
     expect(sheet.hp.value).toBe(328);
     expect(sheet.speed.value).toBe(30);
     expect(sheet.skills.athletics.value).toBe(34);
-    expect(sheet.skills.athletics.formula).toBe("Атлетика +34 = Сила +6 + уровень 20 + легенда +8");
+    expect(sheet.skills.athletics.formula).toBe("Атлетика +34 = Сила +6 + владение легенда +28");
+    expect(sheet.skills.crafting.rank).toBe("untrained");
+    expect(sheet.skills.intimidation.rank).toBe("trained");
+    expect(sheet.skills.intimidation.formula).toBe("Запугивание +22 = Харизма +0 + владение обучен +22");
     expect(sheet.skills.stealth.value).toBe(33);
     expect(sheet.skills.medicine.value).toBe(32);
     expect(sheet.skills.thievery.value).toBe(31);
@@ -44,6 +47,7 @@ describe("Артефол Побочка", () => {
     expect(sword?.attack.value).toBe(34);
     expect(sword?.rank).toBe("legendary");
     expect(sheet.ac.value).toBe(41);
+    expect(sheet.ac.formula).toBe("КБ +41 = 10 + Ловкость +2 (предел +2, у вас +5) + владение мастер +26 + Чешуйчатый доспех +3");
     expect(sheet.ac.aside.join(" ")).toMatch(/не входит в обычный/i);
     const build = sheet.issues.filter((issue) => issue.kind === "build");
     expect(build, build.map((issue) => issue.message).join("\n")).toEqual([]);

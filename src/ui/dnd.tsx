@@ -7,6 +7,7 @@ import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, St
 import { ABILITY_NAME, fmt, uid } from "../types";
 import { useCompact } from "./common";
 import { LevelWizard } from "./beginner";
+import { advicePicks, planForCharacter } from "./skill-guide";
 
 export function DndBanner({ character }: { character: Character }) {
   const derived = sheetDnd(character);
@@ -133,6 +134,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
         open={open}
         optionsFor={(slot) => optionsFor(slot.source, character)}
         onPick={(slot, pick) => fill(slot, pick)}
+        advice={advicePicks(planForCharacter(character))}
       />
       <button type="button" className="btn primary" data-testid="dnd-level-up" disabled={character.level >= 20} onClick={() => applyLevel(character.level + 1, false)}>
         Повысить уровень
