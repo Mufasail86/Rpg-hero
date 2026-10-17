@@ -53,18 +53,23 @@ export function SkillPicks({
       <p className="tiny">{GUIDE_NOTE}</p>
       <p className="tiny">{system === "pf2e" ? "Pathfinder, ремастер." : "D&D 5e: список один и для 2014, и для 2024. Меняются числа, не совет."}</p>
       {plan && <PlanList plan={plan} system={system} />}
-      {catalog && bands.map((band) => {
-        const rows = cards.filter((card) => card.frequency === band);
-        if (rows.length === 0) return null;
-        return (
-          <details key={band} className="card" data-testid={`skill-band-${band}`}>
-            <summary>{band === "часто" ? "Часто пригождаются" : band === "иногда" ? "Иногда пригождаются" : "Редко, если это не ваша тема"}</summary>
-            <div className="stack">
-              {rows.map((card) => <SkillDetail key={card.id} system={system} card={card} />)}
-            </div>
-          </details>
-        );
-      })}
+      {catalog && (
+        <section className="stack" data-testid="skill-catalog">
+          <h2>Все навыки по частоте</h2>
+          {bands.map((band) => {
+            const rows = cards.filter((card) => card.frequency === band);
+            if (rows.length === 0) return null;
+            return (
+              <details key={band} className="card" data-testid={`skill-band-${band}`}>
+                <summary>{band === "часто" ? "Часто пригождаются" : band === "иногда" ? "Иногда пригождаются" : "Редко, если это не ваша тема"}</summary>
+                <div className="stack">
+                  {rows.map((card) => <SkillDetail key={card.id} system={system} card={card} />)}
+                </div>
+              </details>
+            );
+          })}
+        </section>
+      )}
     </div>
   );
 }
@@ -79,7 +84,7 @@ function PlanList({ plan, system }: { plan: SkillPlan; system: "pf2e" | "dnd5e" 
           <small>{tip.reason}</small>
         </div>
       ))}
-      <details data-testid="skill-skip">
+      <details className="card" data-testid="skill-skip">
         <summary>Можно не вкладываться</summary>
         <div className="stack">
           {plan.skip.map((tip) => (

@@ -73,6 +73,89 @@ const ROLE_SKILLS: Record<PlayRole, string[]> = {
   поддержка: ["diplomacy", "persuasion", "performance", "deception", "insight"],
 };
 
+/** Порядок совета. Скрытность воина сюда не входит: Ловкость у него уходит в защиту, а не в подкрадывание. */
+const PF_ORDER: Record<string, string[]> = {
+  fighter: ["athletics", "acrobatics", "intimidation", "medicine"],
+  champion: ["religion", "athletics", "diplomacy", "medicine"],
+  barbarian: ["athletics", "intimidation", "acrobatics", "medicine"],
+  monk: ["acrobatics", "athletics", "stealth", "medicine"],
+  swashbuckler: ["acrobatics", "diplomacy", "deception", "athletics"],
+  rogue: ["stealth", "thievery", "acrobatics", "deception"],
+  ranger: ["survival", "stealth", "nature", "athletics"],
+  investigator: ["society", "stealth", "deception", "medicine"],
+  cleric: ["religion", "medicine", "diplomacy", "nature"],
+  druid: ["nature", "medicine", "survival", "athletics"],
+  wizard: ["arcana", "society", "crafting", "occultism"],
+  sorcerer: ["arcana", "diplomacy", "deception", "intimidation"],
+  witch: ["occultism", "nature", "medicine", "diplomacy"],
+  oracle: ["religion", "medicine", "diplomacy", "nature"],
+  bard: ["performance", "diplomacy", "occultism", "deception"],
+  alchemist: ["crafting", "medicine", "nature", "arcana"],
+};
+
+const DND_ORDER: Record<string, string[]> = {
+  fighter: ["athletics", "perception", "acrobatics", "intimidation"],
+  barbarian: ["athletics", "perception", "intimidation", "survival"],
+  paladin: ["athletics", "persuasion", "religion", "insight"],
+  monk: ["acrobatics", "stealth", "athletics", "insight"],
+  rogue: ["stealth", "sleight", "acrobatics", "perception"],
+  ranger: ["survival", "stealth", "perception", "nature"],
+  cleric: ["medicine", "insight", "religion", "perception"],
+  druid: ["nature", "perception", "medicine", "survival"],
+  wizard: ["arcana", "investigation", "history", "insight"],
+  sorcerer: ["arcana", "persuasion", "deception", "insight"],
+  warlock: ["arcana", "deception", "intimidation", "investigation"],
+  bard: ["persuasion", "performance", "deception", "insight"],
+};
+
+const WHO: Record<string, string> = {
+  fighter: "воину",
+  champion: "чемпиону",
+  barbarian: "варвару",
+  monk: "монаху",
+  swashbuckler: "дуэлянту",
+  rogue: "плуту",
+  ranger: "следопыту",
+  investigator: "следователю",
+  cleric: "жрецу",
+  druid: "друиду",
+  wizard: "волшебнику",
+  sorcerer: "чародею",
+  witch: "ведьме",
+  oracle: "оракулу",
+  bard: "барду",
+  alchemist: "алхимику",
+  paladin: "паладину",
+  warlock: "колдуну",
+};
+
+/** Коротко, что навык даёт. Согласование не нужно: фраза стоит после «отсюда». */
+const HOOK: Record<string, string> = {
+  athletics: "захват, толчок и сбить с ног",
+  acrobatics: "кувырок и выход из захвата",
+  intimidation: "деморализация",
+  medicine: "лечение без магии",
+  stealth: "подход незамеченным",
+  diplomacy: "просьба и переговоры",
+  deception: "ложь и отвлекающий финт",
+  thievery: "замки и ловушки",
+  survival: "следы и дорога",
+  nature: "знание зверей и местности",
+  religion: "знание веры и нежити",
+  arcana: "знание магии",
+  society: "законы и города",
+  crafting: "починка и создание вещей",
+  occultism: "проклятия и духи",
+  performance: "песня и речь",
+  perception: "засада и то, что отряд прошёл мимо",
+  insight: "чужая ложь",
+  persuasion: "честный разговор",
+  investigation: "улики и механизмы",
+  history: "гербы и старые войны",
+  sleight: "карман и спрятанный жест",
+  animal: "спокойный зверь",
+};
+
 const PF_CARDS: SkillCard[] = [
   { id: "athletics", frequency: "часто", scenes: ["бой", "поход"], why: "Лазать, прыгать, сбивать с ног и хватать.", who: "Воин, варвар, чемпион и любой, у кого сила — ключ.", raise: "Имеет смысл довести до мастера, если дерётесь вблизи.", unlocks: "Сбить с ног, схватить, толкнуть. Позже мощный бросок." },
   { id: "stealth", frequency: "часто", scenes: ["бой", "поход"], why: "Подойти незамеченным и начать бой с удобной позиции.", who: "Плут, следопыт и тот, кто ходит вперёд отряда.", raise: "Эксперт уже серьёзно. Мастер — если прячетесь почти каждый бой.", unlocks: "Прятаться и красться. От этого же скрытая атака плута." },
@@ -138,22 +221,26 @@ export function skillPlan(input: {
   const names = NAMES[input.system];
   const classSkills = new Set((input.system === "pf2e" ? PF_CLASS : DND_CLASS)[input.classId] ?? []);
   const roleSkills = new Set(ROLE_SKILLS[input.role] ?? []);
+  const order = (input.system === "pf2e" ? PF_ORDER : DND_ORDER)[input.classId] ?? [];
+  const who = WHO[input.classId] ?? "вам";
   const ranked = cards.map((card) => {
     const ability = names.get(card.id)?.ability ?? "str";
     const abilityMod = input.scores ? mod(input.scores[ability] ?? 10) : 0;
-    let score = card.frequency === "часто" ? 4 : card.frequency === "иногда" ? 2 : 0;
+    const pref = order.indexOf(card.id);
     const classSkill = classSkills.has(card.id);
     const key = ability === input.keyAbility;
-    if (classSkill) score += 6;
-    if (key) score += 4;
+    let score = pref >= 0 ? 40 - pref * 5 : card.frequency === "часто" ? 4 : card.frequency === "иногда" ? 2 : 0;
+    if (classSkill && pref < 0) score += 8;
     if (roleSkills.has(card.id)) score += 3;
+    if (key) score += 6;
     score += abilityMod;
+    if (abilityMod < 0 && (pref >= 0 || classSkill)) score -= 8;
     return { card, ability, abilityMod, score, classSkill, key };
   }).sort((left, right) => right.score - left.score || left.card.id.localeCompare(right.card.id));
 
   const grow = ranked.slice(0, 4).map((row) => ({
     id: row.card.id,
-    reason: growLine(row.card, row),
+    reason: growLine(row, who),
   }));
   const growIds = new Set(grow.map((row) => row.id));
   const skip = [...ranked].reverse().filter((row) => !growIds.has(row.card.id)).slice(0, 3).map((row) => ({
@@ -163,17 +250,71 @@ export function skillPlan(input: {
   return { grow, skip };
 }
 
-function growLine(card: SkillCard, row: { classSkill: boolean; key: boolean; abilityMod: number }): string {
-  if (row.classSkill && row.key) return `${card.why} Это ключ класса и ваша сильная характеристика.`;
-  if (row.classSkill && row.abilityMod >= 1) return `${card.why} Класс на этом стоит, и характеристика помогает.`;
-  if (row.classSkill) return `${card.why} Класс на этом стоит, даже если характеристика средняя.`;
-  if (row.key) return `${card.why} Навык сидит на вашей главной характеристике.`;
-  if (row.abilityMod >= 3) return `${card.why} Характеристика уже высокая.`;
-  return card.why;
+const FROM: Record<Ability, string> = {
+  str: "Силы",
+  dex: "Ловкости",
+  con: "Телосложения",
+  int: "Интеллекта",
+  wis: "Мудрости",
+  cha: "Харизмы",
+};
+
+const PRONOUN: Record<Ability, string> = {
+  str: "она",
+  dex: "она",
+  con: "оно",
+  int: "он",
+  wis: "она",
+  cha: "она",
+};
+
+const TALL: Record<Ability, string> = {
+  str: "высокая",
+  dex: "высокая",
+  con: "высокое",
+  int: "высокий",
+  wis: "высокая",
+  cha: "высокая",
+};
+
+const FLAT: Record<Ability, string> = {
+  str: "средняя",
+  dex: "средняя",
+  con: "среднее",
+  int: "средний",
+  wis: "средняя",
+  cha: "средняя",
+};
+
+const WEAK: Record<Ability, string> = {
+  str: "слабая",
+  dex: "слабая",
+  con: "слабое",
+  int: "слабый",
+  wis: "слабая",
+  cha: "слабая",
+};
+
+function hookOf(id: string): string {
+  return HOOK[id] ?? "это дело";
+}
+
+function growLine(
+  row: { card: SkillCard; ability: Ability; abilityMod: number; classSkill: boolean; key: boolean },
+  who: string,
+): string {
+  const ability = FROM[row.ability];
+  const hook = hookOf(row.card.id);
+  if (row.key) return `Идёт от ${ability} — вашей главной характеристики; ${who} отсюда ${hook}.`;
+  if (row.abilityMod >= 3) return `Идёт от ${ability}, ${PRONOUN[row.ability]} у вас ${TALL[row.ability]}; ${who} отсюда ${hook}.`;
+  if (row.abilityMod < 0) return `Идёт от ${ability}, ${PRONOUN[row.ability]} ${WEAK[row.ability]}; ${who} отсюда всё равно ${hook}.`;
+  if (row.abilityMod === 0 && row.classSkill) return `Идёт от ${ability}, ${PRONOUN[row.ability]} ${FLAT[row.ability]}; ${who} отсюда ${hook}.`;
+  return `Идёт от ${ability}; ${who} отсюда ${hook}.`;
 }
 
 function skipLine(card: SkillCard, ability: Ability, abilityMod: number, known: boolean): string {
-  if (known && abilityMod <= 0) return `${ABILITY_NAME[ability]} не ваша сила, а навык нужен не каждый день.`;
-  if (card.frequency === "редко") return "Для этого класса навык почти не всплывает.";
-  return "Есть навыки полезнее, сюда можно не вкладываться.";
+  const hook = hookOf(card.id);
+  if (known && abilityMod <= 0) return `${ABILITY_NAME[ability]} ${WEAK[ability]}, так что ${hook} лучше не развивать.`;
+  if (card.frequency === "редко") return `Редко всплывает и не связано с вашей ролью: ${hook}.`;
+  return `Полезнее вложиться в другие навыки, чем в ${hook}.`;
 }

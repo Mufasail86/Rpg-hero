@@ -114,14 +114,14 @@ export function Sheet({
           {panel === "growth" && (character.dnd ? <DndAdvance character={character} onChange={commit} /> : <AdvancePanel character={character} onChange={commit} />)}
           {panel === "combat" && (character.system === "dnd5e" ? <DndCombatPanel character={character} onChange={commit} /> : <CombatTracker character={character} onChange={commit} />)}
           {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "feats", "reminder", "dice", "notes", "growth", "combat", "rules", "skill-picks"].includes(panel) && <p>Такого раздела нет.</p>}
-          {confirmDelete ? (
+          {panel !== "skill-picks" && (confirmDelete ? (
             <div className="row">
               <button type="button" className="btn danger" onClick={onDelete}>Удалить насовсем</button>
               <button type="button" className="btn" onClick={() => setConfirmDelete(false)}>Оставить</button>
             </div>
           ) : (
             <button type="button" className="btn danger" onClick={() => setConfirmDelete(true)}>Удалить персонажа</button>
-          )}
+          ))}
         </main>
       )}
     </div>

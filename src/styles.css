@@ -25,6 +25,7 @@
   font-family: "Avenir Next", "Segoe UI", "Nunito Sans", system-ui, sans-serif;
   font-size: 17px;
   line-height: 1.45;
+  scroll-padding-top: 72px;
 }
 
 html[data-theme="atlas"] {
@@ -704,6 +705,8 @@ body:has(.board-app),
 .skill-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 0; }
 .skill-head .text-btn { min-height: 0; padding: 0; font-size: 11px; }
 .skill-picks summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; }
+.skill-picks h2 { margin: 8px 0 0; font-size: 1.05rem; }
+[data-testid="level-wizard"] { scroll-margin-top: 72px; }
 .skill-grid {
   flex: 1;
   min-height: 0;
