@@ -469,6 +469,9 @@ WORDS = {
     "glow": "световой",
     "rod": "стержень",
 }
+_extra_words = Path(__file__).with_name("name_extra.json")
+if _extra_words.exists():
+    WORDS.update({key: value for key, value in json.loads(_extra_words.read_text()).items() if isinstance(value, str)})
 DIGRAPHS = [
     ("sch", "щ"),
     ("sh", "ш"),

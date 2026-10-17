@@ -4,8 +4,9 @@ import { artefolCharacter } from "../pf2e/artefol";
 import type { Character } from "../types";
 import { loadDraft } from "../storage";
 import { applySave, previewSave, serialize } from "../transfer";
+import { APP_BUILD } from "../build-id";
 import { systemTitle } from "../labels";
-import { ART, ART_CAPTION, artSrc, portraitSrc } from "./art";
+import { ART, ART_CAPTION, PORTRAIT_PROVENANCE, artSrc, portraitSrc } from "./art";
 import { go } from "./common";
 import { LegalText } from "./legal";
 
@@ -69,19 +70,20 @@ export function Home({
       <main className="screen">
         <div className="home-grid">
         <div className="stack">
-        <figure className="banner">
-          <img src={artSrc(ART.hero)} alt="Четыре героя у ночной таверны: щит, лук, молот и бирюзовый свет" />
-          <span className="spark" style={{ left: "18%", top: "22%" }} />
-          <span className="spark amber" style={{ left: "62%", top: "30%" }} />
-          <span className="spark violet" style={{ left: "78%", top: "18%" }} />
-          <div className="veil" />
+        <figure className="banner" data-testid="home-hero">
+          <div className="banner-art">
+            <img src={artSrc(ART.hero)} alt="Четыре героя у ночной таверны: щит, лук, молот и бирюзовый свет" />
+            <span className="spark" style={{ left: "18%", top: "22%" }} />
+            <span className="spark amber" style={{ left: "62%", top: "30%" }} />
+            <span className="spark violet" style={{ left: "78%", top: "18%" }} />
+          </div>
           <div className="copy">
             <p className="kicker">Ночная таверна</p>
             <h1 className="display">Лист в кармане</h1>
           </div>
         </figure>
         <p className="caption">{ART_CAPTION}</p>
-        <p className="lead">D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
+        <p className="lead">Игры D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
         <div className="cast">
           {[
             [ART.elf, "Эльф"],
@@ -91,7 +93,7 @@ export function Home({
             [ART.goblin, "Гоблин"],
           ].map(([file, label]) => (
             <figure key={file}>
-              <div className="face"><img src={artSrc(file)} alt="" loading="lazy" decoding="async" /></div>
+              <div className="face"><img src={artSrc(file)} alt={label} loading="lazy" decoding="async" /></div>
               <figcaption>{label}</figcaption>
             </figure>
           ))}
@@ -119,6 +121,9 @@ export function Home({
           <button type="button" className="btn" data-testid="open-bestiary" onClick={() => go("#/bestiary")}>
             Бестиарий
           </button>
+          <button type="button" className="btn" data-testid="open-table" onClick={() => go("#/table")}>
+            Стол ведущего
+          </button>
         </div>
         {hasDraft && (
           <button type="button" className="btn" onClick={() => go("#/new")}>
@@ -127,12 +132,12 @@ export function Home({
         )}
         </div>
         <div className="stack">
-        {characters.length === 0 && <p className="muted">Пока никого нет. Создайте героя — лист откроется большими кнопками, каждый раздел на своём экране.</p>}
+        {characters.length === 0 && <p className="muted">Пока никого нет. Создание идёт по шагам. Готовый лист помещается на один экран. Сумка, магия, черты и памятка открываются отдельными страницами.</p>}
         {characters.map((hero) => {
           const drawn = hero.photo ?? portraitSrc(hero.ancestryId, hero.classId);
           return (
           <div key={hero.id} className="card portrait-home">
-            {drawn ? <img className="avatar" src={drawn} alt="" /> : <div className="avatar" aria-hidden>⚔</div>}
+            {drawn ? <img className="avatar" src={drawn} alt="" title={PORTRAIT_PROVENANCE} data-provenance={PORTRAIT_PROVENANCE} /> : <div className="avatar" aria-hidden>⚔</div>}
             <div className="grow">
               {hero.readiness === "draft" && <span className="chip">Черновик, не проверен</span>}
               <button type="button" className="text-btn" onClick={() => go(`#/c/${hero.id}`)}>
@@ -192,7 +197,7 @@ export function Home({
           </div>
         )}
         {message && <p className="warn">{message}</p>}
-        <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, выгрузите файл и загрузите его там.</p>
+        <p className="tiny">Память браузера сама не переносится на другой телефон и не уходит на сервер. Чтобы открыть героя на втором устройстве, выгрузите файл и загрузите его там. Сборка {APP_BUILD}.</p>
         <button type="button" className="text-btn" onClick={() => setAbout((value) => !value)}>
           {about ? "Скрыть лицензии" : "Об игре и лицензиях"}
         </button>

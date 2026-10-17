@@ -1,0 +1,384 @@
+{
+ "note": "Свои иллюстрированные портреты народов для темы «Ночная таверна». Рисунок 16:9 показан целиком (object-fit: contain). Не официальные иллюстрации и не копии книг.",
+ "created": "2026-10-17",
+ "officialArt": false,
+ "copiedFromPaizoOrWizards": false,
+ "portraits": {
+  "aiuvarin": {
+   "file": "aiuvarin.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "athamaru": {
+   "file": "athamaru.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "automaton": {
+   "file": "automaton.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "awakened-animal": {
+   "file": "awakened-animal.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "bugbear": {
+   "file": "bugbear.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "catfolk": {
+   "file": "catfolk.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "centaur": {
+   "file": "centaur.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "changeling": {
+   "file": "changeling.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "dhampir": {
+   "file": "dhampir.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "dragonblood": {
+   "file": "dragonblood.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "dragonborn": {
+   "file": "dragonborn.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "dragonet": {
+   "file": "dragonet.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "dromaar": {
+   "file": "dromaar.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "duskwalker": {
+   "file": "duskwalker.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "dwarf": {
+   "file": "dwarf.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "elf": {
+   "file": "elf.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "fetchling": {
+   "file": "fetchling.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "gnome": {
+   "file": "gnome.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "goblin": {
+   "file": "goblin.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "goliath": {
+   "file": "goliath.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "halfling": {
+   "file": "halfling.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "hobgoblin": {
+   "file": "hobgoblin.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "human": {
+   "file": "human.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "hungerseed": {
+   "file": "hungerseed.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "jotunborn": {
+   "file": "jotunborn.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "kholo": {
+   "file": "kholo.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "kitsune": {
+   "file": "kitsune.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "kobold": {
+   "file": "kobold.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "leshy": {
+   "file": "leshy.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "lizardfolk": {
+   "file": "lizardfolk.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "merfolk": {
+   "file": "merfolk.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "minotaur": {
+   "file": "minotaur.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "nephilim": {
+   "file": "nephilim.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "orc": {
+   "file": "orc.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "ratfolk": {
+   "file": "ratfolk.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "reflection": {
+   "file": "reflection.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "samsaran": {
+   "file": "samsaran.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "sarangay": {
+   "file": "sarangay.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "strix": {
+   "file": "strix.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "surki": {
+   "file": "surki.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "tanuki": {
+   "file": "tanuki.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "tengu": {
+   "file": "tengu.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "tiefling": {
+   "file": "tiefling.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "tripkee": {
+   "file": "tripkee.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "wayang": {
+   "file": "wayang.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "yaksha": {
+   "file": "yaksha.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  },
+  "yaoguai": {
+   "file": "yaoguai.webp",
+   "width": 1024,
+   "height": 576,
+   "aspect": "16:9",
+   "fit": "contain",
+   "provenance": "own generated illustration"
+  }
+ }
+}

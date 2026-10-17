@@ -69,7 +69,7 @@ describe("единая модель редакций", () => {
     expect(heritageIds.has("umbral")).toBe(true);
     expect(ANCESTRIES.find((ancestry) => ancestry.id === "gnome")?.heritages.find((heritage) => heritage.id === "umbral")?.name).toBe("Сумеречный");
     for (const id of versatileIds()) expect(heritageIds.has(id)).toBe(false);
-    expect(VERSATILE.find((item) => item.id === "dhampir")?.name).toBe("Дхампир");
+    expect(VERSATILE.find((item) => item.id === "dhampir")?.name).toBe("Дампир");
     expect(VERSATILE.find((item) => item.id === "dhampir")?.info).toContain("отрицательное лечение");
     expect(VERSATILE.find((item) => item.id === "dragonblood")?.info).toContain("на одну ступень лучше");
     expect(VERSATILE.every((item) => item.info.includes("к числам не прибавляет"))).toBe(true);
@@ -81,7 +81,7 @@ describe("единая модель редакций", () => {
     expect(counts["pf-player-core"]).toBeGreaterThan(0);
     expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(256);
-    expect(counts["pf-orc-more"]).toBe(2274);
+    expect(counts["pf-orc-more"]).toBe(9148);
     expect(counts["lore-golarion"]).toBe(68);
     expect(counts["lore-forgotten-realms"]).toBe(22);
     expect(counts["lore-other-settings"]).toBe(8);
@@ -108,7 +108,7 @@ describe("единая модель редакций", () => {
     expect(loreById.cormyr.status).toBe("verified-reference");
     expect(loreById["oppara-court"].status).toBe("verified-partial");
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(5697);
+    expect(verified.length).toBe(12595);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -134,7 +134,14 @@ describe("единая модель редакций", () => {
     const dndVerified = verified.filter((entry) => entry.edition === "dnd-2024" || entry.edition === "dnd-2014");
     expect(dndVerified.every((entry) => entry.checkedOn === "2026-10-16" && (entry.sourceVersion === "5.2.1" || entry.sourceVersion === "5.1"))).toBe(true);
     const pfVerified = verified.filter((entry) => entry.edition === "pf-remaster");
-    expect(pfVerified.every((entry) => entry.checkedOn === "2026-10-16" && (entry.sourceVersion === "Player Core" || entry.sourceVersion === "Player Core 2" || entry.sourceVersion === "GM Core"))).toBe(true);
+    const coreBooks = new Set(["Player Core", "Player Core 2", "GM Core"]);
+    expect(pfVerified.every((entry) => {
+      if (entry.checkedOn !== "2026-10-16") return false;
+      if (entry.sourceVersion === "ORC") return entry.sourceId === "pf-orc-more";
+      return coreBooks.has(entry.sourceVersion);
+    })).toBe(true);
+    expect(pfVerified.some((entry) => entry.sourceVersion === "Player Core")).toBe(true);
+    expect(pfVerified.some((entry) => entry.sourceVersion === "ORC" && entry.sourceId === "pf-orc-more")).toBe(true);
     expect(byToken["pf-remaster~spell~fireball"].text).toContain("6d6");
     expect(byToken["pf-remaster~spell~fireball"].text).toContain("взрыв 20 футов");
     expect(byToken["pf-remaster~spell~fireball"].text).not.toContain("8d6");
@@ -157,9 +164,9 @@ describe("единая модель редакций", () => {
     expect(rulesCatalog().some((entry) => entry.edition === "dnd-2014")).toBe(true);
     expect(packCounts()).toEqual([
       { id: "srd-5.2", entered: 790, verified: 790 },
-      { id: "srd-5.1", entered: 572, verified: 572 },
-      { id: "pf-player-core", entered: 1805, verified: 1805 },
-      { id: "pf-orc-more", entered: 2274, verified: 2274 },
+      { id: "srd-5.1", entered: 573, verified: 573 },
+      { id: "pf-player-core", entered: 1828, verified: 1828 },
+      { id: "pf-orc-more", entered: 9148, verified: 9148 },
       { id: "pf-ogl", entered: 256, verified: 256 },
       { id: "pf-monster-core", entered: 492, verified: 492 },
       { id: "srd-5.2-monsters", entered: 330, verified: 330 },

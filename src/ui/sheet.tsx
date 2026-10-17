@@ -5,11 +5,9 @@ import { RANK_NAME } from "../data/pf2e";
 import { conditionList } from "../create";
 import { dndCoinPounds, exchange, formatCoins, parsePurse, pay, pfCoinBulk, totalCopper } from "../play/wallet";
 import { deathSave, emptyDeath, endTurn, pfRestHeal, previewDamage, previewHeal, recoveryCheck, type Body, type HarmPreview } from "../play/vitality";
-import { compressImage } from "../image";
 import {
   abilityMod,
   applyLevelUp,
-  armorClass,
   attackFor,
   canLevel,
   classDc,
@@ -20,7 +18,6 @@ import {
   refreshSlots,
   saveMod,
   skillRows,
-  speedOf,
   spellNumbers,
   xpToNext,
 } from "../rules";
@@ -36,14 +33,14 @@ import {
   mod,
   uid,
 } from "../types";
+import { CharacterBoard, FeatsPage } from "./board";
 import { go, Info } from "./common";
+import { ReminderPane } from "./quickbar";
 import { DicePanel, queueRoll } from "./dice";
-import { AdvancePanel, CombatTracker, Etch, sheetDerived, WarningBanner } from "./remaster";
-import { DndAdvance, DndBanner, DndCombatPanel } from "./dnd";
+import { AdvancePanel, CombatTracker, Etch, sheetDerived } from "./remaster";
+import { DndAdvance, DndCombatPanel } from "./dnd";
 import { KNOWN_SUBCLASSES, sheetDnd, subclassIdOf } from "../dnd/build";
-import { systemTitle } from "../labels";
-import { EDITION_NAME, rulesOf } from "../data/editions";
-import { portraitSrc } from "./art";
+import { rulesOf } from "../data/editions";
 import { RulesPanel } from "./rules";
 
 const PANELS = [
@@ -70,134 +67,29 @@ export function Sheet({
   onChange: (character: Character) => void;
   onDelete: () => void;
 }) {
-  const derived = sheetDerived(character);
-  const dnd = sheetDnd(character);
-  const max = derived?.hp.value ?? dnd?.hp.value ?? hpMax(character);
-  const ac = derived
-    ? { value: derived.ac.value, text: [derived.ac.formula, ...derived.ac.aside].join("\n") }
-    : dnd
-      ? { value: dnd.ac.value, text: [dnd.ac.formula, ...dnd.ac.aside].join("\n") }
-      : armorClass(character);
-  const init = derived
-    ? { value: derived.initiative.value, text: derived.initiative.formula }
-    : dnd
-      ? { value: dnd.initiative.value, text: [dnd.initiative.formula, ...dnd.initiative.aside].join("\n") }
-      : initiativeOf(character);
-  const speed = derived
-    ? { value: derived.speed.value, text: derived.speed.formula }
-    : dnd
-      ? { value: dnd.speed.value, text: dnd.speed.formula }
-      : speedOf(character);
-  const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
+  const title = panel === "growth" ? "Развитие" : panel === "combat" ? "Бой" : panel === "notes" ? "Заметки" : panel === "rules" ? "Редакция" : panel === "feats" ? "Черты" : panel === "reminder" ? "Памятка" : PANELS.find((item) => item[0] === panel)?.[1] ?? character.name;
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   function commit(next: Character) {
     onChange({ ...next, updatedAt: Date.now() });
   }
 
-  async function photo(file: File) {
-    try {
-      commit({ ...character, photo: await compressImage(file) });
-    } catch {
-      /* оставляем прежний портрет */
-    }
-  }
-
   return (
-    <div className="app">
-      <header className="topbar">
+    <div className={panel ? "app" : "app board-app"}>
+      <header className={panel ? "topbar" : "topbar board-top"}>
         <button type="button" className="icon-btn" aria-label={panel ? "К листу" : "К списку"} onClick={() => go(panel ? `#/c/${character.id}` : "#/")}>
           ←
         </button>
-        <h1 className="grow">{panel ? title : "Лист"}</h1>
+        {panel ? <h1 className="grow">{title}</h1> : <SheetTabs id={character.id} panel={panel} />}
       </header>
       {!panel && (
-        <main className="screen stack">
-          <section className="card hero-card">
-            <label className="avatar-btn">
-              {character.photo ? <img src={character.photo} alt="" /> : portraitSrc(character.ancestryId, character.classId) ? <img src={portraitSrc(character.ancestryId, character.classId) ?? ""} alt="" /> : <span>⚔</span>}
-              <input hidden type="file" accept="image/*" onChange={(event) => { const file = event.target.files?.[0]; if (file) void photo(file); }} />
-            </label>
-            <div className="grow">
-              <input data-testid="sheet-name" value={character.name} onChange={(event) => commit({ ...character, name: event.target.value })} />
-              <div className="chips">
-                <span className="chip">{systemTitle(character.system)}</span>
-                <span className="chip">{EDITION_NAME[rulesOf(character).edition]}</span>
-                <span className="chip">{character.ancestryName}</span>
-                <span className="chip">{character.className}</span>
-                <span className="chip">{character.level} ур.</span>
-                {character.readiness === "draft" && <span className="chip">Черновик, не проверен</span>}
-                {character.versatileHeritageId && <span className="chip">Универсальное наследие</span>}
-              </div>
-            </div>
-          </section>
-          <WarningBanner character={character} />
-          {character.system === "dnd5e" && <DndBanner character={character} />}
-          <div className="quick">
-            <Stat label="КБ" value={String(ac.value)} info={ac.text} />
-            <Stat label="Скорость" value={String(speed.value)} info={speed.text} />
-            <Stat label="Инициатива" value={fmt(init.value)} info={init.text} />
-            <Stat label="Хиты" value={`${character.hpCurrent}/${max}`} info={derived?.hp.formula ?? `Временные ${character.hpTemp}. Максимум считается из кости, Телосложения и черт.`} />
-          </div>
-          {derived && <p className="tiny">{derived.attacks.find((attack) => attack.equipped)?.attack.formula}</p>}
-          {dnd && <p className="tiny">{dnd.attacks.find((attack) => attack.equipped)?.attack.formula} · {dnd.attacks.find((attack) => attack.equipped)?.damage} · крит {dnd.crit}</p>}
-          <div className="stack">
-            {PANELS.map(([id, name, mark, tone]) => (
-              <button key={id} type="button" className={`big ${tone === "teal" ? "" : tone}`} data-testid={`open-${id}`} onClick={() => go(`#/c/${character.id}/${id}`)}>
-                <span className="mark">{mark}</span>
-                <span>
-                  <b>{id === "hero" ? (character.system === "pf2e" ? "Очки героизма" : "Вдохновение") : name}</b>
-                  <span>{blurb(character, id, max)}</span>
-                </span>
-              </button>
-            ))}
-            {(character.progress || character.dnd) && (
-              <button type="button" className="big" data-testid="open-growth" onClick={() => go(`#/c/${character.id}/growth`)}>
-                <span className="mark">↑</span>
-                <span>
-                  <b>Развитие</b>
-                  <span>Уровни 1–20, разбор и условные эффекты</span>
-                </span>
-              </button>
-            )}
-            {(character.dnd || character.progress) && (
-              <button type="button" className="big" data-testid="open-combat" onClick={() => go(`#/c/${character.id}/combat`)}>
-                <span className="mark">⚔</span>
-                <span>
-                  <b>Бой</b>
-                  <span>{character.system === "dnd5e" ? "Действие, бонус, реакция, атаки и ячейки" : "Три действия, реакция и повторные атаки"}</span>
-                </span>
-              </button>
-            )}
-            <button type="button" className="big" data-testid="open-rules" onClick={() => go(`#/c/${character.id}/rules`)}>
-              <span className="mark">§</span>
-              <span>
-                <b>Редакция</b>
-                <span>{EDITION_NAME[rulesOf(character).edition]}. Пакеты и домашние правила</span>
-              </span>
-            </button>
-            <button type="button" className="big" data-testid="open-notes" onClick={() => go(`#/c/${character.id}/notes`)}>
-              <span className="mark">✎</span>
-              <span>
-                <b>Заметки</b>
-                <span>Языки, черты и свои пометки</span>
-              </span>
-            </button>
-          </div>
-          {confirmDelete ? (
-            <div className="row">
-              <button type="button" className="btn danger" onClick={onDelete}>Удалить насовсем</button>
-              <button type="button" className="btn" onClick={() => setConfirmDelete(false)}>Оставить</button>
-            </div>
-          ) : (
-            <button type="button" className="btn danger" onClick={() => setConfirmDelete(true)}>
-              Удалить персонажа
-            </button>
-          )}
+        <main className="board-screen">
+          <CharacterBoard character={character} commit={commit} />
         </main>
       )}
       {panel && (
         <main className="screen stack">
+          <SheetTabs id={character.id} panel={panel} />
           {panel === "abilities" && <Abilities character={character} commit={commit} />}
           {panel === "skills" && <Skills character={character} commit={commit} />}
           {panel === "hp" && <Health character={character} commit={commit} />}
@@ -205,27 +97,51 @@ export function Sheet({
           {panel === "xp" && <Experience character={character} commit={commit} />}
           {panel === "hero" && <Hero character={character} commit={commit} />}
           {panel === "spells" && <Spells character={character} commit={commit} />}
+          {panel === "feats" && <FeatsPage character={character} />}
+          {panel === "reminder" && <ReminderPane character={character} onChange={commit} />}
           {panel === "dice" && <DicePanel />}
           {panel === "notes" && <Notes character={character} commit={commit} />}
           {panel === "rules" && <RulesPanel character={character} commit={commit} />}
           {panel === "growth" && (character.dnd ? <DndAdvance character={character} onChange={commit} /> : <AdvancePanel character={character} onChange={commit} />)}
           {panel === "combat" && (character.system === "dnd5e" ? <DndCombatPanel character={character} onChange={commit} /> : <CombatTracker character={character} onChange={commit} />)}
-          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "dice", "notes", "growth", "combat", "rules"].includes(panel) && <p>Такого раздела нет.</p>}
+          {panel && !["abilities", "skills", "hp", "inventory", "xp", "hero", "spells", "feats", "reminder", "dice", "notes", "growth", "combat", "rules"].includes(panel) && <p>Такого раздела нет.</p>}
+          {confirmDelete ? (
+            <div className="row">
+              <button type="button" className="btn danger" onClick={onDelete}>Удалить насовсем</button>
+              <button type="button" className="btn" onClick={() => setConfirmDelete(false)}>Оставить</button>
+            </div>
+          ) : (
+            <button type="button" className="btn danger" onClick={() => setConfirmDelete(true)}>Удалить персонажа</button>
+          )}
         </main>
       )}
     </div>
   );
 }
 
-function blurb(character: Character, id: string, max: number): string {
-  if (id === "abilities") return ABILITIES.map((ability) => `${ABILITY_SHORT[ability]} ${fmt(mod(character.abilities[ability]))}`).join(" ");
-  if (id === "skills") return "Проверка с кнопки сразу открывает кости";
-  if (id === "hp") return `${character.hpCurrent} из ${max}${character.hpTemp ? `, временные ${character.hpTemp}` : ""}`;
-  if (id === "inventory") return loadOf(character).text;
-  if (id === "xp") return character.system === "pf2e" ? `${character.xp} / 1000` : `${character.xp} опыта`;
-  if (id === "hero") return character.system === "pf2e" ? `${character.hero} из 3` : character.hero > 0 ? "есть" : "нет";
-  if (id === "spells") return character.spellcasting ? `${character.spells.length} в запасе` : "если магия есть";
-  return "к4–к100, преимущество, встряхивание";
+function SheetTabs({ id, panel }: { id: string; panel: string | null }) {
+  const tabs = [
+    ["", "Лист"],
+    ["inventory", "Сумка"],
+    ["spells", "Магия"],
+    ["feats", "Черты"],
+    ["reminder", "Памятка"],
+  ] as const;
+  return (
+    <nav className="board-tabs" aria-label="Страницы листа">
+      {tabs.map(([key, label]) => (
+        <button
+          key={key || "face"}
+          type="button"
+          className={(key ? panel === key : !panel) ? "on" : ""}
+          data-testid={`sheet-tab-${key || "face"}`}
+          onClick={() => go(key ? `#/c/${id}/${key}` : `#/c/${id}`)}
+        >
+          {label}
+        </button>
+      ))}
+    </nav>
+  );
 }
 
 function Stat({ label, value, info }: { label: string; value: string; info: string }) {
@@ -240,6 +156,12 @@ function Stat({ label, value, info }: { label: string; value: string; info: stri
 
 function rollTo(character: Character, label: string, modifier: number, die = 20) {
   queueRoll({ label, mod: modifier, die, system: character.system });
+  const live = document.querySelector("[data-dice-live]");
+  if (live) {
+    window.dispatchEvent(new Event("rpg-roll"));
+    live.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   go(`#/c/${character.id}/dice`);
 }
 
@@ -460,7 +382,7 @@ function Health({ character, commit }: { character: Character; commit: (next: Ch
       next.slots = next.slots.map((slot) => ({ ...slot, used: 0 }));
       next.resources = next.resources.map((resource) => ({ ...resource, current: resource.max }));
       if (next.focus) next.focus.current = next.focus.max;
-      setHarmText(`Отдых Pathfinder лечит ${heal}, это уровень × максимум из 1 и Телосложения. Все хиты так не возвращаются.`);
+      setHarmText(`Отдых в ремастере лечит ${heal}, это уровень × максимум из 1 и Телосложения. Все хиты так не возвращаются.`);
       commit(next);
       return;
     }
@@ -890,7 +812,7 @@ function Experience({ character, commit }: { character: Character; commit: (next
         <input inputMode="numeric" value={character.xp} onChange={(event) => commit({ ...character, xp: Math.max(0, Number(event.target.value) || 0) })} />
       </label>
       <p>{need == null ? "Дальше 20-го уровня лист не ведёт." : `До следующего уровня: ${need}. Сейчас ${character.level}.`}</p>
-      <Info title="Опыт" text={character.system === "pf2e" ? "В Pathfinder уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения. До +4 это +1 к модификатору. На +4 первое повышение частичное: броски и хиты не меняются, пока следующее отдельное повышение той же характеристики не закроет его." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
+      <Info title="Опыт" text={character.system === "pf2e" ? "В ремастере уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения. До +4 это +1 к модификатору. На +4 первое повышение частичное: броски и хиты не меняются, пока следующее отдельное повышение той же характеристики не закроет его." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
       {character.system === "dnd5e" && (
         <label className="field">
           <span>Подкласс открытого справочника</span>

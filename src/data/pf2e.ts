@@ -1,4 +1,6 @@
 import { MORE_ANCESTRIES, MORE_CLASSES } from "./pf2e-more";
+import { ROSTER_ANCESTRIES, ROSTER_CLASSES } from "./roster";
+import rawBackgrounds from "./generated/pf-backgrounds.json";
 import { ABILITY_NAME, type Ability, type CatalogItem, type Opt } from "../types";
 import { voiceItem, voiceNamed, voiceOpt, voiceSkill, voiceSpell } from "./voice";
 
@@ -245,32 +247,62 @@ export const ANCESTRIES: AncestryDef[] = [
 
 ANCESTRIES.push(...MORE_ANCESTRIES);
 
-export interface BackgroundDef extends Opt {
+interface RawBackground {
+  id: string;
+  name: string;
+  originalName: string;
+  hint: string;
+  info: string;
   abilities: Ability[];
-  skill: string;
-  lore: string;
-  feat: string;
+  freeBoosts: number;
+  skills: string[];
+  skillChoices: string[];
+  lores: string[];
+  feats: { id: string; name: string }[];
+  featChoices: { id: string; name: string }[];
+  craftChoices: { id: string; name: string }[];
+  book: string;
+  rarity: string;
+  sourceId: string;
+  sourceVersion: string;
 }
 
-export const BACKGROUNDS: BackgroundDef[] = [
-  { id: "acolyte", name: "Послушник", hint: "Мдр или Хар · Религия", abilities: ["wis", "cha"], skill: "religion", lore: "Знание храма", feat: "student-canon", info: "Служение при святилище. Повышение: Мудрость или Харизма, и ещё одно свободное. Обучены Религии и Знанию храма. Черта навыка «Ученик канона»." },
-  { id: "acrobat", name: "Акробат", hint: "Сил или Лов · Акробатика", abilities: ["str", "dex"], skill: "acrobatics", lore: "Знание цирка", feat: "cat-fall", info: "Балаган, канат, падения. Повышение Силы или Ловкости и свободное. Акробатика и Знание цирка. Черта «Мягкое падение»." },
-  { id: "criminal", name: "Преступник", hint: "Лов или Инт · Скрытность", abilities: ["dex", "int"], skill: "stealth", lore: "Знание улиц", feat: "experienced-smuggler", info: "Тени города. Ловкость или Интеллект и свободное. Скрытность и Знание улиц. Черта «Опытный контрабандист»." },
-  { id: "entertainer", name: "Артист", hint: "Лов или Хар · Выступление", abilities: ["dex", "cha"], skill: "performance", lore: "Знание сцены", feat: "fascinating", info: "Сцена и площадь. Ловкость или Харизма и свободное. Выступление и Знание сцены. Черта «Завораживающее выступление»." },
-  { id: "guard", name: "Страж", hint: "Сил или Хар · Запугивание", abilities: ["str", "cha"], skill: "intimidation", lore: "Знание устава", feat: "quick-coercion", info: "Караул и ворота. Сила или Харизма и свободное. Запугивание и Знание устава. Черта «Быстрое давление»." },
-  { id: "hunter", name: "Охотник", hint: "Лов или Мдр · Выживание", abilities: ["dex", "wis"], skill: "survival", lore: "Знание охоты", feat: "survey", info: "След и добыча. Ловкость или Мудрость и свободное. Выживание и Знание охоты. Черта «Обзор дичи»." },
-  { id: "laborer", name: "Рабочий", hint: "Сил или Тел · Атлетика", abilities: ["str", "con"], skill: "athletics", lore: "Знание ремесла черни", feat: "hefty", info: "Труд руками. Сила или Телосложение и свободное. Атлетика и Знание ремесла. Черта «Тяжёлая ноша»: +2 к пределу нагрузки." },
-  { id: "merchant", name: "Торговец", hint: "Инт или Хар · Дипломатия", abilities: ["int", "cha"], skill: "diplomacy", lore: "Знание рынка", feat: "bargain", info: "Лавка и караван. Интеллект или Харизма и свободное. Дипломатия и Знание рынка. Черта «Торг»." },
-  { id: "noble", name: "Дворянин", hint: "Инт или Хар · Общество", abilities: ["int", "cha"], skill: "society", lore: "Знание геральдики", feat: "courtly", info: "Дом и этикет. Интеллект или Харизма и свободное. Общество и Знание геральдики. Черта «Придворные манеры»." },
-  { id: "scholar", name: "Учёный", hint: "Инт или Мдр · Аркана", abilities: ["int", "wis"], skill: "arcana", lore: "Знание академии", feat: "assurance", info: "Книги и спор. Интеллект или Мудрость и свободное. Аркана и Знание академии. Черта «Уверенность» — выберите навык, обычно Аркану." },
-  { id: "scout", name: "Разведчик", hint: "Лов или Мдр · Выживание", abilities: ["dex", "wis"], skill: "survival", lore: "Знание троп", feat: "forager", info: "Дозор впереди отряда. Ловкость или Мудрость и свободное. Выживание и Знание троп. Черта «Собиратель»." },
-  { id: "street", name: "Беспризорник", hint: "Лов или Тел · Воровство", abilities: ["dex", "con"], skill: "thievery", lore: "Знание города", feat: "pickpocket", info: "Крыши и рынки. Ловкость или Телосложение и свободное. Воровство и Знание города. Черта «Карманник»." },
-  { id: "warrior", name: "Воин прошлого", hint: "Сил или Тел · Атлетика", abilities: ["str", "con"], skill: "athletics", lore: "Знание войны", feat: "glare", info: "Уже дрались до приключений. Сила или Телосложение и свободное. Атлетика и Знание войны. Черта «Устрашающий взгляд»." },
-  { id: "hermit", name: "Отшельник", hint: "Тел или Инт · Природа", abilities: ["con", "int"], skill: "nature", lore: "Знание уединения", feat: "dubious", info: "Годы в стороне от людей. Телосложение или Интеллект и свободное. Природа и Знание уединения. Черта «Сомнительные знания»: даже провал знания подсказывает версию, которую мастер помечает как правду или ложь." },
-  { id: "sailor", name: "Моряк", hint: "Сил или Лов · Атлетика", abilities: ["str", "dex"], skill: "athletics", lore: "Знание моря", feat: "underwater", info: "Палуба и шторм. Сила или Ловкость и свободное. Атлетика и Знание моря. Черта «Подводный мародёр»: вы не так беспомощны в воде." },
-  { id: "farmhand", name: "Батрак", hint: "Тел или Мдр · Природа", abilities: ["con", "wis"], skill: "nature", lore: "Знание фермы", feat: "assurance", info: "Поле и скот. Телосложение или Мудрость и свободное. Природа и Знание фермы. Черта «Уверенность» в Природе или Атлетике — запишите выбор." },
-  { id: "field-medic", name: "Полевой лекарь", hint: "Тел или Мдр · Медицина", abilities: ["con", "wis"], skill: "medicine", lore: "Знание войны", feat: "battle-medicine", info: "Перевязки между боями. Телосложение или Мудрость и свободное. Медицина и Знание войны. Черта навыка «Боевая медицина»." },
-];
+export interface BackgroundDef extends Opt {
+  abilities: Ability[];
+  freeBoosts: number;
+  skill: string;
+  skills: string[];
+  skillChoices: string[];
+  lore: string;
+  lores: string[];
+  feat: string;
+  feats: { id: string; name: string }[];
+  featChoices: { id: string; name: string }[];
+  craftChoices: { id: string; name: string }[];
+  book: string;
+  rarity: string;
+  originalName: string;
+  sourceId: string;
+  sourceVersion: string;
+}
+
+export function backgroundBoostCount(background: Pick<BackgroundDef, "abilities" | "freeBoosts"> | null | undefined): number {
+  if (!background) return 2;
+  return (background.abilities.length ? 1 : 0) + background.freeBoosts;
+}
+
+export const BACKGROUNDS: BackgroundDef[] = (rawBackgrounds as RawBackground[]).map((row) => ({
+  ...row,
+  abilities: row.abilities as Ability[],
+  skill: row.skills[0] ?? "",
+  lore: row.lores[0] ?? "",
+  feat: row.feats[0]?.id ?? "",
+}));
+
+export function backgroundById(id: string): BackgroundDef | undefined {
+  const key = id === "street" ? "street-urchin" : id;
+  return BACKGROUNDS.find((item) => item.id === key);
+}
 
 export interface ClassFeat extends Opt {}
 
@@ -643,6 +675,16 @@ export const CLASSES: ClassDef[] = [
 ];
 
 CLASSES.push(...MORE_CLASSES);
+const ancestryIds = new Set(ANCESTRIES.map((item) => item.id));
+const extraAncestries = ROSTER_ANCESTRIES.filter((item) => !ancestryIds.has(item.id));
+ANCESTRIES.push(...extraAncestries);
+const classIds = new Set(CLASSES.map((item) => item.id));
+const extraClasses = ROSTER_CLASSES.filter((item) => !classIds.has(item.id));
+CLASSES.push(...extraClasses);
+
+/** Народы и классы, которых не было в рукописном ядре. Справочник помечает их пакетом ORC. */
+export const EXTRA_ANCESTRY_IDS = new Set(extraAncestries.map((item) => item.id));
+export const EXTRA_CLASS_IDS = new Set(extraClasses.map((item) => item.id));
 
 export const SKILL_FEATS: Opt[] = [
   { id: "cat-fall", name: "Мягкое падение", info: "Нужна обученная Акробатика. Падая, считаете дистанцию на 10 футов меньше, на экспертном ранге — на 25. Урон от падения считается по уменьшенной высоте." },

@@ -1,4 +1,8 @@
+import portraits from "../data/generated/portraits.json";
+import portraitSlot from "../data/generated/portrait-slot.json";
+
 const base = import.meta.env.BASE_URL;
+const PORTRAITS = portraits as Record<string, string>;
 
 export const ART = {
   hero: "hero-tavern-party.jpg",
@@ -13,11 +17,15 @@ export const ART = {
 
 export const ART_CAPTION = "Свой рисунок. Не официальная иллюстрация.";
 
+/** Слот под иллюстрированный портрет. Рисунок виден целиком, рамка одна на все народы. */
+export const PORTRAIT_PROVENANCE = portraitSlot.provenance;
+
 export function artSrc(file: string): string {
   return `${base}art/${file}`;
 }
 
 export function portraitFile(ancestryId: string, classId?: string): string | null {
+  if (PORTRAITS[ancestryId]) return PORTRAITS[ancestryId];
   if (ancestryId === "elf") return ART.elf;
   if (ancestryId === "dwarf") return ART.dwarf;
   if (ancestryId === "orc") return ART.orc;

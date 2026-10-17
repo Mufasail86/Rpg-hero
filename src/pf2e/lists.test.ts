@@ -35,8 +35,8 @@ function weapon(ranged: boolean): ItemInst {
 }
 
 describe("слоты 2–20 и списки ремастера", () => {
-  it("даёт черты класса всем 16 классам по таблице книги", () => {
-    expect(CLASSES).toHaveLength(16);
+  it("даёт черты класса всем классам по таблице книги", () => {
+    expect(CLASSES.length).toBeGreaterThanOrEqual(28);
     for (const job of CLASSES) {
       const at20 = ids(job.id, 20);
       expect(at20.filter((id) => id.startsWith("class-feat-"))).not.toHaveLength(0);

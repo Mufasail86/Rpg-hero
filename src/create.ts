@@ -3,7 +3,8 @@ import { reminderFromClass } from "./reminder";
 import { VERSATILE } from "./data/versatile";
 import { defaultSources, filledEdition, resolveEdition } from "./data/editions";
 import { skillFeatBlock } from "./pf2e/eligibility";
-import { levelOneClassFeats } from "./data/pf-index";
+import { FEAT_BY_ID, levelOneClassFeats } from "./data/pf-index";
+import { extraGear } from "./data/shop";
 import { derive } from "./pf2e/build";
 import {
   ABILITIES,
@@ -21,6 +22,7 @@ import {
 } from "./types";
 import {
   BACKGROUNDS as BG5,
+  BACKGROUNDS_2014 as BG2014,
   CLASSES as CL5,
   CONDITIONS as COND5,
   GENERAL_FEATS,
@@ -34,12 +36,13 @@ import {
 } from "./data/dnd5e";
 import {
   ANCESTRIES,
-  BACKGROUNDS as BG2,
   CLASSES as CL2,
   CONDITIONS as COND2,
   ITEMS as ITEMS2,
   SKILL_FEATS,
   SPELLS as SP2,
+  backgroundBoostCount,
+  backgroundById,
   itemById as item2,
   skillById as skill2,
 } from "./data/pf2e";
@@ -60,6 +63,20 @@ export const STEP_TITLE: Record<StepId, string> = {
   gear: "Снаряжение",
   spells: "Заклинания",
   review: "Проверка",
+};
+
+export const STEP_HINT: Record<StepId, string> = {
+  system: "Сначала игра. Редакции не смешиваются.",
+  name: "Имя можно сменить потом на листе.",
+  ancestry: "Народ задаёт хиты, скорость и черту.",
+  background: "Происхождение — прошлое до приключения.",
+  class: "Класс решает, чем герой занят в бою.",
+  abilities: "Выберите один способ и доберите числа.",
+  skills: "Берите только то, что ещё не закрыто.",
+  feats: "Серая черта объясняет, почему её нельзя взять.",
+  gear: "Лавка не обрезается: листайте список вниз.",
+  spells: "Если класс не колдует, шаг сам пропустится.",
+  review: "Проверьте имя и числа, затем создайте лист.",
 };
 
 const m = (d: Draft, key: string) => d.multi[key] ?? [];
@@ -147,7 +164,9 @@ function validateAncestry(d: Draft): string | null {
 }
 
 function validateBackground(d: Draft): string | null {
-  if (!editionOpen(d) && d.backgroundId !== "custom") return "В этой редакции готовых происхождений нет. Выберите свою запись или другую редакцию.";
+  const edition = activeEdition(d);
+  const legacyBackground = edition === "dnd-2014" && Boolean(bg2014(d));
+  if (!editionOpen(d) && d.backgroundId !== "custom" && !legacyBackground) return "В этой редакции готовых происхождений нет. Выберите свою запись или другую редакцию.";
   if (!d.backgroundId) return "Выберите происхождение или свою запись.";
   if (d.backgroundId === "custom") {
     if (!d.customBackground.name.trim()) return "Назовите своё происхождение.";
@@ -161,8 +180,17 @@ function validateBackground(d: Draft): string | null {
     }
     return null;
   }
-  if (d.system === "dnd5e" && !bg5(d)) return "Неизвестное происхождение.";
+  if (d.system === "dnd5e" && edition === "dnd-2014" && !bg2014(d)) return "Неизвестное происхождение.";
+  if (d.system === "dnd5e" && edition !== "dnd-2014" && !bg5(d)) return "Неизвестное происхождение.";
   if (d.system === "pf2e" && !bg2(d)) return "Неизвестное происхождение.";
+  const pf = bg2(d);
+  if (pf?.skillChoices.length) {
+    const pick = c(d, "bgSkill");
+    const allowed = pf.skillChoices.includes("*") ? true : pf.skillChoices.includes(pick);
+    if (!pick || !allowed) return "Выберите навык происхождения.";
+  }
+  if (pf?.featChoices.length && !pf.featChoices.some((feat) => feat.id === c(d, "bgFeat"))) return "Выберите черту происхождения.";
+  if (pf?.craftChoices.length && !pf.craftChoices.some((craft) => craft.id === c(d, "bgCraft"))) return "Выберите специальность ремесла.";
   return null;
 }
 
@@ -330,7 +358,7 @@ function scores2(d: Draft, method: string): { ok: true; scores: Record<Ability, 
     if (!sameMultiset(ABILITIES.map((id) => d.scores[id]), d.pool)) return { ok: false, error: "Назначьте каждый бросок." };
     return { ok: true, scores: { ...d.scores } };
   }
-  if (method !== "boost") return { ok: false, error: "Для Pathfinder выберите повышения, набор или бросок." };
+  if (method !== "boost") return { ok: false, error: "Для ремастера выберите повышения, набор или бросок." };
   const scores = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
   const partial: Record<Ability, boolean> = { str: false, dex: false, con: false, int: false, wis: false, cha: false };
   const boost = (ability: Ability) => {
@@ -354,14 +382,31 @@ function scores2(d: Draft, method: string): { ok: true; scores: Record<Ability, 
     boost(free);
     if (ancestry.flaw) scores[ancestry.flaw] -= 2;
   }
-  const options = backgroundAbilityList(d);
+  const background = bg2(d);
   const fixed = c(d, "bgFixed") as Ability;
   const free = c(d, "bgFree") as Ability;
-  if (options.length >= 2) {
-    if (!options.includes(fixed)) return { ok: false, error: "Повышение происхождения должно быть одним из двух предложенных." };
-    if (!free || free === fixed) return { ok: false, error: "Второе повышение происхождения — другая характеристика." };
-    boost(fixed);
-    boost(free);
+  if (!background || (background.abilities.length === 2 && background.freeBoosts === 1)) {
+    const options = backgroundAbilityList(d);
+    if (options.length >= 2) {
+      if (!options.includes(fixed)) return { ok: false, error: "Повышение происхождения должно быть одним из двух предложенных." };
+      if (!free || free === fixed) return { ok: false, error: "Второе повышение происхождения — другая характеристика." };
+      boost(fixed);
+      boost(free);
+    }
+  } else {
+    const used = new Set<Ability>();
+    if (background.abilities.length) {
+      if (!background.abilities.includes(fixed)) return { ok: false, error: "Повышение происхождения должно быть из его списка." };
+      boost(fixed);
+      used.add(fixed);
+    }
+    const freeKeys = ["bgFree", "bgFree2", "bgFree3"].slice(0, background.freeBoosts);
+    for (const key of freeKeys) {
+      const pick = c(d, key) as Ability;
+      if (!pick || used.has(pick)) return { ok: false, error: "Свободные повышения происхождения идут в разные характеристики." };
+      boost(pick);
+      used.add(pick);
+    }
   }
   const key = classKey(d);
   if (!key) return { ok: false, error: "Не выбрана ключевая характеристика класса." };
@@ -381,7 +426,7 @@ function backgroundAbilityList(d: Draft): Ability[] {
     if (c(d, "noBoost") === "yes") return [];
     return [c(d, "cba"), c(d, "cbb"), c(d, "cbc")].filter(Boolean) as Ability[];
   }
-  if (d.system === "dnd5e") return bg5(d)?.abilities ?? [];
+  if (d.system === "dnd5e") return activeBackground5(d)?.abilities ?? [];
   return bg2(d)?.abilities ?? [];
 }
 
@@ -417,11 +462,12 @@ export function creationMeters(d: Draft): ChoiceMeter[] {
     const ancestry = ANCESTRIES.find((item) => item.id === d.ancestryId);
     const free = d.ancestryId === "custom" || c(d, "ancestryMode") === "free" || Boolean(ancestry && ancestry.boosts.length === 0);
     if (free) meters.push({ id: "ancestry-boost", label: "Повышения народа", have: m(d, "ancestryBoosts").length, need: 2 });
+    const backgroundNeed = backgroundBoostCount(bg2(d));
     meters.push({
       id: "background-boost",
       label: "Повышения происхождения",
-      have: (c(d, "backgroundBoost") ? 1 : 0) + (c(d, "backgroundFree") ? 1 : 0),
-      need: 2,
+      have: ["bgFixed", "bgFree", "bgFree2", "bgFree3"].filter((key) => c(d, key)).length,
+      need: backgroundNeed,
     });
     meters.push({ id: "free-boost", label: "Свободные повышения", have: m(d, "freeBoosts").length, need: 4 });
   }
@@ -461,7 +507,7 @@ export function skillNeed(d: Draft, scores: Record<Ability, number>): number {
 export function fixedSkills(d: Draft): string[] {
   const list: string[] = [];
   if (d.system === "dnd5e") {
-    const bg = bg5(d);
+    const bg = activeBackground5(d);
     if (bg) list.push(...bg.skills);
     if (d.ancestryId === "elf" && c(d, "elfSkill")) list.push(c(d, "elfSkill"));
     if (d.ancestryId === "human" && c(d, "humanSkill")) list.push(c(d, "humanSkill"));
@@ -471,7 +517,10 @@ export function fixedSkills(d: Draft): string[] {
     return list;
   }
   const bg = bg2(d);
-  if (bg) list.push(bg.skill);
+  if (bg) {
+    list.push(...bg.skills);
+    if (c(d, "bgSkill")) list.push(c(d, "bgSkill"));
+  }
   if (d.backgroundId === "custom" && c(d, "customSkill")) list.push(c(d, "customSkill"));
   const cls = CL2.find((x) => x.id === d.classId);
   if (cls) list.push(...cls.skillsFixed);
@@ -556,7 +605,7 @@ function purseOf(d: Draft): { ok: true; copper: number; items: { id: string; qty
     const pack = d.gearMode === "gold" ? packs.find((p) => p.items.length === 0) ?? packs[packs.length - 1] : packs.find((p) => p.id === d.gearMode);
     if (d.classId !== "custom" && !pack && d.gearMode !== "gold") return { ok: false, error: "Выберите набор класса." };
     let copper = (pack?.gp ?? (d.gearMode === "gold" ? 50 : 0)) * 100;
-    const bg = bg5(d);
+    const bg = activeBackground5(d);
     if (d.choices.bgGear === "gold") copper += 50 * 100;
     else if (bg) copper += bg.gp * 100;
     const items: { id: string; qty: number; equipped?: boolean }[] = (pack?.items ?? []).map((row) => ({
@@ -598,8 +647,14 @@ function purseOf(d: Draft): { ok: true; copper: number; items: { id: string; qty
 function bg5(d: Draft) {
   return BG5.find((b) => b.id === d.backgroundId);
 }
+function bg2014(d: Draft) {
+  return BG2014.find((b) => b.id === d.backgroundId);
+}
+function activeBackground5(d: Draft) {
+  return activeEdition(d) === "dnd-2014" ? bg2014(d) : bg5(d);
+}
 function bg2(d: Draft) {
-  return BG2.find((b) => b.id === d.backgroundId);
+  return d.system === "pf2e" ? backgroundById(d.backgroundId) : undefined;
 }
 
 export function createCharacter(d: Draft): { ok: true; character: Character } | { ok: false; error: string } {
@@ -622,7 +677,7 @@ export function createCharacter(d: Draft): { ok: true; character: Character } | 
 function build5(d: Draft, scores: Record<Ability, number>): Character {
   const species = SPECIES.find((s) => s.id === d.ancestryId);
   const cls = CL5.find((x) => x.id === d.classId);
-  const bg = bg5(d);
+  const bg = activeBackground5(d);
   const custom = d.ancestryId === "custom";
   const speed = species?.id === "elf" && c(d, "lineage") === "wood" ? 35 : custom ? Number(d.customAncestry.speed) || 30 : species?.speed ?? 30;
   const size = species?.sizeChoice ? c(d, "size") || "Средний" : custom ? d.customAncestry.size || "Средний" : species?.size ?? "Средний";
@@ -772,8 +827,13 @@ function seedPf(d: Draft, scores: Record<Ability, number>): Pf2eProgress | undef
   };
   if (ancestry.boosts.length === 0) m(d, "ancestryBoosts").forEach((pick, index) => push(`boost-1-ancestry-${index}`, "ancestry-boost", pick));
   else if (ancestry.freeBoosts > 0) push("boost-1-ancestry-0", "ancestry-boost", c(d, "ancFree"));
-  push("boost-1-background-0", "background-boost", c(d, "bgFixed"));
-  push("boost-1-background-1", "background-boost", c(d, "bgFree"));
+  const background = bg2(d);
+  const boostKeys = ["bgFixed", "bgFree", "bgFree2", "bgFree3"];
+  for (let index = 0; index < backgroundBoostCount(background); index += 1) {
+    push(`boost-1-background-${index}`, "background-boost", c(d, boostKeys[index] ?? ""));
+  }
+  if (c(d, "bgSkill")) push("bg-skill", "bg-skill", c(d, "bgSkill"));
+  if (c(d, "bgFeat")) push("bg-feat", "bg-feat", c(d, "bgFeat"));
   push("boost-1-class", "class-boost", key);
   m(d, "freeBoosts").forEach((pick, index) => push(`boost-1-free-${index}`, "free-boost", pick));
   if (cls.id === "fighter") push("class-skill-primary", "class-skill", c(d, "fighterSkill"));
@@ -814,22 +874,43 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
   const bg = bg2(d);
   const custom = d.ancestryId === "custom";
   const feats: FeatInst[] = [];
-  const ancFeat = ancestry?.feats.find((f) => f.id === c(d, "ancestryFeat"));
+  const ancFeat = ancestry?.feats.find((f) => f.id === c(d, "ancestryFeat")) ?? indexedFeat(c(d, "ancestryFeat"));
   if (ancFeat) feats.push({ id: ancFeat.id, name: ancFeat.name, info: ancFeat.info });
-  const skillFeat = SKILL_FEATS.find((f) => f.id === c(d, "skillFeat"));
+  const skillFeat = SKILL_FEATS.find((f) => f.id === c(d, "skillFeat")) ?? indexedFeat(c(d, "skillFeat"));
   if (skillFeat) feats.push({ id: skillFeat.id, name: skillFeat.name, info: skillFeat.info });
   const generalFeat = SKILL_FEATS.find((f) => f.id === c(d, "generalFeat")) ?? (c(d, "generalFeat") === "fleet" ? { id: "fleet", name: "Быстроногий", info: "Скорость +5 футов." } : c(d, "generalFeat") === "canny-acumen" ? { id: "canny-acumen", name: "Дальновидность", info: "Эксперт в выбранном испытании или Восприятии, мастер с 17 уровня." } : c(d, "generalFeat") === "breath-control" ? { id: "breath-control", name: "Контроль дыхания", info: "Дольше задерживаете дыхание." } : null);
-  if (generalFeat) feats.push({ id: generalFeat.id, name: generalFeat.name, info: generalFeat.info });
-  const classFeat = cls?.feats.find((f) => f.id === c(d, "classFeat"));
+  const generalPick = generalFeat ?? indexedFeat(c(d, "generalFeat"));
+  if (generalPick) feats.push({ id: generalPick.id, name: generalPick.name, info: generalPick.info });
+  const classFeat = cls?.feats.find((f) => f.id === c(d, "classFeat")) ?? indexedFeat(c(d, "classFeat"));
   if (classFeat) feats.push({ id: classFeat.id, name: classFeat.name, info: classFeat.info });
+  const archetype = indexedFeat(c(d, "archetype"));
+  if (archetype) feats.push({ id: archetype.id, name: archetype.name, info: archetype.info });
   if (c(d, "doctrine") === "war") feats.push({ id: "shield-block", name: "Блок щитом", info: SKILL_FEATS.find((f) => f.id === "shield-block")?.info ?? "" });
   for (const feat of d.customFeats) if (feat.name.trim()) feats.push({ id: uid(), name: feat.name.trim(), info: feat.info || "Своя черта." });
   const ranks: Record<string, string> = {};
   for (const id of fixedSkills(d)) ranks[id] = "trained";
   for (const id of m(d, "skills")) ranks[id] = "trained";
-  const loreName = bg?.lore ?? (d.backgroundId === "custom" ? "Своё знание" : "Знание");
-  const extra = [{ id: "lore-bg", name: loreName, ability: "int" as Ability, info: "Знание из происхождения. Это отдельный навык Интеллекта: вы вспоминаете узкую тему лучше, чем общий навык. Обученность даёт уровень + 2." }];
-  ranks["lore-bg"] = "trained";
+  const loreNames = bg?.lores?.length ? bg.lores : d.backgroundId === "custom" ? ["Своё знание"] : [];
+  const extra = loreNames.map((loreName, index) => ({
+    id: index === 0 ? "lore-bg" : `lore-bg-${index + 1}`,
+    name: loreName,
+    ability: "int" as Ability,
+    info: "Знание из происхождения. Это отдельный навык Интеллекта: вы вспоминаете узкую тему лучше, чем общий навык. Обученность даёт уровень + 2.",
+  }));
+  for (const lore of extra) ranks[lore.id] = "trained";
+  for (const feat of bg?.feats ?? []) {
+    const known = SKILL_FEATS.find((item) => item.id === feat.id);
+    feats.push({ id: feat.id, name: known?.name ?? feat.name, info: known?.info ?? "Черта происхождения. Если у неё нет отдельного числа, лист его не выдумывает." });
+  }
+  const chosenFeat = bg?.featChoices.find((feat) => feat.id === c(d, "bgFeat"));
+  if (chosenFeat) {
+    const known = SKILL_FEATS.find((item) => item.id === chosenFeat.id);
+    feats.push({ id: chosenFeat.id, name: known?.name ?? chosenFeat.name, info: known?.info ?? "Черта происхождения. Если у неё нет отдельного числа, лист его не выдумывает." });
+  }
+  if (bg?.craftChoices.length && c(d, "bgCraft")) {
+    const craft = bg.craftChoices.find((item) => item.id === c(d, "bgCraft"));
+    if (craft) feats.push({ id: `craft-${craft.id}`, name: `Узкое ремесло: ${craft.name}`, info: "Специальность ремесла записана с происхождения. Лист сам цену изделия не меняет." });
+  }
   const armorRanks = { ...(cls?.armor ?? { unarmored: "trained", light: "untrained", medium: "untrained", heavy: "untrained" }) };
   if (c(d, "doctrine") === "cloister") armorRanks.light = "trained";
   if (c(d, "doctrine") === "war") {
@@ -1096,7 +1177,23 @@ function copperToCoins(copper: number): Character["coins"] {
 }
 
 export function catalog(system: Draft["system"]) {
-  return system === "pf2e" ? ITEMS2 : ITEMS5;
+  const hand = system === "pf2e" ? ITEMS2 : ITEMS5;
+  if (system !== "pf2e" && system !== "dnd5e") return hand;
+  const taken = new Set(hand.map((item) => item.id));
+  return [...hand, ...extraGear(system, taken).priced];
+}
+
+export function notedGear(system: Draft["system"]) {
+  const hand = system === "pf2e" ? ITEMS2 : ITEMS5;
+  if (system !== "pf2e" && system !== "dnd5e") return [];
+  return extraGear(system, new Set(hand.map((item) => item.id))).noted;
+}
+
+function indexedFeat(id: string): { id: string; name: string; info: string } | undefined {
+  if (!id) return undefined;
+  const row = FEAT_BY_ID.get(id);
+  if (!row) return undefined;
+  return { id: row.id, name: row.name, info: `Уровень ${row.level}. Постоянные числа листа эта черта не меняет, если эффект не вынесен числом.` };
 }
 
 export function conditionList(system: Character["system"]) {

@@ -9,12 +9,15 @@ import { Library } from "./ui/library";
 import { Lore } from "./ui/lore";
 import { Bestiary } from "./ui/bestiary";
 import { QuickBar } from "./ui/quickbar";
+import { Table } from "./ui/table";
+import { ThemeToggle } from "./ui/theme";
 
-function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library" | "lore" | "bestiary"; id?: string; panel?: string | null } {
+function routeOf(hash: string): { page: "home" | "new" | "sheet" | "library" | "lore" | "bestiary" | "table"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
   if (parts[0] === "library") return { page: "library" };
   if (parts[0] === "lore") return { page: "lore" };
   if (parts[0] === "bestiary") return { page: "bestiary", id: parts[1] ? decodeURIComponent(parts[1]) : undefined };
+  if (parts[0] === "table") return { page: "table" };
   if (parts[0] === "new") return { page: "new" };
   if (parts[0] === "c" && parts[1]) return { page: "sheet", id: decodeURIComponent(parts[1]), panel: parts[2] ? decodeURIComponent(parts[2]) : null };
   return { page: "home" };
@@ -43,7 +46,8 @@ export function App() {
 
   return (
     <InfoProvider>
-      <div className={active ? (route.page === "new" ? "has-quickbar creating" : "has-quickbar") : undefined}>
+      <ThemeToggle />
+      <div className={route.page === "new" ? "has-quickbar creating" : "has-quickbar"}>
       {route.page === "home" && (
         <Home
           characters={characters}
@@ -54,6 +58,7 @@ export function App() {
       {route.page === "library" && <Library />}
       {route.page === "lore" && <Lore />}
       {route.page === "bestiary" && <Bestiary />}
+      {route.page === "table" && <Table characters={characters} />}
       {route.page === "new" && (
         <Builder
           onDone={(character) => {
@@ -80,15 +85,14 @@ export function App() {
         </div>
       )}
       </div>
-      {active && (
-        <QuickBar
-          character={active}
-          roster={characters}
-          allowSwitch={route.page !== "sheet"}
-          raised={route.page === "new"}
-          onChange={upsert}
-        />
-      )}
+      <QuickBar
+        character={active ?? null}
+        roster={characters}
+        allowSwitch={route.page !== "sheet"}
+        raised={route.page === "new"}
+        compact={route.page === "sheet" && !route.panel}
+        onChange={upsert}
+      />
     </InfoProvider>
   );
 }

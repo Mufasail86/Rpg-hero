@@ -85,7 +85,8 @@ export function DicePanel() {
   const [mode, setMode] = useState<RollPreset["mode"]>(initial?.mode ?? "normal");
   const [dc, setDc] = useState(initial?.dc ? String(initial.dc) : "");
   const [pf, setPf] = useState(initial?.system === "pf2e");
-  const label = initial?.label ?? "";
+  const [label, setLabel] = useState(initial?.label ?? "");
+  const [autoRoll, setAutoRoll] = useState(false);
   const [dice, setDice] = useState<DieState[]>([{ value: 20, spinning: false, tumble: SHOW[1] }]);
   const [banner, setBanner] = useState("Нажмите «Бросить» или встряхните телефон.");
   const [history, setHistory] = useState<string[]>([]);
@@ -116,6 +117,29 @@ export function DicePanel() {
   }
 
   rollRef.current = roll;
+
+  useEffect(() => {
+    if (!autoRoll) return;
+    setAutoRoll(false);
+    rollRef.current();
+  }, [autoRoll]);
+
+  useEffect(() => {
+    function onQueued() {
+      const next = takePreset();
+      if (!next) return;
+      setSides(next.die ?? 20);
+      setCount(next.mode === "adv" || next.mode === "dis" ? 2 : 1);
+      setMod(next.mod);
+      setMode(next.mode ?? "normal");
+      setDc(next.dc ? String(next.dc) : "");
+      setPf(next.system === "pf2e");
+      setLabel(next.label);
+      setAutoRoll(true);
+    }
+    window.addEventListener("rpg-roll", onQueued);
+    return () => window.removeEventListener("rpg-roll", onQueued);
+  }, []);
 
   useEffect(() => {
     if (!armed) return;
@@ -151,7 +175,7 @@ export function DicePanel() {
   }
 
   return (
-    <div className="stack">
+    <div className="stack" data-dice-live>
       <div className="tray" aria-hidden="false">
         {dice.map((die, index) => {
           const left = 18 + (index % 4) * 78;
@@ -209,7 +233,7 @@ export function DicePanel() {
         <input type="number" inputMode="numeric" value={dc} placeholder="пусто" onChange={(event) => setDc(event.target.value)} />
       </label>
       <button type="button" className={`pill ${pf ? "on" : ""}`} onClick={() => setPf((value) => !value)}>
-        Ступени успеха Pathfinder {pf ? "включены" : "выключены"}
+        Ступени успеха ремастера {pf ? "включены" : "выключены"}
       </button>
       <button type="button" className="btn primary" data-testid="roll-dice" onClick={roll}>
         Бросить
@@ -217,7 +241,7 @@ export function DicePanel() {
       <button type="button" className="btn" onClick={enableShake}>
         {armed ? "Встряхивание включено" : "Разрешить встряхивание"}
       </button>
-      <p className="tiny">{shakeNote} Преимущество и помеха бросают два к20 и берут больший или меньший, затем прибавляют модификатор. В Pathfinder натуральная 20 поднимает ступень успеха, натуральная 1 опускает.</p>
+      <p className="tiny">{shakeNote} Преимущество и помеха бросают два к20 и берут больший или меньший, затем прибавляют модификатор. В ремастере натуральная 20 поднимает ступень успеха, натуральная 1 опускает.</p>
       {history.length > 0 && (
         <div className="card history">
           {history.map((line, index) => (

@@ -67,14 +67,14 @@ function people(
 }
 
 export const MORE_ANCESTRIES: Ancestry[] = [
-  people("catfolk", "Амуррун", 8, "Средний", 25, "Сумеречное зрение", ["dex", "cha"], "wis", lines("catfolk")),
+  people("catfolk", "Котолюд", 8, "Средний", 25, "Сумеречное зрение", ["dex", "cha"], "wis", lines("catfolk")),
   people("hobgoblin", "Хобгоблин", 8, "Средний", 25, "Тёмное зрение", ["con", "int"], "wis", lines("hobgoblin")),
-  people("kholo", "Кхоло", 8, "Средний", 25, "Сумеречное зрение", ["str", "int"], "wis", lines("kholo")),
+  people("kholo", "Холо", 8, "Средний", 25, "Сумеречное зрение", ["str", "int"], "wis", lines("kholo")),
   people("kobold", "Кобольд", 6, "Малый", 25, "Тёмное зрение", ["dex", "cha"], "con", lines("kobold")),
   people("tripkee", "Трипки", 6, "Малый", 25, "Сумеречное зрение", ["dex", "wis"], "str", lines("tripkee")),
-  people("ratfolk", "Крысиный народ", 6, "Малый", 25, "Сумеречное зрение", ["dex", "int"], "str", lines("ratfolk")),
-  people("tengu", "Тенгу", 6, "Средний", 25, "Сумеречное зрение", ["dex"], undefined, lines("tengu")),
-  people("lizardfolk", "Ящеролюд", 8, "Средний", 25, "Обычное зрение", ["str", "wis"], "int", lines("lizardfolk")),
+  people("ratfolk", "Крысолюд", 6, "Малый", 25, "Сумеречное зрение", ["dex", "int"], "str", lines("ratfolk")),
+  people("tengu", "Тэнгу", 6, "Средний", 25, "Сумеречное зрение", ["dex"], undefined, lines("tengu")),
+  people("lizardfolk", "Людоящер", 8, "Средний", 25, "Обычное зрение", ["str", "wis"], "int", lines("lizardfolk")),
 ];
 
 interface ClassRow {
@@ -174,7 +174,7 @@ export const MORE_CLASSES: ClassRow[] = [
   }),
   klass({
     id: "investigator",
-    name: "Сыщик",
+    name: "Следователь",
     hint: "8 хитов · Интеллект · зацепка",
     hp: 8,
     key: ["int"],

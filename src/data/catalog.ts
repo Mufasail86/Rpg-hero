@@ -1,13 +1,15 @@
-import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5 } from "./dnd5e";
+import { CLASSES as CL5, CONDITIONS as COND5, EPIC_BOONS, GENERAL_FEATS, ITEMS as ITEMS5, MASTERY, ORIGIN_FEATS, SKILLS as SK5, SPECIES, SPELLS as SP5, STYLE_FEATS, BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014 } from "./dnd5e";
 import { defaultSources, type LicenseId, type ReviewStatus, type RulesEdition, type Spoiler, packById } from "./editions";
 import { LORE } from "./lore";
 import pfCorePack from "./generated/pf-core.json";
 import pfLegacyPack from "./generated/pf-legacy.json";
 import pfListsPack from "./generated/pf-lists.json";
+import pfWidePack from "./generated/pf-wide.json";
 import srd2014Pack from "./generated/srd-2014.json";
 import srd2024Pack from "./generated/srd-2024.json";
 import { DND_2014, DND_2024_MORE, PF_LEGACY, PF_ORC_MORE, type PackedEntry } from "./packs-extra";
-import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, CONDITIONS as COND2, ITEMS as ITEMS2, SKILL_FEATS, SKILLS as SK2, SPELLS as SP2 } from "./pf2e";
+import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, CONDITIONS as COND2, EXTRA_ANCESTRY_IDS, EXTRA_CLASS_IDS, ITEMS as ITEMS2, SKILL_FEATS, SKILLS as SK2, SPELLS as SP2 } from "./pf2e";
+import { ORC_ORIGINAL_NAME } from "./roster";
 import { pathOption } from "./pf-index";
 import { bestiaryPackCounts } from "./bestiary";
 import { LINKS, REVIEW } from "./review";
@@ -110,6 +112,23 @@ function fromPacked(entry: PackedEntry, system: "dnd5e" | "pf2e", edition: Rules
   };
 }
 
+const ORC_CHECKED = "2026-10-16";
+
+function stampOrc(entry: RuleEntry, originalName: string): RuleEntry {
+  const pack = packById("pf-orc-more");
+  return {
+    ...entry,
+    originalName,
+    status: "verified-reference",
+    checkedOn: ORC_CHECKED,
+    sourceVersion: "ORC",
+    sourceId: "pf-orc-more",
+    license: pack?.license ?? entry.license,
+    link: pack?.link ?? entry.link,
+    location: "Поля Foundry, лицензия ORC. Абзац книги не копировался.",
+  };
+}
+
 function rulesEntries(): RuleEntry[] {
   const list: RuleEntry[] = [];
   const dnd: Stamp = { edition: "dnd-2024", sourceId: "srd-5.2", system: "dnd5e" };
@@ -140,25 +159,57 @@ function rulesEntries(): RuleEntry[] {
   const heldByPack = new Set(
     (pfCorePack as PackedEntry[]).filter((entry) => entry.category === "ancestry" || entry.category === "class").map((entry) => `${entry.category}:${entry.id}`),
   );
+  const packedHeritage = new Set(
+    [...(pfListsPack as PackedEntry[]), ...(pfWidePack as PackedEntry[])].filter((entry) => entry.category === "heritage").map((entry) => entry.id),
+  );
   for (const item of ANCESTRIES) {
     if (heldByPack.has(`ancestry:${item.id}`)) continue;
-    list.push(make(pf, "ancestry", "Народ", item.id, item.name, item.short, item.info));
-    for (const line of item.heritages) list.push(make(pf, "heritage", "Наследие", `${item.id}:${line.id}`, line.name, line.short, line.info));
+    const ancestry = make(pf, "ancestry", "Народ", item.id, item.name, item.short, item.info);
+    list.push(EXTRA_ANCESTRY_IDS.has(item.id) ? stampOrc(ancestry, ORC_ORIGINAL_NAME[item.id] ?? item.id) : ancestry);
+    for (const line of item.heritages) {
+      const localId = `${item.id}:${line.id}`;
+      if (EXTRA_ANCESTRY_IDS.has(item.id) && packedHeritage.has(localId)) continue;
+      list.push(make(pf, "heritage", "Наследие", localId, line.name, line.short, line.info));
+    }
     for (const feat of item.feats) list.push(make(pf, "ancestry-feat", "Черта народа", feat.id, feat.name, feat.short, feat.info, feat.level));
   }
   for (const item of VERSATILE) {
-    list.push({
+    const entry = {
       ...make(pf, "versatile-heritage", "Универсальное наследие", item.id, item.name, item.short, item.info),
       originalName: item.originalName,
       sourceId: item.sourceId,
       license: packById(item.sourceId)?.license ?? "orc",
       link: packById(item.sourceId)?.link ?? "",
-    });
+    };
+    list.push(entry.checkedOn ? entry : stampOrc(entry, item.originalName));
   }
-  for (const item of BG2) list.push(make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info));
+  for (const item of BG2) {
+    const entry = make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info);
+    entry.originalName = item.originalName;
+    entry.status = "verified-reference";
+    entry.checkedOn = ORC_CHECKED;
+    entry.sourceVersion = item.sourceVersion;
+    entry.sourceId = item.sourceId;
+    entry.license = packById(item.sourceId)?.license ?? entry.license;
+    entry.link = packById(item.sourceId)?.link ?? entry.link;
+    entry.location = "Поля Foundry, лицензия ORC, пометка ремастера. Абзац книги не копировался.";
+    list.push(entry);
+  }
+  for (const item of BG2014) {
+    const entry = make({ edition: "dnd-2014", sourceId: "srd-5.1", system: "dnd5e" }, "background", "Происхождение", item.id, item.name, item.short, item.info);
+    entry.originalName = "Acolyte";
+    entry.status = "verified-reference";
+    entry.checkedOn = ORC_CHECKED;
+    entry.sourceVersion = "5.1";
+    entry.location = "Справочник 5.1, шапка происхождения. Абзац книги не копировался.";
+    list.push(entry);
+  }
   for (const item of CL2) {
     const held = heldByPack.has(`class:${item.id}`);
-    if (!held) list.push(make(pf, "class", "Класс", item.id, item.name, item.short, item.info));
+    if (!held) {
+      const job = make(pf, "class", "Класс", item.id, item.name, item.short, item.info);
+      list.push(EXTRA_CLASS_IDS.has(item.id) ? stampOrc(job, ORC_ORIGINAL_NAME[item.id] ?? item.id) : job);
+    }
     for (const choice of item.choices) {
       for (const option of choice.options) {
         const entry = make(pf, "class-choice", choice.title, `${item.id}:${choice.id}:${option.id}`, option.name, option.short, option.info);
@@ -195,6 +246,12 @@ function rulesEntries(): RuleEntry[] {
     list.push(entry);
   }
   for (const extra of pfListsPack as PackedEntry[]) {
+    const entry = fromPacked(extra, "pf2e", "pf-remaster");
+    if (seen.has(entry.token)) continue;
+    seen.add(entry.token);
+    list.push(entry);
+  }
+  for (const extra of pfWidePack as PackedEntry[]) {
     const entry = fromPacked(extra, "pf2e", "pf-remaster");
     if (seen.has(entry.token)) continue;
     seen.add(entry.token);

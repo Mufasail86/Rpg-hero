@@ -10,7 +10,10 @@ import {
   type CheckMode,
   type SkillLine,
 } from "../skills/guide";
+import { SKILLS as DND_SKILLS } from "../data/dnd5e";
 import { rulesOf } from "../data/editions";
+import { SKILLS as PF_SKILLS } from "../data/pf2e";
+import { Info } from "./common";
 import { appendRoll } from "../play/log";
 import { type Character, type VowKind, fmt, uid } from "../types";
 
@@ -21,22 +24,24 @@ export function QuickBar({
   roster,
   allowSwitch,
   raised,
+  compact,
   onChange,
 }: {
-  character: Character;
+  character: Character | null;
   roster: Character[];
   allowSwitch: boolean;
   raised: boolean;
+  compact?: boolean;
   onChange: (character: Character) => void;
 }) {
   const [open, setOpen] = useState<Tab | null>(null);
-  const [picked, setPicked] = useState(character.id);
+  const [picked, setPicked] = useState(character?.id ?? "");
   useEffect(() => {
-    setPicked(character.id);
+    setPicked(character?.id ?? "");
     setOpen(null);
-  }, [character.id]);
-  const current = allowSwitch ? roster.find((item) => item.id === picked) ?? character : character;
-  const vows = vowCount(reminderOf(current));
+  }, [character?.id]);
+  const current = character ? (allowSwitch ? roster.find((item) => item.id === picked) ?? character : character) : null;
+  const vows = current ? vowCount(reminderOf(current)) : 0;
 
   useEffect(() => {
     if (!open) return;
@@ -66,8 +71,8 @@ export function QuickBar({
                 Закрыть
               </button>
             </div>
-            <p className="tiny">{current.name}</p>
-            {allowSwitch && roster.length > 1 && (
+            <p className="tiny">{current ? current.name : "Героя на телефоне ещё нет"}</p>
+            {current && allowSwitch && roster.length > 1 && (
               <div className="wrap">
                 {roster.map((item) => (
                   <button key={item.id} type="button" className={`pill ${item.id === current.id ? "on" : ""}`} onClick={() => setPicked(item.id)}>
@@ -76,11 +81,13 @@ export function QuickBar({
                 ))}
               </div>
             )}
-            {open === "skills" ? <SkillsPane character={current} onChange={onChange} /> : <ReminderPane character={current} onChange={onChange} />}
+            {open === "skills"
+              ? current ? <SkillsPane character={current} onChange={onChange} /> : <SkillGuide />
+              : current ? <ReminderPane character={current} onChange={onChange} /> : <ReminderGuide />}
           </div>
         </div>
       )}
-      <nav className={`quickbar ${raised ? "raised" : ""}`} aria-label="Быстрый доступ">
+      <nav className={`quickbar ${raised ? "raised" : ""} ${compact ? "slim" : ""}`} aria-label="Быстрый доступ">
         <button type="button" className="btn" data-testid="quick-skills" onClick={() => setOpen("skills")}>
           Навыки
         </button>
@@ -238,7 +245,7 @@ function SkillRow({
   );
 }
 
-function ReminderPane({ character, onChange }: { character: Character; onChange: (character: Character) => void }) {
+export function ReminderPane({ character, onChange }: { character: Character; onChange: (character: Character) => void }) {
   const reminder = reminderOf(character);
   const [edit, setEdit] = useState<"story" | "deity" | null>(reminderFilled(reminder) ? null : "story");
   function write(next: typeof reminder) {
@@ -322,6 +329,38 @@ function ReminderPane({ character, onChange }: { character: Character; onChange:
           </>
         )}
       </section>
+    </div>
+  );
+}
+
+function SkillGuide() {
+  return (
+    <div className="stack">
+      <p className="tiny">Справочник навыков. Бросок с модификатором героя появится, когда на телефоне будет лист.</p>
+      <b>Ремастер</b>
+      {PF_SKILLS.map((skill) => (
+        <div key={skill.id} className="row-between">
+          <span>{skill.name}</span>
+          <Info title={skill.name} text={skill.info} />
+        </div>
+      ))}
+      <b>Открытый справочник</b>
+      {DND_SKILLS.map((skill) => (
+        <div key={skill.id} className="row-between">
+          <span>{skill.name}</span>
+          <Info title={skill.name} text={skill.info} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ReminderGuide() {
+  return (
+    <div className="stack">
+      <p className="tiny">{REMINDER_NOTE}</p>
+      <p>Табу, наказы и обязательства, предыстория и божество записываются на герое. Создайте лист, и эта вкладка откроет его памятку.</p>
+      <p className="tiny">{ANATHEMA_NOTE}</p>
     </div>
   );
 }

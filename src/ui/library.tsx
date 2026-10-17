@@ -2,8 +2,23 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { allEntries, entryByToken, packCounts, type RuleEntry } from "../data/catalog";
 import { EDITION_NAME, PACKS, STATUS_NAME, fold, licenseCaption, packById, statusVerified, type RulesEdition } from "../data/editions";
 import { SYSTEM_DND, SYSTEM_PF } from "../labels";
+import { ruSort } from "../sort";
 import { ART, ART_CAPTION, artSrc, cardArt } from "./art";
 import { go, useHash } from "./common";
+
+const SECTIONS: { id: string; title: string; categories: string[] }[] = [
+  { id: "ancestry", title: "Народы", categories: ["species", "ancestry", "lineage"] },
+  { id: "heritage", title: "Наследия", categories: ["heritage", "versatile-heritage"] },
+  { id: "background", title: "Происхождения", categories: ["background"] },
+  { id: "class", title: "Классы", categories: ["class", "subclass", "class-choice"] },
+  { id: "feat", title: "Черты", categories: ["ancestry-feat", "class-feat", "skill-feat", "general-feat", "origin-feat", "style", "general-feat", "feat", "mythic-feat"] },
+  { id: "archetype", title: "Архетипы", categories: ["archetype"] },
+  { id: "spell", title: "Заклинания", categories: ["spell"] },
+  { id: "ritual", title: "Ритуалы", categories: ["ritual"] },
+  { id: "gear", title: "Снаряжение", categories: ["item", "gear", "weapon", "armor", "shield", "alchemical", "rune"] },
+  { id: "companion", title: "Спутники", categories: ["companion", "familiar", "follower", "calling"] },
+  { id: "other", title: "Прочее", categories: ["condition", "skill", "mastery", "epic-boon"] },
+];
 
 const PAGE = 24;
 const FAV_KEY = "rpg-hero-favs";
@@ -46,6 +61,7 @@ export function Library() {
   const [system, setSystem] = useState("все");
   const [edition, setEdition] = useState<EditionFilter>("cores");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [section, setSection] = useState("все");
   const [count, setCount] = useState(PAGE);
   const [favs, setFavs] = useState<string[]>(() => readList(FAV_KEY, localStorage));
   const [compare, setCompare] = useState<string[]>(() => readList(COMPARE_KEY, sessionStorage));
@@ -53,15 +69,17 @@ export function Library() {
   const all = useMemo(() => allEntries().filter((entry) => entry.edition !== "lore"), []);
   const packs = useMemo(packCounts, []);
   const needle = fold(query.trim());
-  const filtered = all.filter((row) => {
+  const sectionCategories = SECTIONS.find((item) => item.id === section)?.categories;
+  const filtered = ruSort(all.filter((row) => {
     if (system !== "все" && row.system !== system) return false;
     if (edition === "cores" && row.edition !== "dnd-2024" && row.edition !== "pf-remaster") return false;
     if (edition !== "cores" && edition !== "all" && row.edition !== edition) return false;
+    if (sectionCategories && !sectionCategories.includes(row.category)) return false;
     if (verifiedOnly && !statusVerified(row.status)) return false;
     if (!needle) return true;
     const hay = fold(`${row.name} ${row.originalName} ${row.altNames.join(" ")} ${row.categoryTitle} ${row.short} ${row.text}`);
     return hay.includes(needle);
-  });
+  }), (row) => row.name);
   const shown = filtered.slice(0, count);
   const more = shown.length < filtered.length;
   const sentinel = useRef<HTMLDivElement>(null);
@@ -69,7 +87,7 @@ export function Library() {
 
   useEffect(() => {
     setCount(PAGE);
-  }, [query, system, edition, verifiedOnly]);
+  }, [query, system, edition, verifiedOnly, section]);
 
   useEffect(() => {
     if (!focus || focus.edition === "lore") return;
@@ -86,7 +104,7 @@ export function Library() {
     }, { rootMargin: "240px" });
     observer.observe(node);
     return () => observer.disconnect();
-  }, [more, query, system, edition, verifiedOnly, count, focus]);
+  }, [more, query, system, edition, verifiedOnly, section, count, focus]);
 
   function toggleFav(id: string) {
     const next = favs.includes(id) ? favs.filter((item) => item !== id) : [...favs, id];
@@ -140,6 +158,36 @@ export function Library() {
           })}
           <p className="tiny">Предания лежат на своём экране и в этот список правил не подмешиваются.</p>
         </section>
+        <nav className="library-tree" data-testid="library-tree" aria-label="Разделы справочника">
+          <details open>
+            <summary>Разделы</summary>
+            <div className="tree-items">
+              <button type="button" className={`pill ${section === "все" ? "on" : ""}`} onClick={() => setSection("все")}>Все</button>
+              {SECTIONS.map((item) => (
+                <button key={item.id} type="button" className={`pill ${section === item.id ? "on" : ""}`} data-testid={`library-section-${item.id}`} onClick={() => setSection(item.id)}>{item.title}</button>
+              ))}
+              <button type="button" className="pill" onClick={() => go("#/bestiary")}>Бестиарий</button>
+              <button type="button" className="pill" onClick={() => go("#/lore")}>Предания</button>
+            </div>
+          </details>
+          {SECTIONS.filter((item) => section === "все" || section === item.id).map((item) => {
+            const titles = ruSort(
+              [...new Set(all.filter((row) => item.categories.includes(row.category)).map((row) => row.categoryTitle))],
+              (title) => title,
+            );
+            if (titles.length === 0) return null;
+            return (
+              <details key={item.id}>
+                <summary>{item.title}</summary>
+                <div className="tree-items">
+                  {titles.map((title) => (
+                    <button key={title} type="button" className="pill" onClick={() => { setSection(item.id); setQuery(title); }}>{title}</button>
+                  ))}
+                </div>
+              </details>
+            );
+          })}
+        </nav>
         <label className="field">
           <span>Поиск</span>
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Например, кольчуга или лечение" />

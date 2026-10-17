@@ -7,6 +7,7 @@ import type { Character, CombatState, ItemInst, Placement, StructuredEffect } fr
 import { fmt, uid } from "../types";
 import { refreshSlots } from "../rules";
 import { useCompact } from "./common";
+import { PickList } from "./feat-picker";
 
 function detailFor(pick: string): Record<string, string> | undefined {
   if (pick === "canny-acumen") return { defense: "will" };
@@ -231,15 +232,31 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {live.ac.aside.map((line) => <p key={line} className="tiny">{line}</p>)}
       <h2>Открытые выборы</h2>
       {open.length === 0 && <p className="tiny">Все положенные слоты до {character.level} уровня закрыты.</p>}
-      {open.map((slot) => (
-        <label key={slot.id} className="field">
-          <span>{slot.label}, уровень {slot.level}</span>
-          <select data-testid={`slot-${slot.id}`} value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
-            <option value="">Выбрать</option>
-            {optionsForSlot(slot.source, { classId: progress.classId, ancestryId: progress.ancestryId, level: slot.level }).map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
-          </select>
-        </label>
-      ))}
+      {open.map((slot) => {
+        const options = optionsForSlot(slot.source, { classId: progress.classId, ancestryId: progress.ancestryId, level: slot.level });
+        const featLike = slot.source.endsWith("-feat") || slot.source === "free-archetype";
+        if (featLike) {
+          return (
+            <PickList
+              key={slot.id}
+              title={`${slot.label}, уровень ${slot.level}`}
+              testId={`slot-${slot.id}`}
+              rows={options.map((option) => ({ id: option.pick, name: option.name, info: `${slot.label}. Уровень ${slot.level}.` }))}
+              selected=""
+              onPick={(row) => fill(slot, row.id)}
+            />
+          );
+        }
+        return (
+          <label key={slot.id} className="field">
+            <span>{slot.label}, уровень {slot.level}</span>
+            <select data-testid={`slot-${slot.id}`} value="" onChange={(event) => { if (event.target.value) fill(slot, event.target.value); }}>
+              <option value="">Выбрать</option>
+              {options.map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+            </select>
+          </label>
+        );
+      })}
       <h2>Сделанные выборы</h2>
       <p className="tiny">Убрать ранний выбор и взять другой заново проверяет всё, что от него зависит. Просмотр уровня выше этого не делает.</p>
       {progress.choices.slice().sort((a, b) => a.level - b.level || a.source.localeCompare(b.source)).map((choice) => (
