@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { VERSATILE } from "../data/versatile";
 import { CALLINGS, COMPANIONS, englishName } from "../data/roster";
 import { featChoices, featInfo } from "../data/pf-index";
@@ -47,7 +47,7 @@ import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
-import { ancestryAdvice, backgroundAdvice, featAdvice, recommendedBoosts, spellAdvice } from "../beginner";
+import { ancestryAdvice, backgroundAdvice, featAdvice, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
 import { planForDraft, SkillPicks } from "./skill-guide";
 import { skillTitle } from "../skills/picks";
 
@@ -282,7 +282,7 @@ function SystemStep({
               </button>
             ))}
           </div>
-          {edition && !filledEdition(edition) && <p className="tiny">{edition === "pf-legacy" ? "Карточки до ремастера лежат в справочнике. Конструктор их в расчёт не подставляет, чтобы не смешать с ремастером." : "Народы и классы 2014 года в расчёт не входят. Происхождение справочника 5.1 выбирается отдельно и с правилами 2024 года не смешивается."}</p>}
+          {edition && !filledEdition(edition) && <p className="tiny">{edition === "pf-legacy" ? "Отдельного списка до ремастера в расчёте нет. На шаге народа человека и остальные открытые народы выбрать можно." : "Отдельного списка 2014 года в расчёте нет. На шаге народа человека и остальные народы открытого справочника выбрать можно."}</p>}
           {edition && <BookLine edition={edition} />}
         </>
       )}
@@ -313,10 +313,23 @@ function Meters({ draft }: { draft: Draft }) {
   );
 }
 
-function UnfilledNote({ edition }: { edition: RulesEdition }) {
-  const text = edition === "dnd-2014"
-    ? "Правила 2014 года лежат в справочнике отдельно. Конструктор их в расчёт не подставляет, чтобы не смешать с правилами 2024 года. Здесь можно завести свою запись."
-    : "Правила до ремастера лежат в справочнике отдельным пакетом. Конструктор этот список в расчёт не подставляет, чтобы не смешать с ремастером. Здесь можно завести свою запись.";
+function AncestrySearch({ query, onQuery }: { query: string; onQuery: (value: string) => void }) {
+  return (
+    <label className="field">
+      <span>Найти народ</span>
+      <input className="search" type="search" data-testid="ancestry-search" placeholder="человек" value={query} onChange={(event) => onQuery(event.target.value)} />
+    </label>
+  );
+}
+
+function UnfilledNote({ edition, ancestry = false }: { edition: RulesEdition; ancestry?: boolean }) {
+  const text = ancestry
+    ? edition === "dnd-2014"
+      ? "Отдельной книги 2014 года в расчёте нет. Человек и остальные народы открытого справочника — в списке ниже."
+      : "Отдельной книги до ремастера в расчёте нет. Человек и остальные открытые народы — в списке ниже."
+    : edition === "dnd-2014"
+      ? "Правила 2014 года лежат в справочнике отдельно. Конструктор их в расчёт не подставляет, чтобы не смешать с правилами 2024 года. Здесь можно завести свою запись."
+      : "Правила до ремастера лежат в справочнике отдельным пакетом. Конструктор этот список в расчёт не подставляет, чтобы не смешать с ремастером. Здесь можно завести свою запись.";
   return (
     <p className="lead" data-testid="edition-empty">
       {text}
@@ -335,99 +348,92 @@ function AncestryStep({
   setChoice: (key: string, value: string) => void;
   toggleMulti: (key: string, id: string, max: number) => void;
 }) {
+  const [query, setQuery] = useState("");
+  const followRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!draft.ancestryId) return;
+    followRef.current?.scrollIntoView({ block: "start" });
+  }, [draft.ancestryId]);
   if (draft.system === "dnd5e") {
     const edition = resolveEdition("dnd5e", draft.edition);
-    if (!filledEdition(edition)) {
-      return (
-        <>
-          <UnfilledNote edition={edition} />
-          <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
-          {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
-        </>
-      );
-    }
     const species = SPECIES.find((item) => item.id === draft.ancestryId);
     const people = ruSort(SPECIES, (item) => item.name);
-    const advised = new Set(ancestryAdvice("dnd5e").map((item) => item.id));
+    const { recommended, all } = peopleSplit(ancestryAdvice("dnd5e"), people, query);
+    const follow = species || draft.ancestryId === "custom";
     return (
       <>
+        {!filledEdition(edition) && <UnfilledNote edition={edition} ancestry />}
+        <AncestrySearch query={query} onQuery={setQuery} />
         <p className="kicker">Советуем новичку</p>
-        {people.filter((item) => advised.has(item.id)).map((item) => (
-          <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
+        {recommended.map((item) => (
+          <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
+        {follow && (
+          <div ref={followRef} data-testid="ancestry-follow">
+            {species?.lineage && (
+              <>
+                <p className="kicker">Наследие</p>
+                {species.lineage.map((item) => (
+                  <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.choices.lineage === item.id} onPick={() => setChoice("lineage", item.id)} />
+                ))}
+              </>
+            )}
+            {species && species.id !== "dragonborn" && species.id !== "goliath" && species.lineage && (
+              <AbilityRow label="Характеристика заклинаний наследия" value={draft.choices.lineageAbility ?? ""} allowed={["int", "wis", "cha"]} onPick={(ability) => setChoice("lineageAbility", ability)} />
+            )}
+            {species?.sizeChoice && (
+              <div className="seg">
+                {["Средний", "Малый"].map((size) => (
+                  <button key={size} type="button" className={`pill ${draft.choices.size === size ? "on" : ""}`} data-testid={`opt-size-${size}`} onClick={() => setChoice("size", size)}>
+                    {size}
+                  </button>
+                ))}
+              </div>
+            )}
+            {species?.skillChoice && (
+              <>
+                <p className="kicker">Острые чувства</p>
+                {species.skillChoice.map((id) => {
+                  const skill = SK5.find((item) => item.id === id);
+                  return skill ? <Choice key={id} id={id} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.elfSkill === id} onPick={() => setChoice("elfSkill", id)} /> : null;
+                })}
+              </>
+            )}
+            {species?.originFeat && (
+              <>
+                <p className="kicker">Навык человека</p>
+                {SK5.map((skill) => (
+                  <Choice key={skill.id} id={`human-${skill.id}`} name={skill.name} hint={ABILITY_SHORT[skill.ability]} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
+                ))}
+              </>
+            )}
+            {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
+          </div>
+        )}
         <p className="kicker">Все народы</p>
-        {people.filter((item) => !advised.has(item.id)).map((item) => (
+        {all.map((item) => (
           <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
         <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
-        {species?.lineage && (
-          <>
-            <p className="kicker">Наследие</p>
-            {species.lineage.map((item) => (
-              <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.choices.lineage === item.id} onPick={() => setChoice("lineage", item.id)} />
-            ))}
-          </>
-        )}
-        {species && species.id !== "dragonborn" && species.id !== "goliath" && species.lineage && (
-          <AbilityRow label="Характеристика заклинаний наследия" value={draft.choices.lineageAbility ?? ""} allowed={["int", "wis", "cha"]} onPick={(ability) => setChoice("lineageAbility", ability)} />
-        )}
-        {species?.sizeChoice && (
-          <div className="seg">
-            {["Средний", "Малый"].map((size) => (
-              <button key={size} type="button" className={`pill ${draft.choices.size === size ? "on" : ""}`} data-testid={`opt-size-${size}`} onClick={() => setChoice("size", size)}>
-                {size}
-              </button>
-            ))}
-          </div>
-        )}
-        {species?.skillChoice && (
-          <>
-            <p className="kicker">Острые чувства</p>
-            {species.skillChoice.map((id) => {
-              const skill = SK5.find((item) => item.id === id);
-              return skill ? <Choice key={id} id={id} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.elfSkill === id} onPick={() => setChoice("elfSkill", id)} /> : null;
-            })}
-          </>
-        )}
-        {species?.originFeat && (
-          <>
-            <p className="kicker">Навык человека</p>
-            {SK5.map((skill) => (
-              <Choice key={skill.id} id={`human-${skill.id}`} name={skill.name} hint={ABILITY_SHORT[skill.ability]} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
-            ))}
-          </>
-        )}
-        {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
       </>
     );
   }
 
   const edition = resolveEdition("pf2e", draft.edition);
-  if (!filledEdition(edition)) {
-    return (
-      <>
-        <UnfilledNote edition={edition} />
-        <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
-        {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
-      </>
-    );
-  }
-
   const ancestry = ANCESTRIES.find((item) => item.id === draft.ancestryId);
   const free = !ancestry || ancestry.boosts.length === 0 || draft.choices.ancestryMode === "free" || draft.ancestryId === "custom";
   const people = ruSort(ANCESTRIES, (item) => item.name);
-  const advised = new Set(ancestryAdvice("pf2e").map((item) => item.id));
+  const { recommended, all } = peopleSplit(ancestryAdvice("pf2e"), people, query, (item) => englishName(item.id));
   return (
     <div data-testid="ancestry-list">
+      {!filledEdition(edition) && <UnfilledNote edition={edition} ancestry />}
+      <AncestrySearch query={query} onQuery={setQuery} />
       <p className="kicker">Советуем новичку</p>
-      {people.filter((item) => advised.has(item.id)).map((item) => (
-        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+      {recommended.map((item) => (
+        <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
-      <p className="kicker">Все народы</p>
-      {people.filter((item) => !advised.has(item.id)).map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
-      ))}
-      <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
+      {(ancestry || draft.ancestryId === "custom") && (
+        <div ref={followRef} data-testid="ancestry-follow">
       {ancestry && (
         <>
           <p className="kicker">Наследие</p>
@@ -468,6 +474,13 @@ function AncestryStep({
         </>
       )}
       {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
+        </div>
+      )}
+      <p className="kicker">Все народы</p>
+      {all.map((item) => (
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+      ))}
+      <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
     </div>
   );
 }

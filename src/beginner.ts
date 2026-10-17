@@ -215,6 +215,26 @@ export function ancestryAdvice(system: "pf2e" | "dnd5e"): Advice[] {
   ];
 }
 
+/** Recommended peoples stay in advice order, so Человек is first. The full list stays alphabetical and still contains them. */
+export function peopleSplit<T extends { id: string; name: string }>(
+  advice: Advice[],
+  people: T[],
+  query: string,
+  extra: (item: T) => string = () => "",
+): { recommended: T[]; all: T[] } {
+  const needle = query.trim().toLocaleLowerCase("ru");
+  const hit = (item: T) => {
+    if (!needle) return true;
+    return `${item.name} ${item.id} ${extra(item)}`.toLocaleLowerCase("ru").includes(needle);
+  };
+  const byId = new Map(people.map((item) => [item.id, item]));
+  const recommended = advice.flatMap((row) => {
+    const item = byId.get(row.id);
+    return item && hit(item) ? [item] : [];
+  });
+  return { recommended, all: people.filter(hit) };
+}
+
 export function backgroundAdvice(system: "pf2e" | "dnd5e"): Advice[] {
   if (system === "dnd5e") {
     return [
