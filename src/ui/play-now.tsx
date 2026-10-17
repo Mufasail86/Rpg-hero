@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LORE } from "../data/lore";
 import {
   PLAY_PLACES,
@@ -38,6 +38,12 @@ function savePlay(id: string, memory: PlayMemory) {
 
 export function PlayNow({ character }: { character: Character }) {
   const [memory, setMemory] = useState<PlayMemory>(() => loadPlay(character.id));
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("rpg-play-scene", { detail: memory.scene }));
+    return () => {
+      window.dispatchEvent(new CustomEvent("rpg-play-scene", { detail: "" }));
+    };
+  }, [memory.scene]);
   const face = faceFromCharacter(character);
   const places = settingPlaces();
   const lore = LORE.find((card) => card.id === memory.loreId && card.spoiler !== "gm");

@@ -4,6 +4,7 @@ import { EDITION_NAME, fold, type RulesEdition } from "../data/editions";
 import { dnd2014Guidance, dnd2024Budget, pfAward, pfBudget, pfCreatureXp, type Dnd2024Threat, type PfThreat } from "../encounter";
 import { ART, artSrc } from "./art";
 import { go, useHash } from "./common";
+import { SearchField, SelectField } from "./controls";
 
 const PAGE = 24;
 
@@ -133,17 +134,11 @@ export function Bestiary() {
           <MonsterArticle monster={focus} mode={mode} onAdd={() => add(focus.token)} />
         ) : (
           <>
-            <label className="field">
-              <span>Поиск</span>
-              <input data-testid="bestiary-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Например, гоблин или аболеф" />
-            </label>
-            <label className="field">
-              <span>Тип</span>
-              <select data-testid="bestiary-kind" value={kind} onChange={(event) => setKind(event.target.value)}>
-                <option value="все">все типы</option>
-                {kinds.map((item) => <option key={item} value={item}>{item}</option>)}
-              </select>
-            </label>
+            <SearchField label="Поиск" testId="bestiary-search" value={query} onChange={setQuery} placeholder="Например, гоблин или аболеф" />
+            <SelectField label="Тип" testId="bestiary-kind" value={kind} onChange={setKind}>
+              <option value="все">все типы</option>
+              {kinds.map((item) => <option key={item} value={item}>{item}</option>)}
+            </SelectField>
             <div className="grid-2">
               <label className="field">
                 <span>{activeEdition === "pf-remaster" ? "Уровень от" : "Опасность от"}</span>

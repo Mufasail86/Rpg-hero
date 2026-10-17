@@ -66,6 +66,10 @@ export function useHash(): string {
 export function go(hash: string) {
   if (window.location.hash === hash) window.dispatchEvent(new HashChangeEvent("hashchange"));
   else window.location.hash = hash;
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+    document.querySelector(".screen")?.scrollTo(0, 0);
+  });
 }
 
 /** Компактный бой включён, пока игрок сам не выключит его в этой вкладке. */

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Character } from "./types";
 import { loadCharacters, saveCharacters } from "./storage";
 import { go, InfoProvider, useHash } from "./ui/common";
@@ -10,11 +10,12 @@ import { Lore } from "./ui/lore";
 import { Bestiary } from "./ui/bestiary";
 import { QuickBar } from "./ui/quickbar";
 import { Table } from "./ui/table";
+import { MusicControl, SettingsPage } from "./ui/music";
 import { ThemeToggle } from "./ui/theme";
 import { GlossaryPage, QuickStart } from "./ui/beginner";
 import { SkillPicksPage } from "./ui/skill-guide";
 
-function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "picks" | "sheet" | "library" | "lore" | "bestiary" | "table"; id?: string; panel?: string | null } {
+function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "picks" | "settings" | "sheet" | "library" | "lore" | "bestiary" | "table"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
   if (parts[0] === "library") return { page: "library" };
   if (parts[0] === "lore") return { page: "lore" };
@@ -24,6 +25,7 @@ function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | 
   if (parts[0] === "quick") return { page: "quick" };
   if (parts[0] === "glossary") return { page: "glossary" };
   if (parts[0] === "skill-picks") return { page: "picks" };
+  if (parts[0] === "settings") return { page: "settings" };
   if (parts[0] === "c" && parts[1]) return { page: "sheet", id: decodeURIComponent(parts[1]), panel: parts[2] ? decodeURIComponent(parts[2]) : null };
   return { page: "home" };
 }
@@ -31,6 +33,9 @@ function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | 
 export function App() {
   const hash = useHash();
   const route = routeOf(hash);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [hash]);
   const [characters, setCharacters] = useState<Character[]>(() => loadCharacters());
 
   function write(next: Character[]) {
@@ -51,7 +56,10 @@ export function App() {
 
   return (
     <InfoProvider>
-      <ThemeToggle />
+      <div className="chrome-tools">
+        <MusicControl hash={hash} />
+        <ThemeToggle />
+      </div>
       <div className={route.page === "new" ? "has-quickbar creating" : "has-quickbar"}>
       {route.page === "home" && (
         <Home
@@ -81,6 +89,7 @@ export function App() {
         />
       )}
       {route.page === "glossary" && <GlossaryPage />}
+      {route.page === "settings" && <SettingsPage />}
       {route.page === "picks" && <SkillPicksPage />}
       {route.page === "sheet" && hero && (
         <Sheet

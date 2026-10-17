@@ -6,6 +6,7 @@ import {
   faceFromCharacter,
   loreToken,
   parsePlay,
+  plainDamage,
   sceneBrief,
   settingPlaces,
 } from "./table";
@@ -26,7 +27,8 @@ describe("играю сейчас", () => {
     expect(text).toMatch(/человек/);
     expect(text).toMatch(/воин/);
     expect(text).toMatch(/лекарь|перевяз/);
-    expect(text).toMatch(/Не бросать раненого/);
+    expect(text).toMatch(/не бросать раненого/);
+    expect(text).not.toMatch(/: Не /);
     expect(brief.vows.some((row) => row.label === "Анафема" && row.text.includes("раненого"))).toBe(true);
     expect(brief.vows.some((row) => row.label === "Табу")).toBe(true);
     expect(brief.vows.some((row) => row.label === "Эдикты")).toBe(true);
@@ -48,6 +50,8 @@ describe("играю сейчас", () => {
     expect(melee.maneuvers.map((row) => row.name)).toEqual(expect.arrayContaining(["Сбить с ног", "Захват", "Толчок", "Деморализация", "Поднять щит", "Шаг"]));
     expect(melee.classActions.some((row) => row.name === "Внезапный натиск")).toBe(true);
     expect(ranged.empty).toBe("");
+    expect(ranged.strikes.some((row) => row.damage.includes("спец."))).toBe(false);
+    expect(plainDamage("1d6 колющего +8 спец. +8")).toBe("1d6 колющего +8 (уже входит: специализация +8)");
     expect(ranged.strikes.length).toBeGreaterThan(0);
     expect(ranged.maneuvers.map((row) => row.name)).toEqual(expect.arrayContaining(["Занять укрытие", "Достать оружие"]));
 

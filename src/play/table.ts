@@ -525,13 +525,31 @@ function promptsFor(face: TableFace, place: PlayPlace): string[] {
   return lines.filter(Boolean);
 }
 
+/** Total modifier once. Specialization and rage are parts of that total, not a second bonus. */
+export function plainDamage(raw: string): string {
+  const spec = raw.match(/спец\.\s*([+−-]?\d+)/);
+  const rage = raw.match(/ярость\s*([+−-]?\d+)/);
+  const base = raw.replace(/\s*спец\.\s*[+−-]?\d+/, "").replace(/\s*ярость\s*[+−-]?\d+/, "").replace(/\s+/g, " ").trim();
+  const parts = [
+    spec ? `специализация ${spec[1]}` : "",
+    rage ? `ярость ${rage[1]}` : "",
+  ].filter(Boolean);
+  return parts.length ? `${base} (уже входит: ${parts.join(", ")})` : base;
+}
+
+function midSentence(text: string): string {
+  const trimmed = text.trim().replace(/[.。]+$/, "");
+  if (!trimmed) return trimmed;
+  return trimmed.charAt(0).toLocaleLowerCase("ru") + trimmed.slice(1);
+}
+
 function neverLine(face: TableFace): string {
-  if (face.anathema) return `Этого вы не сделаете даже за удачную сделку: ${face.anathema}`;
+  if (face.anathema) return `Этого вы не сделаете даже за удачную сделку: ${midSentence(face.anathema)}.`;
   const taboo = face.vows.find((vow) => vow.kind === "taboo");
-  if (taboo) return `Ваше табу действует и здесь: ${taboo.text}`;
+  if (taboo) return `Ваше табу действует и здесь: ${midSentence(taboo.text)}.`;
   const vow = face.vows.find((row) => row.kind === "vow" || row.kind === "duty");
-  if (vow) return `${vow.label} не отпускает: ${vow.text}`;
-  if (face.edicts) return `Эдикт напоминает раньше, чем выгода: ${face.edicts}`;
+  if (vow) return `${vow.label} не отпускает: ${midSentence(vow.text)}.`;
+  if (face.edicts) return `Эдикт напоминает раньше, чем выгода: ${midSentence(face.edicts)}.`;
   return "Не обещайте того, чего нет в памятке. Пустая клятва за столом легко забывается.";
 }
 
@@ -662,7 +680,7 @@ export function combatBrief(face: TableFace, stance: PlayStance): CombatBrief {
     strikes: shown.map((row) => ({
       name: row.name,
       attack: fmt(row.attack),
-      damage: row.damage,
+      damage: plainDamage(row.damage),
       note: row.thrown && stance === "ranged" ? "метательное" : row.traits,
     })),
     maneuvers: stance === "melee" ? meleeManeuvers(face) : rangedManeuvers(face),

@@ -131,6 +131,9 @@ export function Home({
           <button type="button" className="btn" data-testid="open-table" onClick={() => go("#/table")}>
             Стол ведущего
           </button>
+          <button type="button" className="btn" data-testid="open-settings" onClick={() => go("#/settings")}>
+            Настройки
+          </button>
         </div>
         {hasDraft && (
           <button type="button" className="btn" onClick={() => go("#/new")}>
