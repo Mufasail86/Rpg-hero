@@ -116,6 +116,9 @@ export function Home({
           <button type="button" className="btn" data-testid="open-lore" onClick={() => go("#/lore")}>
             Предания
           </button>
+          <button type="button" className="btn" data-testid="open-bestiary" onClick={() => go("#/bestiary")}>
+            Бестиарий
+          </button>
         </div>
         {hasDraft && (
           <button type="button" className="btn" onClick={() => go("#/new")}>

@@ -10,6 +10,14 @@ function worldName(id: string): string {
   if (id === "golarion") return "Голарион";
   if (id === "forgotten-realms") return "Забытые королевства";
   if (id === "srd") return "Открытый справочник";
+  if (id === "greyhawk") return "Серый Ястреб";
+  if (id === "krynn") return "Кринн";
+  if (id === "eberron") return "Эберрон";
+  if (id === "ravenloft") return "Равенлофт";
+  if (id === "spelljammer") return "Корабли между мирами";
+  if (id === "athas") return "Атас";
+  if (id === "planescape") return "Планы";
+  if (id === "policy") return "Политика публикации";
   return "Отдельный мир";
 }
 

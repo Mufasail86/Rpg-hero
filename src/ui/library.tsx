@@ -126,7 +126,7 @@ export function Library() {
         <p className="lead">Короткая строка и подробный пересказ. Редакции подписаны отдельно. «Ждёт сверки» значит: это свой пересказ, не построчная вычитка.</p>
         <figure className="figure-card">
           <img src={artSrc(ART.drake)} alt="Речной змей с медной чешуёй, свой рисунок, не существо из бестиария" loading="lazy" decoding="async" />
-          <figcaption className="caption">{ART_CAPTION} Чудовища книг в справочник не входят.</figcaption>
+          <figcaption className="caption">{ART_CAPTION} Чудовища книг открываются на экране бестиария, не в этом списке правил.</figcaption>
         </figure>
         <section className="card stack">
           <b>Пакеты источников</b>

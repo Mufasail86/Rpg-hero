@@ -9,6 +9,7 @@ import srd2024Pack from "./generated/srd-2024.json";
 import { DND_2014, DND_2024_MORE, PF_LEGACY, PF_ORC_MORE, type PackedEntry } from "./packs-extra";
 import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, CONDITIONS as COND2, ITEMS as ITEMS2, SKILL_FEATS, SKILLS as SK2, SPELLS as SP2 } from "./pf2e";
 import { pathOption } from "./pf-index";
+import { bestiaryPackCounts } from "./bestiary";
 import { LINKS, REVIEW } from "./review";
 import { VERSATILE } from "./versatile";
 
@@ -290,11 +291,14 @@ export function countBy(pick: (entry: RuleEntry) => string, entries = rulesCatal
 
 export function packCounts(): { id: string; entered: number; verified: number }[] {
   const entries = allEntries();
-  return ["srd-5.2", "srd-5.1", "pf-player-core", "pf-orc-more", "pf-ogl", "lore-golarion", "lore-forgotten-realms", "lore-srd-settings"].map((id) => ({
+  const rules = ["srd-5.2", "srd-5.1", "pf-player-core", "pf-orc-more", "pf-ogl", "lore-golarion", "lore-forgotten-realms", "lore-other-settings", "lore-srd-settings"].map((id) => ({
     id,
     entered: entries.filter((entry) => entry.sourceId === id).length,
     verified: entries.filter((entry) => entry.sourceId === id && entry.status.startsWith("verified")).length,
   }));
+  const monsters = bestiaryPackCounts();
+  const pf = rules.findIndex((row) => row.id === "pf-ogl");
+  return [...rules.slice(0, pf + 1), ...monsters, ...rules.slice(pf + 1)];
 }
 
 export function heritageRulesId(localId: string): string {
