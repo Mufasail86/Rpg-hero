@@ -782,20 +782,25 @@ body:has(.board-app),
 .strike-block .tiny { margin: 0; }
 .strike {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 0 4px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name attack"
+    "damage damage"
+    "traits traits";
+  gap: 0 6px;
   width: 100%;
   min-height: 0;
-  padding: 0;
+  padding: 1px 0;
   border: 0;
   background: transparent;
   color: inherit;
   text-align: left;
 }
-.strike span, .strike small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.strike small { color: var(--muted); font-size: 9px; }
-.strike small:first-of-type { white-space: normal; overflow: visible; text-overflow: unset; }
-.strike small:last-child { grid-column: 1 / -1; }
+.strike span { grid-area: name; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.strike b { grid-area: attack; }
+.strike small { color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.strike small:first-of-type { grid-area: damage; }
+.strike small:last-child { grid-area: traits; }
 .tiny-ranks { margin: 0; color: var(--muted); font-size: 9px; white-space: normal; line-height: 1.25; }
 .board-foot {
   display: flex;
@@ -897,9 +902,9 @@ body:has(.board-app),
   border-color: var(--gold);
 }
 @media (max-width: 520px) {
-  .board-top { flex-wrap: wrap; row-gap: 4px; }
-  .board-tabs { flex: 1 0 100%; }
-  .board-tabs button { font-size: 12px; padding: 2px 4px; }
+  .board-top { flex-wrap: wrap; row-gap: 4px; padding: 4px 8px; }
+  .board-tabs { flex: 1 0 100%; gap: 3px; margin-top: 22px; }
+  .board-tabs button { font-size: 12px; padding: 4px 2px; letter-spacing: 0; }
   body:has(.board-app) .theme-toggle {
     width: 36px;
     min-width: 36px;
@@ -911,7 +916,6 @@ body:has(.board-app),
     font-size: 16px;
     line-height: 1;
   }
-  .board-top { padding-right: 92px; }
   body:has(.board-app) .music-toggle { width: 36px; height: 36px; min-height: 36px; }
 }
 .tour .info-card h2 { margin-top: 0; }
@@ -921,7 +925,8 @@ body:has(.board-app),
   .board-screen { padding: 4px 10px 36px; }
   .character-board {
     grid-template-columns: 132px minmax(230px, 0.9fr) minmax(280px, 1.25fr) minmax(240px, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto auto;
+    align-items: start;
     grid-template-areas:
       "head head head head"
       "meta meta meta meta"
@@ -929,7 +934,7 @@ body:has(.board-app),
       "foot foot foot foot";
   }
   .character-board.has-hint {
-    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    grid-template-rows: auto auto auto auto auto;
     grid-template-areas:
       "head head head head"
       "meta meta meta meta"
@@ -938,8 +943,9 @@ body:has(.board-app),
       "hint hint hint hint";
   }
   .board-meta { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .skill-grid { grid-template-columns: 1fr; }
-  .board-abil { padding: 6px; }
+  .skill-grid { grid-template-columns: 1fr; grid-auto-rows: auto; align-content: start; gap: 1px 6px; }
+  .board-abil { padding: 6px; justify-content: flex-start; gap: 6px; }
+  .board-skills { justify-content: flex-start; }
   .abil { grid-template-columns: 28px minmax(0, 1fr); }
 }
 @media (max-height: 520px) and (min-width: 700px) and (max-width: 980px) {

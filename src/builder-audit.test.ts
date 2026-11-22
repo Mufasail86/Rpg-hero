@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { blankDraft, type Ability } from "./types";
 import { createCharacter, skillFeatAtCreation, validateStep } from "./create";
 import { dndSpellBudget, halfSlots } from "./data/dnd5e";
+import { premades } from "./beginner";
 import { deriveProgress, sheetDnd, slotsForProgress } from "./dnd/build";
+import { faceFromCharacter } from "./play/table";
+import { snapshot } from "./pf2e/build";
 import { armorClass, hpMax, refreshSlots, skillRows, spellNumbers } from "./rules";
 
 function scores(partial: Partial<Record<Ability, number>>): Record<Ability, number> {
@@ -228,5 +231,45 @@ describe("регрессия конструктора", () => {
     expect(fifth.spellcasting).toMatchObject({ prepareLimit: 8, knownLimit: 14, cantripLimit: 4 });
     expect(fifth.slots.map((slot) => slot.max)).toEqual([4, 3, 2]);
     expect(spellNumbers(fifth)).toMatchObject({ attack: 6, dc: 14 });
+  });
+
+  it("лист плута и экран «Сейчас» не показывают английские свойства оружия", () => {
+    const rogue = premades("dnd5e").find((item) => item.id === "dnd-rogue");
+    const made = createCharacter(rogue!.draft);
+    expect(made.ok).toBe(true);
+    if (!made.ok) return;
+    const sheet = sheetDnd(made.character);
+    const face = faceFromCharacter(made.character);
+    const lines = [
+      ...(sheet?.attacks ?? []).map((row) => `${row.name} ${row.traits} ${row.damage}`),
+      ...face.strikes.map((row) => `${row.name} ${row.traits} ${row.damage}`),
+    ];
+    expect(lines.join("\n")).not.toMatch(/\b(nick|vex|sap|topple|slow|graze|cleave|push)\b/);
+    expect(lines.join(" ")).toMatch(/Надрез/);
+    expect(lines.join(" ")).toMatch(/Досада/);
+  });
+
+  it("воин Pathfinder на 10 уровне получает повышения 5 и 10 и остаётся 10 уровня", () => {
+    const hero = premades("pf2e").find((item) => item.id === "pf-fighter");
+    const made = createCharacter(structuredClone(hero!.draft));
+    expect(made.ok).toBe(true);
+    if (!made.ok || !made.character.progress) return;
+    const picks = ["str", "dex", "con", "wis"];
+    const added = [5, 10].flatMap((level) => picks.map((pick, index) => ({
+      id: `boost-${level}-free-${index}`,
+      level,
+      source: "free-boost",
+      pick,
+    })));
+    const raised = snapshot(refreshSlots({
+      ...made.character,
+      level: 10,
+      progress: { ...made.character.progress, choices: [...made.character.progress.choices, ...added] },
+    }));
+    expect(raised.level).toBe(10);
+    expect(raised.name).toBe("Марта Щит");
+    expect(raised.abilities.str).toBe(20);
+    expect(raised.abilities.con).toBe(18);
+    expect(hpMax(raised)).toBe(8 + (10 + 4) * 10);
   });
 });
