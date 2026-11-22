@@ -1,10 +1,13 @@
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { APP_BUILD } from "./build-id";
-import { applyTheme, readTheme } from "./theme";
+import { applySkin, applyTheme, readSkin, readTheme } from "./theme";
 import "./styles.css";
+import "./skins.css";
 
-applyTheme(readTheme(typeof localStorage === "undefined" ? null : localStorage));
+const store = typeof localStorage === "undefined" ? null : localStorage;
+applyTheme(readTheme(store));
+applySkin(readSkin(store, typeof location === "undefined" ? "" : location.search), store);
 
 const root = document.getElementById("root");
 if (root) createRoot(root).render(<App />);

@@ -1,6 +1,8 @@
 export const THEME_KEY = "rpg-hero-theme";
+export const SKIN_KEY = "rpg-hero-skin";
 
 export type ThemeId = "tavern" | "atlas";
+export type SkinId = "" | "scroll" | "hud";
 
 export const THEME_NAME: Record<ThemeId, string> = {
   tavern: "Ночная таверна",
@@ -27,5 +29,38 @@ export function applyTheme(theme: ThemeId, store?: Pick<Storage, "setItem"> | nu
     store?.setItem(THEME_KEY, theme);
   } catch {
     /* тема остаётся на эту отрисовку */
+  }
+}
+
+export const SKIN_NAME: Record<SkinId, string> = {
+  "": "Обычный",
+  scroll: "Свиток",
+  hud: "Щит",
+};
+
+export function skinOf(value: string | null): SkinId {
+  if (value === "scroll" || value === "1") return "scroll";
+  if (value === "hud" || value === "4") return "hud";
+  return "";
+}
+
+export function readSkin(store: Pick<Storage, "getItem"> | null, search = ""): SkinId {
+  const query = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  const asked = query.get("skin") || query.get("theme");
+  if (asked === "scroll" || asked === "hud" || asked === "1" || asked === "4") return skinOf(asked);
+  try {
+    return skinOf(store?.getItem(SKIN_KEY) ?? null);
+  } catch {
+    return "";
+  }
+}
+
+export function applySkin(skin: SkinId, store?: Pick<Storage, "setItem"> | null): void {
+  if (skin) document.documentElement.dataset.skin = skin;
+  else delete document.documentElement.dataset.skin;
+  try {
+    store?.setItem(SKIN_KEY, skin);
+  } catch {
+    /* облик остаётся на эту отрисовку */
   }
 }

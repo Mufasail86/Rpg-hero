@@ -443,7 +443,7 @@ body:has(.board-app),
 .board-top {
   flex: none;
   gap: 6px;
-  padding: 4px 112px 4px 8px;
+  padding: 4px 196px 4px 8px;
   min-height: 0;
 }
 .board-top .icon-btn {

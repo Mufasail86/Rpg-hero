@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { SKILLS as DND_SKILLS } from "../data/dnd5e";
 import { rulesOf } from "../data/editions";
 import { ANCESTRIES, SKILLS as PF_SKILLS } from "../data/pf2e";
@@ -231,7 +231,7 @@ export function CharacterBoard({ character, commit, hints = false }: { character
             })}
           </div>
         )}
-        <div className="hp-box">
+        <div className="hp-box" style={{ "--hp": String(maxHp > 0 ? Math.max(0, Math.min(1, character.hpCurrent / maxHp)) : 0) } as CSSProperties}>
           <button type="button" className="num" data-testid="num-hp" onClick={() => tell("Хиты", derived?.hp.formula ?? dnd?.hp.formula ?? `Максимум ${maxHp}.`)}>
             макс {maxHp}
           </button>
