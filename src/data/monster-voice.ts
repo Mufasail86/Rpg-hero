@@ -1,3 +1,5 @@
+import { LEXICON } from "./monster-lexicon";
+
 /** Замена английских игровых терминов в текстах бестиария. Числа и кости не трогает. */
 
 const PHRASES: [string, string][] = [
@@ -299,11 +301,39 @@ const PHRASES: [string, string][] = [
   ["read", "чтение"],
   ["dire wolf", "лютый волк"],
   ["temptation", "искушение"],
+  ["doesn't", "не"],
+  ["don't", "не"],
+  ["can't", "не может"],
+  ["won't", "не"],
+  ["isn't", "не"],
   ["aren't", "не"],
+  ["it's", "это"],
+  ["that's", "это"],
+  ["they're", "они"],
+  ["didn't", "не"],
+  ["hasn't", "не"],
+  ["haven't", "не"],
+  ["wouldn't", "не"],
+  ["couldn't", "не"],
+  ["shouldn't", "не"],
+  ["nonmagical", "немагический"],
   ["cant", "жаргон"],
   ["dire", "лютый"],
   ["rot", "гниль"],
   ["and", "и"],
+  ["or", "или"],
+  ["by", ""],
+  ["vs", "против"],
+  ["of", ""],
+  ["is", ""],
+  ["to", ""],
+  ["in", "в"],
+  ["it", "он"],
+  ["at", "при"],
+  ["on", "на"],
+  ["up", "вверх"],
+  ["et", "и"],
+  ["as", "как"],
   ["from", "от"],
   ["with", "с"],
   ["the", ""],
@@ -371,8 +401,11 @@ export function polishMonsterText(text: string): string {
   const body = cut < 0 ? text : text.slice(0, cut);
   const foot = cut < 0 ? "" : text.slice(cut);
   let next = stripLatinParens(body.replace(/’/g, "'"));
+  next = next.replace(/(\d+)(?:st|nd|rd|th)(?![A-Za-z])/gi, "$1");
+  next = next.replace(/(?<=[А-Яа-яЁё])et(?![A-Za-z])/g, "");
   next = applyPairs(next, CYRILLIC);
   next = applyPairs(next, PHRASES);
+  next = applyPairs(next, LEXICON);
   next = mendBrokenLines(next);
   next = next.replace(/[ ]{2,}/g, " ").replace(/ +([,.;:])/g, "$1");
   return next + foot;
@@ -386,6 +419,6 @@ const ALLOWED_LATIN = new Set([
 export function disallowedLatin(text: string): string[] {
   const cut = text.search(/\nЧисла сняты/);
   const body = cut < 0 ? text : text.slice(0, cut);
-  const words = body.match(/[A-Za-z]{3,}/g) ?? [];
+  const words = body.match(/[A-Za-z]{2,}/g) ?? [];
   return words.filter((word) => !ALLOWED_LATIN.has(word.toLowerCase()));
 }

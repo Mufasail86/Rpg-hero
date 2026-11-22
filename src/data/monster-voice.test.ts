@@ -24,6 +24,9 @@ describe("тексты способностей бестиария", () => {
     const wolf = rows("monsters-pf.json").find((row) => row.id === "wolf");
     expect(wolf?.text).toContain("Челюсти");
     expect(wolf?.text).toContain("1d6+2");
+    expect(wolf?.text).toContain("1d4");
+    expect(wolf?.text).toContain("досягаемости хотя бы двух");
+    expect(wolf?.text).not.toContain("Числа эффекта");
     expect(wolf?.text).not.toMatch(/Jaws/);
     expect(disallowedLatin(wolf?.text ?? "")).toEqual([]);
 
@@ -46,8 +49,7 @@ describe("тексты способностей бестиария", () => {
         }
       }
     }
-    expect(remaining).toBeGreaterThan(0);
-    expect(lowRemaining).toBeLessThan(120);
-    console.log("monster-latin-left", JSON.stringify({ remaining, lowRemaining }));
+    expect(remaining).toBe(0);
+    expect(lowRemaining).toBe(0);
   });
 });
