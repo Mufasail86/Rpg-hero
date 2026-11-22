@@ -709,7 +709,6 @@ body:has(.board-app),
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.partial { font-style: normal; color: var(--gold); font-size: 8px; margin-left: 1px; }
 .line-field span { color: var(--muted); flex: none; font-size: 10px; }
 .line-field input { flex: 1; min-width: 0; }
 .board-skills {
@@ -923,9 +922,12 @@ body:has(.board-app),
 @media (min-width: 900px), (max-height: 520px) and (min-width: 700px) {
   .quickbar.slim { width: 100%; }
   .board-screen { padding: 4px 10px 36px; }
+  .board-screen { overflow: auto; }
   .character-board {
+    height: auto;
     grid-template-columns: 132px minmax(230px, 0.9fr) minmax(280px, 1.25fr) minmax(240px, 1fr);
     grid-template-rows: auto auto auto auto;
+    align-content: start;
     align-items: start;
     grid-template-areas:
       "head head head head"

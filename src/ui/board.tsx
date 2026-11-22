@@ -177,14 +177,13 @@ export function CharacterBoard({ character, commit, hints = false }: { character
           const row = derived?.abilities[ability] ?? dnd?.abilities[ability];
           const score = row?.score ?? character.abilities[ability];
           const value = row?.mod ?? mod(score);
-          const partial = derived?.abilities[ability].partial ?? false;
           return (
             <div key={ability} className="abil">
               <span>{ABILITY_SHORT[ability]}</span>
               <button type="button" className="num" data-testid={`num-${ability}`} onClick={() => tell(ABILITY_NAME[ability], row && "formula" in row ? row.formula : `${ABILITY_NAME[ability]} ${score}, модификатор ${fmt(value)}.`)}>
                 {fmt(value)}
               </button>
-              <small>{score}{partial ? <i className="partial" title="Частичное повышение: модификатор вырастет со следующим повышением этой характеристики">½</i> : null}</small>
+              <small>{score}</small>
             </div>
           );
         })}
