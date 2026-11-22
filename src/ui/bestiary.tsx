@@ -48,6 +48,7 @@ export function Bestiary() {
   const [pfThreat, setPfThreat] = useState<PfThreat>("moderate");
   const [dndThreat, setDndThreat] = useState<Dnd2024Threat>("low");
   const [picked, setPicked] = useState<string[]>([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [count, setCount] = useState(PAGE);
   const sentinel = useRef<HTMLDivElement>(null);
   const all = useMemo(bestiaryCatalog, []);
@@ -71,6 +72,14 @@ export function Bestiary() {
   const party = Number.isNaN(parsedLevel) ? 1 : parsedLevel;
   const size = Math.max(1, Math.trunc(Number(partySize) || 1));
   const chosen = picked.map((id) => monsterByToken(id)).filter((row): row is MonsterCard => Boolean(row && row.edition === activeEdition));
+  const activeFilters = [
+    kind !== "все",
+    minLevel.trim() !== "",
+    maxLevel.trim() !== "",
+    trait.trim() !== "",
+    mode === "gm",
+    edition !== "pf-remaster",
+  ].filter(Boolean).length;
   const shown = filtered.slice(0, count);
   const more = shown.length < filtered.length;
 
@@ -123,6 +132,13 @@ export function Bestiary() {
           <div className="catalog-layout">
             <aside className="catalog-filters">
               <SearchField label="Поиск" testId="bestiary-search" value={query} onChange={setQuery} placeholder="Гоблин или аболеф" />
+              <button type="button" className="filter-toggle" aria-expanded={filtersOpen} data-testid="bestiary-filters" onClick={() => setFiltersOpen((value) => !value)}>
+                {filtersOpen ? "Скрыть фильтры" : "Фильтры"}{activeFilters > 0 ? ` · ${activeFilters}` : ""}
+              </button>
+              <p className="tiny filter-count" data-testid="bestiary-count">
+                {EDITION_NAME[activeEdition as RulesEdition]}: {shown.length} из {filtered.length}
+              </p>
+              <div className={`filter-panel ${filtersOpen ? "open" : ""}`}>
               <div className="seg" role="group" aria-label="Редакция бестиария">
                 {([
                   ["pf-remaster", "Ремастер"],
@@ -154,13 +170,11 @@ export function Bestiary() {
                 <span>Черта</span>
                 <input data-testid="bestiary-trait" value={trait} onChange={(event) => setTrait(event.target.value)} placeholder="гоблинское или злой" />
               </label>
-              <p className="tiny" data-testid="bestiary-count">
-                {EDITION_NAME[activeEdition as RulesEdition]}: {shown.length} из {filtered.length}
-              </p>
               <details className="source-foot">
                 <summary>Источники и права</summary>
                 <p className="tiny">Три книги не смешиваются. В режиме игрока видны уровень или опасность и тип. Полный блок — для ведущего.</p>
               </details>
+              </div>
             </aside>
             <div className="catalog-results">
         {mode === "gm" && <Encounter edition={activeEdition} party={party} size={size} threat={pfThreat} dndThreat={dndThreat} chosen={chosen} onLevel={setPartyLevel} onSize={setPartySize} onPf={setPfThreat} onDnd={setDndThreat} onRemove={(index) => setPicked((current) => current.filter((_, item) => item !== index))} />}
