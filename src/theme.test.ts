@@ -35,6 +35,7 @@ describe("тема", () => {
     expect(skinOf("1")).toBe("scroll");
     expect(skinOf("hud")).toBe("hud");
     expect(skinOf("4")).toBe("hud");
+    expect(skinOf("hud-dark")).toBe("hud-dark");
     expect(skinOf("atlas")).toBe("");
     expect(readSkin({ getItem: () => "hud" }, "")).toBe("hud");
     expect(readSkin({ getItem: () => "hud" }, "?skin=scroll")).toBe("scroll");
