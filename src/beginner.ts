@@ -664,6 +664,12 @@ export function premades(system: "pf2e" | "dnd5e"): Premade[] {
   ];
 }
 
+export function draftFromPremade(premade: Premade, name = premade.name): Draft {
+  const draft = structuredClone(premade.draft);
+  draft.name = name.trim() || premade.name;
+  return draft;
+}
+
 export function starterDraft(system: "pf2e" | "dnd5e", role: BeginnerRole, name: string): Premade {
   const found = premades(system).find((item) => item.role === role) ?? premades(system)[0];
   const draft = structuredClone(found.draft);

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { blankDraft } from "./types";
 import { createCharacter, validateStep } from "./create";
-import { ancestryAdvice, fillStep, peopleSplit, plainWords, premades, starterDraft, TERMS, wizardOptions } from "./beginner";
+import { ancestryAdvice, draftFromPremade, fillStep, peopleSplit, plainWords, premades, starterDraft, TERMS, wizardOptions } from "./beginner";
 
 describe("готовые герои новичка", () => {
   it("каждый премейд проходит проверку и создаёт лист", () => {
@@ -12,6 +12,15 @@ describe("готовые герои новичка", () => {
       const made = createCharacter(premade.draft);
       expect(made.ok, premade.id).toBe(true);
     }
+  });
+
+  it("кнопка следопыта собирает следопыта, а не первого разведчика", () => {
+    const ranger = premades("pf2e").find((item) => item.id === "pf-ranger");
+    expect(ranger?.role).toBe("разведчик");
+    const draft = draftFromPremade(ranger!);
+    expect(draft.classId).toBe("ranger");
+    expect(draft.name).toBe("Кедр");
+    expect(starterDraft("pf2e", "разведчик", "Кедр").draft.classId).toBe("rogue");
   });
 
   it("быстрый старт подставляет имя и остаётся законным", () => {

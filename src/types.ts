@@ -335,6 +335,8 @@ export interface DndProgress {
   backgroundId: string;
   classId: string;
   subclassId: string;
+  /** 2014 не даёт ячеек полукастеру на 1 уровне и держит одно Второе дыхание. */
+  edition?: "dnd-2014" | "dnd-2024";
   /** Значения после народа и происхождения, до классовых повышений. */
   base: Record<Ability, number>;
   speed: number;
