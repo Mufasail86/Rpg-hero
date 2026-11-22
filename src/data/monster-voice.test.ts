@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { disallowedLatin } from "./monster-voice";
+import { disallowedLatin, transliterationHits } from "./monster-voice";
 
 interface MonsterRow {
   id: string;
@@ -51,5 +51,36 @@ describe("тексты способностей бестиария", () => {
     }
     expect(remaining).toBe(0);
     expect(lowRemaining).toBe(0);
+  });
+
+  it("нет транслитерации английских слов, имена заклинаний как в справочнике", () => {
+    expect(transliterationHits("Лонгспеар, Констант Спеллс, Джавс и Аттакк")).toEqual(
+      expect.arrayContaining(["лонгспеар", "спеллс", "джавс", "аттакк"]),
+    );
+
+    const spear = rows("monsters-pf.json").find((row) => row.id === "aapoph-granitescale");
+    expect(spear?.text).toContain("Длинное копьё");
+    expect(spear?.text).not.toContain("Лонгспеар");
+    expect(spear?.text).toContain("1d8+11");
+
+    const dragon = rows("monsters-pf.json").find((row) => row.id === "diabolic-dragon-adult-spellcaster");
+    expect(dragon?.text).toContain("Божественное копьё");
+    expect(dragon?.text).toContain("Искажение пустоты");
+    expect(dragon?.text).not.toContain("Божественный Копьё");
+    expect(dragon?.text).not.toContain("Пустота Искажение");
+    expect(dragon?.text).toContain("Подготовленные божественные заклинания");
+    expect(dragon?.text).toContain("Сообщение");
+    expect(dragon?.text).toContain("5 круг: Изгнание, Божественное сожжение, Послание, Истинная речь.");
+
+    let translit = 0;
+    for (const file of FILES) {
+      for (const row of rows(file)) {
+        const words = transliterationHits(row.text);
+        if (!words.length) continue;
+        translit++;
+        expect(words, `${file}:${row.id}`).toEqual([]);
+      }
+    }
+    expect(translit).toBe(0);
   });
 });

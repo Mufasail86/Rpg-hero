@@ -1,4 +1,5 @@
 import { LEXICON } from "./monster-lexicon";
+import { TRANSLIT_ALLOW, TRANSLIT_PHRASES, TRANSLIT_STEMS } from "./translit-dict";
 
 /** Замена английских игровых терминов в текстах бестиария. Числа и кости не трогает. */
 
@@ -406,6 +407,7 @@ export function polishMonsterText(text: string): string {
   next = applyPairs(next, CYRILLIC);
   next = applyPairs(next, PHRASES);
   next = applyPairs(next, LEXICON);
+  next = applyPairs(next, TRANSLIT_PHRASES);
   next = mendBrokenLines(next);
   next = next.replace(/[ ]{2,}/g, " ").replace(/ +([,.;:])/g, "$1");
   return next + foot;
@@ -416,6 +418,21 @@ const ALLOWED_LATIN = new Set([
 ]);
 
 /** Латинские слова в тексте способностей, без строки источника. */
+/** Слова бестиария, в которых осталась типичная транслитерация английского. */
+export function transliterationHits(text: string): string[] {
+  const cut = text.search(/\nЧисла сняты/);
+  const body = cut < 0 ? text : text.slice(0, cut);
+  const words = body.match(/[А-Яа-яЁё][А-Яа-яЁё-]*/g) ?? [];
+  const hits = new Set<string>();
+  for (const word of words) {
+    const lower = word.toLocaleLowerCase("ru");
+    if (TRANSLIT_ALLOW.has(lower)) continue;
+    const stem = TRANSLIT_STEMS.find((item) => lower.includes(item));
+    if (stem) hits.add(lower);
+  }
+  return [...hits];
+}
+
 export function disallowedLatin(text: string): string[] {
   const cut = text.search(/\nЧисла сняты/);
   const body = cut < 0 ? text : text.slice(0, cut);
