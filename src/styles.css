@@ -1042,6 +1042,13 @@ article.card { border-top: 3px solid var(--gold); }
 .side-nav { display: none; }
 .catalog-layout { display: flex; flex-direction: column; gap: 12px; }
 .catalog-filters { display: flex; flex-direction: column; gap: 8px; }
+.filter-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 44px; padding: 8px 12px; border-radius: 14px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-weight: 700;
+}
+.filter-panel { display: none; flex-direction: column; gap: 8px; }
+.filter-panel.open { display: flex; }
 .catalog-results { min-width: 0; }
 select {
   appearance: none;
@@ -1099,6 +1106,8 @@ select {
   .has-quickbar { padding-left: 220px; }
   .catalog-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; align-items: start; }
   .catalog-filters { position: sticky; top: 8px; }
+  .filter-toggle { display: none; }
+  .filter-panel { display: flex; }
   .portrait-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .portrait-grid .option { flex-direction: column; }
   .portrait-grid .option-art { width: 100%; height: auto; aspect-ratio: 16 / 9; }
