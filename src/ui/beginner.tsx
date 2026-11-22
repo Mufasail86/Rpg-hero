@@ -12,6 +12,7 @@ import {
   fillStep,
   hintsDefaultOn,
   markTurnPanelSeen,
+  draftFromPremade,
   premades,
   recommendedClasses,
   slotTitle,
@@ -23,6 +24,7 @@ import {
   tourSeen,
   TERMS,
   type BeginnerRole,
+  type Premade,
 } from "../beginner";
 import { createCharacter, type StepId } from "../create";
 import type { Character, Draft } from "../types";
@@ -242,6 +244,18 @@ export function QuickStart({ onDone }: { onDone: (character: Character) => void 
   const [name, setName] = useState("");
   const [error, setError] = useState("");
 
+  function createPremade(premade: Premade) {
+    const draft = draftFromPremade(premade);
+    const made = createCharacter(draft);
+    if (!made.ok) {
+      setError(made.error);
+      return;
+    }
+    made.character.notes = ["Быстрый старт. Любой выбор можно сменить в развитии и на листе.", ...premade.notes].join("\n");
+    made.character.readiness = "built";
+    onDone(made.character);
+  }
+
   function create(premadeName: string, roleName: BeginnerRole) {
     const started = starterDraft(system, roleName, premadeName);
     const made = createCharacter(started.draft);
@@ -283,7 +297,7 @@ export function QuickStart({ onDone }: { onDone: (character: Character) => void 
         {error && <p className="warn">{error}</p>}
         <p className="kicker">Готовые герои</p>
         {premades(system).map((premade) => (
-          <button key={premade.id} type="button" className="advise-row" data-testid={`premade-${premade.id}`} onClick={() => create(premade.name, premade.role)}>
+          <button key={premade.id} type="button" className="advise-row" data-testid={`premade-${premade.id}`} onClick={() => createPremade(premade)}>
             <b>{premade.name} · {premade.role}</b>
             <small>{premade.blurb}</small>
           </button>

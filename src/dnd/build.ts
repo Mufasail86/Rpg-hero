@@ -1,4 +1,5 @@
-import { EPIC_BOONS, fullSlots, GENERAL_FEATS, halfSlots, ITEMS, ORIGIN_FEATS, pactSlots, SKILLS, STYLE_FEATS } from "../data/dnd5e";
+import { CLASSES, EPIC_BOONS, fullSlots, GENERAL_FEATS, halfSlots, ITEMS, MASTERY, ORIGIN_FEATS, pactSlots, SKILLS, SPECIES, STYLE_FEATS } from "../data/dnd5e";
+import type { RulesEdition } from "../data/editions";
 import {
   ABILITY_NAME,
   type Ability,
@@ -63,7 +64,14 @@ const ASI_LEVELS: Record<string, number[]> = {
   rogue: [4, 8, 10, 12, 16],
 };
 
-const CLASS_SKILLS = 2;
+function classSkillCount(classId: string): number {
+  return CLASSES.find((item) => item.id === classId)?.skillCount ?? 2;
+}
+
+function speciesPicksSkill(speciesId: string): boolean {
+  const species = SPECIES.find((item) => item.id === speciesId);
+  return Boolean(species?.skillChoice?.length || species?.id === "human");
+}
 
 export function proficiencyBonus(level: number): number {
   return 2 + Math.floor((Math.max(1, level) - 1) / 4);
@@ -71,20 +79,24 @@ export function proficiencyBonus(level: number): number {
 
 export function slotsForProgress(progress: DndProgress, level: number): Slot[] {
   const slots: Slot[] = [];
+  const edition = progress.edition ?? "dnd-2024";
   const push = (id: string, at: number, source: string, label: string) => {
     if (at <= level) slots.push({ id, level: at, source, label });
   };
-  push("origin-feat", 1, "feat", "Черта происхождения");
-  push("skill-species", 1, "skill", "Навык народа");
-  for (let i = 0; i < CLASS_SKILLS; i += 1) push(`skill-class-${i}`, 1, "skill", "Навык класса");
+  if (edition !== "dnd-2014") push("origin-feat", 1, "feat", "Черта происхождения");
+  if (speciesPicksSkill(progress.speciesId)) push("skill-species", 1, "skill", "Навык народа");
+  const skills = classSkillCount(progress.classId);
+  for (let i = 0; i < skills; i += 1) push(`skill-class-${i}`, 1, "skill", "Навык класса");
+  const expertise = CLASSES.find((item) => item.id === progress.classId)?.expertise ?? 0;
+  for (let i = 0; i < expertise; i += 1) push(`expertise-${i}`, 1, "expertise", "Экспертиза");
   if (progress.classId === "fighter") push("style-1", 1, "style", "Боевой стиль");
   if (progress.classId === "fighter" && progress.subclassId === "champion") push("style-7", 7, "style", "Второй боевой стиль чемпиона");
   if (progress.classId === "bard" && progress.subclassId === "lore") {
     for (let i = 0; i < 3; i += 1) push(`lore-skill-${i}`, 3, "skill", "Навык коллегии знаний");
     push("lore-expertise", 3, "expertise", "Экспертиза коллегии знаний");
   }
-  if (progress.classId === "fighter") {
-    const mastery = masteryCount(level);
+  const mastery = progress.classId === "fighter" ? masteryCount(level) : (CLASSES.find((item) => item.id === progress.classId)?.mastery ?? 0);
+  if (mastery > 0) {
     for (let i = 0; i < mastery; i += 1) {
       const at = i < 3 ? 1 : i === 3 ? 4 : i === 4 ? 10 : 16;
       push(`mastery-${i}`, at, "mastery", "Мастерство оружия");
@@ -95,7 +107,7 @@ export function slotsForProgress(progress: DndProgress, level: number): Slot[] {
   return slots;
 }
 
-export function deriveProgress(progress: DndProgress, items: ItemInst[], conditions: Record<string, number>, flags: string[], level: number, effects: StructuredEffect[] = []): DndDerived {
+export function deriveProgress(progress: DndProgress, items: ItemInst[], conditions: Record<string, number>, flags: string[], level: number, effects: StructuredEffect[] = [], hpBonus = 0): DndDerived {
   const issues: Issue[] = [];
   const scores = { ...progress.base };
   const skills = new Map<string, "untrained" | "proficient" | "expertise">();
@@ -164,6 +176,8 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
     issues,
     averageHp: true,
     effects,
+    hpBonus,
+    edition: progress.edition ?? "dnd-2024",
   });
 }
 
@@ -239,6 +253,7 @@ interface NumberInput {
   hpRolls?: number[];
   hpBonus?: number;
   effects?: StructuredEffect[];
+  edition?: RulesEdition;
 }
 
 function deriveNumbers(input: NumberInput): DndDerived {
@@ -368,7 +383,7 @@ function deriveNumbers(input: NumberInput): DndDerived {
     return {
       name: item.name,
       equipped: item.equipped,
-      traits: [weapon.traits, weapon.mastery].filter(Boolean).join(", "),
+      traits: [weapon.traits, weapon.mastery ? MASTERY[weapon.mastery]?.name : ""].filter(Boolean).join(", "),
       ranged: Boolean(weapon.ranged),
       attack: { value: attack, formula: line(item.name, attack, parts), aside },
       damage,
@@ -390,18 +405,16 @@ function deriveNumbers(input: NumberInput): DndDerived {
   if (input.classId === "fighter" && level >= 2) {
     issues.push({ kind: "limit", message: "Тактический ум тратит Второе дыхание на проверку, а не на хиты. Постоянный модификатор навыка от этого не растёт." });
   }
-  if (masteryCount(level) > 0 && input.classId === "fighter") {
+  if (["fighter", "barbarian", "rogue"].includes(input.classId)) {
     issues.push({ kind: "limit", message: "Свойства мастерства оружия не входят в постоянный модификатор атаки." });
-  }
-  if (["barbarian", "paladin", "ranger", "rogue"].includes(input.classId)) {
-    issues.push({ kind: "limit", message: "Слоты мастерства оружия этого класса не разложены. На постоянный модификатор атаки свойства всё равно не влияют." });
   }
   if (!["fighter", "barbarian", "monk", "rogue", "cleric", "wizard", "bard", "druid", "paladin", "ranger", "sorcerer", "warlock"].includes(input.classId) && input.classId !== "custom") {
     issues.push({ kind: "limit", message: "Для этого класса автоматически считаются хиты, мастерство, спасброски и навыки. Особенности подкласса сверьте вручную." });
   }
 
-  const resources = resourcesOf(input.classId, level, input.subclassId);
-  const slots = spellSlots(input.classId, level);
+  const edition = input.edition ?? "dnd-2024";
+  const resources = resourcesOf(input.classId, level, input.subclassId, edition);
+  const slots = spellSlots(input.classId, level, edition);
 
   return {
     level,
@@ -433,7 +446,6 @@ export function deriveStored(character: Character): DndDerived | null {
     if (rank === "proficient" || rank === "expertise" || rank === "untrained") skills.set(id, rank);
   }
   const feats = new Set(character.feats.map((feat) => feat.id));
-  if (character.tough) feats.add("tough");
   const styles = character.fightingStyle ? [character.fightingStyle] : [];
   const subclassId = subclassIdOf(character.subclassName);
   return deriveNumbers({
@@ -453,7 +465,8 @@ export function deriveStored(character: Character): DndDerived | null {
     issues: [],
     averageHp: false,
     hpRolls: character.hpRolls,
-    hpBonus: character.hpBonus,
+    hpBonus: (character.hpBonus ?? 0) + (character.tough ? character.level : 0),
+    edition: character.rules?.edition === "dnd-2014" ? "dnd-2014" : "dnd-2024",
     effects: effectsFrom(character),
   });
 }
@@ -461,7 +474,10 @@ export function deriveStored(character: Character): DndDerived | null {
 export function sheetDnd(character: Character, level = character.level): DndDerived | null {
   if (character.system !== "dnd5e") return null;
   if (!character.dnd) return level === character.level ? deriveStored(character) : null;
-  return deriveProgress(character.dnd, character.items, character.conditionValues, character.conditions, level, effectsFrom(character));
+  const edition = character.rules?.edition === "dnd-2014" ? "dnd-2014" : character.dnd.edition ?? "dnd-2024";
+  const progress = { ...character.dnd, edition };
+  const hardy = character.tough ? level : 0;
+  return deriveProgress(progress, character.items, character.conditionValues, character.conditions, level, effectsFrom(character), (character.hpBonus ?? 0) + hardy);
 }
 
 export function snapshotDnd(character: Character): Character {
@@ -481,7 +497,7 @@ export function snapshotDnd(character: Character): Character {
     saves,
     speed: derived.speed.value,
     fightingStyle: character.dnd.choices.find((choice) => choice.source === "style")?.pick ?? character.fightingStyle,
-    tough: character.dnd.choices.some((choice) => choice.pick === "feat:tough"),
+    tough: character.tough,
     hpCurrent: Math.min(character.hpCurrent, derived.hp.value),
   };
 }
@@ -575,10 +591,10 @@ function noteSubclass(subclassId: string, level: number, issues: Issue[]) {
   issues.push({ kind: "limit", message: notes[subclassId] ?? "Особенности этого подкласса в постоянные числа не входят." });
 }
 
-function resourcesOf(classId: string, level: number, subclassId: string): DndDerived["resources"] {
+function resourcesOf(classId: string, level: number, subclassId: string, edition: RulesEdition = "dnd-2024"): DndDerived["resources"] {
   const list: DndDerived["resources"] = [];
   if (classId === "fighter") {
-    const wind = level >= 10 ? 4 : level >= 4 ? 3 : 2;
+    const wind = edition === "dnd-2014" ? 1 : level >= 10 ? 4 : level >= 4 ? 3 : 2;
     list.push({ id: "wind", name: "Второе дыхание", max: wind, info: "Бонусное действие: 1d10 + уровень воина хитов. Короткий отдых возвращает одно." });
     if (level >= 2) list.push({ id: "surge", name: "Всплеск действий", max: level >= 17 ? 2 : 1, info: "Ещё одно действие в этот ход, кроме магии. Не чаще одного раза за ход." });
     if (level >= 9) list.push({ id: "indomitable", name: "Несгибаемость", max: level >= 17 ? 3 : level >= 13 ? 2 : 1, info: "Переброс проваленного спасброска с бонусом, равным уровню воина." });
@@ -588,12 +604,12 @@ function resourcesOf(classId: string, level: number, subclassId: string): DndDer
   return list;
 }
 
-function spellSlots(classId: string, level: number): { rank: number; max: number }[] {
+function spellSlots(classId: string, level: number, edition: RulesEdition = "dnd-2024"): { rank: number; max: number }[] {
   if (classId === "warlock") {
     const pact = pactSlots(level);
     return [{ rank: pact.rank, max: pact.n }];
   }
-  const table = classId === "paladin" || classId === "ranger" ? halfSlots(level) : ["bard", "cleric", "druid", "sorcerer", "wizard"].includes(classId) ? fullSlots(level) : [];
+  const table = classId === "paladin" || classId === "ranger" ? halfSlots(level, edition === "dnd-2014" ? "dnd-2014" : "dnd-2024") : ["bard", "cleric", "druid", "sorcerer", "wizard"].includes(classId) ? fullSlots(level) : [];
   return table.map((max, index) => ({ rank: index + 1, max }));
 }
 

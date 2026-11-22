@@ -15,6 +15,7 @@ import {
   type Draft,
   type FeatInst,
   type ItemInst,
+  type DndProgress,
   type Pf2eProgress,
   type SpellInst,
   emptyCoins,
@@ -32,6 +33,7 @@ import {
   SPECIES,
   SPELLS as SP5,
   STYLE_FEATS,
+  dndSpellBudget,
   itemById as item5,
   skillById as skill5,
 } from "./data/dnd5e";
@@ -255,7 +257,7 @@ function validateFeats(d: Draft): string | null {
   }
   if (d.heritageId === "skilled" && !c(d, "humanSkill")) return "Умелое наследие: выберите дополнительный навык.";
   if (d.ancestryId !== "custom" && !c(d, "ancestryFeat")) return "Выберите черту народа.";
-  if (!c(d, "skillFeat")) return "Выберите черту навыка.";
+  if (skillFeatAtCreation(d.classId) && !c(d, "skillFeat")) return "Выберите черту навыка.";
   const skillBlock = skillFeatBlock(c(d, "skillFeat"), trainedOf(d));
   if (skillBlock) return skillBlock;
   const generalSlot = d.heritageId === "versatile" || c(d, "ancestryFeat") === "general-training";
@@ -483,7 +485,7 @@ export function creationMeters(d: Draft): ChoiceMeter[] {
   }
   if (d.system === "pf2e" && d.classId) {
     meters.push({ id: "ancestry-feat", label: "Черта народа", have: c(d, "ancestryFeat") ? 1 : 0, need: 1 });
-    meters.push({ id: "skill-feat", label: "Черта навыка", have: c(d, "skillFeat") ? 1 : 0, need: 1 });
+    if (skillFeatAtCreation(d.classId)) meters.push({ id: "skill-feat", label: "Черта навыка", have: c(d, "skillFeat") ? 1 : 0, need: 1 });
     const cls = CL2.find((item) => item.id === d.classId);
     if (cls?.featLevel1 && (cls.feats.length > 0 || levelOneClassFeats(cls.id).length > 0)) meters.push({ id: "class-feat", label: "Черта класса", have: c(d, "classFeat") ? 1 : 0, need: 1 });
   }
@@ -501,6 +503,11 @@ export function creationMeters(d: Draft): ChoiceMeter[] {
     });
   }
   return meters;
+}
+
+/** Черта навыка на 1 уровне есть только у плута. У остальных она начинается со 2 уровня. */
+export function skillFeatAtCreation(classId: string): boolean {
+  return classId === "rogue";
 }
 
 export function skillNeed(d: Draft, scores: Record<Ability, number>): number {
@@ -582,12 +589,13 @@ function spellLimits(d: Draft, scores: Record<Ability, number>) {
   const cls = CL5.find((x) => x.id === d.classId);
   const extra = c(d, "order") === "thaumaturge" || c(d, "order") === "magician" ? 1 : 0;
   const ability = cls?.caster ? mod(scores[cls.caster.ability]) : 0;
-  const half = cls?.id === "paladin" || cls?.id === "ranger";
+  const edition = activeEdition(d) === "dnd-2014" ? "dnd-2014" : "dnd-2024";
+  const budget = dndSpellBudget(d.classId, 1, edition, ability);
   return {
-    cantrips: (cls?.caster?.cantrips ?? 0) + extra,
-    known: cls?.caster?.kind === "book" ? 6 : (cls?.caster?.known ?? 2),
-    prepare: half ? Math.max(1, ability) : Math.max(1, ability + 1),
-    kind: cls?.caster?.kind ?? "prepared",
+    cantrips: budget.cantrips + extra,
+    known: budget.known,
+    prepare: budget.prepare,
+    kind: budget.kind === "none" ? (cls?.caster?.kind ?? "prepared") : budget.kind,
   };
 }
 
@@ -725,6 +733,33 @@ export function createCharacter(d: Draft): { ok: true; character: Character } | 
   return { ok: true, character: withSlots };
 }
 
+function seedDnd(d: Draft, scores: Record<Ability, number>, speed: number): DndProgress {
+  const edition = activeEdition(d) === "dnd-2014" ? "dnd-2014" : "dnd-2024";
+  const choices: DndProgress["choices"] = [];
+  const push = (id: string, source: string, pick: string) => {
+    if (pick) choices.push({ id, level: 1, source, pick });
+  };
+  const speciesSkill = c(d, "humanSkill") || c(d, "elfSkill");
+  if (speciesSkill) push("skill-species", "skill", speciesSkill);
+  m(d, "skills").forEach((pick, index) => push(`skill-class-${index}`, "skill", pick));
+  m(d, "expertise").forEach((pick, index) => push(`expertise-${index}`, "expertise", pick));
+  if (c(d, "style")) push("style-1", "style", c(d, "style"));
+  m(d, "mastery").forEach((pick, index) => push(`mastery-${index}`, "mastery", pick));
+  const feat = activeBackground5(d)?.feat;
+  if (feat && edition !== "dnd-2014") push("origin-feat", "feat", `feat:${feat}`);
+  return {
+    speciesId: d.ancestryId,
+    backgroundId: d.backgroundId,
+    classId: d.classId,
+    subclassId: "",
+    edition,
+    base: { ...scores },
+    speed,
+    choices,
+    toggles: [],
+  };
+}
+
 function build5(d: Draft, scores: Record<Ability, number>): Character {
   const species = SPECIES.find((s) => s.id === d.ancestryId);
   const cls = CL5.find((x) => x.id === d.classId);
@@ -855,6 +890,7 @@ function build5(d: Draft, scores: Record<Ability, number>): Character {
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+  character.dnd = seedDnd(d, scores, speed);
   if (m(d, "mastery").length) {
     character.features.push({
       name: "Оружие мастерства",
@@ -929,7 +965,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
   const ancFeat = ancestry?.feats.find((f) => f.id === c(d, "ancestryFeat")) ?? indexedFeat(c(d, "ancestryFeat"));
   if (ancFeat) feats.push({ id: ancFeat.id, name: ancFeat.name, info: ancFeat.info });
   const skillFeat = SKILL_FEATS.find((f) => f.id === c(d, "skillFeat")) ?? indexedFeat(c(d, "skillFeat"));
-  if (skillFeat) feats.push({ id: skillFeat.id, name: skillFeat.name, info: skillFeat.info });
+  if (skillFeat && skillFeatAtCreation(cls?.id ?? "")) feats.push({ id: skillFeat.id, name: skillFeat.name, info: skillFeat.info });
   const generalFeat = SKILL_FEATS.find((f) => f.id === c(d, "generalFeat")) ?? (c(d, "generalFeat") === "fleet" ? { id: "fleet", name: "Быстроногий", info: "Скорость +5 футов." } : c(d, "generalFeat") === "canny-acumen" ? { id: "canny-acumen", name: "Дальновидность", info: "Эксперт в выбранном испытании или Восприятии, мастер с 17 уровня." } : c(d, "generalFeat") === "breath-control" ? { id: "breath-control", name: "Контроль дыхания", info: "Дольше задерживаете дыхание." } : null);
   const generalPick = generalFeat ?? indexedFeat(c(d, "generalFeat"));
   if (generalPick) feats.push({ id: generalPick.id, name: generalPick.name, info: generalPick.info });

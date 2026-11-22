@@ -18,6 +18,7 @@ import {
   refreshSlots,
   saveMod,
   skillRows,
+  spellCountText,
   spellNumbers,
   xpToNext,
 } from "../rules";
@@ -943,7 +944,7 @@ function Spells({ character, commit }: { character: Character; commit: (next: Ch
       )}
       {character.spellcasting && (
         <p className="tiny">
-          {character.spellcasting.kind === "prepared" ? "Подготовленный" : character.spellcasting.kind === "book" ? "Книга" : character.spellcasting.kind === "pact" ? "Пакт" : "Спонтанный"} заклинатель, {ABILITY_NAME[character.spellcasting.ability]}.
+          {character.spellcasting.kind === "prepared" ? "Подготовленный" : character.spellcasting.kind === "book" ? "Книга" : character.spellcasting.kind === "pact" ? "Пакт" : "Спонтанный"} заклинатель, {ABILITY_NAME[character.spellcasting.ability]}. {spellCountText(character.spellcasting)}
         </p>
       )}
       {character.slots.map((slot, index) => (

@@ -535,14 +535,14 @@ export const CLASSES: ClassDef[] = [
     skillChoices: ["arcana", "deception", "insight", "intimidation", "persuasion", "religion"],
     armor: [],
     weaponRules: { simple: true, martial: false, martialFinesseOrLight: false, martialLight: false },
-    caster: { kind: "known", ability: "cha", cantrips: 4, known: 2 },
+    caster: { kind: "prepared", ability: "cha", cantrips: 4 },
     packages: [
       { id: "a", name: "Копьё и кристалл", items: [{ id: "spear", equipped: true }, { id: "dagger", qty: 2 }, { id: "crystal" }, { id: "dungeoneer" }], gp: 28 },
       { id: "b", name: "50 зм на покупки", items: [], gp: 50 },
     ],
     features: [
       { name: "Врождённое чародейство", info: "Бонусным действием на 1 минуту раскрываете источник силы: преимущество на броски атаки заклинаний чародея и сложность спасброска против ваших заклинаний увеличивается на 1. Использований столько, сколько бонус мастерства, за долгий отдых." },
-      { name: "Сотворение заклинаний", info: "Известные заклинания, не подготовленные. На 1-м уровне четыре заговора и два заклинания 1-го круга из списка чародея. Две ячейки 1-го круга. Характеристика — Харизма. При повышении уровня можно заменять известные заклинания." },
+      { name: "Сотворение заклинаний", info: "В редакции 2024 чародей готовит заклинания: модификатор Харизмы плюс уровень, минимум 1. Заговоров четыре, на 4 и 10 уровнях ещё по одному. В редакции 2014 список известный и фиксированный: на 1 уровне два заклинания 1-го круга, дальше по таблице класса. Ячейки полные. Характеристика — Харизма." },
     ],
     subclass: { name: "Драконье чародейство", info: "На 3-м уровне максимум хитов растёт на 3 и ещё на 1 за каждый следующий уровень чародея. Без доспеха класс брони равен 10 + Ловкость + Харизма. Заклинания драконьего списка всегда подготовлены. Сопротивление выбранной стихии приходит на 6-м уровне, крылья со скоростью полёта 60 футов — на 14-м." },
     info: "Магия в крови. Кость хитов к6 — самая хрупкая, среднее при повышении 4. Спасброски Телосложения и Харизмы важны для концентрации. Доспехами чародей не владеет. Простое оружие.",
@@ -564,7 +564,7 @@ export const CLASSES: ClassDef[] = [
       { id: "b", name: "100 зм на покупки", items: [], gp: 100 },
     ],
     features: [
-      { name: "Пактовая магия", info: "На 1-м уровне одна ячейка 1-го круга. Она возвращается после короткого или долгого отдыха. Заклинания творятся на круге ячейки. Известных заклинаний 1-го круга — два, заговоров — два. Характеристика — Харизма." },
+      { name: "Пактовая магия", info: "На 1-м уровне одна ячейка 1-го круга. Она возвращается после короткого или долгого отдыха и всегда максимального круга. Подготовленных или известных заклинаний на 1 уровне два, заговоров два. К 10 уровню в 2024 их одиннадцать, в 2014 — десять. Характеристика — Харизма." },
       { name: "Магический дар", info: "Покровитель уже оставил след: выберите один дар 1-го уровня из открытого списка — например, взгляд ведьмы (дополнительный заговор и умение читать любые письмена) или договор клинка позже, на 3-м уровне, вместе с покровителем. На листе дар записан как умение, которое можно уточнить своей записью." },
     ],
     subclass: { name: "Покровитель исчадие", info: "На 3-м уровне, когда вы или кто-то в 10 футах от вас роняет врага до 0 хитов, вы получаете временные хиты, равные модификатору Харизмы плюс уровень колдуна, минимум 1. Заклинания исчадия всегда подготовлены. Тёмная удача добавляет 1d10 к проверке или спасброску. Сопротивление выбранному урону приходит на 10-м уровне." },
@@ -892,8 +892,8 @@ export function fullSlots(level: number): number[] {
   return table[Math.min(20, Math.max(1, level)) - 1];
 }
 
-export function halfSlots(level: number): number[] {
-  const table = [
+export function halfSlots(level: number, edition: "dnd-2014" | "dnd-2024" = "dnd-2024"): number[] {
+  const modern = [
     [2],
     [2],
     [3],
@@ -915,7 +915,81 @@ export function halfSlots(level: number): number[] {
     [4, 3, 3, 3, 2],
     [4, 3, 3, 3, 2],
   ];
+  const legacy = [
+    [],
+    [2],
+    [3],
+    [3],
+    [4, 2],
+    [4, 2],
+    [4, 3],
+    [4, 3],
+    [4, 3, 2],
+    [4, 3, 2],
+    [4, 3, 3],
+    [4, 3, 3],
+    [4, 3, 3, 1],
+    [4, 3, 3, 1],
+    [4, 3, 3, 2],
+    [4, 3, 3, 2],
+    [4, 3, 3, 3, 1],
+    [4, 3, 3, 3, 1],
+    [4, 3, 3, 3, 2],
+    [4, 3, 3, 3, 2],
+  ];
+  const table = edition === "dnd-2014" ? legacy : modern;
   return table[Math.min(20, Math.max(1, level)) - 1];
+}
+
+function at(table: number[], level: number): number {
+  return table[Math.min(20, Math.max(1, level)) - 1];
+}
+
+/** Заговоры прибавляются на 4 и 10 уровнях, не на 5 и 9. */
+export function cantripBumps(level: number): number {
+  return level >= 10 ? 2 : level >= 4 ? 1 : 0;
+}
+
+const SORCERER_KNOWN_2014 = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15, 15, 15, 15];
+const BARD_KNOWN_2014 = [4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 15, 16, 18, 19, 19, 20, 22, 22, 22];
+const WARLOCK_KNOWN_2014 = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15];
+const WARLOCK_PREPARED_2024 = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 15];
+const RANGER_KNOWN_2014 = [0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11];
+
+export interface DndSpellBudget {
+  cantrips: number;
+  known: number;
+  prepare: number;
+  kind: "prepared" | "known" | "book" | "pact" | "none";
+}
+
+/** Сколько заговоров, известных и подготовленных заклинаний у класса на этом уровне. */
+export function dndSpellBudget(classId: string, level: number, edition: "dnd-2014" | "dnd-2024", abilityMod: number): DndSpellBudget {
+  const rank = Math.max(1, level);
+  const bumps = cantripBumps(rank);
+  const prepared = Math.max(1, abilityMod + rank);
+  const halfPrepared = edition === "dnd-2014" && rank < 2 ? 0 : Math.max(1, abilityMod + Math.floor(rank / 2));
+  if (classId === "wizard") return { cantrips: 3 + bumps, known: 4 + rank * 2, prepare: prepared, kind: "book" };
+  if (classId === "cleric") return { cantrips: 3 + bumps, known: 99, prepare: prepared, kind: "prepared" };
+  if (classId === "druid") return { cantrips: 2 + bumps, known: 99, prepare: prepared, kind: "prepared" };
+  if (classId === "bard") {
+    if (edition === "dnd-2014") return { cantrips: 2 + bumps, known: at(BARD_KNOWN_2014, rank), prepare: 0, kind: "known" };
+    return { cantrips: 2 + bumps, known: 99, prepare: prepared, kind: "prepared" };
+  }
+  if (classId === "sorcerer") {
+    if (edition === "dnd-2014") return { cantrips: 4 + bumps, known: at(SORCERER_KNOWN_2014, rank), prepare: 0, kind: "known" };
+    return { cantrips: 4 + bumps, known: 99, prepare: prepared, kind: "prepared" };
+  }
+  if (classId === "warlock") {
+    const known = edition === "dnd-2014" ? at(WARLOCK_KNOWN_2014, rank) : at(WARLOCK_PREPARED_2024, rank);
+    return { cantrips: 2 + bumps, known, prepare: 0, kind: "pact" };
+  }
+  if (classId === "paladin") return { cantrips: 0, known: 99, prepare: halfPrepared, kind: "prepared" };
+  if (classId === "ranger") {
+    if (edition === "dnd-2014") return { cantrips: 0, known: at(RANGER_KNOWN_2014, rank), prepare: 0, kind: "known" };
+    return { cantrips: 0, known: 99, prepare: halfPrepared, kind: "prepared" };
+  }
+  return { cantrips: 0, known: 0, prepare: 0, kind: "none" };
 }
 
 export function pactSlots(level: number): { n: number; rank: number } {

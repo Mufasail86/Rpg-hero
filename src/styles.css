@@ -89,7 +89,7 @@ h1, h2, .display { font-family: Palatino, "Iowan Old Style", Georgia, serif; fon
 .grow { flex: 1; }
 .screen { padding: 8px 16px 28px; }
 .screen.pad-dock { padding-bottom: calc(118px + env(safe-area-inset-bottom)); }
-.has-quickbar .screen { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+.has-quickbar .screen { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
 .has-quickbar.creating .screen.pad-dock { padding-bottom: 190px; }
 
 .kicker { color: var(--muted); font-size: 0.86rem; margin: 0 0 4px; }
@@ -164,7 +164,8 @@ h1.display { font-size: 2rem; line-height: 1.05; margin: 0 0 8px; letter-spacing
   bottom: 0; width: min(520px, 100%); z-index: 16;
   display: flex; gap: 8px;
   padding: 8px 16px calc(10px + env(safe-area-inset-bottom));
-  background: linear-gradient(transparent, var(--bg) 24%);
+  background: var(--bar);
+  border-top: 1px solid var(--line);
 }
 .quickbar.raised { bottom: calc(74px + env(safe-area-inset-bottom)); }
 .quickbar .btn { flex: 1; }
@@ -468,6 +469,8 @@ body:has(.board-app),
   color: var(--muted);
   font-size: 12px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .board-tabs button.on {
   background: var(--gold-2);

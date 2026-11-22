@@ -1,6 +1,6 @@
 import { dndCoinPounds, pfCoinBulk } from "./play/wallet";
 import { ABILITIES, ABILITY_NAME, type Ability, type Character, type ItemInst, mod } from "./types";
-import { SKILLS as SKILLS5, skillById as skill5, XP_THRESHOLDS, fullSlots, halfSlots, pactSlots } from "./data/dnd5e";
+import { SKILLS as SKILLS5, skillById as skill5, XP_THRESHOLDS, dndSpellBudget, fullSlots, halfSlots, pactSlots } from "./data/dnd5e";
 import { SKILLS as SKILLS2, skillById as skill2, RANK_NAME } from "./data/pf2e";
 import { derive } from "./pf2e/build";
 import slotsTable from "./data/generated/pf-slots.json";
@@ -408,7 +408,8 @@ export function slotsFor(c: Character): Character["slots"] {
     const pact = pactSlots(c.level);
     return [{ rank: pact.rank, max: pact.n, used: 0, note: "пакт" }];
   }
-  const table = c.classId === "paladin" || c.classId === "ranger" ? halfSlots(c.level) : fullSlots(c.level);
+  const edition = c.rules?.edition === "dnd-2014" ? "dnd-2014" : "dnd-2024";
+  const table = c.classId === "paladin" || c.classId === "ranger" ? halfSlots(c.level, edition) : fullSlots(c.level);
   return table.map((max, index) => ({ rank: index + 1, max, used: 0 }));
 }
 
@@ -424,9 +425,8 @@ function prepareLimit(c: Character): number {
     }
     return 99;
   }
-  if (c.spellcasting.kind === "known" || c.spellcasting.kind === "pact") return 99;
-  if (c.classId === "paladin" || c.classId === "ranger") return Math.max(1, ability + Math.floor(c.level / 2));
-  return Math.max(1, ability + c.level);
+  const edition = c.rules?.edition === "dnd-2014" ? "dnd-2014" : "dnd-2024";
+  return dndSpellBudget(c.classId, c.level, edition, ability).prepare;
 }
 
 function knownLimit(c: Character): number {
@@ -440,10 +440,8 @@ function knownLimit(c: Character): number {
     if (c.classId === "wizard") return 8 + c.level * 2;
     return 99;
   }
-  if (c.spellcasting.kind === "book") return 4 + c.level * 2;
-  if (c.spellcasting.kind === "known") return 1 + c.level;
-  if (c.spellcasting.kind === "pact") return 1 + c.level;
-  return 99;
+  const edition = c.rules?.edition === "dnd-2014" ? "dnd-2014" : "dnd-2024";
+  return dndSpellBudget(c.classId, c.level, edition, 0).known;
 }
 
 function cantripLimit(c: Character): number {
@@ -454,10 +452,21 @@ function cantripLimit(c: Character): number {
     if (c.classId === "wizard" && wizardSchool(c) && wizardSchool(c) !== "unified") return table.cantrips + 1;
     return table.cantrips;
   }
-  if (c.classId === "custom") return 4 + Math.floor((Math.max(1, c.level) - 1) / 4);
-  const base = c.classId === "sorcerer" ? 4 : c.classId === "wizard" || c.classId === "cleric" ? 3 : c.classId === "bard" || c.classId === "druid" || c.classId === "warlock" ? 2 : 0;
+  const edition = c.rules?.edition === "dnd-2014" ? "dnd-2014" : "dnd-2024";
   const extra = c.features.some((f) => f.name === "Дополнительный заговор") ? 1 : 0;
-  return base + extra + Math.floor((Math.max(1, c.level) - 1) / 4);
+  if (c.classId === "custom") return 4 + extra + (c.level >= 10 ? 2 : c.level >= 4 ? 1 : 0);
+  return dndSpellBudget(c.classId, c.level, edition, 0).cantrips + extra;
+}
+
+export function spellCountText(casting: NonNullable<Character["spellcasting"]>): string {
+  const book = casting.kind === "book";
+  const prepares = casting.kind === "prepared" || book;
+  const parts: string[] = [];
+  if (book) parts.push(`В книге до ${casting.knownLimit}`);
+  if (prepares && casting.prepareLimit > 0) parts.push(`Подготовить ${casting.prepareLimit}`);
+  if (!prepares && casting.knownLimit < 99) parts.push(`Репертуар до ${casting.knownLimit}`);
+  if (casting.cantripLimit > 0) parts.push(`Заговоры ${casting.cantripLimit}`);
+  return parts.length ? `${parts.join(". ")}.` : "";
 }
 
 export function applyLevelUp(c: Character, roll: number | "average", boosts: Ability[] = []): Character {

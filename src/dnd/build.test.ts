@@ -177,6 +177,7 @@ describe("приёмка D&D", () => {
         { id: "skill-species", level: 1, source: "skill", pick: "perception" },
         { id: "skill-class-0", level: 1, source: "skill", pick: "performance" },
         { id: "skill-class-1", level: 1, source: "skill", pick: "persuasion" },
+        { id: "skill-class-2", level: 1, source: "skill", pick: "investigation" },
         { id: "origin-feat", level: 1, source: "feat", pick: "feat:alert" },
         { id: "lore-skill-0", level: 3, source: "skill", pick: "athletics" },
         { id: "lore-skill-1", level: 3, source: "skill", pick: "acrobatics" },

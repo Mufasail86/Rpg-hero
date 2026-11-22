@@ -21,6 +21,7 @@ import {
   gearPreview,
   originAbilities,
   scoresOf,
+  skillFeatAtCreation,
   skillNeed,
   spellBudget,
   STEP_HINT,
@@ -1183,21 +1184,25 @@ function FeatStep({
         onPick={(row) => { if ((row.level ?? 1) <= 1) setChoice("ancestryFeat", row.id); else remember(row); }}
         empty="У этого народа в выбранном уровне нет черты. Поставьте другой уровень."
       />
-      <PickList
-        title="Черта навыка"
-        testId="skill-feat-picker"
-        rows={skillRows}
-        selected={draft.choices.skillFeat ?? ""}
-        level={featLevel}
-        onLevel={setFeatLevel}
-        note="Если черта серая в коротком списке, не хватает навыка. Остальные черты книги выбираются по имени."
-        onPick={(row) => {
-          const reason = skillFeatBlock(row.id, trained);
-          if (reason) return;
-          if ((row.level ?? 1) <= 1) setChoice("skillFeat", row.id);
-          else remember(row);
-        }}
-      />
+      {skillFeatAtCreation(draft.classId) ? (
+        <PickList
+          title="Черта навыка"
+          testId="skill-feat-picker"
+          rows={skillRows}
+          selected={draft.choices.skillFeat ?? ""}
+          level={featLevel}
+          onLevel={setFeatLevel}
+          note="Если черта серая в коротком списке, не хватает навыка. Остальные черты книги выбираются по имени."
+          onPick={(row) => {
+            const reason = skillFeatBlock(row.id, trained);
+            if (reason) return;
+            if ((row.level ?? 1) <= 1) setChoice("skillFeat", row.id);
+            else remember(row);
+          }}
+        />
+      ) : (
+        <p className="tiny">Черта навыка у этого класса начинается со 2 уровня. На создании её нет.</p>
+      )}
       <PickList
         title="Общие черты"
         testId="general-feat-picker"

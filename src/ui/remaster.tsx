@@ -6,7 +6,7 @@ import { SKILLS } from "../data/pf2e";
 import { rulesCatalog } from "../data/catalog";
 import type { Character, CombatState, ItemInst, Placement, StructuredEffect } from "../types";
 import { fmt, uid } from "../types";
-import { hpMax, refreshSlots } from "../rules";
+import { hpMax, refreshSlots, spellCountText } from "../rules";
 import { useCompact } from "./common";
 import { PickList } from "./feat-picker";
 import { LevelWizard } from "./beginner";
@@ -284,9 +284,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       {character.spellcasting && (
         <p className="tiny" data-testid="spell-progress">
           Ячейки: {character.slots.filter((slot) => slot.max > 0).map((slot) => `${slot.rank} круг × ${slot.max}${slot.note ? ` (${slot.note})` : ""}`).join(", ") || "ещё нет"}.
-          {character.spellcasting.knownLimit >= 99
-            ? `Подготовить ${character.spellcasting.prepareLimit}. Заговоры ${character.spellcasting.cantripLimit}.`
-            : `Репертуар до ${character.spellcasting.knownLimit}. Заговоры ${character.spellcasting.cantripLimit}.`}
+          {spellCountText(character.spellcasting)}
         </p>
       )}
       {featuresAt(progress.classId, character.level).length > 0 && (
