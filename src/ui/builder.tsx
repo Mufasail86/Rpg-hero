@@ -15,6 +15,7 @@ import {
   notedGear,
   classKey,
   createCharacter,
+  reviewSummary,
   creationMeters,
   fixedSkills,
   gearPreview,
@@ -44,7 +45,6 @@ import {
   type Draft,
 } from "../types";
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
-import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
 import { ancestryAdvice, backgroundAdvice, featAdvice, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
@@ -1528,6 +1528,7 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
 
 function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: Partial<Draft>) => void; error: string }) {
   const scored = scoresOf(draft);
+  const summary = reviewSummary(draft);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   return (
     <>
@@ -1560,12 +1561,12 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
         )}
         <p className="tiny">Уровень 1 собирается здесь. Остальные слоты закрываются в разделе «Развитие».</p>
       </div>
-      <div className="card">
-        <p>{draft.system ? systemTitle(draft.system) : "Своя игра"}</p>
+      <div className="card" data-testid="review-summary">
+        <p data-testid="review-edition">{summary.heading}</p>
         <p className="tiny">Готовый лист не называется полностью проверенным: черта без расчёта в развитии всё ещё требует руки.</p>
-        <p>{draft.ancestryId === "custom" ? draft.customAncestry.name : draft.ancestryId}</p>
-        <p>{draft.backgroundId === "custom" ? draft.customBackground.name : draft.backgroundId}</p>
-        <p>{draft.classId === "custom" ? draft.customClass.name : draft.classId}</p>
+        <p data-testid="review-ancestry">{summary.ancestry}</p>
+        <p data-testid="review-background">{summary.background}</p>
+        <p data-testid="review-class">{summary.className}</p>
         {scored.ok && <p>{ABILITIES.map((ability) => `${ABILITY_SHORT[ability]} ${scored.scores[ability]}`).join(" · ")}</p>}
       </div>
       {error && <p className="warn">{error}</p>}
