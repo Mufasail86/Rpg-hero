@@ -126,7 +126,7 @@ export function Choice({
 }) {
   return (
     <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
-      {art ? <ArtButton src={art} label={name} /> : null}
+      {art ? <ArtButton src={art} label={name} description={short || hint || reason} onPick={disabled ? undefined : onPick} /> : null}
       <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
         <b>{name}</b>
         {english ? <small className="en-name">{english}</small> : null}
