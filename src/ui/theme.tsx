@@ -27,8 +27,8 @@ export function SkinButton() {
 
   const next = SKIN_ORDER[(SKIN_ORDER.indexOf(skin) + 1) % SKIN_ORDER.length];
   return (
-    <button type="button" className="theme-toggle" data-testid="skin-toggle" aria-label={`Облик: ${SKIN_NAME[skin]}`} title={`Дальше: ${SKIN_NAME[next]}`} onClick={() => setSkin(next)}>
-      {SKIN_NAME[skin]}
+    <button type="button" className="theme-toggle skin-toggle" data-testid="skin-toggle" aria-label={`Облик: ${SKIN_NAME[skin]}`} title={`Облик. Сейчас: ${SKIN_NAME[skin]}. Дальше: ${SKIN_NAME[next]}`} onClick={() => setSkin(next)}>
+      Облик
     </button>
   );
 }

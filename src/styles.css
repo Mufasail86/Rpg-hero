@@ -904,17 +904,27 @@ body:has(.board-app),
   .board-top { flex-wrap: wrap; row-gap: 4px; padding: 4px 8px; }
   .board-tabs { flex: 1 0 100%; gap: 3px; margin-top: 22px; }
   .board-tabs button { font-size: 12px; padding: 4px 2px; letter-spacing: 0; }
-  body:has(.board-app) .theme-toggle {
+  body:has(.board-app) .theme-toggle:not(.skin-toggle) {
     width: 36px;
     min-width: 36px;
     padding: 0;
     font-size: 0;
   }
-  body:has(.board-app) .theme-toggle::before {
+  body:has(.board-app) .theme-toggle:not(.skin-toggle)::before {
     content: "☾";
     font-size: 16px;
     line-height: 1;
   }
+  body:has(.board-app) .skin-toggle {
+    width: auto;
+    min-width: 0;
+    height: 36px;
+    min-height: 36px;
+    padding: 0 8px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  body:has(.board-app) .skin-toggle::before { content: none; }
   body:has(.board-app) .music-toggle { width: 36px; height: 36px; min-height: 36px; }
 }
 .tour .info-card h2 { margin-top: 0; }
