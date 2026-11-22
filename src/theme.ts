@@ -51,9 +51,11 @@ export function readSkin(store: Pick<Storage, "getItem"> | null, search = ""): S
   const asked = query.get("skin") || query.get("theme");
   if (asked === "scroll" || asked === "hud" || asked === "hud-light" || asked === "hud-dark" || asked === "1" || asked === "4") return skinOf(asked);
   try {
-    return skinOf(store?.getItem(SKIN_KEY) ?? null);
+    const saved = store?.getItem(SKIN_KEY);
+    if (saved == null || saved === "default") return "hud";
+    return skinOf(saved);
   } catch {
-    return "";
+    return "hud";
   }
 }
 

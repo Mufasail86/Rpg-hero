@@ -30,13 +30,15 @@ describe("тема", () => {
     expect(readTheme({ getItem: () => null })).toBe("tavern");
   });
 
-  it("облик берётся из адреса, иначе из записи, иначе обычный", () => {
+  it("облик по умолчанию — щит таверны, адрес и запись его перекрывают", () => {
     expect(skinOf("scroll")).toBe("scroll");
     expect(skinOf("1")).toBe("scroll");
     expect(skinOf("hud")).toBe("hud");
     expect(skinOf("4")).toBe("hud");
     expect(skinOf("hud-dark")).toBe("hud-dark");
     expect(skinOf("atlas")).toBe("");
+    expect(readSkin({ getItem: () => null }, "")).toBe("hud");
+    expect(readSkin({ getItem: () => "" }, "")).toBe("");
     expect(readSkin({ getItem: () => "hud" }, "")).toBe("hud");
     expect(readSkin({ getItem: () => "hud" }, "?skin=scroll")).toBe("scroll");
     expect(readSkin({ getItem: () => null }, "?theme=4")).toBe("hud");
