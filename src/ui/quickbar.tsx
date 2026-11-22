@@ -25,6 +25,7 @@ export function QuickBar({
   allowSwitch,
   raised,
   compact,
+  hash,
   onChange,
 }: {
   character: Character | null;
@@ -32,6 +33,7 @@ export function QuickBar({
   allowSwitch: boolean;
   raised: boolean;
   compact?: boolean;
+  hash: string;
   onChange: (character: Character) => void;
 }) {
   const [open, setOpen] = useState<Tab | null>(null);
@@ -87,6 +89,7 @@ export function QuickBar({
           </div>
         </div>
       )}
+      <SideNav hash={hash} character={current} />
       <nav className={`quickbar ${raised ? "raised" : ""} ${compact ? "slim" : ""}`} aria-label="Быстрый доступ">
         {current && (
           <button type="button" className="btn primary" data-testid="play-now-open" onClick={() => { setOpen(null); go(`#/c/${current.id}/now`); }}>
@@ -101,6 +104,34 @@ export function QuickBar({
         </button>
       </nav>
     </>
+  );
+}
+
+function SideNav({ hash, character }: { hash: string; character: Character | null }) {
+  const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
+  const page = parts[0] ?? "";
+  const panel = page === "c" ? parts[2] ?? "" : "";
+  const heroHref = character ? `#/c/${character.id}` : "#/";
+  const rows = [
+    { id: "hero", label: "Герой", icon: "⚔", href: page === "" ? "#/" : heroHref, on: page === "" || (page === "c" && panel === "") },
+    { id: "now", label: "Сейчас", icon: "▶", href: character ? `#/c/${character.id}/now` : "#/", on: panel === "now" },
+    { id: "skills", label: "Навыки", icon: "✎", href: character ? `#/c/${character.id}/skills` : "#/skill-picks", on: panel === "skills" || page === "skill-picks" },
+    { id: "reminder", label: "Памятка", icon: "☰", href: character ? `#/c/${character.id}/reminder` : "#/", on: panel === "reminder" },
+    { id: "library", label: "Справочник", icon: "▤", href: "#/library", on: page === "library" },
+    { id: "lore", label: "Предания", icon: "✧", href: "#/lore", on: page === "lore" },
+    { id: "bestiary", label: "Бестиарий", icon: "☠", href: "#/bestiary", on: page === "bestiary" },
+    { id: "settings", label: "Настройки", icon: "⚙", href: "#/settings", on: page === "settings" },
+  ];
+  return (
+    <nav className="side-nav" aria-label="Разделы">
+      <p className="side-brand">Герои</p>
+      {rows.map((row) => (
+        <button key={row.id} type="button" className={row.on ? "on" : ""} aria-current={row.on ? "page" : undefined} data-testid={`side-${row.id}`} onClick={() => go(row.href)}>
+          <span aria-hidden="true">{row.icon}</span>
+          {row.label}
+        </button>
+      ))}
+    </nav>
   );
 }
 

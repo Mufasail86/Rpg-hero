@@ -2,9 +2,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LICENSE_NOTICE, bestiaryCatalog, monsterByToken, type MonsterCard } from "../data/bestiary";
 import { EDITION_NAME, fold, marksLabel, type RulesEdition } from "../data/editions";
 import { dnd2014Guidance, dnd2024Budget, pfAward, pfBudget, pfCreatureXp, type Dnd2024Threat, type PfThreat } from "../encounter";
-import { ART, artSrc } from "./art";
+import bestiaryArt from "../data/generated/bestiary-art.json";
+import { artSrc } from "./art";
 import { go, useHash } from "./common";
 import { SearchField, SelectField } from "./controls";
+import { ArtButton } from "./lightbox";
+
+const ART_KEYS = new Set(bestiaryArt);
+
+function monsterArt(token: string): string | null {
+  const [edition, , id] = token.split("~");
+  const key = `${edition}~${id}`;
+  return ART_KEYS.has(key) ? artSrc(`bestiary/${key}.webp`) : null;
+}
 
 const PAGE = 24;
 
@@ -106,60 +116,58 @@ export function Bestiary() {
         <button type="button" className="icon-btn" aria-label="К списку" onClick={() => go(token ? "#/bestiary" : "#/")}>←</button>
         <h1 className="grow">Бестиарий</h1>
       </header>
-      <main className="screen stack">
-        <p className="kicker">Чудовища отдельно от листа</p>
-        <h1 className="display">Три книги, три списка</h1>
-        <p className="lead">
-          Ядро чудовищ ремастера, бестиарий справочника 5.2.1 и бестиарий справочника 5.1 не смешиваются.
-          В режиме игрока виден только уровень или опасность и тип. Полный блок — для ведущего.
-        </p>
-        <div className="seg" role="group" aria-label="Редакция бестиария">
-          {([
-            ["pf-remaster", "Ремастер"],
-            ["dnd-2024", "2024"],
-            ["dnd-2014", "2014"],
-          ] as [Edition, string][]).map(([id, label]) => (
-            <button key={id} type="button" className={`pill ${activeEdition === id ? "on" : ""}`} aria-pressed={activeEdition === id} data-testid={`bestiary-edition-${id}`} onClick={() => chooseEdition(id)}>{label}</button>
-          ))}
-        </div>
-        <div className="seg" role="group" aria-label="Режим спойлеров">
-          <button type="button" className={`pill ${mode === "player" ? "on" : ""}`} aria-pressed={mode === "player"} data-testid="bestiary-player" onClick={() => pickMode("player")}>Режим игрока</button>
-          <button type="button" className={`pill ${mode === "gm" ? "on" : ""}`} aria-pressed={mode === "gm"} data-testid="bestiary-gm" onClick={() => pickMode("gm")}>Режим ведущего</button>
-        </div>
-        <p className="tiny" data-testid="bestiary-count">
-          {EDITION_NAME[activeEdition as RulesEdition]}: показано {focus ? 1 : shown.length} из {filtered.length}, в редакции {all.filter((row) => row.edition === activeEdition).length}.
-        </p>
-        {mode === "gm" && <Encounter edition={activeEdition} party={party} size={size} threat={pfThreat} dndThreat={dndThreat} chosen={chosen} onLevel={setPartyLevel} onSize={setPartySize} onPf={setPfThreat} onDnd={setDndThreat} onRemove={(index) => setPicked((current) => current.filter((_, item) => item !== index))} />}
+      <main className="screen catalog-page">
         {focus && focus.edition === activeEdition ? (
           <MonsterArticle monster={focus} mode={mode} onAdd={() => add(focus.token)} />
         ) : (
-          <>
-            <SearchField label="Поиск" testId="bestiary-search" value={query} onChange={setQuery} placeholder="Например, гоблин или аболеф" />
-            <SelectField label="Тип" testId="bestiary-kind" value={kind} onChange={setKind}>
-              <option value="все">все типы</option>
-              {kinds.map((item) => <option key={item} value={item}>{item}</option>)}
-            </SelectField>
-            <div className="grid-2">
+          <div className="catalog-layout">
+            <aside className="catalog-filters">
+              <SearchField label="Поиск" testId="bestiary-search" value={query} onChange={setQuery} placeholder="Гоблин или аболеф" />
+              <div className="seg" role="group" aria-label="Редакция бестиария">
+                {([
+                  ["pf-remaster", "Ремастер"],
+                  ["dnd-2024", "2024"],
+                  ["dnd-2014", "2014"],
+                ] as [Edition, string][]).map(([id, label]) => (
+                  <button key={id} type="button" className={`pill ${activeEdition === id ? "on" : ""}`} aria-pressed={activeEdition === id} data-testid={`bestiary-edition-${id}`} onClick={() => chooseEdition(id)}>{label}</button>
+                ))}
+              </div>
+              <div className="seg" role="group" aria-label="Режим спойлеров">
+                <button type="button" className={`pill ${mode === "player" ? "on" : ""}`} aria-pressed={mode === "player"} data-testid="bestiary-player" onClick={() => pickMode("player")}>Игрок</button>
+                <button type="button" className={`pill ${mode === "gm" ? "on" : ""}`} aria-pressed={mode === "gm"} data-testid="bestiary-gm" onClick={() => pickMode("gm")}>Ведущий</button>
+              </div>
+              <SelectField label="Тип" testId="bestiary-kind" value={kind} onChange={setKind}>
+                <option value="все">все типы</option>
+                {kinds.map((item) => <option key={item} value={item}>{item}</option>)}
+              </SelectField>
+              <div className="grid-2">
+                <label className="field">
+                  <span>{activeEdition === "pf-remaster" ? "Уровень от" : "Опасность от"}</span>
+                  <input data-testid="bestiary-min" inputMode="decimal" value={minLevel} onChange={(event) => setMinLevel(event.target.value)} />
+                </label>
+                <label className="field">
+                  <span>до</span>
+                  <input data-testid="bestiary-max" inputMode="decimal" value={maxLevel} onChange={(event) => setMaxLevel(event.target.value)} />
+                </label>
+              </div>
               <label className="field">
-                <span>{activeEdition === "pf-remaster" ? "Уровень от" : "Опасность от"}</span>
-                <input data-testid="bestiary-min" inputMode="decimal" value={minLevel} onChange={(event) => setMinLevel(event.target.value)} />
+                <span>Черта</span>
+                <input data-testid="bestiary-trait" value={trait} onChange={(event) => setTrait(event.target.value)} placeholder="гоблинское или злой" />
               </label>
-              <label className="field">
-                <span>до</span>
-                <input data-testid="bestiary-max" inputMode="decimal" value={maxLevel} onChange={(event) => setMaxLevel(event.target.value)} />
-              </label>
-            </div>
-            <label className="field">
-              <span>Черта</span>
-              <input data-testid="bestiary-trait" value={trait} onChange={(event) => setTrait(event.target.value)} placeholder="Например, гоблинское или злой" />
-            </label>
-            <figure className="figure-card">
-              <img src={artSrc(ART.drake)} alt="Речной змей, свой рисунок, не существо из книги" loading="lazy" decoding="async" />
-            </figure>
+              <p className="tiny" data-testid="bestiary-count">
+                {EDITION_NAME[activeEdition as RulesEdition]}: {shown.length} из {filtered.length}
+              </p>
+              <details className="source-foot">
+                <summary>Источники и права</summary>
+                <p className="tiny">Три книги не смешиваются. В режиме игрока видны уровень или опасность и тип. Полный блок — для ведущего.</p>
+              </details>
+            </aside>
+            <div className="catalog-results">
+        {mode === "gm" && <Encounter edition={activeEdition} party={party} size={size} threat={pfThreat} dndThreat={dndThreat} chosen={chosen} onLevel={setPartyLevel} onSize={setPartySize} onPf={setPfThreat} onDnd={setDndThreat} onRemove={(index) => setPicked((current) => current.filter((_, item) => item !== index))} />}
             <div className="library-grid">
               {shown.map((monster) => (
                 <article key={monster.token} className="card stack">
-                  <div className="bestiary-art" data-testid="bestiary-art" aria-hidden />
+                  <MonsterPicture monster={monster} />
                   <b>{monster.name}</b>
                   <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>
                   {mode === "gm" && <p className="tiny">КБ {monster.ac} · хиты {monster.hp}{monster.xp != null ? ` · опыт ${monster.xp}` : ""}</p>}
@@ -174,17 +182,25 @@ export function Bestiary() {
             )}
             <div ref={sentinel} className="sentinel" />
             {filtered.length === 0 && <p>В этой редакции такого существа нет. Другая редакция в этот список не подмешивается.</p>}
-          </>
+            </div>
+          </div>
         )}
       </main>
     </div>
   );
 }
 
+function MonsterPicture({ monster }: { monster: MonsterCard }) {
+  const src = monsterArt(monster.token);
+  if (!src) return <div className="bestiary-art" data-testid="bestiary-art" aria-hidden />;
+  return <ArtButton src={src} label={monster.name} wide description={`${monster.originalName}. ${monster.size}, ${monster.kind}.`} />;
+}
+
 function MonsterArticle({ monster, mode, onAdd }: { monster: MonsterCard; mode: "player" | "gm"; onAdd: () => void }) {
   const notice = LICENSE_NOTICE[monster.sourceId];
   return (
     <article className="card stack" data-testid="bestiary-card">
+      <MonsterPicture monster={monster} />
       <b>{monster.name}</b>
       <p className="tiny" data-testid="data-marks">{marksLabel(monster.status, monster.location)}</p>
       <p className="tiny">{monster.originalName} · {rankLabel(monster)} · {monster.size} · {monster.kind}</p>

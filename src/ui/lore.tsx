@@ -79,41 +79,17 @@ export function Lore() {
         <button type="button" className="icon-btn" aria-label="К списку" onClick={() => go(token ? "#/lore" : "#/")}>←</button>
         <h1 className="grow">Предания</h1>
       </header>
-      <main className="screen stack">
-        <p className="kicker">Свои пересказы, не текст книг</p>
-        <h1 className="display">Миры отдельно от правил</h1>
-        <p className="lead">
-          Голарион идёт по политике сообщества: некоммерчески, своим коротким пересказом и ссылкой, без абзацев из книг, карт и чужих рисунков.
-          Миры «Подземелий и драконов» лежат каждый в своём разделе. Открытый справочник их не содержит, и политика фанатов не разрешает копировать книги.
-        </p>
-        <div className="seg" role="group" aria-label="Режим спойлеров">
-          <button type="button" className={`pill ${mode === "player" ? "on" : ""}`} aria-pressed={mode === "player"} data-testid="lore-player" onClick={() => pick("player")}>Режим игрока</button>
-          <button type="button" className={`pill ${mode === "gm" ? "on" : ""}`} aria-pressed={mode === "gm"} data-testid="lore-gm" onClick={() => pick("gm")}>Режим ведущего</button>
-        </div>
-        <p className="tiny" data-testid="lore-count">
-          Преданий {stories.length}, без карточек политики публикации. Показано {focus ? 1 : cards.length}. Скрыто от игрока: {hidden}.
-        </p>
-        <SearchField label="Поиск" testId="lore-search" value={query} onChange={setQuery} placeholder="Например, Талдор или Глубоководье" />
-        <SelectField label="Мир" testId="lore-world" value={world} onChange={setWorld}>
-          <option value="все">все миры</option>
-          {worlds.map((id) => <option key={id} value={id}>{worldName(id)}</option>)}
-        </SelectField>
-        <SelectField label="Вид" testId="lore-topic" value={topic} onChange={setTopic}>
-          <option value="все">все виды</option>
-          {(Object.keys(LORE_TOPIC_NAME) as LoreTopic[]).filter((id) => id !== "policy").map((id) => (
-            <option key={id} value={id}>{LORE_TOPIC_NAME[id]}</option>
-          ))}
-        </SelectField>
+      <main className="screen catalog-page">
         {focus && focus.edition === "lore" && mode === "player" && focus.spoiler === "gm" && (
           <p data-testid="lore-hidden">Эта карточка для ведущего. В режиме игрока текст не показывается.</p>
         )}
         {focus && focus.edition === "lore" && (mode === "gm" || focus.spoiler !== "gm") ? (
-          <article className="card stack">
+          <article className="card stack lore-card" data-testid="lore-card">
             <b>{focus.name}</b>
             <p className="tiny">{worldName(focus.settingId)} · {LORE_TOPIC_NAME[focus.category as LoreTopic] ?? focus.categoryTitle} · {focus.era || "Эпоха не указана"} · {focus.spoiler === "gm" ? "для ведущего" : focus.spoiler === "player" ? "для игрока" : "без спойлера"}</p>
             {focus.short && <p className="lede">{focus.short}</p>}
-            <LoreBody text={focus.text} />
             {focus.link && <p className="tiny">Источник: <a href={focus.link} target="_blank" rel="noreferrer">{focus.link}</a></p>}
+            <LoreBody text={focus.text} />
             {focus.relations.length > 0 && (
               <div className="wrap">
                 {focus.relations.filter((id) => mode === "gm" || entryByToken(id)?.spoiler !== "gm").map((id) => (
@@ -123,8 +99,31 @@ export function Lore() {
             )}
           </article>
         ) : (
-          <>
-            {cards.length === 0 && <p>Карточек, которые можно показать в этом режиме, пока нет. Решение их завести принято, текст книг сюда не копируется.</p>}
+          <div className="catalog-layout">
+            <aside className="catalog-filters">
+              <SearchField label="Поиск" testId="lore-search" value={query} onChange={setQuery} placeholder="Талдор или город" />
+              <div className="seg" role="group" aria-label="Режим спойлеров">
+                <button type="button" className={`pill ${mode === "player" ? "on" : ""}`} aria-pressed={mode === "player"} data-testid="lore-player" onClick={() => pick("player")}>Игрок</button>
+                <button type="button" className={`pill ${mode === "gm" ? "on" : ""}`} aria-pressed={mode === "gm"} data-testid="lore-gm" onClick={() => pick("gm")}>Ведущий</button>
+              </div>
+              <SelectField label="Мир" testId="lore-world" value={world} onChange={setWorld}>
+                <option value="все">все миры</option>
+                {worlds.map((id) => <option key={id} value={id}>{worldName(id)}</option>)}
+              </SelectField>
+              <SelectField label="Вид" testId="lore-topic" value={topic} onChange={setTopic}>
+                <option value="все">все виды</option>
+                {(Object.keys(LORE_TOPIC_NAME) as LoreTopic[]).filter((id) => id !== "policy").map((id) => (
+                  <option key={id} value={id}>{LORE_TOPIC_NAME[id]}</option>
+                ))}
+              </SelectField>
+              <p className="tiny" data-testid="lore-count">Преданий {stories.length}. Показано {cards.length}. Скрыто от игрока: {hidden}.</p>
+              <details className="source-foot">
+                <summary>Источники и права</summary>
+                <p className="tiny">Голарион идёт по политике сообщества: некоммерчески, своим коротким пересказом и ссылкой, без абзацев из книг. Миры «Подземелий и драконов» лежат отдельно. Открытый справочник их не содержит.</p>
+              </details>
+            </aside>
+            <div className="catalog-results">
+            {cards.length === 0 && <p>Карточек, которые можно показать в этом режиме, пока нет.</p>}
             <div className="library-grid">
               {cards.map((card) => (
                 <article key={card.token} className="card stack">
@@ -135,9 +134,9 @@ export function Lore() {
                 </article>
               ))}
             </div>
-          </>
+            </div>
+          </div>
         )}
-        <button type="button" className="btn" onClick={() => go("#/library")}>К справочнику правил</button>
       </main>
     </div>
   );

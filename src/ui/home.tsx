@@ -84,7 +84,6 @@ export function Home({
             <h1 className="display">Лист в кармане</h1>
           </div>
         </figure>
-        <p className="caption">{ART_CAPTION}</p>
         <p className="lead">Игры D&amp;D и Pathfinder. Лист работает без аккаунта и сервера. Облако не подключается само и никого не публикует.</p>
         <p className="tiny">Первый раз здесь? <button type="button" className="text-btn" onClick={() => go("#/glossary")}>Словарь новичка</button> объясняет КБ, СЛ и другие слова.</p>
         <div className="cast">

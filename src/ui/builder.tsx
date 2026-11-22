@@ -15,6 +15,7 @@ import {
   notedGear,
   classKey,
   createCharacter,
+  reviewSummary,
   creationMeters,
   fixedSkills,
   gearPreview,
@@ -44,7 +45,6 @@ import {
   type Draft,
 } from "../types";
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
-import { systemTitle } from "../labels";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
 import { ancestryAdvice, backgroundAdvice, featAdvice, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
@@ -365,9 +365,11 @@ function AncestryStep({
         {!filledEdition(edition) && <UnfilledNote edition={edition} ancestry />}
         <AncestrySearch query={query} onQuery={setQuery} />
         <p className="kicker">Советуем новичку</p>
+        <div className="portrait-grid">
         {recommended.map((item) => (
           <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
+        </div>
         {follow && (
           <div ref={followRef} data-testid="ancestry-follow">
             {species?.lineage && (
@@ -411,9 +413,11 @@ function AncestryStep({
           </div>
         )}
         <p className="kicker">Все народы</p>
+        <div className="portrait-grid">
         {all.map((item) => (
           <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
+        </div>
         <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
       </>
     );
@@ -429,9 +433,11 @@ function AncestryStep({
       {!filledEdition(edition) && <UnfilledNote edition={edition} ancestry />}
       <AncestrySearch query={query} onQuery={setQuery} />
       <p className="kicker">Советуем новичку</p>
+      <div className="portrait-grid">
       {recommended.map((item) => (
         <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
+      </div>
       {(ancestry || draft.ancestryId === "custom") && (
         <div ref={followRef} data-testid="ancestry-follow">
       {ancestry && (
@@ -477,9 +483,11 @@ function AncestryStep({
         </div>
       )}
       <p className="kicker">Все народы</p>
+      <div className="portrait-grid">
       {all.map((item) => (
         <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
+      </div>
       <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
     </div>
   );
@@ -1520,6 +1528,7 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
 
 function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: Partial<Draft>) => void; error: string }) {
   const scored = scoresOf(draft);
+  const summary = reviewSummary(draft);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   return (
     <>
@@ -1552,12 +1561,12 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
         )}
         <p className="tiny">Уровень 1 собирается здесь. Остальные слоты закрываются в разделе «Развитие».</p>
       </div>
-      <div className="card">
-        <p>{draft.system ? systemTitle(draft.system) : "Своя игра"}</p>
+      <div className="card" data-testid="review-summary">
+        <p data-testid="review-edition">{summary.heading}</p>
         <p className="tiny">Готовый лист не называется полностью проверенным: черта без расчёта в развитии всё ещё требует руки.</p>
-        <p>{draft.ancestryId === "custom" ? draft.customAncestry.name : draft.ancestryId}</p>
-        <p>{draft.backgroundId === "custom" ? draft.customBackground.name : draft.backgroundId}</p>
-        <p>{draft.classId === "custom" ? draft.customClass.name : draft.classId}</p>
+        <p data-testid="review-ancestry">{summary.ancestry}</p>
+        <p data-testid="review-background">{summary.background}</p>
+        <p data-testid="review-class">{summary.className}</p>
         {scored.ok && <p>{ABILITIES.map((ability) => `${ABILITY_SHORT[ability]} ${scored.scores[ability]}`).join(" · ")}</p>}
       </div>
       {error && <p className="warn">{error}</p>}

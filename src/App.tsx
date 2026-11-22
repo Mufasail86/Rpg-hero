@@ -116,6 +116,7 @@ export function App() {
         allowSwitch={route.page !== "sheet"}
         raised={route.page === "new"}
         compact={route.page === "sheet" && !route.panel}
+        hash={hash}
         onChange={upsert}
       />
     </InfoProvider>

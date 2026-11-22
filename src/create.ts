@@ -650,6 +650,43 @@ function purseOf(d: Draft): { ok: true; copper: number; items: { id: string; qty
   return { ok: true, copper, items };
 }
 
+export interface ReviewSummary {
+  heading: string;
+  ancestry: string;
+  background: string;
+  className: string;
+}
+
+/** Строка сводки — русское название. Сырой id вроде «elf» сюда не попадает. */
+export function looksLikeRawId(text: string): boolean {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(text.trim());
+}
+
+export function reviewSummary(d: Draft): ReviewSummary {
+  const edition = d.system ? resolveEdition(d.system, d.edition) : null;
+  const heading = !d.system
+    ? "Своя игра"
+    : d.system === "dnd5e"
+      ? (edition === "dnd-2014" ? "D&D, 2014" : "D&D, 2024")
+      : (edition === "pf-legacy" ? "Pathfinder, до ремастера" : "Pathfinder, ремастер");
+  const ancestry = d.ancestryId === "custom"
+    ? (d.customAncestry.name.trim() || "Свой народ")
+    : d.system === "pf2e"
+      ? (ANCESTRIES.find((item) => item.id === d.ancestryId)?.name ?? "")
+      : (SPECIES.find((item) => item.id === d.ancestryId)?.name ?? "");
+  const background = d.backgroundId === "custom"
+    ? (d.customBackground.name.trim() || "Своё происхождение")
+    : d.system === "pf2e"
+      ? (backgroundById(d.backgroundId)?.name ?? "")
+      : (activeBackground5(d)?.name ?? "");
+  const className = d.classId === "custom"
+    ? (d.customClass.name.trim() || "Свой класс")
+    : d.system === "pf2e"
+      ? (CL2.find((item) => item.id === d.classId)?.name ?? "")
+      : (CL5.find((item) => item.id === d.classId)?.name ?? "");
+  return { heading, ancestry, background, className };
+}
+
 function bg5(d: Draft) {
   return BG5.find((b) => b.id === d.backgroundId);
 }
