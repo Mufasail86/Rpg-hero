@@ -1,0 +1,387 @@
+/* Два облика листа и конструктора. Обычный вид не меняется, пока нет data-skin. */
+
+html[data-skin="scroll"] {
+  --bg: #e7d3ae;
+  --bg-2: #f3e4c4;
+  --paper: #f7ecd4;
+  --ink: #2b1c10;
+  --muted: #5c4630;
+  --line: #b48955;
+  --teal: #3d6b3a;
+  --teal-ink: #f4ffe8;
+  --teal-2: #e4f0d8;
+  --copper: #7a3e16;
+  --copper-ink: #fff4e4;
+  --copper-2: #f0d7b4;
+  --gold: #6e4314;
+  --gold-2: #f4e2c0;
+  --danger: #8c2430;
+  --ok: #2f6a34;
+  --shadow: 0 10px 22px rgba(90, 52, 16, 0.16);
+  --well: #fbf3e2;
+  --bar: rgba(243, 228, 196, 0.94);
+  --radius: 22px;
+  color-scheme: light;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255, 248, 230, 0.7), transparent 28%),
+    radial-gradient(circle at 90% 0%, rgba(176, 112, 48, 0.16), transparent 32%),
+    repeating-linear-gradient(0deg, rgba(120, 72, 28, 0.035) 0 1px, transparent 1px 7px),
+    #e7d3ae;
+}
+
+html[data-skin="scroll"] body {
+  background: transparent;
+  color: var(--ink);
+}
+
+html[data-skin="scroll"] .card,
+html[data-skin="scroll"] .option,
+html[data-skin="scroll"] .big,
+html[data-skin="scroll"] .stat,
+html[data-skin="scroll"] .meta-field,
+html[data-skin="scroll"] .board-defense,
+html[data-skin="scroll"] .board-skills,
+html[data-skin="scroll"] .board-strikes,
+html[data-skin="scroll"] .board-foot {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.55), transparent 28%),
+    var(--paper);
+  border: 1px solid #a8753e;
+  border-radius: 22px;
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 244, 220, 0.85),
+    inset 0 0 0 4px rgba(122, 72, 28, 0.28),
+    0 8px 16px rgba(90, 48, 12, 0.12);
+}
+
+html[data-skin="scroll"] .character-board,
+html[data-skin="hud"] .character-board,
+html[data-skin="hud-dark"] .character-board {
+  height: auto;
+  align-content: start;
+  grid-template-rows: auto;
+}
+
+html[data-skin="scroll"] .board-screen,
+html[data-skin="hud"] .board-screen {
+  overflow: auto;
+}
+
+html[data-skin="scroll"] .board-abil {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  justify-content: center;
+  padding: 4px;
+}
+
+html[data-skin="scroll"] .abil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, #fff6df, #e7c98a 62%, #b88845 100%);
+  border: 2px solid #6d431c;
+  box-shadow:
+    inset 0 0 0 3px #f8e7c4,
+    0 3px 0 #6d431c;
+}
+
+html[data-skin="scroll"] .abil span {
+  color: #5a3a18;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+html[data-skin="scroll"] .abil .num {
+  color: #2b1c10;
+  font-family: Palatino, Georgia, serif;
+  font-size: 16px;
+  background: transparent;
+}
+
+html[data-skin="scroll"] .abil small {
+  grid-column: auto;
+  color: #5c4630;
+  font-size: 9px;
+}
+
+html[data-skin="scroll"] .ac-box > div,
+html[data-skin="hud"] .ac-box > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 1px;
+}
+
+html[data-skin="scroll"] .ac-box .big-num {
+  width: 58px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f8e7c2, #c49858);
+  color: #2b1c10;
+  clip-path: polygon(50% 0, 96% 16%, 96% 62%, 50% 100%, 4% 62%, 4% 16%);
+  border: 0;
+  font-family: Palatino, Georgia, serif;
+  font-size: 20px;
+  filter: drop-shadow(0 2px 0 #6d431c);
+}
+
+html[data-skin="scroll"] .option.on {
+  border-color: #3d6b3a;
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 244, 220, 0.9),
+    inset 5px 0 0 #3d6b3a;
+}
+
+html[data-skin="scroll"] h1,
+html[data-skin="scroll"] h2,
+html[data-skin="scroll"] .display,
+html[data-skin="scroll"] .board-level b {
+  font-family: Palatino, "Iowan Old Style", Georgia, serif;
+  color: #3a2412;
+}
+
+html[data-skin="hud"],
+html[data-skin="hud-dark"] {
+  --radius: 4px;
+  --hud-hex: #2a241c;
+  --hud-ink: #f4efe6;
+  --hud-label: #f0c48a;
+  --hud-card-a: #1c2530;
+  --hud-card-b: #18222c;
+  --hud-track: #3a221c;
+  --hud-glow: rgba(201, 132, 42, 0.35);
+}
+
+html[data-skin="hud"] {
+  --bg: #121820;
+  --bg-2: #18222c;
+  --paper: #1c2530;
+  --ink: #f4efe6;
+  --muted: #d7cbb8;
+  --line: #31404f;
+  --teal: #c9842a;
+  --teal-ink: #1a1004;
+  --teal-2: #3a2a14;
+  --copper: #c9842a;
+  --copper-ink: #1a1004;
+  --copper-2: #3a2a14;
+  --gold: #f0c48a;
+  --gold-2: #3a2e22;
+  --danger: #ffb4b4;
+  --ok: #9ee6b8;
+  --shadow: 0 0 0 1px rgba(201, 132, 42, 0.45), 0 12px 28px rgba(0, 0, 0, 0.35);
+  --well: #24303c;
+  --bar: rgba(18, 24, 32, 0.92);
+  color-scheme: dark;
+  background:
+    radial-gradient(circle at 20% -10%, rgba(224, 161, 90, 0.16), transparent 32%),
+    radial-gradient(circle at 100% 0%, rgba(201, 132, 42, 0.12), transparent 28%),
+    repeating-linear-gradient(0deg, rgba(240, 196, 138, 0.035) 0 1px, transparent 1px 7px),
+    #121820;
+}
+
+html[data-skin="hud-dark"] {
+  --bg: #070b12;
+  --bg-2: #101826;
+  --paper: #101a28;
+  --ink: #e7f4ff;
+  --muted: #9eb4c9;
+  --line: #1e3a4e;
+  --teal: #2ee0c5;
+  --teal-ink: #04221c;
+  --teal-2: #12343a;
+  --copper: #f0a202;
+  --copper-ink: #1a1202;
+  --copper-2: #3a2c10;
+  --gold: #7ee7ff;
+  --gold-2: #123044;
+  --danger: #ff8b98;
+  --ok: #7dffa8;
+  --shadow: 0 0 0 1px rgba(46, 224, 197, 0.25), 0 10px 24px rgba(0, 0, 0, 0.45);
+  --well: #0c1420;
+  --bar: rgba(7, 11, 18, 0.92);
+  --hud-hex: #12323a;
+  --hud-ink: #f4fdff;
+  --hud-label: #9eefff;
+  --hud-card-a: #142233;
+  --hud-card-b: #0d1622;
+  --hud-track: #2a1218;
+  --hud-glow: rgba(46, 224, 197, 0.25);
+  color-scheme: dark;
+  background:
+    linear-gradient(180deg, rgba(46, 224, 197, 0.05), transparent 18%),
+    repeating-linear-gradient(90deg, rgba(126, 231, 255, 0.03) 0 1px, transparent 1px 48px),
+    #070b12;
+}
+
+html[data-skin="hud"] body,
+html[data-skin="hud-dark"] body { background: transparent; color: var(--ink); }
+
+html[data-skin="hud"] .card,
+html[data-skin="hud"] .option,
+html[data-skin="hud"] .big,
+html[data-skin="hud"] .stat,
+html[data-skin="hud"] .meta-field,
+html[data-skin="hud"] .board-defense,
+html[data-skin="hud"] .board-skills,
+html[data-skin="hud"] .board-strikes,
+html[data-skin="hud-dark"] .card,
+html[data-skin="hud-dark"] .option,
+html[data-skin="hud-dark"] .big,
+html[data-skin="hud-dark"] .stat,
+html[data-skin="hud-dark"] .meta-field,
+html[data-skin="hud-dark"] .board-defense,
+html[data-skin="hud-dark"] .board-skills,
+html[data-skin="hud-dark"] .board-strikes {
+  background: linear-gradient(180deg, var(--hud-card-a), var(--hud-card-b));
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  box-shadow: var(--shadow);
+}
+
+html[data-skin="hud"] .board-abil,
+html[data-skin="hud-dark"] .board-abil {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 2px;
+}
+
+html[data-skin="hud"] .abil,
+html[data-skin="hud-dark"] .abil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 68px;
+  margin: 0 auto;
+  background: var(--hud-hex);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  box-shadow: none;
+}
+
+html[data-skin="hud"] .abil span,
+html[data-skin="hud-dark"] .abil span {
+  color: var(--hud-label);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+html[data-skin="hud"] .abil .num,
+html[data-skin="hud-dark"] .abil .num {
+  color: var(--hud-ink);
+  font-size: 16px;
+  font-weight: 800;
+  background: transparent;
+}
+
+html[data-skin="hud"] .abil small,
+html[data-skin="hud-dark"] .abil small { grid-column: auto; color: var(--hud-label); font-size: 9px; }
+
+html[data-skin="hud"] .ac-box .big-num,
+html[data-skin="hud-dark"] .ac-box .big-num {
+  width: 56px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  background: var(--hud-hex);
+  color: var(--hud-ink);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+html[data-skin="hud"] .hp-box,
+html[data-skin="hud-dark"] .hp-box {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 14px;
+  padding-top: 4px;
+}
+
+html[data-skin="hud"] .hp-box::before,
+html[data-skin="hud"] .hp-box::after,
+html[data-skin="hud-dark"] .hp-box::before,
+html[data-skin="hud-dark"] .hp-box::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -12px;
+  height: 8px;
+  border-radius: 99px;
+}
+
+html[data-skin="hud"] .hp-box::before,
+html[data-skin="hud-dark"] .hp-box::before {
+  right: 0;
+  background: var(--hud-track);
+}
+
+html[data-skin="hud"] .hp-box::after,
+html[data-skin="hud-dark"] .hp-box::after {
+  width: calc(var(--hp, 1) * 100%);
+  max-width: 100%;
+  background: linear-gradient(90deg, #8d1d2c, #ff5d6e);
+  box-shadow: 0 0 8px rgba(255, 80, 100, 0.55);
+}
+
+html[data-skin="hud"] .option.on {
+  box-shadow: inset 0 0 0 2px #c9842a, 0 0 16px var(--hud-glow);
+}
+
+html[data-skin="hud"] .hp-box::after {
+  background: linear-gradient(90deg, #8d2e2a, #e0a060);
+  box-shadow: 0 0 8px rgba(201, 132, 42, 0.45);
+}
+
+html[data-skin="hud-dark"] .option.on {
+  box-shadow: inset 0 0 0 2px #2ee0c5, 0 0 16px var(--hud-glow);
+}
+
+html[data-skin="hud"] .skill-line,
+html[data-skin="hud"] .save-row,
+html[data-skin="hud-dark"] .skill-line,
+html[data-skin="hud-dark"] .save-row {
+  border-left: 2px solid var(--teal);
+  padding-left: 4px;
+}
+
+@media (max-width: 899px) {
+  html[data-skin="scroll"] .character-board,
+  html[data-skin="hud"] .character-board,
+  html[data-skin="hud-dark"] .character-board {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "head"
+      "meta"
+      "abil"
+      "defense"
+      "skills"
+      "strikes"
+      "foot";
+  }
+  html[data-skin="scroll"] .board-abil,
+  html[data-skin="hud"] .board-abil,
+  html[data-skin="hud-dark"] .board-abil {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

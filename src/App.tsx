@@ -11,7 +11,7 @@ import { Bestiary } from "./ui/bestiary";
 import { QuickBar } from "./ui/quickbar";
 import { Table } from "./ui/table";
 import { MusicControl, SettingsPage } from "./ui/music";
-import { ThemeToggle } from "./ui/theme";
+import { SkinButton, ThemeToggle } from "./ui/theme";
 import { GlossaryPage, QuickStart } from "./ui/beginner";
 import { SkillPicksPage } from "./ui/skill-guide";
 
@@ -58,6 +58,7 @@ export function App() {
     <InfoProvider>
       <div className="chrome-tools">
         <MusicControl hash={hash} />
+        <SkinButton />
         <ThemeToggle />
       </div>
       <div className={route.page === "new" ? "has-quickbar creating" : "has-quickbar"}>

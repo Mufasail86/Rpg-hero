@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { readTheme, themeOf } from "./theme";
+import { readSkin, readTheme, skinOf, themeOf } from "./theme";
 
 function lum(hex: string): number {
   const n = hex.replace("#", "");
@@ -28,6 +28,20 @@ describe("тема", () => {
     expect(themeOf("light")).toBe("tavern");
     expect(readTheme({ getItem: () => "atlas" })).toBe("atlas");
     expect(readTheme({ getItem: () => null })).toBe("tavern");
+  });
+
+  it("облик по умолчанию — щит таверны, адрес и запись его перекрывают", () => {
+    expect(skinOf("scroll")).toBe("scroll");
+    expect(skinOf("1")).toBe("scroll");
+    expect(skinOf("hud")).toBe("hud");
+    expect(skinOf("4")).toBe("hud");
+    expect(skinOf("hud-dark")).toBe("hud-dark");
+    expect(skinOf("atlas")).toBe("");
+    expect(readSkin({ getItem: () => null }, "")).toBe("hud");
+    expect(readSkin({ getItem: () => "" }, "")).toBe("");
+    expect(readSkin({ getItem: () => "hud" }, "")).toBe("hud");
+    expect(readSkin({ getItem: () => "hud" }, "?skin=scroll")).toBe("scroll");
+    expect(readSkin({ getItem: () => null }, "?theme=4")).toBe("hud");
   });
 });
 
