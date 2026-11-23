@@ -25,7 +25,7 @@
  },
  {
   "id": "hydras-bond",
-  "name": "Гидра' связь",
+  "name": "Связь гидры",
   "kind": "mythic",
   "level": 4,
   "classes": [],
@@ -41,7 +41,7 @@
  },
  {
   "id": "fools-fleeting-plan",
-  "name": "Глупец' мимолётный замысел",
+  "name": "Мимолётный замысел глупца",
   "kind": "mythic",
   "level": 6,
   "classes": [],
@@ -121,7 +121,7 @@
  },
  {
   "id": "sovereigns-blade",
-  "name": "Владыка' клинок",
+  "name": "Клинок владыки",
   "kind": "mythic",
   "level": 18,
   "classes": [],
@@ -153,7 +153,7 @@
  },
  {
   "id": "you-cant-keep-us-down",
-  "name": "Можно'т крепость нас вниз",
+  "name": "Нас не удержать",
   "kind": "mythic",
   "level": 14,
   "classes": [],
@@ -201,7 +201,7 @@
  },
  {
   "id": "call-from-deaths-door",
-  "name": "Зов смерть' дверь",
+  "name": "Зов с порога смерти",
   "kind": "mythic",
   "level": 10,
   "classes": [],
@@ -217,7 +217,7 @@
  },
  {
   "id": "you-cant-hide-from-us",
-  "name": "Можно'т шкура нас",
+  "name": "От нас не спрятаться",
   "kind": "mythic",
   "level": 14,
   "classes": [],
@@ -225,7 +225,7 @@
  },
  {
   "id": "you-cant-kill-an-idea",
-  "name": "Можно'т убивать идея",
+  "name": "Идею не убить",
   "kind": "mythic",
   "level": 20,
   "classes": [],
@@ -241,7 +241,7 @@
  },
  {
   "id": "weve-met-before",
-  "name": "' встреченный прежде",
+  "name": "Мы уже встречались",
   "kind": "mythic",
   "level": 2,
   "classes": [],
@@ -449,7 +449,7 @@
  },
  {
   "id": "skeptics-defense",
-  "name": "Скептик' защита",
+  "name": "Защита скептика",
   "kind": "skill",
   "level": 7,
   "classes": [],
@@ -617,7 +617,7 @@
  },
  {
   "id": "performers-treatment",
-  "name": "Исполнитель' лечение",
+  "name": "Лечение исполнителя",
   "kind": "skill",
   "level": 2,
   "classes": [],
@@ -681,7 +681,7 @@
  },
  {
   "id": "channelers-stance",
-  "name": "Проводник' стойка",
+  "name": "Стойка проводника",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -771,7 +771,7 @@
  },
  {
   "id": "jesters-gambol",
-  "name": "Шут' резвиться",
+  "name": "Резвиться шута",
   "kind": "class",
   "level": 16,
   "classes": [
@@ -781,7 +781,7 @@
  },
  {
   "id": "forests-heart",
-  "name": "Лес' сердце",
+  "name": "Лесное сердце",
   "kind": "class",
   "level": 16,
   "classes": [
@@ -841,7 +841,7 @@
  },
  {
   "id": "apparitions-quickening",
-  "name": "Явление' ускорение",
+  "name": "Ускорение явления",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -911,7 +911,7 @@
  },
  {
   "id": "apparitions-enhancement",
-  "name": "Явление' усиление",
+  "name": "Усиление явления",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -951,7 +951,7 @@
  },
  {
   "id": "mediums-awareness",
-  "name": "Медиум' осознанность",
+  "name": "Осознанность медиума",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -991,7 +991,7 @@
  },
  {
   "id": "apparitions-reflection",
-  "name": "Явление' отражение",
+  "name": "Отражение явления",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -1021,7 +1021,7 @@
  },
  {
   "id": "spirits-sacrifice",
-  "name": "Духовный' жертва",
+  "name": "Духовная жертва",
   "kind": "class",
   "level": 18,
   "classes": [
@@ -1051,7 +1051,7 @@
  },
  {
   "id": "maguss-analysis",
-  "name": "Магус' разбор",
+  "name": "Разбор магуса",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -1181,7 +1181,7 @@
  },
  {
   "id": "killshots-report",
-  "name": "Смертельный выстрел' доклад",
+  "name": "Смертельный доклад выстрела",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -1371,7 +1371,7 @@
  },
  {
   "id": "strikers-scroll",
-  "name": "Ударник' свиток",
+  "name": "Свиток ударника",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -1391,7 +1391,7 @@
  },
  {
   "id": "distant-waterbirds-poise",
-  "name": "Далёкий водоптица' самообладание",
+  "name": "Далёкое самообладание водоптицы",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -1521,7 +1521,7 @@
  },
  {
   "id": "conjurers-countermeasure",
-  "name": "Заклинатель' противомера",
+  "name": "Противомера заклинателя",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -1571,7 +1571,7 @@
  },
  {
   "id": "whirlpools-pull",
-  "name": "Водоворот' тяга",
+  "name": "Тяга водоворота",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -1761,7 +1761,7 @@
  },
  {
   "id": "slingers-reflexes",
-  "name": "Пращник' рефлексы",
+  "name": "Рефлексы пращника",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -1921,7 +1921,7 @@
  },
  {
   "id": "shooters-camouflage",
-  "name": "Стрелок' маскировка",
+  "name": "Маскировка стрелока",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -2161,7 +2161,7 @@
  },
  {
   "id": "snipers-aim",
-  "name": "Снайпер' наводка",
+  "name": "Наводка снайпера",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -2201,7 +2201,7 @@
  },
  {
   "id": "drifters-juke",
-  "name": "Бродяга' обманка",
+  "name": "Обманка бродяги",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -2211,7 +2211,7 @@
  },
  {
   "id": "pistoleros-challenge",
-  "name": "Стрелок' вызов",
+  "name": "Вызов стрелока",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -2471,7 +2471,7 @@
  },
  {
   "id": "complete-the-heros-journey",
-  "name": "Полный герой' странствие",
+  "name": "Полное странствие героя",
   "kind": "class",
   "level": 14,
   "classes": [
@@ -2541,7 +2541,7 @@
  },
  {
   "id": "fish-from-the-falls-edge",
-  "name": "Рыба водопад' грань",
+  "name": "Рыба грань водопада",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -2611,7 +2611,7 @@
  },
  {
   "id": "through-the-needles-eye",
-  "name": "Сквозь игла' глаз",
+  "name": "Сквозь глаз иглы",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -2931,7 +2931,7 @@
  },
  {
   "id": "wild-witchs-armaments",
-  "name": "Дикий ведьма' вооружение",
+  "name": "Дикое ведьмино вооружение",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -3081,7 +3081,7 @@
  },
  {
   "id": "songbirds-call",
-  "name": "Певчая птица' зов",
+  "name": "Певчий зов птицы",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -3346,7 +3346,7 @@
  },
  {
   "id": "cant-you-see",
-  "name": "Можно'т взор?",
+  "name": "Разве не видишь?",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -3502,7 +3502,7 @@
  },
  {
   "id": "wolf-in-sheeps-clothing",
-  "name": "Волк овца' одежда",
+  "name": "Волк в овечьей шкуре",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -3582,7 +3582,7 @@
  },
  {
   "id": "steeds-toppling-strike",
-  "name": "Скакун' валящий удар",
+  "name": "Валящий удар скакуна",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -3712,7 +3712,7 @@
  },
  {
   "id": "officers-medical-training",
-  "name": "Офицер' медицинский подготовка",
+  "name": "Медицинский подготовка офицера",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -3732,7 +3732,7 @@
  },
  {
   "id": "commanders-companion",
-  "name": "Командир' спутник",
+  "name": "Спутник командира",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -3862,7 +3862,7 @@
  },
  {
   "id": "standard-bearers-sacrifice",
-  "name": "Обычный-носитель' жертва",
+  "name": "Жертва обычный-носителя",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -3972,7 +3972,7 @@
  },
  {
   "id": "banners-inspiration",
-  "name": "Знамя' вдохновение",
+  "name": "Вдохновение знамени",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -4042,7 +4042,7 @@
  },
  {
   "id": "officers-education",
-  "name": "Офицер' образование",
+  "name": "Образование офицера",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -5022,7 +5022,7 @@
  },
  {
   "id": "artists-attendance",
-  "name": "Художник' присутствие",
+  "name": "Присутствие художника",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -5292,7 +5292,7 @@
  },
  {
   "id": "eidolons-trample",
-  "name": "Эйдолон' топтание",
+  "name": "Топтание эйдолона",
   "kind": "class",
   "level": 16,
   "classes": [
@@ -5372,7 +5372,7 @@
  },
  {
   "id": "summoners-call",
-  "name": "Призыватель' зов",
+  "name": "Зов призывателя",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -5652,7 +5652,7 @@
  },
  {
   "id": "eidolons-wrath",
-  "name": "Эйдолон' гнев",
+  "name": "Гнев эйдолона",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -5692,7 +5692,7 @@
  },
  {
   "id": "eidolons-retort",
-  "name": "Эйдолон' отповедь",
+  "name": "Отповедь эйдолона",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -6162,7 +6162,7 @@
  },
  {
   "id": "dark-personas-presence",
-  "name": "Тёмный личина' присутствие",
+  "name": "Тёмный присутствие личины",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -6982,7 +6982,7 @@
  },
  {
   "id": "implements-flight",
-  "name": "Регалия' полёт",
+  "name": "Полёт регалии",
   "kind": "class",
   "level": 16,
   "classes": [
@@ -7062,7 +7062,7 @@
  },
  {
   "id": "thaumaturges-demesne",
-  "name": "Тауматург' вотчина",
+  "name": "Вотчина тауматурга",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -7082,7 +7082,7 @@
  },
  {
   "id": "thaumaturges-investiture",
-  "name": "Тауматург' инвеститура",
+  "name": "Инвеститура тауматурга",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -7232,7 +7232,7 @@
  },
  {
   "id": "implements-assault",
-  "name": "Регалия' натиск",
+  "name": "Натиск регалии",
   "kind": "class",
   "level": 18,
   "classes": [
@@ -7392,7 +7392,7 @@
  },
  {
   "id": "culverts-collapse",
-  "name": "Водосток' обрушение",
+  "name": "Обрушение водостока",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -7462,7 +7462,7 @@
  },
  {
   "id": "snakebirds-shadow",
-  "name": "Змеептица' теневая",
+  "name": "Теневая змеептицы",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -8296,7 +8296,7 @@
  },
  {
   "id": "devils-eye",
-  "name": "Дьявол' глаз",
+  "name": "Дьявольский глаз",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -8304,7 +8304,7 @@
  },
  {
   "id": "elysiums-cadence",
-  "name": "Элизий' ритм",
+  "name": "Элизийский ритм",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -8408,7 +8408,7 @@
  },
  {
   "id": "this-is-what-its-like-to-die",
-  "name": "Этот есть' подобный кубик",
+  "name": "Вот каково это — умереть",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -8464,7 +8464,7 @@
  },
  {
   "id": "lets-try-that-again",
-  "name": "Позволение' попытка снова",
+  "name": "Давай ещё раз",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -8752,7 +8752,7 @@
  },
  {
   "id": "patrons-glamour",
-  "name": "Покровитель' чары",
+  "name": "Чары покровителя",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -8760,7 +8760,7 @@
  },
  {
   "id": "patrons-whisper",
-  "name": "Покровитель' шёпот",
+  "name": "Шёпот покровителя",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -8832,7 +8832,7 @@
  },
  {
   "id": "duos-aim",
-  "name": "Двойка' наводка",
+  "name": "Наводка двойки",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -8968,7 +8968,7 @@
  },
  {
   "id": "talmandors-shout",
-  "name": "Талмандор' крик",
+  "name": "Крик талмандор",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -9080,7 +9080,7 @@
  },
  {
   "id": "athletes-ally",
-  "name": "Атлет' союзник",
+  "name": "Союзник атлета",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -9184,7 +9184,7 @@
  },
  {
   "id": "listeners-boon",
-  "name": "Слушатель' дар",
+  "name": "Дар слушателя",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -9200,7 +9200,7 @@
  },
  {
   "id": "nights-shine",
-  "name": "Ночь' сияние",
+  "name": "Ночное сияние",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -9232,7 +9232,7 @@
  },
  {
   "id": "nights-glow",
-  "name": "Ночь' световой",
+  "name": "Ночной световой",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -9248,7 +9248,7 @@
  },
  {
   "id": "stargazers-eyes",
-  "name": "Звездочёт' глаза",
+  "name": "Глаза звездочёта",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -9264,7 +9264,7 @@
  },
  {
   "id": "scholars-hunch",
-  "name": "Учёный' догадка",
+  "name": "Догадка учёного",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -9328,7 +9328,7 @@
  },
  {
   "id": "mages-field-dressing",
-  "name": "Маг' поле перевязка",
+  "name": "Поле перевязка мага",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -9536,7 +9536,7 @@
  },
  {
   "id": "weavers-web",
-  "name": "Ткач' паутина",
+  "name": "Паутина ткача",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -9776,7 +9776,7 @@
  },
  {
   "id": "phenoms-verve",
-  "name": "Феномен' задор",
+  "name": "Задор феномена",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -9848,7 +9848,7 @@
  },
  {
   "id": "peonys-flourish",
-  "name": "Пион' росчерк",
+  "name": "Росчерк пиона",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -9888,7 +9888,7 @@
  },
  {
   "id": "dragons-journey",
-  "name": "Драконий' странствие",
+  "name": "Драконье странствие",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -9928,7 +9928,7 @@
  },
  {
   "id": "slingers-readiness",
-  "name": "Пращник' готовность",
+  "name": "Готовность пращника",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -10112,7 +10112,7 @@
  },
  {
   "id": "winters-kiss",
-  "name": "Зимний' поцелуй",
+  "name": "Зимний поцелуй",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -10120,7 +10120,7 @@
  },
  {
   "id": "winters-embrace",
-  "name": "Зимний' объятие",
+  "name": "Зимнее объятие",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -10272,7 +10272,7 @@
  },
  {
   "id": "sentinels-orbit",
-  "name": "Часовой' орбита",
+  "name": "Орбита часовоя",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -10288,7 +10288,7 @@
  },
  {
   "id": "generals-gambit",
-  "name": "Общая' гамбит",
+  "name": "Гамбит общой",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -10376,7 +10376,7 @@
  },
  {
   "id": "feys-trickery",
-  "name": "Фея' коварство",
+  "name": "Фейское коварство",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -10384,7 +10384,7 @@
  },
  {
   "id": "vessels-form",
-  "name": "Сосуд' облик",
+  "name": "Облик сосуда",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -10416,7 +10416,7 @@
  },
  {
   "id": "entitys-strike",
-  "name": "Сущность' удар",
+  "name": "Удар сущности",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -10688,7 +10688,7 @@
  },
  {
   "id": "you-dont-smell-right",
-  "name": "Надевать'т нюх правый",
+  "name": "От тебя пахнет не так",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -10848,7 +10848,7 @@
  },
  {
   "id": "gods-palm",
-  "name": "Боги' ладонь",
+  "name": "Божеская ладонь",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -10944,7 +10944,7 @@
  },
  {
   "id": "gladiators-roar",
-  "name": "Гладиатор' рёв",
+  "name": "Рёв гладиатора",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -11048,7 +11048,7 @@
  },
  {
   "id": "heavens-step-offense",
-  "name": "Небеса' шаг нападение",
+  "name": "Небесный атакующий шаг",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -11176,7 +11176,7 @@
  },
  {
   "id": "achaekeks-grip",
-  "name": "Ачейкек' хват",
+  "name": "Хват ачейкека",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -11464,7 +11464,7 @@
  },
  {
   "id": "guards-fury",
-  "name": "Стража' яростный",
+  "name": "Яростный стражи",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -11480,7 +11480,7 @@
  },
  {
   "id": "defenders-grit",
-  "name": "Защитник' закалка",
+  "name": "Закалка защитника",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -11776,7 +11776,7 @@
  },
  {
   "id": "guardians-embrace",
-  "name": "Страж' объятие",
+  "name": "Объятие стража",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -11864,7 +11864,7 @@
  },
  {
   "id": "chronomancers-secrets",
-  "name": "Маг времени' тайны",
+  "name": "Маг тайны времени",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -12056,7 +12056,7 @@
  },
  {
   "id": "crusaders-masquerade",
-  "name": "Крестоносец' маскарад",
+  "name": "Маскарад крестоносца",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -12192,7 +12192,7 @@
  },
  {
   "id": "vigils-palisades",
-  "name": "Бдение' частокол",
+  "name": "Частокол бдения",
   "kind": "archetype",
   "level": 20,
   "classes": [],
@@ -12296,7 +12296,7 @@
  },
  {
   "id": "vindicators-judgment",
-  "name": "Каратель' суд",
+  "name": "Суд карателя",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -12322,7 +12322,7 @@
  },
  {
   "id": "griefs-fury",
-  "name": "Горе' яростный",
+  "name": "Ярость горя",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -12346,7 +12346,7 @@
  },
  {
   "id": "razors-edge",
-  "name": "Бритва' грань",
+  "name": "Грань бритвы",
   "kind": "archetype",
   "level": 18,
   "classes": [],
@@ -12362,7 +12362,7 @@
  },
  {
   "id": "needle-in-the-gods-eyes",
-  "name": "Игла боги' глаза",
+  "name": "Игла божеские глаза",
   "kind": "archetype",
   "level": 16,
   "classes": [
@@ -12388,7 +12388,7 @@
  },
  {
   "id": "martyrs-parry",
-  "name": "Мученик' парирование",
+  "name": "Парирование мученика",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -12396,7 +12396,7 @@
  },
  {
   "id": "hero-gods-bond",
-  "name": "Герой-бог' связь",
+  "name": "Связь герой-бога",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -12508,7 +12508,7 @@
  },
  {
   "id": "officers-mastery",
-  "name": "Офицер' мастерство",
+  "name": "Мастерство офицера",
   "kind": "archetype",
   "level": 18,
   "classes": [],
@@ -12516,7 +12516,7 @@
  },
  {
   "id": "officers-expertise",
-  "name": "Офицер' мастерство",
+  "name": "Мастерство офицера",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -12948,7 +12948,7 @@
  },
  {
   "id": "the-bitter-scholars-promotion",
-  "name": "Горький учёный' повышение",
+  "name": "Горькое повышение учёного",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -12956,7 +12956,7 @@
  },
  {
   "id": "cultivators-keen-eye",
-  "name": "Земледелец' острый глаз",
+  "name": "Острый глаз земледельца",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -13124,7 +13124,7 @@
  },
  {
   "id": "infused-with-belkzens-might",
-  "name": "Насыщенный белкзен' мощь",
+  "name": "Насыщенная мощь белкзена",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -13132,7 +13132,7 @@
  },
  {
   "id": "inscribed-with-elders-deeds",
-  "name": "Начертанный старейшины' деяния",
+  "name": "Начертанные деяния старейшины",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -13196,7 +13196,7 @@
  },
  {
   "id": "avoid-fates-gaze",
-  "name": "Избегание судьба' взор",
+  "name": "Избегание взор судьбы",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -13724,7 +13724,7 @@
  },
  {
   "id": "lightning-rings-overcharge",
-  "name": "Молния кольца' перегрузка",
+  "name": "Молния перегрузка кольца",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -13740,7 +13740,7 @@
  },
  {
   "id": "tempest-clouds-speed",
-  "name": "Буря облако' скорость",
+  "name": "Скорость грозового облака",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -13748,7 +13748,7 @@
  },
  {
   "id": "familiars-resolve",
-  "name": "Фамильяр' решимость",
+  "name": "Решимость фамильяра",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -13756,7 +13756,7 @@
  },
  {
   "id": "phoenixs-flight",
-  "name": "Феникс' полёт",
+  "name": "Фениксовый полёт",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -13764,7 +13764,7 @@
  },
  {
   "id": "lightning-rings-intervention",
-  "name": "Молния кольца' вмешательство",
+  "name": "Молния вмешательство кольца",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -13780,7 +13780,7 @@
  },
  {
   "id": "golden-dragons-bounty",
-  "name": "Золотой драконий' награда",
+  "name": "Золотая драконья награда",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -13956,7 +13956,7 @@
  },
  {
   "id": "pact-of-huldras-renewal",
-  "name": "Договор хульдра' обновление",
+  "name": "Договор обновление хульдры",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -14236,7 +14236,7 @@
  },
  {
   "id": "heralds-strike",
-  "name": "Глашатай' удар",
+  "name": "Удар глашатая",
   "kind": "archetype",
   "level": 20,
   "classes": [],
@@ -14396,7 +14396,7 @@
  },
  {
   "id": "heralds-weapon",
-  "name": "Глашатай' оружие",
+  "name": "Оружие глашатая",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -14604,7 +14604,7 @@
  },
  {
   "id": "benefactors-wings",
-  "name": "Благодетель' крылья",
+  "name": "Крылья благодетеля",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -14764,7 +14764,7 @@
  },
  {
   "id": "fortunes-favor",
-  "name": "Удача' милость",
+  "name": "Удачливая милость",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -14772,7 +14772,7 @@
  },
  {
   "id": "prophets-lockbox",
-  "name": "Пророк' сейф",
+  "name": "Сейф пророка",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -14980,7 +14980,7 @@
  },
  {
   "id": "lions-magic",
-  "name": "Лев' магия",
+  "name": "Львиная магия",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -14988,7 +14988,7 @@
  },
  {
   "id": "spys-countermeasures",
-  "name": "Шпион' противомеры",
+  "name": "Противомеры шпиона",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -15660,7 +15660,7 @@
  },
  {
   "id": "in-the-hordes-grip",
-  "name": "Орда' хват",
+  "name": "Хват орды",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -15908,7 +15908,7 @@
  },
  {
   "id": "animists-power",
-  "name": "Анимист' сила",
+  "name": "Сила анимиста",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -16196,7 +16196,7 @@
  },
  {
   "id": "thorn-in-hells-side",
-  "name": "Шип ад' сторона",
+  "name": "Шип адская сторона",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -16236,7 +16236,7 @@
  },
  {
   "id": "hellbreakers-resolve",
-  "name": "Крушитель ада' решимость",
+  "name": "Крушитель решимость ада",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -16268,7 +16268,7 @@
  },
  {
   "id": "hells-bane",
-  "name": "Ад' погибель",
+  "name": "Адская погибель",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -16396,7 +16396,7 @@
  },
  {
   "id": "reel-em-in",
-  "name": "Катушка'их",
+  "name": "Подсекай",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -16524,7 +16524,7 @@
  },
  {
   "id": "its-not-over",
-  "name": "' не над",
+  "name": "Это ещё не конец",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -16612,7 +16612,7 @@
  },
  {
   "id": "infiltrators-reload",
-  "name": "Лазутчик' перезарядка",
+  "name": "Перезарядка лазутчика",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -16628,7 +16628,7 @@
  },
  {
   "id": "infiltrators-blitz",
-  "name": "Лазутчик' натиск",
+  "name": "Натиск лазутчика",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -16716,7 +16716,7 @@
  },
  {
   "id": "officers-protection",
-  "name": "Офицер' защита",
+  "name": "Защита офицера",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -16780,7 +16780,7 @@
  },
  {
   "id": "legions-aim",
-  "name": "Легион' наводка",
+  "name": "Наводка легиона",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -17060,7 +17060,7 @@
  },
  {
   "id": "orators-filibuster",
-  "name": "Оратор' флибустьер",
+  "name": "Флибустьер оратора",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -17292,7 +17292,7 @@
  },
  {
   "id": "talons-mark",
-  "name": "Коготь' метка",
+  "name": "Метка коготя",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -17380,7 +17380,7 @@
  },
  {
   "id": "hells-armaments",
-  "name": "Ад' вооружение",
+  "name": "Адское вооружение",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -17404,7 +17404,7 @@
  },
  {
   "id": "signifers-sight",
-  "name": "Знаменосец' прицел",
+  "name": "Прицел знаменосца",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -17420,7 +17420,7 @@
  },
  {
   "id": "armigers-protection",
-  "name": "Оруженосец' защита",
+  "name": "Защита оруженосца",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -17564,7 +17564,7 @@
  },
  {
   "id": "norgorbers-secret",
-  "name": "Норгорбер' тайна",
+  "name": "Тайна норгорбера",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -17588,7 +17588,7 @@
  },
  {
   "id": "caydens-freedom",
-  "name": "Кейден' свобода",
+  "name": "Свобода кейдена",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -17596,7 +17596,7 @@
  },
  {
   "id": "iomedaes-valor",
-  "name": "Иомедая' доблесть",
+  "name": "Доблесть иомедой",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -17604,7 +17604,7 @@
  },
  {
   "id": "arodens-innovation",
-  "name": "Ароден' новшество",
+  "name": "Новшество ародена",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -17780,7 +17780,7 @@
  },
  {
   "id": "horselords-bond",
-  "name": "Коневладыка' связь",
+  "name": "Связь коневладыки",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -17940,7 +17940,7 @@
  },
  {
   "id": "harbingers-protection",
-  "name": "Предвестник' защита",
+  "name": "Защита предвестника",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -17964,7 +17964,7 @@
  },
  {
   "id": "harbingers-armament",
-  "name": "Предвестник' вооружение",
+  "name": "Вооружение предвестника",
   "kind": "archetype",
   "level": 8,
   "classes": [],
@@ -18060,7 +18060,7 @@
  },
  {
   "id": "guardians-intercept",
-  "name": "Страж' перехват",
+  "name": "Перехват стража",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -18116,7 +18116,7 @@
  },
  {
   "id": "ships-shadow",
-  "name": "Корабль' теневая",
+  "name": "Теневая корабли",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -18372,7 +18372,7 @@
  },
  {
   "id": "natures-precision",
-  "name": "Природа' точность",
+  "name": "Природная точность",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -18524,7 +18524,7 @@
  },
  {
   "id": "natures-embrace",
-  "name": "Природа' объятие",
+  "name": "Природное объятие",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -18796,7 +18796,7 @@
  },
  {
   "id": "duelists-form",
-  "name": "Дуэлянт' облик",
+  "name": "Облик дуэлянта",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -18812,7 +18812,7 @@
  },
  {
   "id": "aldoris-retort",
-  "name": "Алдори' отповедь",
+  "name": "Отповедь алдори",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -18860,7 +18860,7 @@
  },
  {
   "id": "duelists-edge",
-  "name": "Дуэлянт' грань",
+  "name": "Грань дуэлянта",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -18900,7 +18900,7 @@
  },
  {
   "id": "lesson-of-the-hurricanes-might",
-  "name": "Урок ураган' мощь",
+  "name": "Урок мощь урагана",
   "kind": "archetype",
   "level": 14,
   "classes": [],
@@ -18924,7 +18924,7 @@
  },
  {
   "id": "pupils-guard",
-  "name": "Ученик' стража",
+  "name": "Стража ученика",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -19172,7 +19172,7 @@
  },
  {
   "id": "tillers-aid",
-  "name": "Румпель' помощь",
+  "name": "Помощь румпели",
   "kind": "archetype",
   "level": 10,
   "classes": [],
@@ -19324,7 +19324,7 @@
  },
  {
   "id": "pirates-pet",
-  "name": "Пират' питомец",
+  "name": "Питомец пирата",
   "kind": "archetype",
   "level": 4,
   "classes": [],
@@ -19372,7 +19372,7 @@
  },
  {
   "id": "libertys-devotion",
-  "name": "Свобода' преданность",
+  "name": "Свободная преданность",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -19412,7 +19412,7 @@
  },
  {
   "id": "libertys-promise",
-  "name": "Свобода' обещание",
+  "name": "Свободное обещание",
   "kind": "archetype",
   "level": 6,
   "classes": [],
@@ -19532,7 +19532,7 @@
  },
  {
   "id": "steal-magics-breath",
-  "name": "Кража магия' дыхание",
+  "name": "Кража магического дыхания",
   "kind": "archetype",
   "level": 12,
   "classes": [],
@@ -19612,7 +19612,7 @@
  },
  {
   "id": "devils-wings",
-  "name": "Дьявол' крылья",
+  "name": "Дьявольские крылья",
   "kind": "archetype",
   "level": 16,
   "classes": [],
@@ -19948,7 +19948,7 @@
  },
  {
   "id": "ancestors-transformation",
-  "name": "Предок' превращение",
+  "name": "Превращение предока",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -20398,7 +20398,7 @@
  },
  {
   "id": "mocking-invisibility",
-  "name": "Насмешливый невидимость",
+  "name": "Насмешливая невидимость",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -20438,7 +20438,7 @@
  },
  {
   "id": "colugos-traversal",
-  "name": "Шерстокрыл' прохождение",
+  "name": "Прохождение шерстокрыла",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -20548,7 +20548,7 @@
  },
  {
   "id": "tangle-tongues-wit",
-  "name": "Путаница-язык' остряк",
+  "name": "Остряк путаница-языка",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -20618,7 +20618,7 @@
  },
  {
   "id": "world-protectors-hospitality",
-  "name": "Мир-защитник' гостеприимство",
+  "name": "Гостеприимство мир-защитника",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -20668,7 +20668,7 @@
  },
  {
   "id": "dissolutions-clarity",
-  "name": "Растворение' ясность",
+  "name": "Ясность растворения",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -20748,7 +20748,7 @@
  },
  {
   "id": "dalangs-ally",
-  "name": "Кукловод' союзник",
+  "name": "Союзник кукловода",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -20798,7 +20798,7 @@
  },
  {
   "id": "dissolutions-sovereignty",
-  "name": "Растворение' суверенитет",
+  "name": "Суверенитет растворения",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -20838,7 +20838,7 @@
  },
  {
   "id": "dissolutions-sight",
-  "name": "Растворение' прицел",
+  "name": "Прицел растворения",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -20848,7 +20848,7 @@
  },
  {
   "id": "spirit-coffin",
-  "name": "Духовный гроб",
+  "name": "Гроб духа",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -20858,7 +20858,7 @@
  },
  {
   "id": "crocodiles-twin",
-  "name": "Крокодил' двойной",
+  "name": "Двойник крокодила",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -21392,7 +21392,7 @@
  },
  {
   "id": "youre-so-cute",
-  "name": "'касательно так милый!",
+  "name": "Какой ты милый!",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -21618,7 +21618,7 @@
  },
  {
   "id": "the-moon-weavers-art",
-  "name": "Луна ткач' искусство",
+  "name": "Луна искусство ткача",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -21668,7 +21668,7 @@
  },
  {
   "id": "travelers-counsel",
-  "name": "Путник' совет",
+  "name": "Совет путника",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -21918,7 +21918,7 @@
  },
  {
   "id": "lifes-blood",
-  "name": "Жизнь' кровь",
+  "name": "Жизненная кровь",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -22068,7 +22068,7 @@
  },
  {
   "id": "shadows-assault",
-  "name": "Теневая' натиск",
+  "name": "Теневой натиск",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -23120,7 +23120,7 @@
  },
  {
   "id": "onis-mask",
-  "name": "Они' маска",
+  "name": "Маска они",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -23148,7 +23148,7 @@
  },
  {
   "id": "jotuns-grasp",
-  "name": "Ётун' хватка",
+  "name": "Хватка ётуна",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -23158,7 +23158,7 @@
  },
  {
   "id": "jotuns-battle-stance",
-  "name": "Ётун' боевой стойка",
+  "name": "Боевой стойка ётуна",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -23178,7 +23178,7 @@
  },
  {
   "id": "caretakers-restoration",
-  "name": "Смотритель' восстановление",
+  "name": "Восстановление смотрителя",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -23218,7 +23218,7 @@
  },
  {
   "id": "caretakers-intuition",
-  "name": "Смотритель' интуиция",
+  "name": "Интуиция смотрителя",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -23238,7 +23238,7 @@
  },
  {
   "id": "jotuns-eyes",
-  "name": "Ётун' глаза",
+  "name": "Глаза ётуна",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -23248,7 +23248,7 @@
  },
  {
   "id": "jotuns-restoration",
-  "name": "Ётун' восстановление",
+  "name": "Восстановление ётуна",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -23278,7 +23278,7 @@
  },
  {
   "id": "iivlars-boundary-break",
-  "name": "Иивлар' граница слом",
+  "name": "Граница слом иивлар",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -23288,7 +23288,7 @@
  },
  {
   "id": "jotuns-transposition",
-  "name": "Ётун' перестановка",
+  "name": "Перестановка ётуна",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -23298,7 +23298,7 @@
  },
  {
   "id": "jotuns-heart",
-  "name": "Ётун' сердце",
+  "name": "Сердце ётуна",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -23318,7 +23318,7 @@
  },
  {
   "id": "iivlars-deflection",
-  "name": "Иивлар' отклонение",
+  "name": "Отклонение иивлар",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -23348,7 +23348,7 @@
  },
  {
   "id": "jotuns-boost",
-  "name": "Ётун' усиление",
+  "name": "Усиление ётуна",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -23848,7 +23848,7 @@
  },
  {
   "id": "speakers-defense",
-  "name": "Оратор' защита",
+  "name": "Защита оратора",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -24130,7 +24130,7 @@
  },
  {
   "id": "nalinivatis-light",
-  "name": "Налинивати' лёгкий",
+  "name": "Лёгкий налинивати",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -24268,7 +24268,7 @@
  },
  {
   "id": "crafters-instinct",
-  "name": "Ремесленник' инстинкт",
+  "name": "Инстинкт ремесленника",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -24388,7 +24388,7 @@
  },
  {
   "id": "swimmers-guidance",
-  "name": "Пловец' наставление",
+  "name": "Наставление пловца",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -24418,7 +24418,7 @@
  },
  {
   "id": "oceans-bite",
-  "name": "Океан' укус",
+  "name": "Океанский укус",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -24428,7 +24428,7 @@
  },
  {
   "id": "appraisers-eye",
-  "name": "Оценщик’ глаз",
+  "name": "Глаз оценщика",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -24458,7 +24458,7 @@
  },
  {
   "id": "songs-of-the-seas-wrath",
-  "name": "Песни море' гнев",
+  "name": "Гнев песен моря",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -24468,7 +24468,7 @@
  },
  {
   "id": "krakens-call",
-  "name": "Кракен' зов",
+  "name": "Зов кракена",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -24708,7 +24708,7 @@
  },
  {
   "id": "mud-boats-passage",
-  "name": "Грязь лодка' проход",
+  "name": "Грязь проход лодки",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -24758,7 +24758,7 @@
  },
  {
   "id": "benefactors-strike",
-  "name": "Благодетель' удар",
+  "name": "Удар благодетеля",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -24798,7 +24798,7 @@
  },
  {
   "id": "benefactors-resistance",
-  "name": "Благодетель' устойчивость",
+  "name": "Устойчивость благодетеля",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -24818,7 +24818,7 @@
  },
  {
   "id": "hoarders-craw",
-  "name": "Скопидом' зоб",
+  "name": "Зоб скопидома",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -24838,7 +24838,7 @@
  },
  {
   "id": "kaijus-footfalls",
-  "name": "Кайдзю' поступи",
+  "name": "Поступи кайдзю",
   "kind": "ancestry",
   "level": 13,
   "classes": [],

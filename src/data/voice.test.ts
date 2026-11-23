@@ -66,7 +66,7 @@ describe("починка перевода и честные отметки", () 
     console.log("voice-report", JSON.stringify(report));
     expect(report.fixedDurations).toBeGreaterThan(40);
     expect(report.fixedBrokenQuotes).toBeGreaterThan(200);
-    expect(report.fixedApostropheNames).toBeGreaterThan(100);
+    expect(report.fixedApostropheNames).toBe(0);
     expect(report.fixedMonsterNames).toBe(0);
     expect(report.remainingMonsterTextsWithEnglish).toBeGreaterThan(0);
   });

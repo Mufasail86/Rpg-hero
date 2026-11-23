@@ -2,7 +2,7 @@
   "source": "Foundry pf2e class packs, ORC, plus Archives of Nethys class pages fetched 2026-10-16 for the spells-per-day tables and for perception and weapon ranks whose feature files were missing.",
   "classes": {
     "alchemist": {
-      "name": "Alchemist",
+      "name": "Алхимик",
       "hp": 8,
       "spellcasting": 0,
       "start": {
@@ -140,7 +140,7 @@
       "notes": []
     },
     "barbarian": {
-      "name": "Barbarian",
+      "name": "Варвар",
       "hp": 12,
       "spellcasting": 0,
       "start": {
@@ -285,7 +285,7 @@
       "notes": []
     },
     "bard": {
-      "name": "Bard",
+      "name": "Бард",
       "hp": 8,
       "spellcasting": 1,
       "start": {
@@ -416,7 +416,7 @@
       "notes": []
     },
     "champion": {
-      "name": "Champion",
+      "name": "Поборник",
       "hp": 10,
       "spellcasting": 1,
       "start": {
@@ -584,7 +584,7 @@
       "notes": []
     },
     "cleric": {
-      "name": "Cleric",
+      "name": "Жрец",
       "hp": 8,
       "spellcasting": 1,
       "start": {
@@ -787,7 +787,7 @@
       }
     },
     "druid": {
-      "name": "Druid",
+      "name": "Друид",
       "hp": 8,
       "spellcasting": 1,
       "start": {
@@ -909,7 +909,7 @@
       "notes": []
     },
     "fighter": {
-      "name": "Fighter",
+      "name": "Воин",
       "hp": 10,
       "spellcasting": 0,
       "start": {
@@ -1029,7 +1029,7 @@
       ]
     },
     "investigator": {
-      "name": "Investigator",
+      "name": "Сыщик",
       "hp": 8,
       "spellcasting": 0,
       "start": {
@@ -1181,7 +1181,7 @@
       "notes": []
     },
     "monk": {
-      "name": "Monk",
+      "name": "Монах",
       "hp": 10,
       "spellcasting": 0,
       "start": {
@@ -1341,7 +1341,7 @@
       ]
     },
     "oracle": {
-      "name": "Oracle",
+      "name": "Оракул",
       "hp": 8,
       "spellcasting": 1,
       "start": {
@@ -1471,7 +1471,7 @@
       "notes": []
     },
     "ranger": {
-      "name": "Ranger",
+      "name": "Следопыт",
       "hp": 10,
       "spellcasting": 0,
       "start": {
@@ -1645,7 +1645,7 @@
       "notes": []
     },
     "rogue": {
-      "name": "Rogue",
+      "name": "Плут",
       "hp": 8,
       "spellcasting": 0,
       "start": {
@@ -1799,7 +1799,7 @@
       "notes": []
     },
     "sorcerer": {
-      "name": "Sorcerer",
+      "name": "Чародей",
       "hp": 6,
       "spellcasting": 1,
       "start": {
@@ -1919,7 +1919,7 @@
       "notes": []
     },
     "swashbuckler": {
-      "name": "Swashbuckler",
+      "name": "Сорвиголова",
       "hp": 10,
       "spellcasting": 0,
       "start": {
@@ -2062,7 +2062,7 @@
       "notes": []
     },
     "witch": {
-      "name": "Witch",
+      "name": "Ведьма",
       "hp": 6,
       "spellcasting": 1,
       "start": {
@@ -2184,7 +2184,7 @@
       "notes": []
     },
     "wizard": {
-      "name": "Wizard",
+      "name": "Волшебник",
       "hp": 6,
       "spellcasting": 1,
       "start": {
