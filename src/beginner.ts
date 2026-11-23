@@ -90,6 +90,10 @@ export const STEP_EXPLAIN: Record<StepId, { what: string; example: string }> = {
     what: "Народ — кем герой родился. Он задаёт здоровье, скорость и одну врождённую черту.",
     example: "человек удобен новичкам: мало обязательных штрафов.",
   },
+  heritage: {
+    what: "Наследие — какая именно семья или кровь. Оно не заменяет народ.",
+    example: "у дварфа скальное наследие помогает устоять, когда толкают.",
+  },
   background: {
     what: "Происхождение — жизнь до приключения. Оно даёт навык и чуть поднимает характеристики.",
     example: "стражник или боец уже умеет давить угрозой.",
@@ -127,7 +131,8 @@ export const STEP_EXPLAIN: Record<StepId, { what: string; example: string }> = {
 export const STEP_TERMS: Record<StepId, string[]> = {
   system: ["ac", "dc", "save"],
   name: [],
-  ancestry: ["ancestry", "heritage"],
+  ancestry: ["ancestry"],
+  heritage: ["heritage"],
   background: ["background", "boost"],
   class: ["class", "archetype"],
   abilities: ["ability", "boost"],

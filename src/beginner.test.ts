@@ -81,13 +81,13 @@ describe("выбор народа", () => {
     draft.system = "dnd5e";
     draft.edition = "dnd-2014";
     draft.ancestryId = "human";
-    expect(validateStep(draft, "ancestry")).not.toMatch(/готовых народов нет/);
+    expect(validateStep(draft, "ancestry") ?? "").not.toMatch(/готовых народов нет/);
     const legacy = blankDraft();
     legacy.system = "pf2e";
     legacy.edition = "pf-legacy";
     legacy.ancestryId = "human";
-    expect(validateStep(legacy, "ancestry")).not.toMatch(/готовых народов нет/);
-    expect(validateStep(legacy, "ancestry")).toMatch(/наследие/);
+    expect(validateStep(legacy, "ancestry") ?? "").not.toMatch(/готовых народов нет/);
+    expect(validateStep(legacy, "heritage")).toMatch(/наследие/);
   });
 });
 

@@ -309,12 +309,20 @@ export function QuickStart({ onDone }: { onDone: (character: Character) => void 
 
 export function LevelWizard({
   level,
+  next,
+  gained,
+  choose,
+  stars,
   open,
   optionsFor,
   onPick,
   advice,
 }: {
   level: number;
+  next?: number;
+  gained?: string[];
+  choose?: { id: string; label: string }[];
+  stars?: { id: string; reason: string }[];
   open: { id: string; level: number; source: string; label: string }[];
   optionsFor: (slot: { id: string; level: number; source: string; label: string }) => { pick: string; name: string }[];
   onPick: (slot: { id: string; level: number; source: string; label: string }, pick: string) => void;
@@ -322,16 +330,33 @@ export function LevelWizard({
 }) {
   const here = open.filter((slot) => slot.level === level);
   const slot = here[0] ?? open[0];
+  const target = next ?? level;
   return (
     <section className="card stack" data-testid="level-wizard">
-      <h2>Что нового на этом уровне</h2>
-      {!slot && <p>Новых выборов нет. Когда придёт опыт, нажмите «Повысить уровень».</p>}
+      <h2>С {level} на {target} уровень</h2>
+      <p className="kicker">Само приходит</p>
+      <ul data-testid="level-gains">
+        {(gained ?? ["Хиты растут вместе с уровнем."]).map((line) => <li key={line}>{line}</li>)}
+      </ul>
+      <p className="kicker">Надо выбрать</p>
+      <ul data-testid="level-choices">
+        {(choose ?? []).length === 0 && <li>Новых выборов на этом уровне нет.</li>}
+        {(choose ?? []).map((row) => <li key={row.id}>{row.label}</li>)}
+      </ul>
+      {stars && stars.length > 0 && (
+        <div data-testid="level-stars">
+          {stars.map((row) => (
+            <p key={row.id} className="tiny">★ Почему советуем: {row.reason}</p>
+          ))}
+        </div>
+      )}
+      {!slot && <p className="tiny">Кнопки выбора появятся, когда уровень уже поднят и слот ещё пуст. Сами они ничего не отмечают.</p>}
       {slot && (
         <>
           <p>{slotTitle(slot.source, slot.label)}. {here.length > 1 ? `Таких шагов сейчас ${here.length}. Этот — первый.` : "Один шаг."}</p>
           {wizardOptions(slot.source, optionsFor(slot), advice).map((option, index) => (
             <button key={option.pick} type="button" className="advise-row" data-testid={`wizard-${slot.id}`} data-advised={option.advised || index === 0 ? "1" : "0"} onClick={() => onPick(slot, option.pick)}>
-              <b>{option.advised || index === 0 ? "Советуем. " : ""}{option.name}</b>
+              <b>{option.advised || index === 0 ? "★ " : ""}{option.name}</b>
               <small>{option.reason}</small>
             </button>
           ))}

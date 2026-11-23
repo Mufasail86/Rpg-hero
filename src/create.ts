@@ -52,12 +52,13 @@ import {
 import { PF_STANDARD, POINT_BUY_BUDGET, armorClass, hpMax, pointBuySpent, refreshSlots, sameMultiset } from "./rules";
 import { STANDARD_ARRAY } from "./data/dnd5e";
 
-export type StepId = "system" | "name" | "ancestry" | "background" | "class" | "abilities" | "skills" | "feats" | "gear" | "spells" | "review";
+export type StepId = "system" | "name" | "ancestry" | "heritage" | "background" | "class" | "abilities" | "skills" | "feats" | "gear" | "spells" | "review";
 
 export const STEP_TITLE: Record<StepId, string> = {
   system: "Система",
   name: "Имя",
   ancestry: "Народ",
+  heritage: "Наследие",
   background: "Происхождение",
   class: "Класс",
   abilities: "Характеристики",
@@ -72,6 +73,7 @@ export const STEP_HINT: Record<StepId, string> = {
   system: "Сначала игра. Редакции не смешиваются.",
   name: "Имя можно сменить потом на листе.",
   ancestry: "Народ задаёт хиты, скорость и черту.",
+  heritage: "Наследие уточняет народ и не заменяет его.",
   background: "Происхождение — прошлое до приключения.",
   class: "Класс решает, чем герой занят в бою.",
   abilities: "Выберите один способ и доберите числа.",
@@ -86,10 +88,15 @@ const m = (d: Draft, key: string) => d.multi[key] ?? [];
 const c = (d: Draft, key: string) => d.choices[key] ?? "";
 
 export function stepsFor(d: Draft): StepId[] {
-  const steps: StepId[] = ["system", "name", "ancestry", "background", "class", "abilities", "skills", "feats", "gear"];
+  const steps: StepId[] = ["system", "name", "ancestry", "heritage", "background", "class", "abilities", "skills", "feats", "gear"];
   if (needsSpells(d)) steps.push("spells");
   steps.push("review");
   return steps;
+}
+
+/** Шаг закрыт, пока не закрыт любой предыдущий. Так нельзя перескочить народ и сразу взять класс. */
+export function stepLocked(draft: Draft, steps: StepId[], index: number): boolean {
+  return steps.slice(0, index).some((id) => validateStep(draft, id) != null);
 }
 
 export function needsSpells(d: Draft): boolean {
@@ -108,6 +115,7 @@ export function validateStep(d: Draft, step: StepId): string | null {
   if (!d.system) return "Сначала выберите систему.";
   if (step === "name") return d.name.trim() ? null : "Введите имя персонажа.";
   if (step === "ancestry") return validateAncestry(d);
+  if (step === "heritage") return validateHeritage(d);
   if (step === "background") return validateBackground(d);
   if (step === "class") return validateClass(d);
   if (step === "abilities") {
@@ -145,15 +153,26 @@ function validateAncestry(d: Draft): string | null {
   if (!editionOpen(d) && d.ancestryId !== "custom" && !knownAncestry(d)) {
     return "В этой редакции этого народа нет. Выберите человека из открытого списка, свою запись или другую редакцию.";
   }
-  if (d.versatileHeritageId) {
-    if (d.versatileHeritageId === "umbral") return "«Сумеречный» — наследие гнома, не универсальное.";
-    if (!versatileIds().includes(d.versatileHeritageId)) return "Такого универсального наследия в пакете нет.";
-  }
   if (!d.ancestryId) return "Выберите народ или свою запись.";
   if (d.ancestryId === "custom") {
     if (!d.customAncestry.name.trim()) return "Назовите свой народ.";
     if (!Number(d.customAncestry.speed)) return "Укажите скорость числом.";
     return null;
+  }
+  if (d.system === "dnd5e") {
+    const species = SPECIES.find((s) => s.id === d.ancestryId);
+    if (!species) return "Неизвестный народ.";
+    return null;
+  }
+  return null;
+}
+
+function validateHeritage(d: Draft): string | null {
+  if (!d.ancestryId) return "Сначала выберите народ.";
+  if (d.ancestryId === "custom") return null;
+  if (d.versatileHeritageId) {
+    if (d.versatileHeritageId === "umbral") return "«Сумеречный» — наследие гнома, не универсальное.";
+    if (!versatileIds().includes(d.versatileHeritageId)) return "Такого универсального наследия в пакете нет.";
   }
   if (d.system === "dnd5e") {
     const species = SPECIES.find((s) => s.id === d.ancestryId);

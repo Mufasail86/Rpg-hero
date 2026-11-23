@@ -9,6 +9,7 @@ import { fmt, uid } from "../types";
 import { hpMax, refreshSlots, spellCountText } from "../rules";
 import { useCompact } from "./common";
 import { PickList } from "./feat-picker";
+import { levelAdvice } from "../data/build-advice";
 import { LevelWizard } from "./beginner";
 import { advicePicks, planForCharacter } from "./skill-guide";
 
@@ -205,6 +206,14 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
       <p className="lead">Уровень {character.level}, опыт {character.xp} / 1000. Сначала один шаг. Весь план по уровням открывается ниже.</p>
       <LevelWizard
         level={character.level}
+        next={Math.min(20, character.level + 1)}
+        gained={["Хиты растут на хиты класса и модификатор Телосложения."]}
+        choose={character.level >= 20 ? [] : slotsForProgress(progress, character.level + 1).filter((slot) => slot.level === character.level + 1)}
+        stars={[
+          ...(levelAdvice("pf-remaster", progress.classId, Math.min(20, character.level + 1))?.skills ?? []),
+          ...(levelAdvice("pf-remaster", progress.classId, Math.min(20, character.level + 1))?.feats ?? []),
+          ...(levelAdvice("pf-remaster", progress.classId, Math.min(20, character.level + 1))?.archetypes ?? []),
+        ]}
         open={open}
         optionsFor={(slot) => {
           const taken = new Set(progress.choices.map((choice) => choice.pick));

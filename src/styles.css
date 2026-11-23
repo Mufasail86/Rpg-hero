@@ -309,6 +309,11 @@ textarea { min-height: 88px; resize: vertical; }
 .portrait-home { display: flex; gap: 12px; align-items: center; }
 .system-card { min-height: 120px; text-align: left; padding: 16px; }
 .system-card b { font-size: 1.2rem; display: block; }
+.step-rail { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 4px; }
+.step-pill { flex: 0 0 auto; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: inherit; }
+.step-pill[data-state="current"] { background: var(--gold-2); border-color: var(--gold); color: var(--gold); }
+.step-pill[data-state="done"] { border-color: var(--teal); }
+.step-pill[data-state="locked"] { opacity: 0.45; }
 .progress { height: 6px; background: #31404f; border-radius: 99px; overflow: hidden; }
 .progress i { display: block; height: 100%; background: var(--teal); }
 

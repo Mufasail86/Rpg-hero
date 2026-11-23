@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { VERSATILE } from "../data/versatile";
 import { CALLINGS, COMPANIONS, englishName } from "../data/roster";
 import { featChoices, featInfo } from "../data/pf-index";
@@ -26,6 +26,7 @@ import {
   spellBudget,
   STEP_HINT,
   STEP_TITLE,
+  stepLocked,
   stepsFor,
   STYLE_FEATS,
   SKILL_FEATS,
@@ -48,6 +49,7 @@ import {
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
+import { adviceReason } from "../data/build-advice";
 import { ancestryAdvice, backgroundAdvice, featAdvice, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
 import { planForDraft, SkillPicks } from "./skill-guide";
 import { skillTitle } from "../skills/picks";
@@ -176,9 +178,29 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
           </div>
         </div>
       </header>
-      <div className="progress" style={{ margin: "0 16px" }}>
+      <div className="progress" data-testid="step-progress" style={{ margin: "0 16px" }}>
         <i style={{ width: `${((index + 1) / steps.length) * 100}%` }} />
       </div>
+      <nav className="step-rail" data-testid="step-rail" aria-label="Шаги создания">
+        {steps.map((id, itemIndex) => {
+          const locked = stepLocked(draft, steps, itemIndex);
+          const done = !locked && itemIndex < index && !validateStep(draft, id);
+          const state = itemIndex === index ? "current" : locked ? "locked" : done ? "done" : "open";
+          return (
+            <button
+              key={id}
+              type="button"
+              className="step-pill"
+              data-testid={`step-${id}`}
+              data-state={state}
+              disabled={locked}
+              onClick={() => setStepIndex(itemIndex)}
+            >
+              {itemIndex + 1}. {STEP_TITLE[id]}
+            </button>
+          );
+        })}
+      </nav>
       <main className="screen pad-dock stack">
         <StepExplain step={step} />
         {(step === "abilities" || step === "skills" || step === "feats" || step === "spells" || step === "gear") && (
@@ -198,7 +220,8 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
             <input data-testid="character-name" value={draft.name} autoComplete="off" onChange={(event) => update({ name: event.target.value })} />
           </label>
         )}
-        {step === "ancestry" && <AncestryStep draft={draft} update={update} setChoice={setChoice} toggleMulti={toggleMulti} />}
+        {step === "ancestry" && <section className="card stack" data-testid="step-card"><AncestryStep draft={draft} update={update} /></section>}
+        {step === "heritage" && <section className="card stack" data-testid="step-card"><HeritageStep draft={draft} update={update} setChoice={setChoice} toggleMulti={toggleMulti} /></section>}
         {step === "background" && <BackgroundStep draft={draft} update={update} setChoice={setChoice} />}
         {step === "class" && <ClassStep draft={draft} update={update} setChoice={setChoice} />}
         {step === "abilities" && <AbilityStep draft={draft} update={update} setChoice={setChoice} toggleMulti={toggleMulti} />}
@@ -253,7 +276,7 @@ function SystemStep({
       <figure className="figure-card">
         <img src={artSrc(ART.castle)} alt="Ночной замок, свой рисунок" />
       </figure>
-      <p className="lead">Выберите игру и редакцию. Дальше шаги идут по порядку: имя, народ, происхождение, класс, числа, навыки, черты, вещи.</p>
+      <p className="lead">Выберите игру и редакцию. Дальше шаги идут по порядку: имя, народ, наследие, происхождение, класс, числа, навыки, черты, вещи. Закрытый шаг не открыть, пока предыдущий не закончен.</p>
       <p className="tiny">Характеристика, навык, черта и владение — разные слова. <Info title="Как читать лист" text="Характеристика — Сила, Ловкость, Телосложение, Интеллект, Мудрость или Харизма. Навык — подготовка в одном деле. Черта — отдельное правило. Владение — бонус за обучение. Если на листе уже +7, к кости к20 прибавьте только 7. к20 — двадцатигранная кость, 2к6 — две шестигранные. СЛ — сложность, КБ — защита, ПЗ — здоровье. КБ и СЛ сами не бросают." /></p>
       <Choice
         id="dnd5e"
@@ -341,26 +364,15 @@ function UnfilledNote({ edition, ancestry = false }: { edition: RulesEdition; an
 function AncestryStep({
   draft,
   update,
-  setChoice,
-  toggleMulti,
 }: {
   draft: Draft;
   update: (partial: Partial<Draft>) => void;
-  setChoice: (key: string, value: string) => void;
-  toggleMulti: (key: string, id: string, max: number) => void;
 }) {
   const [query, setQuery] = useState("");
-  const followRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!draft.ancestryId) return;
-    followRef.current?.scrollIntoView({ block: "start" });
-  }, [draft.ancestryId]);
   if (draft.system === "dnd5e") {
     const edition = resolveEdition("dnd5e", draft.edition);
-    const species = SPECIES.find((item) => item.id === draft.ancestryId);
     const people = ruSort(SPECIES, (item) => item.name);
     const { recommended, all } = peopleSplit(ancestryAdvice("dnd5e"), people, query);
-    const follow = species || draft.ancestryId === "custom";
     return (
       <>
         {!filledEdition(edition) && <UnfilledNote edition={edition} ancestry />}
@@ -371,48 +383,7 @@ function AncestryStep({
           <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
         </div>
-        {follow && (
-          <div ref={followRef} data-testid="ancestry-follow">
-            {species?.lineage && (
-              <>
-                <p className="kicker">Наследие</p>
-                {species.lineage.map((item) => (
-                  <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.choices.lineage === item.id} onPick={() => setChoice("lineage", item.id)} />
-                ))}
-              </>
-            )}
-            {species && species.id !== "dragonborn" && species.id !== "goliath" && species.lineage && (
-              <AbilityRow label="Характеристика заклинаний наследия" value={draft.choices.lineageAbility ?? ""} allowed={["int", "wis", "cha"]} onPick={(ability) => setChoice("lineageAbility", ability)} />
-            )}
-            {species?.sizeChoice && (
-              <div className="seg">
-                {["Средний", "Малый"].map((size) => (
-                  <button key={size} type="button" className={`pill ${draft.choices.size === size ? "on" : ""}`} data-testid={`opt-size-${size}`} onClick={() => setChoice("size", size)}>
-                    {size}
-                  </button>
-                ))}
-              </div>
-            )}
-            {species?.skillChoice && (
-              <>
-                <p className="kicker">Острые чувства</p>
-                {species.skillChoice.map((id) => {
-                  const skill = SK5.find((item) => item.id === id);
-                  return skill ? <Choice key={id} id={id} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.elfSkill === id} onPick={() => setChoice("elfSkill", id)} /> : null;
-                })}
-              </>
-            )}
-            {species?.originFeat && (
-              <>
-                <p className="kicker">Навык человека</p>
-                {SK5.map((skill) => (
-                  <Choice key={skill.id} id={`human-${skill.id}`} name={skill.name} hint={ABILITY_SHORT[skill.ability]} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
-                ))}
-              </>
-            )}
-            {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
-          </div>
-        )}
+        {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
         <p className="kicker">Все народы</p>
         <div className="portrait-grid">
         {all.map((item) => (
@@ -425,8 +396,6 @@ function AncestryStep({
   }
 
   const edition = resolveEdition("pf2e", draft.edition);
-  const ancestry = ANCESTRIES.find((item) => item.id === draft.ancestryId);
-  const free = !ancestry || ancestry.boosts.length === 0 || draft.choices.ancestryMode === "free" || draft.ancestryId === "custom";
   const people = ruSort(ANCESTRIES, (item) => item.name);
   const { recommended, all } = peopleSplit(ancestryAdvice("pf2e"), people, query, (item) => englishName(item.id));
   return (
@@ -439,50 +408,7 @@ function AncestryStep({
         <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       </div>
-      {(ancestry || draft.ancestryId === "custom") && (
-        <div ref={followRef} data-testid="ancestry-follow">
-      {ancestry && (
-        <>
-          <p className="kicker">Наследие</p>
-          {ancestry.heritages.map((item) => (
-            <Choice key={item.id} id={item.id} name={item.name} info={item.info} short={item.short} on={draft.heritageId === item.id} onPick={() => update({ heritageId: item.id })} />
-          ))}
-          {ancestry.boosts.length > 0 && (
-            <div className="seg">
-              <button type="button" className={`pill ${draft.choices.ancestryMode !== "free" ? "on" : ""}`} onClick={() => setChoice("ancestryMode", "listed")}>
-                Повышения из списка
-              </button>
-              <button type="button" className={`pill ${draft.choices.ancestryMode === "free" ? "on" : ""}`} onClick={() => setChoice("ancestryMode", "free")}>
-                Два свободных, без изъяна
-              </button>
-            </div>
-          )}
-          {!free && (
-            <AbilityRow label="Свободное повышение народа" value={draft.choices.ancFree ?? ""} blocked={ancestry.boosts} onPick={(ability) => setChoice("ancFree", ability)} />
-          )}
-          {free && draft.ancestryId !== "custom" && (
-            <MultiAbilities group="anc" label="Два свободных повышения" picked={draft.multi.ancestryBoosts ?? []} max={2} onToggle={(ability) => toggleMulti("ancestryBoosts", ability, 2)} />
-          )}
-          <p className="kicker">Универсальное наследие</p>
-          <p className="tiny">Оно складывается с народом и обычным наследием и не заменяет их. Наследие гнома «Сумеречный» — это тёмное зрение, сюда оно не подставляется.</p>
-          <Choice id="versatile-none" name="Без универсального наследия" info="Народ и его обычное наследие остаются единственными. Универсальный слой не выбран." on={draft.versatileHeritageId === ""} onPick={() => update({ versatileHeritageId: "" })} />
-          {VERSATILE.length === 0 && <p data-testid="versatile-empty">В открытых книгах ремастера, которые уже заведены, универсальных наследий ещё нет. Выбрать нечего, и чужой список не подмешивается.</p>}
-          {ruSort(VERSATILE, (item) => item.name).map((item) => (
-            <Choice key={item.id} id={item.id} name={item.name} hint={item.originalName} info={item.info} short={item.short} on={draft.versatileHeritageId === item.id} onPick={() => update({ versatileHeritageId: item.id })} />
-          ))}
-          {draft.heritageId === "skilled" && (
-            <>
-              <p className="kicker">Навык умелого наследия</p>
-              {SK2.map((skill) => (
-                <Choice key={skill.id} id={`h2-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
-              ))}
-            </>
-          )}
-        </>
-      )}
       {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
-        </div>
-      )}
       <p className="kicker">Все народы</p>
       <div className="portrait-grid">
       {all.map((item) => (
@@ -506,6 +432,116 @@ function CustomAncestry({ draft, update, speedLabel }: { draft: Draft; update: (
       <label className="field"><span>Размер</span><input value={custom.size} onChange={(event) => set("size", event.target.value)} /></label>
       {draft.system === "pf2e" && <label className="field"><span>Хиты народа</span><input inputMode="numeric" value={custom.hp} onChange={(event) => set("hp", event.target.value)} /></label>}
       <label className="field"><span>Как это работает</span><textarea value={custom.info} onChange={(event) => set("info", event.target.value)} /></label>
+    </div>
+  );
+}
+
+function advisedLine(draft: Draft, id: string): string | undefined {
+  if (!draft.system || !draft.classId) return;
+  const edition = resolveEdition(draft.system, draft.edition);
+  const reason = adviceReason(edition, draft.classId, 1, id);
+  return reason ? `★ Почему советуем: ${reason}` : undefined;
+}
+
+function HeritageStep({
+  draft,
+  update,
+  setChoice,
+  toggleMulti,
+}: {
+  draft: Draft;
+  update: (partial: Partial<Draft>) => void;
+  setChoice: (key: string, value: string) => void;
+  toggleMulti: (key: string, id: string, max: number) => void;
+}) {
+  if (!draft.ancestryId) return <p>Сначала выберите народ. Этот шаг закрыт, пока народ не выбран.</p>;
+  if (draft.ancestryId === "custom") return <p>У своей записи отдельного наследия нет. Можно идти дальше.</p>;
+  if (draft.system === "dnd5e") {
+    const species = SPECIES.find((item) => item.id === draft.ancestryId);
+    if (!species) return <p>Этот народ в списке не найден.</p>;
+    const plain = !species.lineage && !species.sizeChoice && !species.skillChoice && !species.originFeat;
+    return (
+      <div data-testid="heritage-list">
+        {plain && <p>У этого вида отдельного наследия нет. Можно идти дальше.</p>}
+        {species.lineage && (
+          <>
+            <p className="kicker">Наследие</p>
+            {species.lineage.map((item) => (
+              <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.choices.lineage === item.id} onPick={() => setChoice("lineage", item.id)} />
+            ))}
+          </>
+        )}
+        {species.id !== "dragonborn" && species.id !== "goliath" && species.lineage && (
+          <AbilityRow label="Характеристика заклинаний наследия" value={draft.choices.lineageAbility ?? ""} allowed={["int", "wis", "cha"]} onPick={(ability) => setChoice("lineageAbility", ability)} />
+        )}
+        {species.sizeChoice && (
+          <div className="seg">
+            {["Средний", "Малый"].map((size) => (
+              <button key={size} type="button" className={`pill ${draft.choices.size === size ? "on" : ""}`} data-testid={`opt-size-${size}`} onClick={() => setChoice("size", size)}>
+                {size}
+              </button>
+            ))}
+          </div>
+        )}
+        {species.skillChoice && (
+          <>
+            <p className="kicker">Острые чувства</p>
+            {species.skillChoice.map((id) => {
+              const skill = SK5.find((item) => item.id === id);
+              return skill ? <Choice key={id} id={id} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.elfSkill === id} onPick={() => setChoice("elfSkill", id)} /> : null;
+            })}
+          </>
+        )}
+        {species.originFeat && (
+          <>
+            <p className="kicker">Навык человека</p>
+            {SK5.map((skill) => (
+              <Choice key={skill.id} id={`human-${skill.id}`} name={skill.name} hint={ABILITY_SHORT[skill.ability]} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
+            ))}
+          </>
+        )}
+      </div>
+    );
+  }
+  const ancestry = ANCESTRIES.find((item) => item.id === draft.ancestryId);
+  if (!ancestry) return <p>Этот народ в списке не найден.</p>;
+  const free = ancestry.boosts.length === 0 || draft.choices.ancestryMode === "free";
+  return (
+    <div data-testid="heritage-list">
+      <p className="kicker">Наследие</p>
+      {ancestry.heritages.map((item) => (
+        <Choice key={item.id} id={item.id} name={item.name} info={item.info} short={item.short} on={draft.heritageId === item.id} onPick={() => update({ heritageId: item.id })} />
+      ))}
+      {ancestry.boosts.length > 0 && (
+        <div className="seg">
+          <button type="button" className={`pill ${draft.choices.ancestryMode !== "free" ? "on" : ""}`} onClick={() => setChoice("ancestryMode", "listed")}>
+            Повышения из списка
+          </button>
+          <button type="button" className={`pill ${draft.choices.ancestryMode === "free" ? "on" : ""}`} onClick={() => setChoice("ancestryMode", "free")}>
+            Два свободных, без изъяна
+          </button>
+        </div>
+      )}
+      {!free && (
+        <AbilityRow label="Свободное повышение народа" value={draft.choices.ancFree ?? ""} blocked={ancestry.boosts} onPick={(ability) => setChoice("ancFree", ability)} />
+      )}
+      {free && (
+        <MultiAbilities group="anc" label="Два свободных повышения" picked={draft.multi.ancestryBoosts ?? []} max={2} onToggle={(ability) => toggleMulti("ancestryBoosts", ability, 2)} />
+      )}
+      <p className="kicker">Универсальное наследие</p>
+      <p className="tiny">Оно складывается с народом и обычным наследием и не заменяет их.</p>
+      <Choice id="versatile-none" name="Без универсального наследия" info="Народ и его обычное наследие остаются единственными." on={draft.versatileHeritageId === ""} onPick={() => update({ versatileHeritageId: "" })} />
+      {ruSort(VERSATILE, (item) => item.name).map((item) => (
+        <Choice key={item.id} id={item.id} name={item.name} info={item.info} short={item.short} on={draft.versatileHeritageId === item.id} onPick={() => update({ versatileHeritageId: item.id })} />
+      ))}
+      {draft.heritageId === "skilled" && (
+        <>
+          <p className="kicker">Навык умелого наследия</p>
+          {SK2.map((skill) => (
+            <Choice key={skill.id} id={`h2-${skill.id}`} name={skill.name} info={skill.info} short={skill.short} on={draft.choices.humanSkill === skill.id} onPick={() => setChoice("humanSkill", skill.id)} />
+          ))}
+        </>
+      )}
     </div>
   );
 }
@@ -1005,7 +1041,7 @@ function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: st
           id={skill.id}
           name={skill.name}
           hint={fixed.has(skill.id) ? "уже есть" : ABILITY_SHORT[skill.ability]}
-          reason={reason.get(skill.id)}
+          reason={advisedLine(draft, skill.id) ?? reason.get(skill.id)}
           info={skill.info} short={skill.short}
           on={picked.includes(skill.id)}
           onPick={() => {
@@ -1175,18 +1211,24 @@ function FeatStep({
     ...(cls ? featChoices({ kind: "class", classId: cls.id, level: featLevel || undefined }).map((feat) => ({ id: feat.id, name: feat.name, info: featInfo(feat), hint: `Уровень ${feat.level}`, level: feat.level })) : []),
   ];
   const archetypeRows = featChoices({ kind: "archetype", level: archetypeLevel || undefined }).map((feat) => ({ id: feat.id, name: feat.name, info: featInfo(feat), hint: `Уровень ${feat.level}`, level: feat.level }));
+  function mark<T extends { id: string; hint?: string }>(rows: T[]): T[] {
+    return rows.map((row) => {
+      const line = advisedLine(draft, row.id);
+      return line ? { ...row, hint: line } : row;
+    });
+  }
   function remember(row: { name: string; info: string }) {
     update({ customFeats: [...draft.customFeats, { name: row.name, info: row.info }] });
   }
   return (
     <>
       <FeatAdvise draft={draft} setChoice={setChoice} />
-      {draft.heritageId === "skilled" && <p className="tiny">Навык умелого наследия выбирается на шаге народа.</p>}
+      {draft.heritageId === "skilled" && <p className="tiny">Навык умелого наследия выбирается на шаге наследия.</p>}
       <p className="tiny">Черта 1 уровня закрывает слот создания. Черта другого уровня записывается на лист текстом и не подменяет слот 1 уровня.</p>
       <PickList
         title="Черта народа"
         testId="feat-picker"
-        rows={ancestryRows}
+        rows={mark(ancestryRows)}
         selected={draft.choices.ancestryFeat ?? ""}
         level={featLevel}
         onLevel={setFeatLevel}
@@ -1197,7 +1239,7 @@ function FeatStep({
         <PickList
           title="Черта навыка"
           testId="skill-feat-picker"
-          rows={skillRows}
+          rows={mark(skillRows)}
           selected={draft.choices.skillFeat ?? ""}
           level={featLevel}
           onLevel={setFeatLevel}
@@ -1215,7 +1257,7 @@ function FeatStep({
       <PickList
         title="Общие черты"
         testId="general-feat-picker"
-        rows={generalRows}
+        rows={mark(generalRows)}
         selected={draft.choices.generalFeat ?? ""}
         level={featLevel}
         onLevel={setFeatLevel}
@@ -1228,7 +1270,7 @@ function FeatStep({
       <PickList
         title="Черта класса"
         testId="class-feat-picker"
-        rows={classRows}
+        rows={mark(classRows)}
         selected={draft.choices.classFeat ?? ""}
         level={featLevel}
         onLevel={setFeatLevel}
@@ -1242,7 +1284,7 @@ function FeatStep({
       <PickList
         title="Архетипы и посвящения"
         testId="archetype-picker"
-        rows={archetypeRows}
+        rows={mark(archetypeRows)}
         selected={draft.choices.archetype ?? ""}
         level={archetypeLevel}
         onLevel={setArchetypeLevel}

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { EPIC_BOONS, GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } from "../data/dnd5e";
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
-import { describeDndChoice, KNOWN_SUBCLASSES, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
+import { describeDndChoice, KNOWN_SUBCLASSES, proficiencyBonus, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
+import { levelAdvice } from "../data/build-advice";
 import { hpMax, refreshSlots } from "../rules";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
@@ -131,6 +132,18 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
       <p className="lead">Уровень {character.level}. Сначала один шаг того, что нового. Полный список выборов остаётся ниже.</p>
       <LevelWizard
         level={character.level}
+        next={Math.min(20, character.level + 1)}
+        gained={[
+          "Хиты растут: среднее кости плюс Телосложение, не меньше 1.",
+          ...(proficiencyBonus(character.level) !== proficiencyBonus(Math.min(20, character.level + 1))
+            ? [`Бонус мастерства становится ${proficiencyBonus(Math.min(20, character.level + 1))}.`]
+            : []),
+        ]}
+        choose={character.level >= 20 ? [] : slotsForProgress(progress, character.level + 1).filter((slot) => slot.level === character.level + 1)}
+        stars={[
+          ...(levelAdvice(progress.edition ?? "dnd-2024", progress.classId, Math.min(20, character.level + 1))?.skills ?? []),
+          ...(levelAdvice(progress.edition ?? "dnd-2024", progress.classId, Math.min(20, character.level + 1))?.feats ?? []),
+        ]}
         open={open}
         optionsFor={(slot) => optionsFor(slot.source, character)}
         onPick={(slot, pick) => fill(slot, pick)}
