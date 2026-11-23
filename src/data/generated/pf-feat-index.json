@@ -10240,7 +10240,7 @@
  },
  {
   "id": "projectile-snatching",
-  "name": "Снаряд хватание",
+  "name": "Перехват снаряда",
   "kind": "class",
   "level": 8,
   "classes": [

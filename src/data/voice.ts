@@ -237,6 +237,8 @@ const BY_ORIGINAL: Record<string, string> = {
   "River Drake": "Речной дрейк",
   Pixie: "Пикси",
   "Will-o'-Wisp": "Блуждающий огонёк",
+  Owlbear: "Совомедведь",
+  Bandersnatch: "Бандерснэтч",
   "You're Next": "Ты следующий",
   "Can't Fall Here": "Здесь нельзя упасть",
   "You Can't Keep Us Down": "Нас не удержать",

@@ -4048,77 +4048,77 @@
  "callings": [
   {
    "id": "acrobats-calling",
-   "name": "Акробат'с каллинг",
+   "name": "Призвание акробата",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "artisans-calling",
-   "name": "Артисан'с каллинг",
+   "name": "Призвание ремесленника",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "bookkeepers-calling",
-   "name": "Буккипер'с каллинг",
+   "name": "Призвание счетовода",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "caretakers-calling",
-   "name": "Каретакер'с каллинг",
+   "name": "Призвание хранителя",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "demagogues-calling",
-   "name": "Демагогуе'с каллинг",
+   "name": "Призвание демагога",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "guardians-calling",
-   "name": "Гуардиан'с каллинг",
+   "name": "Призвание стража",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "handlers-calling",
-   "name": "Хандлер'с каллинг",
+   "name": "Призвание дрессировщика",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "hunters-calling",
-   "name": "Охотник'с каллинг",
+   "name": "Призвание охотника",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "doomsayers-calling",
-   "name": "Думсаиер'с каллинг",
+   "name": "Призвание вестника погибели",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "dreamers-calling",
-   "name": "Дреамер'с каллинг",
+   "name": "Призвание сновидца",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "runelords-calling",
-   "name": "Рунелорд'с каллинг",
+   "name": "Призвание рунного владыки",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "sagas-calling",
-   "name": "Сага'с каллинг",
+   "name": "Призвание сказания",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "sages-calling",
-   "name": "Саге'с каллинг",
+   "name": "Призвание мудреца",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "thespians-calling",
-   "name": "Теспиан'с каллинг",
+   "name": "Призвание лицедея",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   },
   {
    "id": "thiefs-calling",
-   "name": "Тиеф'с каллинг",
+   "name": "Призвание вора",
    "info": "Мифическое призвание. Из полей: даёт связанную запись, её абзац не скопирован. Наказы и запреты из абзаца книги не переписывались."
   }
  ],
@@ -4126,7 +4126,7 @@
   {
    "id": "anadi",
    "kind": "народ",
-   "name": "Anadi",
+   "name": "Анади",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens The Mwangi Expanse"
@@ -4134,7 +4134,7 @@
   {
    "id": "android",
    "kind": "народ",
-   "name": "Android",
+   "name": "Андроид",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4142,7 +4142,7 @@
   {
    "id": "azarketi",
    "kind": "народ",
-   "name": "Azarketi",
+   "name": "Азаркети",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Absalom, City of Lost Omens"
@@ -4150,7 +4150,7 @@
   {
    "id": "conrasu",
    "kind": "народ",
-   "name": "Conrasu",
+   "name": "Конрасу",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens The Mwangi Expanse"
@@ -4158,7 +4158,7 @@
   {
    "id": "fleshwarp",
    "kind": "народ",
-   "name": "Fleshwarp",
+   "name": "Искажённый плотью",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4166,7 +4166,7 @@
   {
    "id": "ghoran",
    "kind": "народ",
-   "name": "Ghoran",
+   "name": "Горан",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Impossible Lands"
@@ -4174,7 +4174,7 @@
   {
    "id": "goloma",
    "kind": "народ",
-   "name": "Goloma",
+   "name": "Голома",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens The Mwangi Expanse"
@@ -4182,7 +4182,7 @@
   {
    "id": "kashrishi",
    "kind": "народ",
-   "name": "Kashrishi",
+   "name": "Кашриши",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Impossible Lands"
@@ -4190,7 +4190,7 @@
   {
    "id": "kitsune",
    "kind": "народ",
-   "name": "Kitsune",
+   "name": "Кицунэ",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4198,7 +4198,7 @@
   {
    "id": "nagaji",
    "kind": "народ",
-   "name": "Nagaji",
+   "name": "Нагадзи",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Impossible Lands"
@@ -4206,7 +4206,7 @@
   {
    "id": "poppet",
    "kind": "народ",
-   "name": "Poppet",
+   "name": "Кукла",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens The Grand Bazaar"
@@ -4214,7 +4214,7 @@
   {
    "id": "shisk",
    "kind": "народ",
-   "name": "Shisk",
+   "name": "Шиск",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens The Mwangi Expanse"
@@ -4222,7 +4222,7 @@
   {
    "id": "shoony",
    "kind": "народ",
-   "name": "Shoony",
+   "name": "Шуни",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder #153: Life's Long Shadows"
@@ -4230,7 +4230,7 @@
   {
    "id": "skeleton",
    "kind": "народ",
-   "name": "Skeleton",
+   "name": "Скелет",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Book of the Dead"
@@ -4238,7 +4238,7 @@
   {
    "id": "sprite",
    "kind": "народ",
-   "name": "Sprite",
+   "name": "Спрайт",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4246,7 +4246,7 @@
   {
    "id": "vanara",
    "kind": "народ",
-   "name": "Vanara",
+   "name": "Ванара",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Impossible Lands"
@@ -4254,7 +4254,7 @@
   {
    "id": "vishkanya",
    "kind": "народ",
-   "name": "Vishkanya",
+   "name": "Вишканья",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Impossible Lands"
@@ -4262,7 +4262,7 @@
   {
    "id": "kineticist",
    "kind": "класс",
-   "name": "Kineticist",
+   "name": "Кинетик",
    "license": "OGL",
    "remaster": true,
    "title": "Pathfinder Rage of Elements"
@@ -4270,7 +4270,7 @@
   {
    "id": "ardande",
    "kind": "универсальное наследие",
-   "name": "Ardande",
+   "name": "Арданде",
    "license": "OGL",
    "remaster": true,
    "title": "Pathfinder Rage of Elements"
@@ -4278,7 +4278,7 @@
   {
    "id": "beastkin",
    "kind": "универсальное наследие",
-   "name": "Beastkin",
+   "name": "Зверокровный",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4286,7 +4286,7 @@
   {
    "id": "naari",
    "kind": "универсальное наследие",
-   "name": "Naari",
+   "name": "Наари",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4294,7 +4294,7 @@
   {
    "id": "oread",
    "kind": "универсальное наследие",
-   "name": "Oread",
+   "name": "Ореад",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4302,7 +4302,7 @@
   {
    "id": "suli",
    "kind": "универсальное наследие",
-   "name": "Suli",
+   "name": "Сули",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4310,7 +4310,7 @@
   {
    "id": "sylph",
    "kind": "универсальное наследие",
-   "name": "Sylph",
+   "name": "Сильф",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"
@@ -4318,7 +4318,7 @@
   {
    "id": "talos",
    "kind": "универсальное наследие",
-   "name": "Talos",
+   "name": "Талос",
    "license": "OGL",
    "remaster": true,
    "title": "Pathfinder Rage of Elements"
@@ -4326,7 +4326,7 @@
   {
    "id": "undine",
    "kind": "универсальное наследие",
-   "name": "Undine",
+   "name": "Ундина",
    "license": "OGL",
    "remaster": false,
    "title": "Pathfinder Lost Omens Ancestry Guide"

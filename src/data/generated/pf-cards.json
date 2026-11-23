@@ -26891,7 +26891,7 @@
  {
   "id": "spirit-coffin",
   "kind": "feat",
-  "name": "Духовный гроб",
+  "name": "Гроб духа",
   "originalName": "Spirit Coffin",
   "level": 1,
   "actions": "passive",
@@ -50380,7 +50380,7 @@
  {
   "id": "mocking-invisibility",
   "kind": "feat",
-  "name": "Насмешливый невидимость",
+  "name": "Насмешливая невидимость",
   "originalName": "Mocking Invisibility",
   "level": 9,
   "actions": "passive",
@@ -84360,7 +84360,7 @@
  {
   "id": "projectile-snatching",
   "kind": "feat",
-  "name": "Снаряд хватание",
+  "name": "Перехват снаряда",
   "originalName": "Projectile Snatching",
   "level": 8,
   "actions": "passive",
@@ -114744,7 +114744,7 @@
  {
   "id": "force-bolt",
   "kind": "focus",
-  "name": "Снаряд силы",
+  "name": "Силовой снаряд",
   "originalName": "Force Bolt",
   "level": 1,
   "actions": "1",
