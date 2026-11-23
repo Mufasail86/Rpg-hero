@@ -129,7 +129,7 @@
  },
  {
   "id": "pilgrims-token",
-  "name": "Паломник' жетон",
+  "name": "Жетон паломника",
   "kind": "skill",
   "level": 1,
   "classes": [],
@@ -449,7 +449,7 @@
  },
  {
   "id": "crafters-appraisal",
-  "name": "Ремесленник' оценка",
+  "name": "Оценка ремесленника",
   "kind": "skill",
   "level": 1,
   "classes": [],
@@ -1655,7 +1655,7 @@
  },
  {
   "id": "scoundrels-surprise",
-  "name": "Негодяй' неожиданность",
+  "name": "Неожиданность негодяя",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -2015,7 +2015,7 @@
  },
  {
   "id": "avatars-protection",
-  "name": "Воплощение' защита",
+  "name": "Защита воплощения",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -2035,7 +2035,7 @@
  },
  {
   "id": "avatars-audience",
-  "name": "Воплощение' зрители",
+  "name": "Зрители воплощения",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -2105,7 +2105,7 @@
  },
  {
   "id": "deitys-protection",
-  "name": "Божество' защита",
+  "name": "Божественная защита",
   "kind": "class",
   "level": 14,
   "classes": [
@@ -2305,7 +2305,7 @@
  },
  {
   "id": "warpriests-armor",
-  "name": "Боевой жрец' доспех",
+  "name": "Боевой доспех жрца",
   "kind": "class",
   "level": 2,
   "classes": [
@@ -2685,7 +2685,7 @@
  },
  {
   "id": "hierophants-power",
-  "name": "Иерофант' сила",
+  "name": "Сила иерофанта",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -3165,7 +3165,7 @@
  },
  {
   "id": "witchs-armaments",
-  "name": "Ведьма' вооружение",
+  "name": "Ведьмино вооружение",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -3185,7 +3185,7 @@
  },
  {
   "id": "patrons-truth",
-  "name": "Покровитель' правда",
+  "name": "Правда покровителя",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -3195,7 +3195,7 @@
  },
  {
   "id": "witchs-hut",
-  "name": "Ведьма' хижина",
+  "name": "Ведьмина хижина",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -3235,7 +3235,7 @@
  },
  {
   "id": "patrons-presence",
-  "name": "Покровитель' присутствие",
+  "name": "Присутствие покровителя",
   "kind": "class",
   "level": 14,
   "classes": [
@@ -3255,7 +3255,7 @@
  },
  {
   "id": "witchs-broom",
-  "name": "Ведьма' метла",
+  "name": "Ведьмина метла",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -3285,7 +3285,7 @@
  },
  {
   "id": "witchs-communion",
-  "name": "Ведьма' причастие",
+  "name": "Ведьмино причастие",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -3305,7 +3305,7 @@
  },
  {
   "id": "familiars-language",
-  "name": "Фамильяр' язык",
+  "name": "Язык фамильяра",
   "kind": "class",
   "level": 2,
   "classes": [
@@ -3355,7 +3355,7 @@
  },
  {
   "id": "witchs-charge",
-  "name": "Ведьма' рывок",
+  "name": "Ведьмин рывок",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -3375,7 +3375,7 @@
  },
  {
   "id": "witchs-bottle",
-  "name": "Ведьма' бутыль",
+  "name": "Ведьмина бутыль",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -3415,7 +3415,7 @@
  },
  {
   "id": "patrons-claim",
-  "name": "Покровитель' притязание",
+  "name": "Притязание покровителя",
   "kind": "class",
   "level": 18,
   "classes": [
@@ -3515,7 +3515,7 @@
  },
  {
   "id": "craft-philosophers-stone",
-  "name": "Ремесло философ' камень",
+  "name": "Ремесло камень философа",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -4125,7 +4125,7 @@
  },
  {
   "id": "enigmas-knowledge",
-  "name": "Загадка' знание",
+  "name": "Знание загадки",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -4635,7 +4635,7 @@
  },
  {
   "id": "revelations-focus",
-  "name": "Откровение' фокус",
+  "name": "Фокус откровения",
   "kind": "class",
   "level": 14,
   "classes": [
@@ -4994,7 +4994,7 @@
  },
  {
   "id": "youre-next",
-  "name": "'касательно следующий",
+  "name": "Ты следующий",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -5133,7 +5133,7 @@
  },
  {
   "id": "paragons-guard",
-  "name": "Идеал' стража",
+  "name": "Стража идеала",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -5340,7 +5340,7 @@
  },
  {
   "id": "scouts-warning",
-  "name": "Разведчик' предупреждение",
+  "name": "Предупреждение разведчика",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -5488,7 +5488,7 @@
  },
  {
   "id": "tricksters-ace",
-  "name": "Плут' ас",
+  "name": "Ас плута",
   "kind": "class",
   "level": 18,
   "classes": [
@@ -5540,7 +5540,7 @@
  },
  {
   "id": "archwizards-might",
-  "name": "Архиволшебник' мощь",
+  "name": "Мощь архиволшебника",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -5920,7 +5920,7 @@
  },
  {
   "id": "wardens-reload",
-  "name": "Страж' перезарядка",
+  "name": "Перезарядка стража",
   "kind": "class",
   "level": 16,
   "classes": [
@@ -5940,7 +5940,7 @@
  },
  {
   "id": "wardens-guidance",
-  "name": "Страж' наставление",
+  "name": "Наставление стража",
   "kind": "class",
   "level": 14,
   "classes": [
@@ -5970,7 +5970,7 @@
  },
  {
   "id": "wardens-focus",
-  "name": "Страж' фокус",
+  "name": "Фокус стража",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -6060,7 +6060,7 @@
  },
  {
   "id": "wardens-step",
-  "name": "Страж' шаг",
+  "name": "Шаг стража",
   "kind": "class",
   "level": 10,
   "classes": [
@@ -6110,7 +6110,7 @@
  },
  {
   "id": "hunters-aim",
-  "name": "Охотник' наводка",
+  "name": "Наводка охотника",
   "kind": "class",
   "level": 2,
   "classes": [
@@ -6160,7 +6160,7 @@
  },
  {
   "id": "companions-cry",
-  "name": "Спутник' крик",
+  "name": "Крик спутника",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -6220,7 +6220,7 @@
  },
  {
   "id": "wardens-boon",
-  "name": "Страж' дар",
+  "name": "Дар стража",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -6680,7 +6680,7 @@
  },
  {
   "id": "guardians-deflection-swashbuckler",
-  "name": "Страж' отклонение (сорвиголова)",
+  "name": "Отклонение (сорвиголова) стража",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -6930,7 +6930,7 @@
  },
  {
   "id": "deitys-domain",
-  "name": "Божество' сфера",
+  "name": "Божественная сфера",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -7330,7 +7330,7 @@
  },
  {
   "id": "advanced-deitys-domain",
-  "name": "Продвинутая божество' сфера",
+  "name": "Продвинутая божественная сфера",
   "kind": "class",
   "level": 8,
   "classes": [
@@ -7960,7 +7960,7 @@
  },
  {
   "id": "giants-lunge",
-  "name": "Великаний' выпад",
+  "name": "Великаний выпад",
   "kind": "class",
   "level": 14,
   "classes": [
@@ -8010,7 +8010,7 @@
  },
  {
   "id": "predators-pounce",
-  "name": "Хищник' наскок",
+  "name": "Наскок хищника",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -8020,7 +8020,7 @@
  },
  {
   "id": "spirits-wrath",
-  "name": "Духовный' гнев",
+  "name": "Духовный гнев",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -8040,7 +8040,7 @@
  },
  {
   "id": "titans-stature",
-  "name": "Титан' рост",
+  "name": "Рост титана",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -8050,7 +8050,7 @@
  },
  {
   "id": "dragons-rage-wings",
-  "name": "Драконий' ярость крылья",
+  "name": "Драконьи ярость крылья",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -8290,7 +8290,7 @@
  },
  {
   "id": "giants-stature",
-  "name": "Великаний' рост",
+  "name": "Великаний рост",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -8330,7 +8330,7 @@
  },
  {
   "id": "dragons-rage-breath",
-  "name": "Драконий' ярость дыхание",
+  "name": "Драконье ярость дыхание",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -8340,7 +8340,7 @@
  },
  {
   "id": "spirits-interference",
-  "name": "Духи' помеха",
+  "name": "Помеха духов",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -8520,7 +8520,7 @@
  },
  {
   "id": "thats-odd",
-  "name": "' странный",
+  "name": "Это странно",
   "kind": "class",
   "level": 1,
   "classes": [
@@ -8590,7 +8590,7 @@
  },
  {
   "id": "everyones-a-suspect",
-  "name": "Все' подозреваемый",
+  "name": "Подозреваемый всех",
   "kind": "class",
   "level": 20,
   "classes": [
@@ -8650,7 +8650,7 @@
  },
  {
   "id": "empiricists-eye",
-  "name": "Эмпирик' глаз",
+  "name": "Глаз эмпирика",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -8670,7 +8670,7 @@
  },
  {
   "id": "make-em-sweat",
-  "name": "Изготовление'их пот",
+  "name": "Заставь их попотеть",
   "kind": "class",
   "level": 12,
   "classes": [
@@ -8810,7 +8810,7 @@
  },
  {
   "id": "detectives-readiness",
-  "name": "Сыщик' готовность",
+  "name": "Готовность сыщика",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -8840,7 +8840,7 @@
  },
  {
   "id": "scalpels-point",
-  "name": "Скальпель' точка",
+  "name": "Точка скальпели",
   "kind": "class",
   "level": 4,
   "classes": [
@@ -9480,7 +9480,7 @@
  },
  {
   "id": "guardians-deflection-fighter",
-  "name": "Страж' отклонение (воин)",
+  "name": "Отклонение (воин) стража",
   "kind": "class",
   "level": 6,
   "classes": [
@@ -10394,7 +10394,7 @@
  },
  {
   "id": "duelists-challenge",
-  "name": "Дуэлянт' вызов",
+  "name": "Вызов дуэлянта",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -10610,7 +10610,7 @@
  },
  {
   "id": "scouts-charge",
-  "name": "Разведчик' рывок",
+  "name": "Рывок разведчика",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -10618,7 +10618,7 @@
  },
  {
   "id": "scouts-pounce",
-  "name": "Разведчик' наскок",
+  "name": "Наскок разведчика",
   "kind": "class",
   "level": 10,
   "classes": [],
@@ -10642,7 +10642,7 @@
  },
  {
   "id": "scouts-speed",
-  "name": "Разведчик' скорость",
+  "name": "Скорость разведчика",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -10850,7 +10850,7 @@
  },
  {
   "id": "patrons-breadth",
-  "name": "Покровитель' широта",
+  "name": "Широта покровителя",
   "kind": "class",
   "level": 8,
   "classes": [],
@@ -11060,7 +11060,7 @@
  },
  {
   "id": "poisoners-twist",
-  "name": "Отравитель' скрутка",
+  "name": "Скрутка отравителя",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -11364,7 +11364,7 @@
  },
  {
   "id": "basic-hunters-trick",
-  "name": "Базовая охотник' трюк",
+  "name": "Базовый трюк охотника",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -11380,7 +11380,7 @@
  },
  {
   "id": "advanced-hunters-trick",
-  "name": "Продвинутая охотник' трюк",
+  "name": "Продвинутый трюк охотника",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -11412,7 +11412,7 @@
  },
  {
   "id": "doctors-visitation",
-  "name": "Врач' посещение",
+  "name": "Посещение врача",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -11460,7 +11460,7 @@
  },
  {
   "id": "swashbucklers-speed",
-  "name": "Сорвиголова' скорость",
+  "name": "Скорость сорвиголовы",
   "kind": "class",
   "level": 8,
   "classes": [],
@@ -11468,7 +11468,7 @@
  },
  {
   "id": "swashbucklers-riposte",
-  "name": "Сорвиголова' ответный выпад",
+  "name": "Ответный выпад сорвиголовы",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -11524,7 +11524,7 @@
  },
  {
   "id": "champions-reaction",
-  "name": "Поборник' реакция",
+  "name": "Реакция поборника",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -11812,7 +11812,7 @@
  },
  {
   "id": "investigators-stratagem",
-  "name": "Сыщик' уловка",
+  "name": "Уловка сыщика",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -12052,7 +12052,7 @@
  },
  {
   "id": "perfections-path",
-  "name": "Совершенство' путь",
+  "name": "Путь совершенства",
   "kind": "class",
   "level": 12,
   "classes": [],
@@ -12068,7 +12068,7 @@
  },
  {
   "id": "monks-flurry",
-  "name": "Монах' шквал",
+  "name": "Шквал монаха",
   "kind": "class",
   "level": 10,
   "classes": [],
@@ -12452,7 +12452,7 @@
  },
  {
   "id": "archers-aim",
-  "name": "Лучник' наводка",
+  "name": "Наводка лучника",
   "kind": "class",
   "level": 8,
   "classes": [],
@@ -12484,7 +12484,7 @@
  },
  {
   "id": "basic-muses-whispers",
-  "name": "Базовая муза' шёпот",
+  "name": "Базовый шёпот музы",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -12492,7 +12492,7 @@
  },
  {
   "id": "advanced-muses-whispers",
-  "name": "Продвинутая муза' шёпот",
+  "name": "Продвинутый шёпот музы",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -12572,7 +12572,7 @@
  },
  {
   "id": "archaeologists-luck",
-  "name": "Археолог' удача",
+  "name": "Удача археолога",
   "kind": "class",
   "level": 8,
   "classes": [],
@@ -12660,7 +12660,7 @@
  },
  {
   "id": "beastmasters-call",
-  "name": "Повелитель зверей' зов",
+  "name": "Повелитель зов зверей",
   "kind": "class",
   "level": 12,
   "classes": [],
@@ -12708,7 +12708,7 @@
  },
  {
   "id": "beastmasters-trance",
-  "name": "Повелитель зверей' транс",
+  "name": "Повелитель транс зверей",
   "kind": "class",
   "level": 6,
   "classes": [],
@@ -12724,7 +12724,7 @@
  },
  {
   "id": "juggernauts-fortitude",
-  "name": "Несокрушимый' стойкость",
+  "name": "Стойкость несокрушимого",
   "kind": "class",
   "level": 12,
   "classes": [],
@@ -12884,7 +12884,7 @@
  },
  {
   "id": "cavaliers-banner",
-  "name": "Кавалер' знамя",
+  "name": "Знамя кавалера",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -12900,7 +12900,7 @@
  },
  {
   "id": "cavaliers-charge",
-  "name": "Кавалер' рывок",
+  "name": "Рывок кавалера",
   "kind": "class",
   "level": 4,
   "classes": [],
@@ -13368,7 +13368,7 @@
  },
  {
   "id": "cant-fall-here",
-  "name": "Можно'т падение здесь",
+  "name": "Здесь нельзя упасть",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -14168,7 +14168,7 @@
  },
  {
   "id": "geckos-grip",
-  "name": "Геккон' хват",
+  "name": "Хват геккона",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -14618,7 +14618,7 @@
  },
  {
   "id": "cats-luck",
-  "name": "Кот' удача",
+  "name": "Удача кота",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -14728,7 +14728,7 @@
  },
  {
   "id": "predators-growl",
-  "name": "Хищник' рычание",
+  "name": "Рычание хищника",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -15336,7 +15336,7 @@
  },
  {
   "id": "ancestors-rage",
-  "name": "Предок' ярость",
+  "name": "Ярость предока",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -15346,7 +15346,7 @@
  },
  {
   "id": "bonekeepers-bane",
-  "name": "Костехранитель' погибель",
+  "name": "Погибель костехранителя",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -15406,7 +15406,7 @@
  },
  {
   "id": "grandmothers-wisdom",
-  "name": "Бабушка' мудрость",
+  "name": "Мудрость бабушки",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -15516,7 +15516,7 @@
  },
  {
   "id": "hunters-defense",
-  "name": "Охотник' защита",
+  "name": "Защита охотника",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -15676,7 +15676,7 @@
  },
  {
   "id": "mariners-fire",
-  "name": "Мореход' огня",
+  "name": "Огня морехода",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -15696,7 +15696,7 @@
  },
  {
   "id": "scavengers-search",
-  "name": "Падальщик' поиск",
+  "name": "Поиск падальщика",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -15716,7 +15716,7 @@
  },
  {
   "id": "storms-lash",
-  "name": "Буря' плеть",
+  "name": "Буревая плеть",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -15756,7 +15756,7 @@
  },
  {
   "id": "harbingers-caw",
-  "name": "Предвестник' карканье",
+  "name": "Карканье предвестника",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -15766,7 +15766,7 @@
  },
  {
   "id": "thunder-gods-fan",
-  "name": "Гром бог' веер",
+  "name": "Гром божеский веер",
   "kind": "ancestry",
   "level": 13,
   "classes": [],
@@ -15816,7 +15816,7 @@
  },
  {
   "id": "wind-gods-fan",
-  "name": "Ветер бог' веер",
+  "name": "Ветер божеский веер",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -15826,7 +15826,7 @@
  },
  {
   "id": "dragons-flight",
-  "name": "Драконий' полёт",
+  "name": "Драконий полёт",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -15906,7 +15906,7 @@
  },
  {
   "id": "true-dragons-flight",
-  "name": "Истинное драконий' полёт",
+  "name": "Истинный драконий полёт",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -16010,7 +16010,7 @@
  },
  {
   "id": "boneyards-call",
-  "name": "Костница' зов",
+  "name": "Зов костницы",
   "kind": "ancestry",
   "level": 17,
   "classes": [],
@@ -16482,7 +16482,7 @@
  },
  {
   "id": "hags-sight",
-  "name": "Карга' прицел",
+  "name": "Прицел карги",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -16588,7 +16588,7 @@
  },
  {
   "id": "stonemasons-eye",
-  "name": "Каменщик' глаз",
+  "name": "Глаз каменщика",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -16708,7 +16708,7 @@
  },
  {
   "id": "mountains-stoutness",
-  "name": "Гора' коренастость",
+  "name": "Горная коренастость",
   "kind": "ancestry",
   "level": 9,
   "classes": [],
@@ -16738,7 +16738,7 @@
  },
  {
   "id": "allys-shelter",
-  "name": "Союзник' укрытие",
+  "name": "Укрытие союзника",
   "kind": "ancestry",
   "level": 5,
   "classes": [],
@@ -16788,7 +16788,7 @@
  },
  {
   "id": "dragons-presence",
-  "name": "Драконий' присутствие",
+  "name": "Драконье присутствие",
   "kind": "ancestry",
   "level": 1,
   "classes": [],
@@ -16848,7 +16848,7 @@
  },
  {
   "id": "benefactors-majesty",
-  "name": "Благодетель' величество",
+  "name": "Величество благодетеля",
   "kind": "ancestry",
   "level": 17,
   "classes": [],

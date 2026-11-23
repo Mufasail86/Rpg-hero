@@ -45,11 +45,14 @@ describe("видимые имена без кальки с английског�
     const dnd = read("monsters-2024.json") as { id: string; name: string }[];
     const pf = read("monsters-pf.json") as { id: string; name: string; text: string }[];
     const wide = read("pf-wide.json") as { id: string; name: string }[];
+    const lists = read("pf-lists.json") as { id: string; name: string }[];
     expect(dnd.find((row) => row.id === "owlbear")?.name).toBe("Совомедведь");
     expect(pf.find((row) => row.id === "bandersnatch")?.name).toBe("Бандерснэтч");
     expect(pf.find((row) => row.id === "bandersnatch")?.text).not.toMatch(/Таил|Куилл|Бандерснатч/);
     expect(wide.find((row) => row.id === "thiefs-calling")?.name).toBe("Призвание вора");
     expect(wide.find((row) => row.id === "mocking-invisibility")?.name).toBe("Насмешливая невидимость");
+    expect(wide.find((row) => row.id === "hells-armaments")?.name).toBe("Адское вооружение");
+    expect(lists.find((row) => row.id === "witchs-broom")?.name).toBe("Ведьмина метла");
   });
 
   it("в именах и текстах карточек нет типичной кальки и сырой латиницы в названии", () => {
@@ -72,6 +75,7 @@ describe("видимые имена без кальки с английског�
         if (!node || typeof node !== "object") return;
         const record = node as { name?: unknown };
         if (typeof record.name === "string" && /[A-Za-z]{4,}/.test(record.name)) names.push(record.name);
+        if (typeof record.name === "string" && /['’′]/.test(record.name)) names.push(`апостроф:${record.name}`);
         for (const value of Object.values(record)) if (value && typeof value === "object") walk(value);
       };
       walk(data);

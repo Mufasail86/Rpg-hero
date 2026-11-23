@@ -289,7 +289,7 @@
  },
  {
   "id": "pilgrims-token",
-  "name": "Паломник' жетон",
+  "name": "Жетон паломника",
   "originalName": "Pilgrim's Token",
   "altNames": [],
   "category": "skill-feat",
@@ -1009,7 +1009,7 @@
  },
  {
   "id": "crafters-appraisal",
-  "name": "Ремесленник' оценка",
+  "name": "Оценка ремесленника",
   "originalName": "Crafter's Appraisal",
   "altNames": [],
   "category": "skill-feat",
@@ -3529,7 +3529,7 @@
  },
  {
   "id": "scoundrels-surprise",
-  "name": "Негодяй' неожиданность",
+  "name": "Неожиданность негодяя",
   "originalName": "Scoundrel's Surprise",
   "altNames": [],
   "category": "class-feat",
@@ -4177,7 +4177,7 @@
  },
  {
   "id": "avatars-protection",
-  "name": "Воплощение' защита",
+  "name": "Защита воплощения",
   "originalName": "Avatar's Protection",
   "altNames": [],
   "category": "class-feat",
@@ -4213,7 +4213,7 @@
  },
  {
   "id": "avatars-audience",
-  "name": "Воплощение' зрители",
+  "name": "Зрители воплощения",
   "originalName": "Avatar's Audience",
   "altNames": [],
   "category": "class-feat",
@@ -4339,7 +4339,7 @@
  },
  {
   "id": "deitys-protection",
-  "name": "Божество' защита",
+  "name": "Божественная защита",
   "originalName": "Deity's Protection",
   "altNames": [],
   "category": "class-feat",
@@ -4699,7 +4699,7 @@
  },
  {
   "id": "warpriests-armor",
-  "name": "Боевой жрец' доспех",
+  "name": "Боевой доспех жрца",
   "originalName": "Warpriest's Armor",
   "altNames": [],
   "category": "class-feat",
@@ -5383,7 +5383,7 @@
  },
  {
   "id": "hierophants-power",
-  "name": "Иерофант' сила",
+  "name": "Сила иерофанта",
   "originalName": "Hierophant's Power",
   "altNames": [],
   "category": "class-feat",
@@ -6247,7 +6247,7 @@
  },
  {
   "id": "witchs-armaments",
-  "name": "Ведьма' вооружение",
+  "name": "Ведьмино вооружение",
   "originalName": "Witch's Armaments",
   "altNames": [],
   "category": "class-feat",
@@ -6283,7 +6283,7 @@
  },
  {
   "id": "patrons-truth",
-  "name": "Покровитель' правда",
+  "name": "Правда покровителя",
   "originalName": "Patron's Truth",
   "altNames": [],
   "category": "class-feat",
@@ -6301,7 +6301,7 @@
  },
  {
   "id": "witchs-hut",
-  "name": "Ведьма' хижина",
+  "name": "Ведьмина хижина",
   "originalName": "Witch's Hut",
   "altNames": [],
   "category": "class-feat",
@@ -6373,7 +6373,7 @@
  },
  {
   "id": "patrons-presence",
-  "name": "Покровитель' присутствие",
+  "name": "Присутствие покровителя",
   "originalName": "Patron's Presence",
   "altNames": [],
   "category": "class-feat",
@@ -6409,7 +6409,7 @@
  },
  {
   "id": "witchs-broom",
-  "name": "Ведьма' метла",
+  "name": "Ведьмина метла",
   "originalName": "Witch's Broom",
   "altNames": [],
   "category": "class-feat",
@@ -6463,7 +6463,7 @@
  },
  {
   "id": "witchs-communion",
-  "name": "Ведьма' причастие",
+  "name": "Ведьмино причастие",
   "originalName": "Witch's Communion",
   "altNames": [],
   "category": "class-feat",
@@ -6499,7 +6499,7 @@
  },
  {
   "id": "familiars-language",
-  "name": "Фамильяр' язык",
+  "name": "Язык фамильяра",
   "originalName": "Familiar's Language",
   "altNames": [],
   "category": "class-feat",
@@ -6589,7 +6589,7 @@
  },
  {
   "id": "witchs-charge",
-  "name": "Ведьма' рывок",
+  "name": "Ведьмин рывок",
   "originalName": "Witch's Charge",
   "altNames": [],
   "category": "class-feat",
@@ -6625,7 +6625,7 @@
  },
  {
   "id": "witchs-bottle",
-  "name": "Ведьма' бутыль",
+  "name": "Ведьмина бутыль",
   "originalName": "Witch's Bottle",
   "altNames": [],
   "category": "class-feat",
@@ -6697,7 +6697,7 @@
  },
  {
   "id": "patrons-claim",
-  "name": "Покровитель' притязание",
+  "name": "Притязание покровителя",
   "originalName": "Patron's Claim",
   "altNames": [],
   "category": "class-feat",
@@ -6877,7 +6877,7 @@
  },
  {
   "id": "craft-philosophers-stone",
-  "name": "Ремесло философ' камень",
+  "name": "Ремесло камень философа",
   "originalName": "Craft Philosopher's Stone",
   "altNames": [],
   "category": "class-feat",
@@ -7975,7 +7975,7 @@
  },
  {
   "id": "enigmas-knowledge",
-  "name": "Загадка' знание",
+  "name": "Знание загадки",
   "originalName": "Enigma's Knowledge",
   "altNames": [],
   "category": "class-feat",
@@ -8893,7 +8893,7 @@
  },
  {
   "id": "revelations-focus",
-  "name": "Откровение' фокус",
+  "name": "Фокус откровения",
   "originalName": "Revelation's Focus",
   "altNames": [],
   "category": "class-feat",
@@ -9505,7 +9505,7 @@
  },
  {
   "id": "youre-next",
-  "name": "'касательно следующий",
+  "name": "Ты следующий",
   "originalName": "You're Next",
   "altNames": [],
   "category": "class-feat",
@@ -9721,7 +9721,7 @@
  },
  {
   "id": "paragons-guard",
-  "name": "Идеал' стража",
+  "name": "Стража идеала",
   "originalName": "Paragon's Guard",
   "altNames": [],
   "category": "class-feat",
@@ -10027,7 +10027,7 @@
  },
  {
   "id": "scouts-warning",
-  "name": "Разведчик' предупреждение",
+  "name": "Предупреждение разведчика",
   "originalName": "Scout's Warning",
   "altNames": [],
   "category": "class-feat",
@@ -10243,7 +10243,7 @@
  },
  {
   "id": "tricksters-ace",
-  "name": "Плут' ас",
+  "name": "Ас плута",
   "originalName": "Trickster's Ace",
   "altNames": [],
   "category": "class-feat",
@@ -10333,7 +10333,7 @@
  },
  {
   "id": "archwizards-might",
-  "name": "Архиволшебник' мощь",
+  "name": "Мощь архиволшебника",
   "originalName": "Archwizard's Might",
   "altNames": [],
   "category": "class-feat",
@@ -11017,7 +11017,7 @@
  },
  {
   "id": "wardens-reload",
-  "name": "Страж' перезарядка",
+  "name": "Перезарядка стража",
   "originalName": "Warden's Reload",
   "altNames": [],
   "category": "class-feat",
@@ -11053,7 +11053,7 @@
  },
  {
   "id": "wardens-guidance",
-  "name": "Страж' наставление",
+  "name": "Наставление стража",
   "originalName": "Warden's Guidance",
   "altNames": [],
   "category": "class-feat",
@@ -11107,7 +11107,7 @@
  },
  {
   "id": "wardens-focus",
-  "name": "Страж' фокус",
+  "name": "Фокус стража",
   "originalName": "Warden's Focus",
   "altNames": [],
   "category": "class-feat",
@@ -11269,7 +11269,7 @@
  },
  {
   "id": "wardens-step",
-  "name": "Страж' шаг",
+  "name": "Шаг стража",
   "originalName": "Warden's Step",
   "altNames": [],
   "category": "class-feat",
@@ -11359,7 +11359,7 @@
  },
  {
   "id": "hunters-aim",
-  "name": "Охотник' наводка",
+  "name": "Наводка охотника",
   "originalName": "Hunter's Aim",
   "altNames": [],
   "category": "class-feat",
@@ -11449,7 +11449,7 @@
  },
  {
   "id": "companions-cry",
-  "name": "Спутник' крик",
+  "name": "Крик спутника",
   "originalName": "Companion's Cry",
   "altNames": [],
   "category": "class-feat",
@@ -11557,7 +11557,7 @@
  },
  {
   "id": "wardens-boon",
-  "name": "Страж' дар",
+  "name": "Дар стража",
   "originalName": "Warden's Boon",
   "altNames": [],
   "category": "class-feat",
@@ -12385,7 +12385,7 @@
  },
  {
   "id": "guardians-deflection-swashbuckler",
-  "name": "Страж' отклонение (сорвиголова)",
+  "name": "Отклонение (сорвиголова) стража",
   "originalName": "Guardian's Deflection (Swashbuckler)",
   "altNames": [],
   "category": "class-feat",
@@ -12835,7 +12835,7 @@
  },
  {
   "id": "deitys-domain",
-  "name": "Божество' сфера",
+  "name": "Божественная сфера",
   "originalName": "Deity's Domain",
   "altNames": [],
   "category": "class-feat",
@@ -13555,7 +13555,7 @@
  },
  {
   "id": "advanced-deitys-domain",
-  "name": "Продвинутая божество' сфера",
+  "name": "Продвинутая божественная сфера",
   "originalName": "Advanced Deity's Domain",
   "altNames": [],
   "category": "class-feat",
@@ -14689,7 +14689,7 @@
  },
  {
   "id": "giants-lunge",
-  "name": "Великаний' выпад",
+  "name": "Великаний выпад",
   "originalName": "Giant's Lunge",
   "altNames": [],
   "category": "class-feat",
@@ -14779,7 +14779,7 @@
  },
  {
   "id": "predators-pounce",
-  "name": "Хищник' наскок",
+  "name": "Наскок хищника",
   "originalName": "Predator's Pounce",
   "altNames": [],
   "category": "class-feat",
@@ -14797,7 +14797,7 @@
  },
  {
   "id": "spirits-wrath",
-  "name": "Духовный' гнев",
+  "name": "Духовный гнев",
   "originalName": "Spirit's Wrath",
   "altNames": [],
   "category": "class-feat",
@@ -14833,7 +14833,7 @@
  },
  {
   "id": "titans-stature",
-  "name": "Титан' рост",
+  "name": "Рост титана",
   "originalName": "Titan's Stature",
   "altNames": [],
   "category": "class-feat",
@@ -14851,7 +14851,7 @@
  },
  {
   "id": "dragons-rage-wings",
-  "name": "Драконий' ярость крылья",
+  "name": "Драконьи ярость крылья",
   "originalName": "Dragon's Rage Wings",
   "altNames": [],
   "category": "class-feat",
@@ -15283,7 +15283,7 @@
  },
  {
   "id": "giants-stature",
-  "name": "Великаний' рост",
+  "name": "Великаний рост",
   "originalName": "Giant's Stature",
   "altNames": [],
   "category": "class-feat",
@@ -15355,7 +15355,7 @@
  },
  {
   "id": "dragons-rage-breath",
-  "name": "Драконий' ярость дыхание",
+  "name": "Драконье ярость дыхание",
   "originalName": "Dragon's Rage Breath",
   "altNames": [],
   "category": "class-feat",
@@ -15373,7 +15373,7 @@
  },
  {
   "id": "spirits-interference",
-  "name": "Духи' помеха",
+  "name": "Помеха духов",
   "originalName": "Spirits' Interference",
   "altNames": [],
   "category": "class-feat",
@@ -15697,7 +15697,7 @@
  },
  {
   "id": "thats-odd",
-  "name": "' странный",
+  "name": "Это странно",
   "originalName": "That's Odd",
   "altNames": [],
   "category": "class-feat",
@@ -15823,7 +15823,7 @@
  },
  {
   "id": "everyones-a-suspect",
-  "name": "Все' подозреваемый",
+  "name": "Подозреваемый всех",
   "originalName": "Everyone's a Suspect",
   "altNames": [],
   "category": "class-feat",
@@ -15931,7 +15931,7 @@
  },
  {
   "id": "empiricists-eye",
-  "name": "Эмпирик' глаз",
+  "name": "Глаз эмпирика",
   "originalName": "Empiricist's Eye",
   "altNames": [],
   "category": "class-feat",
@@ -15967,7 +15967,7 @@
  },
  {
   "id": "make-em-sweat",
-  "name": "Изготовление'их пот",
+  "name": "Заставь их попотеть",
   "originalName": "Make 'Em Sweat",
   "altNames": [],
   "category": "class-feat",
@@ -16219,7 +16219,7 @@
  },
  {
   "id": "detectives-readiness",
-  "name": "Сыщик' готовность",
+  "name": "Готовность сыщика",
   "originalName": "Detective's Readiness",
   "altNames": [],
   "category": "class-feat",
@@ -16273,7 +16273,7 @@
  },
  {
   "id": "scalpels-point",
-  "name": "Скальпель' точка",
+  "name": "Точка скальпели",
   "originalName": "Scalpel's Point",
   "altNames": [],
   "category": "class-feat",
@@ -17425,7 +17425,7 @@
  },
  {
   "id": "guardians-deflection-fighter",
-  "name": "Страж' отклонение (воин)",
+  "name": "Отклонение (воин) стража",
   "originalName": "Guardian's Deflection (Fighter)",
   "altNames": [],
   "category": "class-feat",
@@ -19081,7 +19081,7 @@
  },
  {
   "id": "duelists-challenge",
-  "name": "Дуэлянт' вызов",
+  "name": "Вызов дуэлянта",
   "originalName": "Duelist's Challenge",
   "altNames": [],
   "category": "class-feat",
@@ -19567,7 +19567,7 @@
  },
  {
   "id": "scouts-charge",
-  "name": "Разведчик' рывок",
+  "name": "Рывок разведчика",
   "originalName": "Scout's Charge",
   "altNames": [],
   "category": "class-feat",
@@ -19585,7 +19585,7 @@
  },
  {
   "id": "scouts-pounce",
-  "name": "Разведчик' наскок",
+  "name": "Наскок разведчика",
   "originalName": "Scout's Pounce",
   "altNames": [],
   "category": "class-feat",
@@ -19639,7 +19639,7 @@
  },
  {
   "id": "scouts-speed",
-  "name": "Разведчик' скорость",
+  "name": "Скорость разведчика",
   "originalName": "Scout's Speed",
   "altNames": [],
   "category": "class-feat",
@@ -20107,7 +20107,7 @@
  },
  {
   "id": "patrons-breadth",
-  "name": "Покровитель' широта",
+  "name": "Широта покровителя",
   "originalName": "Patron's Breadth",
   "altNames": [],
   "category": "class-feat",
@@ -20575,7 +20575,7 @@
  },
  {
   "id": "poisoners-twist",
-  "name": "Отравитель' скрутка",
+  "name": "Скрутка отравителя",
   "originalName": "Poisoner's Twist",
   "altNames": [],
   "category": "class-feat",
@@ -21259,7 +21259,7 @@
  },
  {
   "id": "basic-hunters-trick",
-  "name": "Базовая охотник' трюк",
+  "name": "Базовый трюк охотника",
   "originalName": "Basic Hunter's Trick",
   "altNames": [],
   "category": "class-feat",
@@ -21295,7 +21295,7 @@
  },
  {
   "id": "advanced-hunters-trick",
-  "name": "Продвинутая охотник' трюк",
+  "name": "Продвинутый трюк охотника",
   "originalName": "Advanced Hunter's Trick",
   "altNames": [],
   "category": "class-feat",
@@ -21367,7 +21367,7 @@
  },
  {
   "id": "doctors-visitation",
-  "name": "Врач' посещение",
+  "name": "Посещение врача",
   "originalName": "Doctor's Visitation",
   "altNames": [],
   "category": "class-feat",
@@ -21475,7 +21475,7 @@
  },
  {
   "id": "swashbucklers-speed",
-  "name": "Сорвиголова' скорость",
+  "name": "Скорость сорвиголовы",
   "originalName": "Swashbuckler's Speed",
   "altNames": [],
   "category": "class-feat",
@@ -21493,7 +21493,7 @@
  },
  {
   "id": "swashbucklers-riposte",
-  "name": "Сорвиголова' ответный выпад",
+  "name": "Ответный выпад сорвиголовы",
   "originalName": "Swashbuckler's Riposte",
   "altNames": [],
   "category": "class-feat",
@@ -21619,7 +21619,7 @@
  },
  {
   "id": "champions-reaction",
-  "name": "Поборник' реакция",
+  "name": "Реакция поборника",
   "originalName": "Champion's Reaction",
   "altNames": [],
   "category": "class-feat",
@@ -22267,7 +22267,7 @@
  },
  {
   "id": "investigators-stratagem",
-  "name": "Сыщик' уловка",
+  "name": "Уловка сыщика",
   "originalName": "Investigator's Stratagem",
   "altNames": [],
   "category": "class-feat",
@@ -22807,7 +22807,7 @@
  },
  {
   "id": "perfections-path",
-  "name": "Совершенство' путь",
+  "name": "Путь совершенства",
   "originalName": "Perfection's Path",
   "altNames": [],
   "category": "class-feat",
@@ -22843,7 +22843,7 @@
  },
  {
   "id": "monks-flurry",
-  "name": "Монах' шквал",
+  "name": "Шквал монаха",
   "originalName": "Monk's Flurry",
   "altNames": [],
   "category": "class-feat",
@@ -23707,7 +23707,7 @@
  },
  {
   "id": "archers-aim",
-  "name": "Лучник' наводка",
+  "name": "Наводка лучника",
   "originalName": "Archer's Aim",
   "altNames": [],
   "category": "class-feat",
@@ -23779,7 +23779,7 @@
  },
  {
   "id": "basic-muses-whispers",
-  "name": "Базовая муза' шёпот",
+  "name": "Базовый шёпот музы",
   "originalName": "Basic Muse's Whispers",
   "altNames": [],
   "category": "class-feat",
@@ -23797,7 +23797,7 @@
  },
  {
   "id": "advanced-muses-whispers",
-  "name": "Продвинутая муза' шёпот",
+  "name": "Продвинутый шёпот музы",
   "originalName": "Advanced Muse's Whispers",
   "altNames": [],
   "category": "class-feat",
@@ -23977,7 +23977,7 @@
  },
  {
   "id": "archaeologists-luck",
-  "name": "Археолог' удача",
+  "name": "Удача археолога",
   "originalName": "Archaeologist's Luck",
   "altNames": [],
   "category": "class-feat",
@@ -24175,7 +24175,7 @@
  },
  {
   "id": "beastmasters-call",
-  "name": "Повелитель зверей' зов",
+  "name": "Повелитель зов зверей",
   "originalName": "Beastmaster's Call",
   "altNames": [],
   "category": "class-feat",
@@ -24283,7 +24283,7 @@
  },
  {
   "id": "beastmasters-trance",
-  "name": "Повелитель зверей' транс",
+  "name": "Повелитель транс зверей",
   "originalName": "Beastmaster's Trance",
   "altNames": [],
   "category": "class-feat",
@@ -24319,7 +24319,7 @@
  },
  {
   "id": "juggernauts-fortitude",
-  "name": "Несокрушимый' стойкость",
+  "name": "Стойкость несокрушимого",
   "originalName": "Juggernaut's Fortitude",
   "altNames": [],
   "category": "class-feat",
@@ -24679,7 +24679,7 @@
  },
  {
   "id": "cavaliers-banner",
-  "name": "Кавалер' знамя",
+  "name": "Знамя кавалера",
   "originalName": "Cavalier's Banner",
   "altNames": [],
   "category": "class-feat",
@@ -24715,7 +24715,7 @@
  },
  {
   "id": "cavaliers-charge",
-  "name": "Кавалер' рывок",
+  "name": "Рывок кавалера",
   "originalName": "Cavalier's Charge",
   "altNames": [],
   "category": "class-feat",
@@ -25705,7 +25705,7 @@
  },
  {
   "id": "cant-fall-here",
-  "name": "Можно'т падение здесь",
+  "name": "Здесь нельзя упасть",
   "originalName": "Can't Fall Here",
   "altNames": [],
   "category": "ancestry-feat",
@@ -27145,7 +27145,7 @@
  },
  {
   "id": "geckos-grip",
-  "name": "Геккон' хват",
+  "name": "Хват геккона",
   "originalName": "Gecko's Grip",
   "altNames": [],
   "category": "ancestry-feat",
@@ -27955,7 +27955,7 @@
  },
  {
   "id": "cats-luck",
-  "name": "Кот' удача",
+  "name": "Удача кота",
   "originalName": "Cat's Luck",
   "altNames": [],
   "category": "ancestry-feat",
@@ -28153,7 +28153,7 @@
  },
  {
   "id": "predators-growl",
-  "name": "Хищник' рычание",
+  "name": "Рычание хищника",
   "originalName": "Predator's Growl",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29251,7 +29251,7 @@
  },
  {
   "id": "ancestors-rage",
-  "name": "Предок' ярость",
+  "name": "Ярость предока",
   "originalName": "Ancestor's Rage",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29269,7 +29269,7 @@
  },
  {
   "id": "bonekeepers-bane",
-  "name": "Костехранитель' погибель",
+  "name": "Погибель костехранителя",
   "originalName": "Bonekeeper's Bane",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29377,7 +29377,7 @@
  },
  {
   "id": "grandmothers-wisdom",
-  "name": "Бабушка' мудрость",
+  "name": "Мудрость бабушки",
   "originalName": "Grandmother's Wisdom",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29575,7 +29575,7 @@
  },
  {
   "id": "hunters-defense",
-  "name": "Охотник' защита",
+  "name": "Защита охотника",
   "originalName": "Hunter's Defense",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29863,7 +29863,7 @@
  },
  {
   "id": "mariners-fire",
-  "name": "Мореход' огня",
+  "name": "Огня морехода",
   "originalName": "Mariner's Fire",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29899,7 +29899,7 @@
  },
  {
   "id": "scavengers-search",
-  "name": "Падальщик' поиск",
+  "name": "Поиск падальщика",
   "originalName": "Scavenger's Search",
   "altNames": [],
   "category": "ancestry-feat",
@@ -29935,7 +29935,7 @@
  },
  {
   "id": "storms-lash",
-  "name": "Буря' плеть",
+  "name": "Буревая плеть",
   "originalName": "Storm's Lash",
   "altNames": [],
   "category": "ancestry-feat",
@@ -30007,7 +30007,7 @@
  },
  {
   "id": "harbingers-caw",
-  "name": "Предвестник' карканье",
+  "name": "Карканье предвестника",
   "originalName": "Harbinger's Caw",
   "altNames": [],
   "category": "ancestry-feat",
@@ -30025,7 +30025,7 @@
  },
  {
   "id": "thunder-gods-fan",
-  "name": "Гром бог' веер",
+  "name": "Гром божеский веер",
   "originalName": "Thunder God's Fan",
   "altNames": [],
   "category": "ancestry-feat",
@@ -30115,7 +30115,7 @@
  },
  {
   "id": "wind-gods-fan",
-  "name": "Ветер бог' веер",
+  "name": "Ветер божеский веер",
   "originalName": "Wind God's Fan",
   "altNames": [],
   "category": "ancestry-feat",
@@ -30133,7 +30133,7 @@
  },
  {
   "id": "dragons-flight",
-  "name": "Драконий' полёт",
+  "name": "Драконий полёт",
   "originalName": "Dragon's Flight",
   "altNames": [],
   "category": "ancestry-feat",
@@ -30313,7 +30313,7 @@
  },
  {
   "id": "true-dragons-flight",
-  "name": "Истинное драконий' полёт",
+  "name": "Истинный драконий полёт",
   "originalName": "True Dragon's Flight",
   "altNames": [],
   "category": "ancestry-feat",
@@ -30547,7 +30547,7 @@
  },
  {
   "id": "boneyards-call",
-  "name": "Костница' зов",
+  "name": "Зов костницы",
   "originalName": "Boneyard's Call",
   "altNames": [],
   "category": "ancestry-feat",
@@ -31609,7 +31609,7 @@
  },
  {
   "id": "hags-sight",
-  "name": "Карга' прицел",
+  "name": "Прицел карги",
   "originalName": "Hag's Sight",
   "altNames": [],
   "category": "ancestry-feat",
@@ -31825,7 +31825,7 @@
  },
  {
   "id": "stonemasons-eye",
-  "name": "Каменщик' глаз",
+  "name": "Глаз каменщика",
   "originalName": "Stonemason's Eye",
   "altNames": [],
   "category": "ancestry-feat",
@@ -32041,7 +32041,7 @@
  },
  {
   "id": "mountains-stoutness",
-  "name": "Гора' коренастость",
+  "name": "Горная коренастость",
   "originalName": "Mountain's Stoutness",
   "altNames": [],
   "category": "ancestry-feat",
@@ -32095,7 +32095,7 @@
  },
  {
   "id": "allys-shelter",
-  "name": "Союзник' укрытие",
+  "name": "Укрытие союзника",
   "originalName": "Ally's Shelter",
   "altNames": [],
   "category": "ancestry-feat",
@@ -32185,7 +32185,7 @@
  },
  {
   "id": "dragons-presence",
-  "name": "Драконий' присутствие",
+  "name": "Драконье присутствие",
   "originalName": "Dragon's Presence",
   "altNames": [],
   "category": "ancestry-feat",
@@ -32293,7 +32293,7 @@
  },
  {
   "id": "benefactors-majesty",
-  "name": "Благодетель' величество",
+  "name": "Величество благодетеля",
   "originalName": "Benefactor's Majesty",
   "altNames": [],
   "category": "ancestry-feat",
@@ -32743,7 +32743,7 @@
  },
  {
   "id": "hunters-bane",
-  "name": "Охотник' погибель",
+  "name": "Погибель охотника",
   "originalName": "Hunter's Bane",
   "altNames": [],
   "category": "gear",
@@ -32869,7 +32869,7 @@
  },
  {
   "id": "vipers-fang",
-  "name": "Гадюка' клык",
+  "name": "Гадючий клык",
   "originalName": "Viper's Fang",
   "altNames": [],
   "category": "gear",
@@ -33247,7 +33247,7 @@
  },
  {
   "id": "healers-toolkit-expanded",
-  "name": "Лекаря' набор (расширенный)",
+  "name": "Набор (расширенный) лекаря",
   "originalName": "Healer's Toolkit (Expanded)",
   "altNames": [],
   "category": "gear",
@@ -33499,7 +33499,7 @@
  },
  {
   "id": "warleaders-bulwark-greater",
-  "name": "Воевода' оплот (большое)",
+  "name": "Оплот (большое) воеводы",
   "originalName": "Warleader's Bulwark (Greater)",
   "altNames": [],
   "category": "armor",
@@ -33625,7 +33625,7 @@
  },
  {
   "id": "alchemists-fire-moderate",
-  "name": "Алхимика' огня (среднее)",
+  "name": "Огня (среднее) алхимика",
   "originalName": "Alchemist's Fire (Moderate)",
   "altNames": [],
   "category": "alchemical",
@@ -33751,7 +33751,7 @@
  },
  {
   "id": "maestros-instrument-lesser",
-  "name": "Маэстро' инструмент (малое)",
+  "name": "Инструмент (малое) маэстра",
   "originalName": "Maestro's Instrument (Lesser)",
   "altNames": [],
   "category": "gear",
@@ -33913,7 +33913,7 @@
  },
  {
   "id": "berserkers-cloak-greater",
-  "name": "Берсерк' плащ (большое)",
+  "name": "Плащ (большое) берсерка",
   "originalName": "Berserker's Cloak (Greater)",
   "altNames": [],
   "category": "gear",
@@ -34129,7 +34129,7 @@
  },
  {
   "id": "bombers-eye-elixir-lesser",
-  "name": "Бомбардир' глаз эликсир (малое)",
+  "name": "Эликсир глаза бомбардира (малый)",
   "originalName": "Bomber's Eye Elixir (Lesser)",
   "altNames": [],
   "category": "alchemical",
@@ -34705,7 +34705,7 @@
  },
  {
   "id": "basic-crafters-book",
-  "name": "Базовая ремесленник' книга",
+  "name": "Базовая книга ремесленника",
   "originalName": "Basic Crafter's Book",
   "altNames": [],
   "category": "gear",
@@ -34759,7 +34759,7 @@
  },
  {
   "id": "forgefathers-seal",
-  "name": "Кузнечный отец' печать",
+  "name": "Кузнечный печать отца",
   "originalName": "Forgefather's Seal",
   "altNames": [],
   "category": "rune",
@@ -35263,7 +35263,7 @@
  },
  {
   "id": "diplomats-badge",
-  "name": "Дипломат' значок",
+  "name": "Значок дипломата",
   "originalName": "Diplomat's Badge",
   "altNames": [],
   "category": "gear",
@@ -35551,7 +35551,7 @@
  },
  {
   "id": "explorers-yurt",
-  "name": "Исследователь' юрта",
+  "name": "Юрта исследователя",
   "originalName": "Explorer's Yurt",
   "altNames": [],
   "category": "gear",
@@ -35893,7 +35893,7 @@
  },
  {
   "id": "trackers-goggles",
-  "name": "Следопыт' очки",
+  "name": "Очки следопыта",
   "originalName": "Tracker's Goggles",
   "altNames": [],
   "category": "gear",
@@ -36145,7 +36145,7 @@
  },
  {
   "id": "thieves-toolkit-infiltrator",
-  "name": "Воровские' набор (лазутчик)",
+  "name": "Воровской набор (лазутчик)",
   "originalName": "Thieves' Toolkit (Infiltrator)",
   "altNames": [],
   "category": "gear",
@@ -36469,7 +36469,7 @@
  },
  {
   "id": "lions-armor",
-  "name": "Лев' доспех",
+  "name": "Львиный доспех",
   "originalName": "Lion's Armor",
   "altNames": [],
   "category": "armor",
@@ -36685,7 +36685,7 @@
  },
  {
   "id": "alchemists-toolkit",
-  "name": "Алхимика' набор",
+  "name": "Набор алхимика",
   "originalName": "Alchemist's Toolkit",
   "altNames": [],
   "category": "gear",
@@ -36775,7 +36775,7 @@
  },
  {
   "id": "artisans-toolkit",
-  "name": "Ремесленник' набор",
+  "name": "Набор ремесленника",
   "originalName": "Artisan's Toolkit",
   "altNames": [],
   "category": "gear",
@@ -36883,7 +36883,7 @@
  },
  {
   "id": "filchers-fork",
-  "name": "Воришка' вилка",
+  "name": "Вилка воришки",
   "originalName": "Filcher's Fork",
   "altNames": [],
   "category": "weapon",
@@ -37171,7 +37171,7 @@
  },
  {
   "id": "charlatans-gloves-greater",
-  "name": "Шарлатан' перчатки (большое)",
+  "name": "Перчатки (большое) шарлатана",
   "originalName": "Charlatan's Gloves (Greater)",
   "altNames": [],
   "category": "gear",
@@ -37225,7 +37225,7 @@
  },
  {
   "id": "cheetahs-elixir-greater",
-  "name": "Гепарда' эликсир (большое)",
+  "name": "Эликсир (большое) гепарда",
   "originalName": "Cheetah's Elixir (Greater)",
   "altNames": [],
   "category": "alchemical",
@@ -38071,7 +38071,7 @@
  },
  {
   "id": "eternal-eruption-of-droskars-crag",
-  "name": "Вечный извержение дроскар' утёс",
+  "name": "Вечное извержение утёса Дроскара",
   "originalName": "Eternal Eruption of Droskar's Crag",
   "altNames": [],
   "category": "gear",
@@ -38197,7 +38197,7 @@
  },
  {
   "id": "maestros-instrument-moderate",
-  "name": "Маэстро' инструмент (среднее)",
+  "name": "Инструмент (среднее) маэстра",
   "originalName": "Maestro's Instrument (Moderate)",
   "altNames": [],
   "category": "gear",
@@ -38269,7 +38269,7 @@
  },
  {
   "id": "lions-shield",
-  "name": "Лев' щит",
+  "name": "Львиный щит",
   "originalName": "Lion's Shield",
   "altNames": [],
   "category": "shield",
@@ -38521,7 +38521,7 @@
  },
  {
   "id": "voyagers-pack",
-  "name": "Мореплаватель' стая",
+  "name": "Стая мореплавателя",
   "originalName": "Voyager's Pack",
   "altNames": [],
   "category": "gear",
@@ -38827,7 +38827,7 @@
  },
  {
   "id": "philosophers-extractor",
-  "name": "Философ' извлекатель",
+  "name": "Извлекатель философа",
   "originalName": "Philosopher's Extractor",
   "altNames": [],
   "category": "gear",
@@ -39115,7 +39115,7 @@
  },
  {
   "id": "frozen-lava-of-droskars-crag",
-  "name": "Ледяной лава дроскар' утёс",
+  "name": "Застывшая лава утёса Дроскара",
   "originalName": "Frozen Lava of Droskar's Crag",
   "altNames": [],
   "category": "gear",
@@ -39493,7 +39493,7 @@
  },
  {
   "id": "bountys-light",
-  "name": "Награда' лёгкий",
+  "name": "Лёгкий награды",
   "originalName": "Bounty's Light",
   "altNames": [],
   "category": "weapon",
@@ -39691,7 +39691,7 @@
  },
  {
   "id": "pilgrims-token",
-  "name": "Паломник' жетон",
+  "name": "Жетон паломника",
   "originalName": "Pilgrim's Token",
   "altNames": [],
   "category": "gear",
@@ -40033,7 +40033,7 @@
  },
  {
   "id": "philosophers-stone",
-  "name": "Философ' камень",
+  "name": "Камень философа",
   "originalName": "Philosopher's Stone",
   "altNames": [],
   "category": "alchemical",
@@ -40411,7 +40411,7 @@
  },
  {
   "id": "adventurers-pack",
-  "name": "Авантюрист' стая",
+  "name": "Стая авантюриста",
   "originalName": "Adventurer's Pack",
   "altNames": [],
   "category": "gear",
@@ -40501,7 +40501,7 @@
  },
  {
   "id": "cheetahs-elixir-lesser",
-  "name": "Гепарда' эликсир (малое)",
+  "name": "Эликсир (малое) гепарда",
   "originalName": "Cheetah's Elixir (Lesser)",
   "altNames": [],
   "category": "alchemical",
@@ -41455,7 +41455,7 @@
  },
  {
   "id": "ventriloquists-ring",
-  "name": "Чревовещатель' кольцо",
+  "name": "Кольцо чревовещателя",
   "originalName": "Ventriloquist's Ring",
   "altNames": [],
   "category": "gear",
@@ -41689,7 +41689,7 @@
  },
  {
   "id": "merchants-scale",
-  "name": "Купец' чешуя",
+  "name": "Чешуя купца",
   "originalName": "Merchant's Scale",
   "altNames": [],
   "category": "gear",
@@ -41797,7 +41797,7 @@
  },
  {
   "id": "charlatans-gloves",
-  "name": "Шарлатан' перчатки",
+  "name": "Перчатки шарлатана",
   "originalName": "Charlatan's Gloves",
   "altNames": [],
   "category": "gear",
@@ -42355,7 +42355,7 @@
  },
  {
   "id": "explorers-clothing",
-  "name": "Исследователь' одежда",
+  "name": "Одежда исследователя",
   "originalName": "Explorer's Clothing",
   "altNames": [],
   "category": "armor",
@@ -42409,7 +42409,7 @@
  },
  {
   "id": "ventriloquists-ring-greater",
-  "name": "Чревовещатель' кольцо (большое)",
+  "name": "Кольцо (большое) чревовещателя",
   "originalName": "Ventriloquist's Ring (Greater)",
   "altNames": [],
   "category": "gear",
@@ -42931,7 +42931,7 @@
  },
  {
   "id": "medusas-scream",
-  "name": "Медуза' крик",
+  "name": "Крик медузы",
   "originalName": "Medusa's Scream",
   "altNames": [],
   "category": "shield",
@@ -43129,7 +43129,7 @@
  },
  {
   "id": "crafters-eyepiece-greater",
-  "name": "Ремесленник' окуляр (большое)",
+  "name": "Окуляр (большое) ремесленника",
   "originalName": "Crafter's Eyepiece (Greater)",
   "altNames": [],
   "category": "gear",
@@ -43327,7 +43327,7 @@
  },
  {
   "id": "messengers-ring",
-  "name": "Гонец' кольцо",
+  "name": "Кольцо гонца",
   "originalName": "Messenger's Ring",
   "altNames": [],
   "category": "gear",
@@ -43687,7 +43687,7 @@
  },
  {
   "id": "tigers-eye",
-  "name": "Тигр'‐глаз",
+  "name": "Тигровый глаз",
   "originalName": "Tiger's‑eye",
   "altNames": [],
   "category": "gear",
@@ -44389,7 +44389,7 @@
  },
  {
   "id": "fighters-fork",
-  "name": "Воин' вилка",
+  "name": "Вилка воина",
   "originalName": "Fighter's Fork",
   "altNames": [],
   "category": "weapon",
@@ -44623,7 +44623,7 @@
  },
  {
   "id": "entertainers-cincture-greater",
-  "name": "Артист' пояс (большое)",
+  "name": "Пояс (большое) артиста",
   "originalName": "Entertainer's Cincture (Greater)",
   "altNames": [],
   "category": "gear",
@@ -44803,7 +44803,7 @@
  },
  {
   "id": "monkeys-paw",
-  "name": "Обезьяна' лапа",
+  "name": "Лапа обезьяны",
   "originalName": "Monkey's Paw",
   "altNames": [],
   "category": "gear",
@@ -45523,7 +45523,7 @@
  },
  {
   "id": "kings-sleep",
-  "name": "Король' сон",
+  "name": "Сон короля",
   "originalName": "King's Sleep",
   "altNames": [],
   "category": "alchemical",
@@ -45955,7 +45955,7 @@
  },
  {
   "id": "mentalists-staff",
-  "name": "Менталист' посох",
+  "name": "Посох менталиста",
   "originalName": "Mentalist's Staff",
   "altNames": [],
   "category": "weapon",
@@ -46207,7 +46207,7 @@
  },
  {
   "id": "chaplains-cudgel",
-  "name": "Капеллан' дубина",
+  "name": "Дубина капеллана",
   "originalName": "Chaplain's Cudgel",
   "altNames": [],
   "category": "weapon",
@@ -46387,7 +46387,7 @@
  },
  {
   "id": "mentalists-staff-greater",
-  "name": "Менталист' посох (большое)",
+  "name": "Посох (большое) менталиста",
   "originalName": "Mentalist's Staff (Greater)",
   "altNames": [],
   "category": "weapon",
@@ -46441,7 +46441,7 @@
  },
  {
   "id": "mariners-splint",
-  "name": "Мореход' шина",
+  "name": "Шина морехода",
   "originalName": "Mariner's Splint",
   "altNames": [],
   "category": "armor",
@@ -46999,7 +46999,7 @@
  },
  {
   "id": "predators-claw",
-  "name": "Хищник' коготь",
+  "name": "Коготь хищника",
   "originalName": "Predator's Claw",
   "altNames": [],
   "category": "gear",
@@ -47089,7 +47089,7 @@
  },
  {
   "id": "murderers-knot",
-  "name": "Убийца' узел",
+  "name": "Узел убийцы",
   "originalName": "Murderer's Knot",
   "altNames": [],
   "category": "gear",
@@ -47179,7 +47179,7 @@
  },
  {
   "id": "alchemists-lab-expanded",
-  "name": "Алхимика' лаборатория (расширенный)",
+  "name": "Лаборатория (расширенный) алхимика",
   "originalName": "Alchemist's Lab (Expanded)",
   "altNames": [],
   "category": "gear",
@@ -47305,7 +47305,7 @@
  },
  {
   "id": "bombers-eye-elixir-greater",
-  "name": "Бомбардир' глаз эликсир (большое)",
+  "name": "Глаз эликсир (большое) бомбардира",
   "originalName": "Bomber's Eye Elixir (Greater)",
   "altNames": [],
   "category": "alchemical",
@@ -47701,7 +47701,7 @@
  },
  {
   "id": "messengers-ring-greater",
-  "name": "Гонец' кольцо (большое)",
+  "name": "Кольцо (большое) гонца",
   "originalName": "Messenger's Ring (Greater)",
   "altNames": [],
   "category": "gear",
@@ -47863,7 +47863,7 @@
  },
  {
   "id": "crafters-eyepiece",
-  "name": "Ремесленник' окуляр",
+  "name": "Окуляр ремесленника",
   "originalName": "Crafter's Eyepiece",
   "altNames": [],
   "category": "gear",
@@ -48097,7 +48097,7 @@
  },
  {
   "id": "trackers-goggles-greater",
-  "name": "Следопыт' очки (большое)",
+  "name": "Очки (большое) следопыта",
   "originalName": "Tracker's Goggles (Greater)",
   "altNames": [],
   "category": "gear",
@@ -48133,7 +48133,7 @@
  },
  {
   "id": "cheetahs-elixir-moderate",
-  "name": "Гепарда' эликсир (среднее)",
+  "name": "Эликсир (среднее) гепарда",
   "originalName": "Cheetah's Elixir (Moderate)",
   "altNames": [],
   "category": "alchemical",
@@ -48259,7 +48259,7 @@
  },
  {
   "id": "medusas-scream-greater",
-  "name": "Медуза' крик (большое)",
+  "name": "Крик (большое) медузы",
   "originalName": "Medusa's Scream (Greater)",
   "altNames": [],
   "category": "shield",
@@ -48457,7 +48457,7 @@
  },
  {
   "id": "travelers-any-tool",
-  "name": "Путник' любой-инструмент",
+  "name": "Любой-инструмент путника",
   "originalName": "Traveler's Any-Tool",
   "altNames": [],
   "category": "gear",
@@ -48547,7 +48547,7 @@
  },
  {
   "id": "healers-gloves",
-  "name": "Лекаря' перчатки",
+  "name": "Перчатки лекаря",
   "originalName": "Healer's Gloves",
   "altNames": [],
   "category": "gear",
@@ -48619,7 +48619,7 @@
  },
  {
   "id": "bravos-brew-moderate",
-  "name": "Забияка' варево (среднее)",
+  "name": "Варево (среднее) забияки",
   "originalName": "Bravo's Brew (Moderate)",
   "altNames": [],
   "category": "alchemical",
@@ -48745,7 +48745,7 @@
  },
  {
   "id": "travelers-chair",
-  "name": "Путник' стул",
+  "name": "Стул путника",
   "originalName": "Traveler's Chair",
   "altNames": [],
   "category": "gear",
@@ -48799,7 +48799,7 @@
  },
  {
   "id": "charlatans-cape",
-  "name": "Шарлатан' плащ",
+  "name": "Плащ шарлатана",
   "originalName": "Charlatan's Cape",
   "altNames": [],
   "category": "gear",
@@ -48925,7 +48925,7 @@
  },
  {
   "id": "hunters-anthem",
-  "name": "Охотник' гимн",
+  "name": "Гимн охотника",
   "originalName": "Hunter's Anthem",
   "altNames": [],
   "category": "weapon",
@@ -49195,7 +49195,7 @@
  },
  {
   "id": "saints-bone-with-lost-scriptures",
-  "name": "Святой' кость потерянный писания",
+  "name": "Кость святого с утерянными письменами",
   "originalName": "Saint's bone with lost scriptures",
   "altNames": [],
   "category": "gear",
@@ -49285,7 +49285,7 @@
  },
  {
   "id": "healers-toolkit",
-  "name": "Лекаря' набор",
+  "name": "Набор лекаря",
   "originalName": "Healer's Toolkit",
   "altNames": [],
   "category": "gear",
@@ -49879,7 +49879,7 @@
  },
  {
   "id": "alchemists-fire-greater",
-  "name": "Алхимика' огня (большое)",
+  "name": "Огня (большое) алхимика",
   "originalName": "Alchemist's Fire (Greater)",
   "altNames": [],
   "category": "alchemical",
@@ -49951,7 +49951,7 @@
  },
  {
   "id": "mages-hat-greater",
-  "name": "Маг' шляпа (большое)",
+  "name": "Шляпа (большое) мага",
   "originalName": "Mage's Hat (Greater)",
   "altNames": [],
   "category": "gear",
@@ -50167,7 +50167,7 @@
  },
  {
   "id": "alchemists-fire-lesser",
-  "name": "Алхимика' огня (малое)",
+  "name": "Огня (малое) алхимика",
   "originalName": "Alchemist's Fire (Lesser)",
   "altNames": [],
   "category": "alchemical",
@@ -50221,7 +50221,7 @@
  },
  {
   "id": "mages-hat",
-  "name": "Маг' шляпа",
+  "name": "Шляпа мага",
   "originalName": "Mage's Hat",
   "altNames": [],
   "category": "gear",
@@ -50473,7 +50473,7 @@
  },
  {
   "id": "martyrs-shield",
-  "name": "Мученик' щит",
+  "name": "Щит мученика",
   "originalName": "Martyr's Shield",
   "altNames": [],
   "category": "shield",
@@ -50797,7 +50797,7 @@
  },
  {
   "id": "artisans-toolkit-sterling",
-  "name": "Ремесленник' набор (безупречный)",
+  "name": "Набор (безупречный) ремесленника",
   "originalName": "Artisan's Toolkit (Sterling)",
   "altNames": [],
   "category": "gear",
@@ -51373,7 +51373,7 @@
  },
  {
   "id": "alchemists-fire-major",
-  "name": "Алхимика' огня (старшее)",
+  "name": "Огня (старшее) алхимика",
   "originalName": "Alchemist's Fire (Major)",
   "altNames": [],
   "category": "alchemical",
@@ -51499,7 +51499,7 @@
  },
  {
   "id": "infiltrators-accessory",
-  "name": "Лазутчик' принадлежность",
+  "name": "Принадлежность лазутчика",
   "originalName": "Infiltrator's Accessory",
   "altNames": [],
   "category": "weapon",
@@ -51643,7 +51643,7 @@
  },
  {
   "id": "mentalists-staff-major",
-  "name": "Менталист' посох (старшее)",
+  "name": "Посох (старшее) менталиста",
   "originalName": "Mentalist's Staff (Major)",
   "altNames": [],
   "category": "weapon",
@@ -51715,7 +51715,7 @@
  },
  {
   "id": "lovers-gloves",
-  "name": "Любовник' перчатки",
+  "name": "Перчатки любовника",
   "originalName": "Lover's Gloves",
   "altNames": [],
   "category": "gear",
@@ -51823,7 +51823,7 @@
  },
  {
   "id": "berserkers-cloak",
-  "name": "Берсерк' плащ",
+  "name": "Плащ берсерка",
   "originalName": "Berserker's Cloak",
   "altNames": [],
   "category": "gear",
@@ -52345,7 +52345,7 @@
  },
  {
   "id": "maestros-instrument-greater",
-  "name": "Маэстро' инструмент (большое)",
+  "name": "Инструмент (большое) маэстра",
   "originalName": "Maestro's Instrument (Greater)",
   "altNames": [],
   "category": "gear",
@@ -52489,7 +52489,7 @@
  },
  {
   "id": "entertainers-cincture",
-  "name": "Артист' пояс",
+  "name": "Пояс артиста",
   "originalName": "Entertainer's Cincture",
   "altNames": [],
   "category": "gear",
@@ -52975,7 +52975,7 @@
  },
  {
   "id": "thieves-toolkit",
-  "name": "Воровские' набор",
+  "name": "Воровской набор",
   "originalName": "Thieves' Toolkit",
   "altNames": [],
   "category": "gear",
@@ -52993,7 +52993,7 @@
  },
  {
   "id": "thieves-toolkit-infiltrator-picks",
-  "name": "Воровские' набор (лазутчик кирки)",
+  "name": "Воровской набор (отмычки лазутчика)",
   "originalName": "Thieves' Toolkit (Infiltrator Picks)",
   "altNames": [],
   "category": "gear",
@@ -53245,7 +53245,7 @@
  },
  {
   "id": "thieves-toolkit-replacement-picks",
-  "name": "Воровские' набор (замена кирки)",
+  "name": "Воровской набор (замена кирки)",
   "originalName": "Thieves' Toolkit (Replacement Picks)",
   "altNames": [],
   "category": "gear",
@@ -53569,7 +53569,7 @@
  },
  {
   "id": "cats-eye-elixir",
-  "name": "Кот' глаз эликсир",
+  "name": "Глаз эликсир кота",
   "originalName": "Cat's Eye Elixir",
   "altNames": [],
   "category": "alchemical",
@@ -53641,7 +53641,7 @@
  },
  {
   "id": "alchemists-lab",
-  "name": "Алхимика' лаборатория",
+  "name": "Лаборатория алхимика",
   "originalName": "Alchemist's Lab",
   "altNames": [],
   "category": "gear",
@@ -53785,7 +53785,7 @@
  },
  {
   "id": "lantern-bulls-eye",
-  "name": "Фонарь (бык' глаз)",
+  "name": "Фонарь (бычий глаз)",
   "originalName": "Lantern (Bull's Eye)",
   "altNames": [],
   "category": "gear",
@@ -53839,7 +53839,7 @@
  },
  {
   "id": "dragonslayers-shield",
-  "name": "Драконоборец' щит",
+  "name": "Щит драконоборца",
   "originalName": "Dragonslayer's Shield",
   "altNames": [],
   "category": "shield",
@@ -54109,7 +54109,7 @@
  },
  {
   "id": "bravos-brew-greater",
-  "name": "Забияка' варево (большое)",
+  "name": "Варево (большое) забияки",
   "originalName": "Bravo's Brew (Greater)",
   "altNames": [],
   "category": "alchemical",
@@ -54199,7 +54199,7 @@
  },
  {
   "id": "healers-gloves-greater",
-  "name": "Лекаря' перчатки (большое)",
+  "name": "Перчатки (большое) лекаря",
   "originalName": "Healer's Gloves (Greater)",
   "altNames": [],
   "category": "gear",
@@ -54379,7 +54379,7 @@
  },
  {
   "id": "lions-armor-greater",
-  "name": "Лев' доспех (большое)",
+  "name": "Львиное доспех (большое)",
   "originalName": "Lion's Armor (Greater)",
   "altNames": [],
   "category": "armor",
@@ -54685,7 +54685,7 @@
  },
  {
   "id": "warleaders-bulwark",
-  "name": "Воевода' оплот",
+  "name": "Оплот воеводы",
   "originalName": "Warleader's Bulwark",
   "altNames": [],
   "category": "armor",
@@ -54883,7 +54883,7 @@
  },
  {
   "id": "detectives-kit",
-  "name": "Сыщик' набор",
+  "name": "Набор сыщика",
   "originalName": "Detective's Kit",
   "altNames": [],
   "category": "gear",
@@ -54955,7 +54955,7 @@
  },
  {
   "id": "bravos-brew-lesser",
-  "name": "Забияка' варево (малое)",
+  "name": "Варево (малое) забияки",
   "originalName": "Bravo's Brew (Lesser)",
   "altNames": [],
   "category": "alchemical",

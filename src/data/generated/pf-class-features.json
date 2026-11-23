@@ -267,13 +267,13 @@
   "classId": "gunslinger",
   "level": 1,
   "originalName": "Gunslinger's Way",
-  "name": "Стрелок' путь"
+  "name": "Путь стрелока"
  },
  {
   "classId": "gunslinger",
   "level": 1,
   "originalName": "Slinger's Precision",
-  "name": "Пращник' точность"
+  "name": "Точность пращника"
  },
  {
   "classId": "gunslinger",
@@ -957,7 +957,7 @@
   "classId": "guardian",
   "level": 1,
   "originalName": "Guardian's Techniques",
-  "name": "Страж' приёмы"
+  "name": "Приёмы стража"
  },
  {
   "classId": "guardian",
@@ -993,7 +993,7 @@
   "classId": "guardian",
   "level": 1,
   "originalName": "Guardian's Armor",
-  "name": "Страж' доспех"
+  "name": "Доспех стража"
  },
  {
   "classId": "guardian",
@@ -1209,7 +1209,7 @@
   "classId": "witch",
   "level": 19,
   "originalName": "Patron's Gift",
-  "name": "Покровитель' дар"
+  "name": "Дар покровителя"
  },
  {
   "classId": "fighter",
@@ -2325,7 +2325,7 @@
   "classId": "ranger",
   "level": 9,
   "originalName": "Nature's Edge",
-  "name": "Природа' грань"
+  "name": "Природная грань"
  },
  {
   "classId": "ranger",
@@ -2343,7 +2343,7 @@
   "classId": "ranger",
   "level": 11,
   "originalName": "Warden's Endurance",
-  "name": "Страж' выносливость"
+  "name": "Выносливость стража"
  },
  {
   "classId": "ranger",
@@ -2367,7 +2367,7 @@
   "classId": "ranger",
   "level": 1,
   "originalName": "Hunter's Edge",
-  "name": "Охотник' грань"
+  "name": "Грань охотника"
  },
  {
   "classId": "ranger",
@@ -2463,7 +2463,7 @@
   "classId": "bard",
   "level": 9,
   "originalName": "Performer's Heart",
-  "name": "Исполнитель' сердце"
+  "name": "Сердце исполнителя"
  },
  {
   "classId": "bard",
@@ -2517,7 +2517,7 @@
   "classId": "bard",
   "level": 17,
   "originalName": "Greater Performer's Heart",
-  "name": "Большое исполнитель' сердце"
+  "name": "Большое сердце исполнителя"
  },
  {
   "classId": "bard",
@@ -2793,7 +2793,7 @@
   "classId": "commander",
   "level": 1,
   "originalName": "Commander's Banner",
-  "name": "Командир' знамя"
+  "name": "Знамя командира"
  },
  {
   "classId": "commander",
