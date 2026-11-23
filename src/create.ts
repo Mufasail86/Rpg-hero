@@ -1049,7 +1049,7 @@ function build2(d: Draft, scores: Record<Ability, number>): Character {
     ancestryId: d.ancestryId,
     ancestryName: custom ? d.customAncestry.name.trim() : ancestry?.name ?? "Народ",
     ancestryInfo: custom ? d.customAncestry.info || "Своя запись народа." : ancestry?.info ?? "",
-    size: custom ? d.customAncestry.size || "Средний" : ancestry?.size ?? "Средний",
+    size: custom ? d.customAncestry.size || "Средний" : heritage?.size ?? ancestry?.size ?? "Средний",
     speed: (custom ? Number(d.customAncestry.speed) || 25 : ancestry?.speed ?? 25) + (c(d, "generalFeat") === "fleet" ? 5 : 0),
     senses: ancestry?.senses ?? "Обычное зрение",
     ancestryHp,

@@ -117,6 +117,23 @@ function fromPacked(entry: PackedEntry, system: "dnd5e" | "pf2e", edition: Rules
 }
 
 const ORC_CHECKED = "2026-10-16";
+const FEY_CHECKED = "2026-11-23";
+const FEY_ANCESTRY_IDS = new Set(["faun", "gremlin", "nymph", "sprite"]);
+
+function stampFey(entry: RuleEntry, originalName: string): RuleEntry {
+  const pack = packById("feybound");
+  return {
+    ...entry,
+    originalName,
+    status: "verified-reference",
+    checkedOn: FEY_CHECKED,
+    sourceVersion: "ORC",
+    sourceId: "feybound",
+    license: pack?.license ?? "orc",
+    link: pack?.link ?? entry.link,
+    location: "Архивы Нэтиса, книга Feybound, лицензия ORC. Абзац книги не копировался.",
+  };
+}
 
 function stampOrc(entry: RuleEntry, originalName: string): RuleEntry {
   const pack = packById("pf-orc-more");
@@ -168,14 +185,19 @@ function rulesEntries(): RuleEntry[] {
   );
   for (const item of ANCESTRIES) {
     if (heldByPack.has(`ancestry:${item.id}`)) continue;
-    const ancestry = make(pf, "ancestry", "Народ", item.id, item.name, item.short, item.info);
-    list.push(EXTRA_ANCESTRY_IDS.has(item.id) ? stampOrc(ancestry, ORC_ORIGINAL_NAME[item.id] ?? item.id) : ancestry);
+    const fey = FEY_ANCESTRY_IDS.has(item.id);
+    const ancestry = make(fey ? { ...pf, sourceId: "feybound" } : pf, "ancestry", "Народ", item.id, item.name, item.short, item.info);
+    list.push(fey ? stampFey(ancestry, ORC_ORIGINAL_NAME[item.id] ?? item.id) : EXTRA_ANCESTRY_IDS.has(item.id) ? stampOrc(ancestry, ORC_ORIGINAL_NAME[item.id] ?? item.id) : ancestry);
     for (const line of item.heritages) {
       const localId = `${item.id}:${line.id}`;
       if (EXTRA_ANCESTRY_IDS.has(item.id) && packedHeritage.has(localId)) continue;
-      list.push(make(pf, "heritage", "Наследие", localId, line.name, line.short, line.info));
+      const heritage = make(fey ? { ...pf, sourceId: "feybound" } : pf, "heritage", "Наследие", localId, line.name, line.short, line.info);
+      list.push(fey ? stampFey(heritage, line.id) : heritage);
     }
-    for (const feat of item.feats) list.push(make(pf, "ancestry-feat", "Черта народа", feat.id, feat.name, feat.short, feat.info, feat.level));
+    for (const feat of item.feats) {
+      const card = make(fey ? { ...pf, sourceId: "feybound" } : pf, "ancestry-feat", "Черта народа", feat.id, feat.name, feat.short, feat.info, feat.level);
+      list.push(fey ? stampFey(card, feat.id) : card);
+    }
   }
   for (const item of VERSATILE) {
     const entry = {
@@ -185,7 +207,7 @@ function rulesEntries(): RuleEntry[] {
       license: packById(item.sourceId)?.license ?? "orc",
       link: packById(item.sourceId)?.link ?? "",
     };
-    list.push(entry.checkedOn ? entry : stampOrc(entry, item.originalName));
+    list.push(item.sourceId === "feybound" ? stampFey(entry, item.originalName) : entry.checkedOn ? entry : stampOrc(entry, item.originalName));
   }
   for (const item of BG2) {
     const entry = make(pf, "background", "Происхождение", item.id, item.name, item.short, item.info);
@@ -217,6 +239,10 @@ function rulesEntries(): RuleEntry[] {
     for (const choice of item.choices) {
       for (const option of choice.options) {
         const entry = make(pf, "class-choice", choice.title, `${item.id}:${choice.id}:${option.id}`, option.name, option.short, option.info);
+        if (item.id === "bard" && option.id === "trickster") {
+          list.push(stampFey(entry, "Trickster"));
+          continue;
+        }
         const known = pathOption(choice.id, option.id);
         if (known) {
           const pack = packById("pf-orc-more");
@@ -352,7 +378,7 @@ export function countBy(pick: (entry: RuleEntry) => string, entries = rulesCatal
 
 export function packCounts(): { id: string; entered: number; verified: number }[] {
   const entries = allEntries();
-  const rules = ["srd-5.2", "srd-5.1", "pf-player-core", "pf-orc-more", "pf-ogl", "lore-golarion", "lore-forgotten-realms", "lore-other-settings", "lore-srd-settings"].map((id) => ({
+  const rules = ["srd-5.2", "srd-5.1", "pf-player-core", "feybound", "pf-orc-more", "pf-ogl", "lore-golarion", "lore-forgotten-realms", "lore-other-settings", "lore-srd-settings"].map((id) => ({
     id,
     entered: entries.filter((entry) => entry.sourceId === id).length,
     verified: entries.filter((entry) => entry.sourceId === id && entry.status.startsWith("verified")).length,
