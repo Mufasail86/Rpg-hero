@@ -110,6 +110,17 @@ export const PACKS: SourcePack[] = [
     removable: false,
   },
   {
+    id: "feybound",
+    edition: "pf-remaster",
+    settingId: "",
+    title: "Feybound",
+    license: "orc",
+    link: "https://2e.aonprd.com/Sources.aspx?ID=379",
+    note: "Книга Feybound, лицензия ORC, выпуск 4 ноября 2026. В конструкторе народы, наследия, черты, универсальное наследие фадрим, архетипы и муза барда. Числа сверены с Архивами Нэтиса. Предания и рисунки книги сюда не переносились.",
+    bytes: null,
+    removable: false,
+  },
+  {
     id: "pf-orc-more",
     edition: "pf-remaster",
     settingId: "",
@@ -235,7 +246,7 @@ export function defaultEdition(system: SystemId): RulesEdition {
 export function defaultSources(edition: RulesEdition): string[] {
   if (edition === "dnd-2024") return ["srd-5.2"];
   if (edition === "dnd-2014") return ["srd-5.1"];
-  if (edition === "pf-remaster") return ["pf-player-core"];
+  if (edition === "pf-remaster") return ["pf-player-core", "feybound"];
   return ["pf-ogl"];
 }
 

@@ -25,7 +25,7 @@ function bare(classId: string): Pf2eProgress {
 
 describe("полный список ORC", () => {
   it("кладёт в конструктор народы и классы с открытой лицензией", () => {
-    expect(ANCESTRIES).toHaveLength(34);
+    expect(ANCESTRIES).toHaveLength(38);
     expect(CLASSES).toHaveLength(28);
     expect(ANCESTRIES.map((item) => item.name)).toEqual(expect.arrayContaining(["Автоматон", "Котолюд", "Холо", "Людоящер", "Крысолюд", "Пробуждённое животное"]));
     expect(CLASSES.map((item) => item.name)).toEqual(expect.arrayContaining(["Защитник", "Следователь", "Колдун", "Экстрасенс", "Рунотворец"]));
@@ -44,6 +44,7 @@ describe("полный список ORC", () => {
     expect(names.dragonblood).toBe("Драконородный");
     expect(names.hungerseed).toBe("Ненасытный");
     expect(names.duskwalker).toBe("Сумеречный");
+    expect(names.fadrim).toBe("Фадрим");
     expect(names.talos).toBeUndefined();
     expect(names.ardande).toBeUndefined();
   });

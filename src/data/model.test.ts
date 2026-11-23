@@ -26,7 +26,7 @@ describe("единая модель редакций", () => {
     expect(next.progress?.heritageId).toBe("skilled");
     expect(next.progress?.choices.length).toBe(pf.progress?.choices.length);
     expect(rulesOf(next).edition).toBe("pf-remaster");
-    expect(rulesOf(next).sources).toEqual(["pf-player-core"]);
+    expect(rulesOf(next).sources).toEqual(["pf-player-core", "feybound"]);
     const guard = migrateCharacter(guardCharacter());
     expect(guard.abilities).toEqual(guardCharacter().abilities);
     expect(rulesOf(guard).edition).toBe("dnd-2024");
@@ -82,6 +82,7 @@ describe("единая модель редакций", () => {
     expect(counts["srd-5.1"]).toBeGreaterThan(0);
     expect(counts["pf-ogl"]).toBe(256);
     expect(counts["pf-orc-more"]).toBe(9148);
+    expect(counts.feybound).toBeGreaterThan(0);
     expect(counts["lore-golarion"]).toBe(68);
     expect(counts["lore-forgotten-realms"]).toBe(22);
     expect(counts["lore-other-settings"]).toBe(9);
@@ -115,7 +116,7 @@ describe("единая модель редакций", () => {
     expect(loreById.cormyr.status).toBe("verified-reference");
     expect(loreById["oppara-court"].status).toBe("verified-partial");
     const verified = rulesCatalog().filter((entry) => entry.status.startsWith("verified"));
-    expect(verified.length).toBe(12595);
+    expect(verified.length).toBe(12715);
     const byToken = Object.fromEntries(rulesCatalog().map((entry) => [entry.token, entry]));
     expect(byToken["dnd-2024~spell~cure-wounds"].text).toContain("2d8");
     expect(byToken["dnd-2024~spell~false-life"].text).toContain("2d4 + 4");
@@ -143,6 +144,7 @@ describe("единая модель редакций", () => {
     const pfVerified = verified.filter((entry) => entry.edition === "pf-remaster");
     const coreBooks = new Set(["Player Core", "Player Core 2", "GM Core"]);
     expect(pfVerified.every((entry) => {
+      if (entry.sourceId === "feybound") return entry.checkedOn === "2026-11-23" && entry.sourceVersion === "ORC";
       if (entry.checkedOn !== "2026-10-16") return false;
       if (entry.sourceVersion === "ORC") return entry.sourceId === "pf-orc-more";
       return coreBooks.has(entry.sourceVersion);
@@ -173,6 +175,7 @@ describe("единая модель редакций", () => {
       { id: "srd-5.2", entered: 790, verified: 790 },
       { id: "srd-5.1", entered: 573, verified: 573 },
       { id: "pf-player-core", entered: 1828, verified: 1828 },
+      { id: "feybound", entered: 120, verified: 120 },
       { id: "pf-orc-more", entered: 9148, verified: 9148 },
       { id: "pf-ogl", entered: 256, verified: 256 },
       { id: "pf-monster-core", entered: 492, verified: 492 },

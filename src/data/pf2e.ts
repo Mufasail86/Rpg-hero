@@ -1,3 +1,4 @@
+import { FEY_ANCESTRIES } from "./feybound";
 import { MORE_ANCESTRIES, MORE_CLASSES } from "./pf2e-more";
 import { ROSTER_ANCESTRIES, ROSTER_CLASSES } from "./roster";
 import rawBackgrounds from "./generated/pf-backgrounds.json";
@@ -33,6 +34,7 @@ export const SKILLS: PfSkill[] = [
 
 export interface HeritageDef extends Opt {
   hp?: number;
+  size?: string;
 }
 
 export interface AncestryFeat extends Opt {
@@ -360,6 +362,7 @@ export const CLASSES: ClassDef[] = [
           { id: "polymath", name: "Эрудит", info: "Раз в день можете сотворить оккультное заклинание вашего круга, которого нет в репертуаре, как если бы оно было известно. Это отражает широту, а не глубину." },
           { id: "warrior", name: "Воин", info: "Вы обучены средним доспехам. Муза боя не мешает петь, но металл и голос нужно описывать так, чтобы стол понимал, откуда звук." },
           { id: "enigma", name: "Загадка", info: "Вы обучены дополнительному Знанию на выбор и лучше вспоминаете тайны: +1 к проверкам знания, когда вопрос связан с вашей загадкой. Запишите тему в заметках." },
+          { id: "trickster", name: "Проказник", info: "Источник: Feybound. Муза даёт черту «Одурачивающее выступление»: отвлечение, финт, ложь и притворство можно проверять Выступлением. Фокус-заклинание «Колкие слова»: дальняя атака заклинанием на 30 футов, 2d6 звукового, до трёх атак, потом заклинание кончается. На каждом круге выше урон +2d6. Ячейки класса эта муза не прибавляет." },
         ],
       },
     ],
@@ -678,6 +681,7 @@ CLASSES.push(...MORE_CLASSES);
 const ancestryIds = new Set(ANCESTRIES.map((item) => item.id));
 const extraAncestries = ROSTER_ANCESTRIES.filter((item) => !ancestryIds.has(item.id));
 ANCESTRIES.push(...extraAncestries);
+ANCESTRIES.push(...FEY_ANCESTRIES);
 const classIds = new Set(CLASSES.map((item) => item.id));
 const extraClasses = ROSTER_CLASSES.filter((item) => !classIds.has(item.id));
 CLASSES.push(...extraClasses);

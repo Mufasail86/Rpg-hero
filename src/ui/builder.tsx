@@ -1157,10 +1157,19 @@ function FeatStep({
     { id: "breath-control", name: "Контроль дыхания", info: "Вы дольше задерживаете дыхание и легче переносите вдыхаемые угрозы.", level: 1 },
     ...featChoices({ kind: "general", level: featLevel || undefined }).map((feat) => ({ id: feat.id, name: feat.name, info: featInfo(feat), hint: `Уровень ${feat.level}`, level: feat.level })),
   ];
+  const ancestrySeen = new Set<string>();
+  const heritageFeats = draft.versatileHeritageId
+    ? featChoices({ kind: "ancestry", level: featLevel || undefined }).filter((feat) => feat.ancestries.includes(draft.versatileHeritageId))
+    : [];
   const ancestryRows = [
     ...(ancestry?.feats ?? []).map((feat) => ({ id: feat.id, name: feat.name, info: feat.info, level: feat.level })),
     ...featChoices({ kind: "ancestry", ancestryId: draft.ancestryId, level: featLevel || undefined }).map((feat) => ({ id: feat.id, name: feat.name, info: featInfo(feat), hint: `Уровень ${feat.level}`, level: feat.level })),
-  ];
+    ...heritageFeats.map((feat) => ({ id: feat.id, name: feat.name, info: featInfo(feat), hint: `Уровень ${feat.level}`, level: feat.level })),
+  ].filter((feat) => {
+    if (ancestrySeen.has(feat.id)) return false;
+    ancestrySeen.add(feat.id);
+    return true;
+  });
   const classRows = [
     ...(cls?.feats ?? []).map((feat) => ({ id: feat.id, name: feat.name, info: feat.info, level: 1 })),
     ...(cls ? featChoices({ kind: "class", classId: cls.id, level: featLevel || undefined }).map((feat) => ({ id: feat.id, name: feat.name, info: featInfo(feat), hint: `Уровень ${feat.level}`, level: feat.level })) : []),
