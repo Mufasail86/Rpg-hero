@@ -74,7 +74,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
       ...character,
       dnd: {
         ...progress,
-        choices: [...progress.choices, {
+        choices: [...progress.choices.filter((choice) => choice.id !== slot.id), {
           id: slot.id,
           level: slot.level,
           source: slot.source,
@@ -135,18 +135,20 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
         next={Math.min(20, character.level + 1)}
         gained={[
           "Хиты растут: среднее кости плюс Телосложение, не меньше 1.",
-          ...(proficiencyBonus(character.level) !== proficiencyBonus(Math.min(20, character.level + 1))
-            ? [`Бонус мастерства становится ${proficiencyBonus(Math.min(20, character.level + 1))}.`]
+          ...(proficiencyBonus(Math.max(1, character.level - 1)) !== proficiencyBonus(character.level)
+            ? [`Бонус мастерства становится ${proficiencyBonus(character.level)}.`]
             : []),
         ]}
         choose={character.level >= 20 ? [] : slotsForProgress(progress, character.level + 1).filter((slot) => slot.level === character.level + 1)}
-        stars={[
-          ...(levelAdvice(progress.edition ?? "dnd-2024", progress.classId, Math.min(20, character.level + 1))?.skills ?? []),
-          ...(levelAdvice(progress.edition ?? "dnd-2024", progress.classId, Math.min(20, character.level + 1))?.feats ?? []),
-        ]}
-        open={open}
+        adviceAt={(level) => {
+          const tips = levelAdvice(progress.edition ?? "dnd-2024", progress.classId, level);
+          return [...(tips?.skills ?? []), ...(tips?.feats ?? []), ...(tips?.archetypes ?? [])];
+        }}
+        slots={slots}
+        selected={progress.choices.map((choice) => ({ id: choice.id, pick: choice.detail?.ability ? `${choice.pick}|${choice.detail.ability}` : choice.pick, name: describeDndChoice(choice) }))}
         optionsFor={(slot) => optionsFor(slot.source, character)}
         onPick={(slot, pick) => fill(slot, pick)}
+        onRemove={(id) => commit({ ...character, dnd: { ...progress, choices: progress.choices.filter((choice) => choice.id !== id) } })}
         advice={advicePicks(planForCharacter(character))}
       />
       <button type="button" className="btn primary" data-testid="dnd-level-up" disabled={character.level >= 20} onClick={() => applyLevel(character.level + 1, false)}>

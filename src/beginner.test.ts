@@ -1,9 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { blankDraft } from "./types";
-import { createCharacter, validateStep } from "./create";
+import { createCharacter, fixedSkills, scoresOf, skillNeed, validateStep } from "./create";
 import { ancestryAdvice, draftFromPremade, fillStep, peopleSplit, plainWords, premades, starterDraft, TERMS, wizardOptions } from "./beginner";
 
 describe("готовые герои новичка", () => {
+  it("советованные навыки учитывают уже выбранный Интеллект и не повторяют выданные", () => {
+    const draft = structuredClone(premades("pf2e")[0].draft);
+    draft.multi.freeBoosts = ["str", "dex", "con", "int"];
+    const scored = scoresOf(draft);
+    expect(scored.ok).toBe(true);
+    if (!scored.ok) return;
+    const result = fillStep(draft, "skills");
+    expect(result.multi?.skills).toHaveLength(skillNeed(draft, scored.scores));
+    expect(new Set(result.multi?.skills).size).toBe(result.multi?.skills.length);
+    expect(result.multi?.skills.every((id) => !fixedSkills(draft).includes(id))).toBe(true);
+    expect(result.choices).toBeUndefined();
+  });
   it("каждый премейд проходит проверку и создаёт лист", () => {
     const all = [...premades("pf2e"), ...premades("dnd5e")];
     expect(all.length).toBeGreaterThanOrEqual(8);

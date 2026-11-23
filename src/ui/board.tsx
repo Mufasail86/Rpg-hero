@@ -133,11 +133,11 @@ export function CharacterBoard({ character, commit, hints = false }: { character
             onSave={(photo, photoOriginal) => { setNumber({ photo, photoOriginal }); setPhotoFile(null); }}
           />
         )}
-        <label className="board-name">
+        <label className="board-name character-name">
           <span>Имя</span>
           <input data-testid="sheet-name" value={character.name} onChange={(event) => setNumber({ name: event.target.value })} />
         </label>
-        <label className="board-name">
+        <label className="board-name player-name">
           <span>Игрок</span>
           <input data-testid="sheet-player" value={character.player ?? ""} placeholder="имя за столом" onChange={(event) => setNumber({ player: event.target.value })} />
         </label>
@@ -402,7 +402,7 @@ function StrikeList({ title, rows, onTell }: { title: string; rows: StrikeRow[];
         <button key={row.name} type="button" className="strike" onClick={() => onTell(row.name, `${row.formula}\nУрон ${row.damage}${row.traits ? `\nСвойства: ${row.traits}` : ""}`)}>
           <span>{row.name}</span>
           <b>{fmt(row.attack)}</b>
-          <small>{row.damage}</small>
+          <small>{row.damage.replace(/(\d)d(?=\d)/g, "$1к")}</small>
           <small>{row.traits}</small>
         </button>
       ))}

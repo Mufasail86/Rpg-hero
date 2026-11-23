@@ -31,3 +31,12 @@ export function adviceReason(edition: string, classId: string, level: number, id
   if (!row) return;
   return [...row.skills, ...row.feats, ...row.archetypes].find((item) => item.id === id)?.reason;
 }
+
+/** Match advice to real options; never turn a missing catalogue entry into a choice. */
+export function adviceForOptions(options: { pick: string; name: string }[], advice: AdvicePick[]) {
+  const canonical = (id: string) => id.replace(/^feat:/, "").split("|")[0];
+  return options.flatMap((option) => {
+    const tip = advice.find((row) => canonical(row.id) === canonical(option.pick));
+    return tip ? [{ ...option, reason: tip.reason, advised: true }] : [];
+  });
+}

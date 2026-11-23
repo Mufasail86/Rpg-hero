@@ -111,15 +111,15 @@ export function App() {
         </div>
       )}
       </div>
-      <QuickBar
+      {route.page !== "new" && <QuickBar
         character={active ?? null}
         roster={characters}
         allowSwitch={route.page !== "sheet"}
-        raised={route.page === "new"}
+        raised={false}
         compact={route.page === "sheet" && !route.panel}
         hash={hash}
         onChange={upsert}
-      />
+      />}
     </InfoProvider>
   );
 }

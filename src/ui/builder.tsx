@@ -49,8 +49,8 @@ import {
 import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
-import { adviceReason } from "../data/build-advice";
-import { ancestryAdvice, backgroundAdvice, featAdvice, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
+import { adviceReason, levelAdvice } from "../data/build-advice";
+import { ancestryAdvice, backgroundAdvice, featAdvice, fillStep, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
 import { planForDraft, SkillPicks } from "./skill-guide";
 import { skillTitle } from "../skills/picks";
 
@@ -166,17 +166,15 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
   }
 
   return (
-    <div className="app">
+    <div className="app builder-app">
       <header className="topbar">
         <button type="button" className="icon-btn" aria-label="На главную" onClick={() => go("#/")}>
           ←
         </button>
         <div className="grow">
           <h1>{STEP_TITLE[step]}</h1>
-          <div className="tiny">
-            Шаг {index + 1} из {steps.length}. {STEP_HINT[step]}
-          </div>
         </div>
+        <p className="tiny step-subtitle">Шаг {index + 1} из {steps.length}. {STEP_HINT[step]}</p>
       </header>
       <div className="progress" data-testid="step-progress" style={{ margin: "0 16px" }}>
         <i style={{ width: `${((index + 1) / steps.length) * 100}%` }} />
@@ -203,7 +201,7 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
       </nav>
       <main className="screen pad-dock stack">
         <StepExplain step={step} />
-        {(step === "abilities" || step === "skills" || step === "feats" || step === "spells" || step === "gear") && (
+        {(step === "abilities" || step === "feats" || step === "spells" || step === "gear") && (
           <FillButton draft={draft} step={step} onFill={update} />
         )}
         {step === "system" && (
@@ -225,7 +223,7 @@ export function Builder({ onDone }: { onDone: (character: Character) => void }) 
         {step === "background" && <BackgroundStep draft={draft} update={update} setChoice={setChoice} />}
         {step === "class" && <ClassStep draft={draft} update={update} setChoice={setChoice} />}
         {step === "abilities" && <AbilityStep draft={draft} update={update} setChoice={setChoice} toggleMulti={toggleMulti} />}
-        {step === "skills" && <SkillStep draft={draft} toggleMulti={toggleMulti} />}
+        {step === "skills" && <SkillStep draft={draft} update={update} toggleMulti={toggleMulti} />}
         {step === "feats" && <FeatStep draft={draft} update={update} setChoice={setChoice} toggleMulti={toggleMulti} />}
         {step === "gear" && <GearStep draft={draft} update={update} />}
         {step === "spells" && <SpellStep draft={draft} update={update} />}
@@ -281,7 +279,7 @@ function SystemStep({
       <Choice
         id="dnd5e"
         testId="system-dnd5e"
-        name="D&D"
+        name="Подземелья и драконы"
         hint="открытый справочник, две редакции отдельно"
         info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Справочник 5.2, правила 2024 года, и справочник 5.1, правила 2014 года, лежат отдельно. Конструктор считает лист по правилам 2024 года и не подставляет список 2014 года."
         on={system === "dnd5e"}
@@ -290,7 +288,7 @@ function SystemStep({
       <Choice
         id="pf2e"
         testId="system-pf2e"
-        name="Pathfinder"
+        name="Следопыт"
         hint="ремастер и отдельно правила до него"
         info={`Три действия в ход, четыре ступени успеха и владение от необученного до легенды. В конструкторе ${ANCESTRIES.length} народов и ${CL2.length} классов ремастера. Правила до ремастера — другой пакет и другая лицензия, их сюда не подмешивают. Предания мира — на своём экране, не в правилах.`}
         on={system === "pf2e"}
@@ -316,9 +314,10 @@ function SystemStep({
 
 function BookLine({ edition }: { edition: RulesEdition }) {
   const books = PACKS.filter((pack) => pack.edition === edition);
+  const titles: Record<string, string> = { feybound: "Дополнение о феях", "pf-orc-more": "Другие открытые книги" };
   return (
     <p className="tiny" data-testid="book-count">
-      Книг этой редакции: {books.length}. {books.map((pack) => pack.title).join(" · ") || "Список пуст."}
+      Книг этой редакции: {books.length}. {books.map((pack) => titles[pack.id] ?? pack.title).join(" · ") || "Список пуст."}
     </p>
   );
 }
@@ -405,14 +404,14 @@ function AncestryStep({
       <p className="kicker">Советуем новичку</p>
       <div className="portrait-grid">
       {recommended.map((item) => (
-        <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+        <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       </div>
       {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
       <p className="kicker">Все народы</p>
       <div className="portrait-grid">
       {all.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={englishName(item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       </div>
       <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
@@ -563,11 +562,11 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
       {unfilled && <UnfilledNote edition={edition} />}
       <p className="kicker">Советуем новичку</p>
       {list.filter((item) => advised.has(item.id)).map((item) => (
-        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("background", game, item.id)} english={"originalName" in item ? item.originalName : undefined} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("background", game, item.id)} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
       <p className="kicker">Все происхождения</p>
       {list.filter((item) => !advised.has(item.id)).map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} english={"originalName" in item ? item.originalName : undefined} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
       {picked && skillOptions.length > 0 && (
         <>
@@ -651,7 +650,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
       if (!item) return null;
       const face = classChips("dnd5e", item.id);
       return (
-        <Choice key={id} id={item.id} name={item.name} english={englishName(item.id) || undefined} chips={face.chips} reason={face.reason} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+        <Choice key={id} id={item.id} name={item.name} chips={face.chips} reason={face.reason} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
       );
     }
     return (
@@ -683,7 +682,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
     if (!item) return null;
     const face = classChips("pf2e", item.id);
     return (
-      <Choice key={id} id={item.id} name={item.name} english={englishName(item.id) || undefined} chips={face.chips} reason={face.reason} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+      <Choice key={id} id={item.id} name={item.name} chips={face.chips} reason={face.reason} info={item.info} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
     );
   }
   return (
@@ -732,7 +731,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
         rows={ruSort(COMPANIONS, (item) => item.name).map((item) => ({ id: item.id, name: item.name, info: item.info, hint: item.title }))}
         selected={draft.choices.companion ?? ""}
         onPick={(row) => setChoice("companion", row.id)}
-        note="Список снят с полей ORC. Отдельные блоки животных в выгрузке не лежат, поэтому порода не выдумана."
+        note="Список взят из открытых данных. Отдельных описаний животных в выгрузке нет."
       />
       <PickList
         title="Мифические призвания"
@@ -999,7 +998,7 @@ function BackgroundBoosts({ draft, setChoice }: { draft: Draft; setChoice: (key:
   );
 }
 
-function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: string, id: string, max: number) => void }) {
+function SkillStep({ draft, update, toggleMulti }: { draft: Draft; update: (partial: Partial<Draft>) => void; toggleMulti: (key: string, id: string, max: number) => void }) {
   const edition = draft.system ? resolveEdition(draft.system, draft.edition) : "dnd-2024";
   if (draft.system && !filledEdition(edition)) return <UnfilledNote edition={edition} />;
   const scored = scoresOf(draft);
@@ -1018,16 +1017,17 @@ function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: st
       scores: scored.ok ? scored.scores : undefined,
     })
     : null;
-  const growIds = new Set(plan?.grow.map((row) => row.id) ?? []);
-  const reason = new Map(plan?.grow.map((row) => [row.id, row.reason]) ?? []);
-  const ordered = [...visible].sort((left, right) => Number(growIds.has(right.id)) - Number(growIds.has(left.id)) || left.name.localeCompare(right.name, "ru"));
+  const tips = [...(plan?.grow ?? []), ...(levelAdvice(edition, draft.classId, 1)?.skills ?? [])];
+  const reason = new Map(tips.map((row) => [row.id, row.reason]));
+  const recommended = (id: string) => reason.has(id) && !fixed.has(id);
+  const ordered = [...visible].sort((left, right) => Number(recommended(right.id)) - Number(recommended(left.id)) || left.name.localeCompare(right.name, "ru"));
   return (
     <>
       <p className="lead">Нужно выбрать {need}. Уже дано и повторно брать нельзя: {[...fixed].map((id) => skills.find((skill) => skill.id === id)?.name ?? id).join(", ") || "пока ничего"}.</p>
       {plan && (
         <div className="card stack" data-testid="builder-skill-plan">
           <b>Тебе советуем развивать</b>
-          {plan.grow.map((row) => <p key={row.id} className="plain-line"><b>{skillTitle(draft.system!, row.id)}. </b>{row.reason}</p>)}
+          <button type="button" className="btn primary" data-testid="take-recommended-skills" onClick={() => update(fillStep(draft, "skills"))}>Взять советованные</button>
           <p className="tiny">Можно не вкладываться: {plan.skip.map((row) => skillTitle(draft.system!, row.id)).join(", ")}.</p>
         </div>
       )}
@@ -1041,9 +1041,10 @@ function SkillStep({ draft, toggleMulti }: { draft: Draft; toggleMulti: (key: st
           id={skill.id}
           name={skill.name}
           hint={fixed.has(skill.id) ? "уже есть" : ABILITY_SHORT[skill.ability]}
-          reason={advisedLine(draft, skill.id) ?? reason.get(skill.id)}
+          reason={recommended(skill.id) ? reason.get(skill.id) : undefined}
           info={skill.info} short={skill.short}
           on={picked.includes(skill.id)}
+          disabled={fixed.has(skill.id)}
           onPick={() => {
             if (fixed.has(skill.id)) return;
             toggleMulti("skills", skill.id, need);

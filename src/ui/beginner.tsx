@@ -29,6 +29,7 @@ import {
 import { createCharacter, type StepId } from "../create";
 import type { Character, Draft } from "../types";
 import { go, useInfo } from "./common";
+import { adviceForOptions, type AdvicePick } from "../data/build-advice";
 
 export function Term({ id }: { id: string }) {
   const open = useInfo();
@@ -312,56 +313,70 @@ export function LevelWizard({
   next,
   gained,
   choose,
-  stars,
-  open,
+  adviceAt,
+  slots,
+  selected,
   optionsFor,
   onPick,
+  onRemove,
   advice,
 }: {
   level: number;
   next?: number;
   gained?: string[];
-  choose?: { id: string; label: string }[];
-  stars?: { id: string; reason: string }[];
-  open: { id: string; level: number; source: string; label: string }[];
+  choose?: { id: string; level: number; source: string; label: string }[];
+  adviceAt: (level: number) => AdvicePick[];
+  slots: { id: string; level: number; source: string; label: string }[];
+  selected: { id: string; pick: string; name: string }[];
   optionsFor: (slot: { id: string; level: number; source: string; label: string }) => { pick: string; name: string }[];
   onPick: (slot: { id: string; level: number; source: string; label: string }, pick: string) => void;
+  onRemove: (id: string) => void;
   advice?: { pick: string; reason: string }[];
 }) {
-  const here = open.filter((slot) => slot.level === level);
-  const slot = here[0] ?? open[0];
-  const target = next ?? level;
+  const target = level > 1 ? level : next ?? level;
+  const future = target > level;
+  const choices = future ? choose ?? [] : slots.filter((slot) => slot.level === target);
   return (
     <section className="card stack" data-testid="level-wizard">
-      <h2>С {level} на {target} уровень</h2>
+      <h2>С {Math.max(1, target - 1)} на {target} уровень</h2>
       <p className="kicker">Само приходит</p>
       <ul data-testid="level-gains">
         {(gained ?? ["Хиты растут вместе с уровнем."]).map((line) => <li key={line}>{line}</li>)}
       </ul>
       <p className="kicker">Надо выбрать</p>
-      <ul data-testid="level-choices">
-        {(choose ?? []).length === 0 && <li>Новых выборов на этом уровне нет.</li>}
-        {(choose ?? []).map((row) => <li key={row.id}>{row.label}</li>)}
-      </ul>
-      {stars && stars.length > 0 && (
-        <div data-testid="level-stars">
-          {stars.map((row) => (
-            <p key={row.id} className="tiny">★ Почему советуем: {row.reason}</p>
-          ))}
-        </div>
-      )}
-      {!slot && <p className="tiny">Кнопки выбора появятся, когда уровень уже поднят и слот ещё пуст. Сами они ничего не отмечают.</p>}
-      {slot && (
-        <>
-          <p>{slotTitle(slot.source, slot.label)}. {here.length > 1 ? `Таких шагов сейчас ${here.length}. Этот — первый.` : "Один шаг."}</p>
-          {wizardOptions(slot.source, optionsFor(slot), advice).map((option, index) => (
-            <button key={option.pick} type="button" className="advise-row" data-testid={`wizard-${slot.id}`} data-advised={option.advised || index === 0 ? "1" : "0"} onClick={() => onPick(slot, option.pick)}>
-              <b>{option.advised || index === 0 ? "★ " : ""}{option.name}</b>
-              <small>{option.reason}</small>
-            </button>
-          ))}
-        </>
-      )}
+      {future && choices.length > 0 && <p className="tiny">Сначала повысьте уровень — затем можно выбрать варианты ниже.</p>}
+      <div className="stack" data-testid="level-choices">
+        {choices.length === 0 && <p>Новых выборов на этом уровне нет.</p>}
+        {choices.map((slot) => {
+          const chosen = selected.find((row) => row.id === slot.id);
+          const available = optionsFor(slot);
+          const options = chosen && !available.some((option) => option.pick === chosen.pick)
+            ? [...available, { pick: chosen.pick, name: chosen.name }]
+            : available;
+          const specific = adviceForOptions(options, adviceAt(target));
+          const tips = specific.length ? specific : wizardOptions(slot.source, options, advice);
+          return (
+            <div key={slot.id} className="level-choice stack" data-testid={`level-choice-${slot.id}`}>
+              <label className="field">
+                <span>{slotTitle(slot.source, slot.label)}</span>
+                <select aria-label={slot.label} value={chosen?.pick ?? ""} disabled={future} onChange={(event) => event.target.value ? onPick(slot, event.target.value) : onRemove(slot.id)}>
+                  <option value="">Не выбрано</option>
+                  {options.map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+                </select>
+              </label>
+              <div className="advise" data-testid={`advice-${slot.id}`}>
+                {tips.map((option) => (
+                  <button key={option.pick} type="button" className="advise-row" disabled={future} aria-pressed={chosen?.pick === option.pick} data-testid={`wizard-${slot.id}`} data-advised="1" onClick={() => chosen?.pick === option.pick ? onRemove(slot.id) : onPick(slot, option.pick)}>
+                    <b>{option.name}{chosen?.pick === option.pick ? " · выбрано" : ""}</b>
+                    <small>{option.reason}</small>
+                  </button>
+                ))}
+              </div>
+              {chosen && <button type="button" className="text-btn" onClick={() => onRemove(slot.id)}>Отменить выбор</button>}
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

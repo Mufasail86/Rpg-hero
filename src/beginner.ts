@@ -79,8 +79,8 @@ export function traitPlain(id: string, fallback: string): string {
 
 export const STEP_EXPLAIN: Record<StepId, { what: string; example: string }> = {
   system: {
-    what: "Сначала игра. D&D и Pathfinder считаются по-разному, и старую редакцию с новой не смешивают.",
-    example: "новичку проще начать с Pathfinder, воин, или с D&D, воин.",
+    what: "Сначала выберите игру: «Подземелья и драконы» или «Следопыт». Их правила и редакции не смешиваются.",
+    example: "для первого героя подойдёт воин: он крепкий и у него понятные боевые приёмы.",
   },
   name: {
     what: "Имя — только подпись на листе. На числа оно не влияет, и его можно сменить потом.",
@@ -861,7 +861,7 @@ function backgroundAbilities(draft: Draft): Ability[] {
 }
 
 function fillSkills(draft: Draft): Partial<Draft> {
-  const scored = scoresOf({ ...draft, ...fillAbilities(draft) });
+  const scored = scoresOf(draft);
   if (!scored.ok || !draft.system) return {};
   const need = skillNeed(draft, scored.scores);
   const fixed = new Set(fixedSkills(draft));

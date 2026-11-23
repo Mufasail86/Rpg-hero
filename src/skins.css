@@ -83,8 +83,8 @@ html[data-skin="scroll"] .abil {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
+  width: 84px;
+  height: 84px;
   margin: 0 auto;
   border-radius: 50%;
   background:
@@ -97,21 +97,22 @@ html[data-skin="scroll"] .abil {
 
 html[data-skin="scroll"] .abil span {
   color: #5a3a18;
-  font-size: 9px;
-  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+  letter-spacing: 0;
 }
 
 html[data-skin="scroll"] .abil .num {
   color: #2b1c10;
   font-family: Palatino, Georgia, serif;
   font-size: 16px;
+  min-height: 24px;
   background: transparent;
 }
 
 html[data-skin="scroll"] .abil small {
   grid-column: auto;
   color: #5c4630;
-  font-size: 9px;
+  font-size: 0.85rem;
 }
 
 html[data-skin="scroll"] .ac-box > div,
@@ -269,8 +270,8 @@ html[data-skin="hud-dark"] .abil {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 62px;
-  height: 68px;
+  width: 84px;
+  height: 92px;
   margin: 0 auto;
   background: var(--hud-hex);
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
@@ -280,20 +281,21 @@ html[data-skin="hud-dark"] .abil {
 html[data-skin="hud"] .abil span,
 html[data-skin="hud-dark"] .abil span {
   color: var(--hud-label);
-  font-size: 9px;
-  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+  letter-spacing: 0;
 }
 
 html[data-skin="hud"] .abil .num,
 html[data-skin="hud-dark"] .abil .num {
   color: var(--hud-ink);
   font-size: 16px;
+  min-height: 24px;
   font-weight: 800;
   background: transparent;
 }
 
 html[data-skin="hud"] .abil small,
-html[data-skin="hud-dark"] .abil small { grid-column: auto; color: var(--hud-label); font-size: 9px; }
+html[data-skin="hud-dark"] .abil small { grid-column: auto; color: var(--hud-label); font-size: 0.85rem; }
 
 html[data-skin="hud"] .ac-box .big-num,
 html[data-skin="hud-dark"] .ac-box .big-num {
@@ -366,19 +368,6 @@ html[data-skin="hud-dark"] .save-row {
 }
 
 @media (max-width: 899px) {
-  html[data-skin="scroll"] .character-board,
-  html[data-skin="hud"] .character-board,
-  html[data-skin="hud-dark"] .character-board {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "head"
-      "meta"
-      "abil"
-      "defense"
-      "skills"
-      "strikes"
-      "foot";
-  }
   html[data-skin="scroll"] .board-abil,
   html[data-skin="hud"] .board-abil,
   html[data-skin="hud-dark"] .board-abil {

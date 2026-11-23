@@ -83,7 +83,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
     const detail = detailFor(pick);
     commit({
       ...character,
-      progress: { ...progress!, choices: [...progress!.choices, { id: slot.id, level: slot.level, source: slot.source, pick, ...(detail ? { detail } : {}) }] },
+      progress: { ...progress!, choices: [...progress!.choices.filter((choice) => choice.id !== slot.id), { id: slot.id, level: slot.level, source: slot.source, pick, ...(detail ? { detail } : {}) }] },
     });
   }
 
@@ -209,12 +209,12 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
         next={Math.min(20, character.level + 1)}
         gained={["Хиты растут на хиты класса и модификатор Телосложения."]}
         choose={character.level >= 20 ? [] : slotsForProgress(progress, character.level + 1).filter((slot) => slot.level === character.level + 1)}
-        stars={[
-          ...(levelAdvice("pf-remaster", progress.classId, Math.min(20, character.level + 1))?.skills ?? []),
-          ...(levelAdvice("pf-remaster", progress.classId, Math.min(20, character.level + 1))?.feats ?? []),
-          ...(levelAdvice("pf-remaster", progress.classId, Math.min(20, character.level + 1))?.archetypes ?? []),
-        ]}
-        open={open}
+        adviceAt={(level) => {
+          const tips = levelAdvice("pf-remaster", progress.classId, level);
+          return [...(tips?.skills ?? []), ...(tips?.feats ?? []), ...(tips?.archetypes ?? [])];
+        }}
+        slots={slots}
+        selected={progress.choices.map((choice) => ({ ...choice, name: choiceCaption(choice) }))}
         optionsFor={(slot) => {
           const taken = new Set(progress.choices.map((choice) => choice.pick));
           const raw = optionsForSlot(slot.source, {
@@ -238,6 +238,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
           });
         }}
         onPick={(slot, pick) => fill(slot, pick)}
+        onRemove={remove}
         advice={advicePicks(planForCharacter(character))}
       />
       <details className="card">
@@ -300,7 +301,7 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
         <div className="card stack">
           <b>Особенности класса на {character.level} уровне</b>
           {featuresAt(progress.classId, character.level).map((feature) => (
-            <p key={feature.originalName}>{feature.name} <span className="en-name">{feature.originalName}</span></p>
+            <p key={feature.originalName}>{feature.name}</p>
           ))}
         </div>
       )}

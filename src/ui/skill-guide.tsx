@@ -51,7 +51,7 @@ export function SkillPicks({
   return (
     <div className="stack skill-picks" data-testid="skill-picks">
       <p className="tiny">{GUIDE_NOTE}</p>
-      <p className="tiny">{system === "pf2e" ? "Pathfinder, ремастер." : "D&D 5e: список один и для 2014, и для 2024. Меняются числа, не совет."}</p>
+      <p className="tiny">{system === "pf2e" ? "Следопыт, обновлённые правила." : "Подземелья и драконы: список один для правил 2014 и 2024 годов. Меняются числа, не совет."}</p>
       {plan && <PlanList plan={plan} system={system} />}
       {catalog && (
         <section className="stack" data-testid="skill-catalog">
@@ -120,8 +120,8 @@ export function SkillPicksPage() {
       </header>
       <main className="screen stack">
         <div className="seg" role="group" aria-label="Система">
-          <button type="button" className={`pill ${system === "pf2e" ? "on" : ""}`} data-testid="picks-pf" onClick={() => setSystem("pf2e")}>Pathfinder</button>
-          <button type="button" className={`pill ${system === "dnd5e" ? "on" : ""}`} data-testid="picks-dnd" onClick={() => setSystem("dnd5e")}>D&D</button>
+          <button type="button" className={`pill ${system === "pf2e" ? "on" : ""}`} data-testid="picks-pf" onClick={() => setSystem("pf2e")}>Следопыт</button>
+          <button type="button" className={`pill ${system === "dnd5e" ? "on" : ""}`} data-testid="picks-dnd" onClick={() => setSystem("dnd5e")}>Подземелья и драконы</button>
         </div>
         <SkillPicks system={system} />
       </main>
