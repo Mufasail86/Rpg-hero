@@ -30,6 +30,9 @@ import { createCharacter, type StepId } from "../create";
 import type { Character, Draft } from "../types";
 import { go, useInfo } from "./common";
 import { adviceForOptions, type AdvicePick } from "../data/build-advice";
+import { CARD_BY_ID, cardText } from "../data/cards";
+import { learningText } from "../data/learning";
+import { Info } from "./common";
 
 export function Term({ id }: { id: string }) {
   const open = useInfo();
@@ -320,7 +323,9 @@ export function LevelWizard({
   onPick,
   onRemove,
   advice,
+  complexity = "simple",
 }: {
+  complexity?: "simple" | "complex";
   level: number;
   next?: number;
   gained?: string[];
@@ -354,7 +359,9 @@ export function LevelWizard({
             ? [...available, { pick: chosen.pick, name: chosen.name }]
             : available;
           const specific = adviceForOptions(options, adviceAt(target));
-          const tips = specific.length ? specific : wizardOptions(slot.source, options, advice);
+          const tips = (specific.length ? specific : wizardOptions(slot.source, options, advice)).slice(0, complexity === "complex" ? 6 : 2);
+          const pickedId = chosen?.pick.replace(/^feat:/, "").split("|")[0];
+          const pickedCard = pickedId ? CARD_BY_ID.get(pickedId) : undefined;
           return (
             <div key={slot.id} className="level-choice stack" data-testid={`level-choice-${slot.id}`}>
               <label className="field">
@@ -373,6 +380,7 @@ export function LevelWizard({
                 ))}
               </div>
               {chosen && <button type="button" className="text-btn" onClick={() => onRemove(slot.id)}>Отменить выбор</button>}
+              {chosen && pickedId && <div className="row-between"><span>Описание выбранного варианта</span><Info title={chosen.name} text={learningText(pickedId, pickedCard ? cardText(pickedCard) : "Полное правило смотрите в справочнике выбранной редакции.")} /></div>}
             </div>
           );
         })}

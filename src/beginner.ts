@@ -9,6 +9,7 @@ import {
   type StepId,
 } from "./create";
 import { skillPlan } from "./skills/picks";
+import { developmentAdvice } from "./data/development";
 import {
   ANCESTRIES,
   CLASSES as CL2,
@@ -880,6 +881,7 @@ function fillSkills(draft: Draft): Partial<Draft> {
     scores: scored.scores,
   });
   const prefer = [
+    ...developmentAdvice(draft.classId, draft.development).map(row => row.id).filter(id => pool.includes(id)),
     ...plan.grow.map((row) => row.id).filter((id) => pool.includes(id)),
     ...PREFER_SKILLS.filter((id) => pool.includes(id)),
     ...pool,

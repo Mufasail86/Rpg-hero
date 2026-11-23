@@ -182,7 +182,10 @@ export interface Spellcasting {
 
 import type { RulesEdition, RulesProfile } from "./data/editions";
 
+export interface DevelopmentPlan { complexity: "simple" | "complex"; path: string }
+
 export interface Character {
+  development?: DevelopmentPlan;
   id: string;
   system: SystemId;
   name: string;
@@ -422,6 +425,7 @@ export function describe(entry: { short?: string; info: string }): string {
 }
 
 export interface Draft {
+  development?: DevelopmentPlan;
   system: SystemId | null;
   /** Пустая строка — редакция по умолчанию для выбранной игры. */
   edition: RulesEdition | "";

@@ -1,6 +1,7 @@
 import { actionGlyph, CARD_BY_ID, prereqLine, TRAIT_BY_ID, type RuleCard } from "../data/cards";
 import { plainWords, traitPlain } from "../beginner";
 import { useInfo } from "./common";
+import { learningNote } from "../data/learning";
 
 const CLASS_TRAITS = new Set([
   "alchemist", "animist", "barbarian", "bard", "champion", "cleric", "commander", "druid", "exemplar",
@@ -28,12 +29,14 @@ function Line({ label, value }: { label: string; value?: string }) {
 
 export function RuleCardView({ card, sourceNote }: { card: RuleCard; sourceNote?: string }) {
   const open = useInfo();
+  const lesson = learningNote(card.id);
   const glyph = actionGlyph(card.actions);
   const pre = prereqLine(card);
   const book = card.page != null ? `${card.book}, с. ${card.page}` : card.book;
   return (
     <div className="rule-card" data-testid={`rule-card-${card.id}`}>
-      <p className="plain-line"><b>Простыми словами.</b> {plainWords(card)}</p>
+      <p className="plain-line"><b>Простыми словами.</b> {lesson?.meaning ?? plainWords(card)}</p>
+      {lesson && <><Line label="Когда полезно" value={lesson.useful} /><Line label="Пример" value={lesson.example} /><Line label="Ограничение" value={lesson.caution} /></>}
       <p className="rule-meta">
         {glyph && <span className="glyph">{glyph}</span>} {kindTitle(card)}
       </p>

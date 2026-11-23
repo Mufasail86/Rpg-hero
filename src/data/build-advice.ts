@@ -38,5 +38,5 @@ export function adviceForOptions(options: { pick: string; name: string }[], advi
   return options.flatMap((option) => {
     const tip = advice.find((row) => canonical(row.id) === canonical(option.pick));
     return tip ? [{ ...option, reason: tip.reason, advised: true }] : [];
-  });
+  }).sort((a, b) => advice.findIndex(row => canonical(row.id) === canonical(a.pick)) - advice.findIndex(row => canonical(row.id) === canonical(b.pick)) || a.name.localeCompare(b.name, "ru"));
 }

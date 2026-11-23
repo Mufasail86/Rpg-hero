@@ -51,14 +51,14 @@ export function pathOption(source: string, id: string | undefined): PathOption |
   return pathGroup(source)?.options.find((option) => option.id === id);
 }
 
-const FEAT_NOTE = "Черта из полей. Постоянные числа листа она не меняет, если эффект не вынесен числом.";
+const FEAT_NOTE = "Полное правило пока не загружено. До выбора проверьте эффект и требования в источнике; отсутствие описания не означает отсутствие эффекта.";
 
 export function levelOneClassFeats(classId: string): { id: string; name: string; info: string; short: string }[] {
   return featChoices({ kind: "class", classId, level: 1 }).map((feat) => ({
     id: feat.id,
     name: feat.name,
-    info: FEAT_NOTE,
-    short: "Уровень 1. В постоянные числа не входит.",
+    info: featInfo(feat),
+    short: CARD_BY_ID.get(feat.id)?.summary || "Уровень 1. Откройте описание и требования перед выбором.",
   }));
 }
 

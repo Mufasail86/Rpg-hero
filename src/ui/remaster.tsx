@@ -10,6 +10,8 @@ import { hpMax, refreshSlots, spellCountText } from "../rules";
 import { useCompact } from "./common";
 import { PickList } from "./feat-picker";
 import { levelAdvice } from "../data/build-advice";
+import { developmentAdvice } from "../data/development";
+import { DevelopmentPlanner } from "./development";
 import { LevelWizard } from "./beginner";
 import { advicePicks, planForCharacter } from "./skill-guide";
 
@@ -204,14 +206,16 @@ export function AdvancePanel({ character, onChange }: { character: Character; on
   return (
     <div className="stack">
       <p className="lead">Уровень {character.level}, опыт {character.xp} / 1000. Сначала один шаг. Весь план по уровням открывается ниже.</p>
+      <DevelopmentPlanner system={character.system} classId={progress.classId} value={character.development} onChange={development => commit({ ...character, development })} />
       <LevelWizard
+        complexity={character.development?.complexity}
         level={character.level}
         next={Math.min(20, character.level + 1)}
         gained={["Хиты растут на хиты класса и модификатор Телосложения."]}
         choose={character.level >= 20 ? [] : slotsForProgress(progress, character.level + 1).filter((slot) => slot.level === character.level + 1)}
         adviceAt={(level) => {
           const tips = levelAdvice("pf-remaster", progress.classId, level);
-          return [...(tips?.skills ?? []), ...(tips?.feats ?? []), ...(tips?.archetypes ?? [])];
+          return [...developmentAdvice(progress.classId, character.development), ...(tips?.skills ?? []), ...(tips?.feats ?? []), ...(character.development?.complexity === "complex" ? tips?.archetypes ?? [] : [])];
         }}
         slots={slots}
         selected={progress.choices.map((choice) => ({ ...choice, name: choiceCaption(choice) }))}

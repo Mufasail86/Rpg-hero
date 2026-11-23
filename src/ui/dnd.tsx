@@ -3,6 +3,8 @@ import { EPIC_BOONS, GENERAL_FEATS, ITEMS, ORIGIN_FEATS, SKILLS, STYLE_FEATS } f
 import { actionSurge, attackPreview, bonusAction, emptyDndCombat, newRound, openHelp, secondWind, spendAttack, spendResource, spendSlot, useReaction } from "../dnd/combat";
 import { describeDndChoice, KNOWN_SUBCLASSES, proficiencyBonus, sheetDnd, snapshotDnd, slotsForProgress } from "../dnd/build";
 import { levelAdvice } from "../data/build-advice";
+import { developmentAdvice } from "../data/development";
+import { DevelopmentPlanner } from "./development";
 import { hpMax, refreshSlots } from "../rules";
 import type { Ability, Character, DndCombat, FeatInst, FeatureInst, ItemInst, StructuredEffect } from "../types";
 import { ABILITY_NAME, fmt, uid } from "../types";
@@ -130,7 +132,9 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
   return (
     <div className="stack">
       <p className="lead">Уровень {character.level}. Сначала один шаг того, что нового. Полный список выборов остаётся ниже.</p>
+      <DevelopmentPlanner system={character.system} classId={progress.classId} value={character.development} onChange={development => commit({ ...character, development })} />
       <LevelWizard
+        complexity={character.development?.complexity}
         level={character.level}
         next={Math.min(20, character.level + 1)}
         gained={[
@@ -142,7 +146,7 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
         choose={character.level >= 20 ? [] : slotsForProgress(progress, character.level + 1).filter((slot) => slot.level === character.level + 1)}
         adviceAt={(level) => {
           const tips = levelAdvice(progress.edition ?? "dnd-2024", progress.classId, level);
-          return [...(tips?.skills ?? []), ...(tips?.feats ?? []), ...(tips?.archetypes ?? [])];
+          return [...developmentAdvice(progress.classId, character.development), ...(tips?.skills ?? []), ...(tips?.feats ?? []), ...(character.development?.complexity === "complex" ? tips?.archetypes ?? [] : [])];
         }}
         slots={slots}
         selected={progress.choices.map((choice) => ({ id: choice.id, pick: choice.detail?.ability ? `${choice.pick}|${choice.detail.ability}` : choice.pick, name: describeDndChoice(choice) }))}

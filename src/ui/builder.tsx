@@ -50,6 +50,8 @@ import { GENERAL_FEAT_IDS, skillFeatBlock } from "../pf2e/eligibility";
 import { Choice, go, Info, money } from "./common";
 import { Advise, classChips, FillButton, orderedIds, reasonFor, StepExplain } from "./beginner";
 import { adviceReason, levelAdvice } from "../data/build-advice";
+import { developmentAdvice } from "../data/development";
+import { DevelopmentPlanner } from "./development";
 import { ancestryAdvice, backgroundAdvice, featAdvice, fillStep, peopleSplit, recommendedBoosts, spellAdvice } from "../beginner";
 import { planForDraft, SkillPicks } from "./skill-guide";
 import { skillTitle } from "../skills/picks";
@@ -279,7 +281,7 @@ function SystemStep({
       <Choice
         id="dnd5e"
         testId="system-dnd5e"
-        name="Подземелья и драконы"
+        name="Подземелья и драконы (D&D)"
         hint="открытый справочник, две редакции отдельно"
         info="Кость к20, модификатор характеристики, бонус мастерства и преимущество или помеха. Справочник 5.2, правила 2024 года, и справочник 5.1, правила 2014 года, лежат отдельно. Конструктор считает лист по правилам 2024 года и не подставляет список 2014 года."
         on={system === "dnd5e"}
@@ -288,7 +290,7 @@ function SystemStep({
       <Choice
         id="pf2e"
         testId="system-pf2e"
-        name="Следопыт"
+        name="Pathfinder (PF)"
         hint="ремастер и отдельно правила до него"
         info={`Три действия в ход, четыре ступени успеха и владение от необученного до легенды. В конструкторе ${ANCESTRIES.length} народов и ${CL2.length} классов ремастера. Правила до ремастера — другой пакет и другая лицензия, их сюда не подмешивают. Предания мира — на своём экране, не в правилах.`}
         on={system === "pf2e"}
@@ -670,6 +672,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
             ))}
           </>
         )}
+        {draft.classId && <DevelopmentPlanner system={draft.system ?? undefined} classId={draft.classId} value={draft.development} onChange={development => update({ development })} />}
       </>
     );
   }
@@ -702,6 +705,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
           ))}
         </div>
       ))}
+      {draft.classId && <DevelopmentPlanner system={draft.system ?? undefined} classId={draft.classId} value={draft.development} onChange={development => update({ development })} />}
       {cls?.id === "fighter" && (
         <>
           <p className="kicker">Навык воина</p>
@@ -1017,7 +1021,7 @@ function SkillStep({ draft, update, toggleMulti }: { draft: Draft; update: (part
       scores: scored.ok ? scored.scores : undefined,
     })
     : null;
-  const tips = [...(plan?.grow ?? []), ...(levelAdvice(edition, draft.classId, 1)?.skills ?? [])];
+  const tips = [...(plan?.grow ?? []), ...(levelAdvice(edition, draft.classId, 1)?.skills ?? []), ...developmentAdvice(draft.classId, draft.development)];
   const reason = new Map(tips.map((row) => [row.id, row.reason]));
   const recommended = (id: string) => reason.has(id) && !fixed.has(id);
   const ordered = [...visible].sort((left, right) => Number(recommended(right.id)) - Number(recommended(left.id)) || left.name.localeCompare(right.name, "ru"));
@@ -1650,10 +1654,10 @@ function AbilityRow({
   return (
     <div>
       <p className="kicker">{label}</p>
-      <div className="wrap">
+      <div className="ability-picks">
         {list.map((ability) => (
-          <button key={ability} type="button" className={`pill ${value === ability ? "on" : ""} ${marks?.includes(ability) ? "advise" : ""}`} data-testid={`abs-${label}-${ability}`} onClick={() => onPick(ability)}>
-            {ABILITY_SHORT[ability]}{marks?.includes(ability) ? " ·" : ""}
+          <button key={ability} type="button" aria-pressed={value === ability} title={marks?.includes(ability) ? "Рекомендовано для класса" : ABILITY_INFO[ability]} className={`ability-pick ${value === ability ? "on" : ""} ${marks?.includes(ability) ? "recommended" : ""}`} data-testid={`abs-${label}-${ability}`} onClick={() => onPick(ability)}>
+            {ABILITY_NAME[ability]}
           </button>
         ))}
       </div>
@@ -1665,10 +1669,10 @@ function MultiAbilities({ group, label, picked, max, onToggle, marks }: { group:
   return (
     <div>
       <p className="kicker">{label}: {picked.length} из {max}</p>
-      <div className="wrap">
+      <div className="ability-picks">
         {ABILITIES.map((ability) => (
-          <button key={ability} type="button" className={`pill ${picked.includes(ability) ? "on" : ""} ${marks?.includes(ability) ? "advise" : ""}`} data-testid={`multi-${group}-${ability}`} onClick={() => onToggle(ability)}>
-            {ABILITY_SHORT[ability]}{marks?.includes(ability) ? " ·" : ""}
+          <button key={ability} type="button" aria-pressed={picked.includes(ability)} title={marks?.includes(ability) ? "Рекомендовано для класса" : ABILITY_INFO[ability]} className={`ability-pick ${picked.includes(ability) ? "on" : ""} ${marks?.includes(ability) ? "recommended" : ""}`} data-testid={`multi-${group}-${ability}`} onClick={() => onToggle(ability)}>
+            {ABILITY_NAME[ability]}
           </button>
         ))}
       </div>

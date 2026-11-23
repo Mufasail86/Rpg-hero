@@ -749,6 +749,7 @@ export function createCharacter(d: Draft): { ok: true; character: Character } | 
     withSlots.rules = { edition, sources: defaultSources(edition), houseRules: "" };
   }
   if (d.versatileHeritageId) withSlots.versatileHeritageId = d.versatileHeritageId;
+  if (d.development) withSlots.development = { ...d.development };
   return { ok: true, character: withSlots };
 }
 

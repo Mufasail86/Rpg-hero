@@ -43,16 +43,18 @@ export const MUSIC_LICENSE_LINK = "https://creativecommons.org/publicdomain/zero
 export function musicSceneFor(hash: string, playScene = ""): MusicScene {
   const path = hash.replace(/^#/, "");
   if (path.startsWith("/bestiary") || path.startsWith("bestiary")) return "bestiary";
+  if (path.startsWith("/training")) return "combat";
   if ((path.includes("/now") || path.endsWith("/now")) && playScene === "fight") return "combat";
   return "tavern";
 }
 
 export function readMusicOn(storage: Pick<Storage, "getItem"> | null): boolean {
-  return storage?.getItem(MUSIC_ON_KEY) === "1";
+  try { return storage?.getItem(MUSIC_ON_KEY) === "1"; } catch { return false; }
 }
 
 export function readMusicVolume(storage: Pick<Storage, "getItem"> | null): number {
-  const stored = storage?.getItem(MUSIC_VOLUME_KEY);
+  let stored: string | null | undefined;
+  try { stored = storage?.getItem(MUSIC_VOLUME_KEY); } catch { return 0.35; }
   if (stored == null || stored === "") return 0.35;
   const raw = Number(stored);
   if (!Number.isFinite(raw)) return 0.35;

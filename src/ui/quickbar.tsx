@@ -120,6 +120,7 @@ function SideNav({ hash, character }: { hash: string; character: Character | nul
     { id: "library", label: "Справочник", icon: "▤", href: "#/library", on: page === "library" },
     { id: "lore", label: "Предания", icon: "✧", href: "#/lore", on: page === "lore" },
     { id: "bestiary", label: "Бестиарий", icon: "☠", href: "#/bestiary", on: page === "bestiary" },
+    { id: "training", label: "Учебные бои", icon: "⚔", href: character ? `#/training/${character.id}` : "#/training", on: page === "training" },
     { id: "settings", label: "Настройки", icon: "⚙", href: "#/settings", on: page === "settings" },
   ];
   return (
