@@ -1,6 +1,4 @@
 import { useRef, useState } from "react";
-import { guardCharacter } from "../dnd/guard";
-import { artefolCharacter } from "../pf2e/artefol";
 import type { Character } from "../types";
 import { loadDraft } from "../storage";
 import { applySave, previewSave, serialize } from "../transfer";
@@ -9,25 +7,36 @@ import { systemTitle } from "../labels";
 import { ART, ART_CAPTION, PORTRAIT_PROVENANCE, artSrc, portraitSrc } from "./art";
 import { go } from "./common";
 import { LegalText } from "./legal";
-import { maybeTour, Tour } from "./beginner";
+import { tourSeen } from "../tour-key";
+import { Tour } from "./tour";
 
 export function Home({
   characters,
   onCommit,
   onDelete,
+  onAddSample,
 }: {
   characters: Character[];
   onCommit: (characters: Character[]) => void;
   onDelete: (id: string) => void;
+  onAddSample: (hero: Character) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [about, setAbout] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ text: string; rows: { id: string; name: string; system: string; level: number }[] } | null>(null);
-  const [tour, setTour] = useState(maybeTour);
+  const [tour, setTour] = useState(() => !tourSeen());
+  const [loadingSample, setLoadingSample] = useState(false);
   const draft = loadDraft();
   const hasDraft = Boolean(draft && (draft.system || draft.name));
+
+  async function addSample(load: () => Promise<Character>) {
+    setLoadingSample(true);
+    try { onAddSample(await load()); }
+    catch { setMessage("Не удалось загрузить контрольного героя. Попробуйте ещё раз."); }
+    finally { setLoadingSample(false); }
+  }
 
   function exportAll() {
     const blob = new Blob([serialize(characters)], { type: "application/json" });
@@ -74,7 +83,10 @@ export function Home({
         <div className="stack">
         <figure className="banner" data-testid="home-hero">
           <div className="banner-art">
-            <img src={artSrc(ART.hero)} alt="Четыре героя у ночной таверны: щит, лук, молот и бирюзовый свет" />
+            <picture>
+              <source type="image/webp" srcSet={`${artSrc("small/hero-tavern-party-640.webp")} 640w, ${artSrc("small/hero-tavern-party-1280.webp")} 1280w`} sizes="(min-width: 900px) 1140px, 100vw" />
+              <img src={artSrc(ART.hero)} alt="Четыре героя у ночной таверны: щит, лук, молот и бирюзовый свет" width={1280} height={720} fetchPriority="high" />
+            </picture>
             <span className="spark" style={{ left: "18%", top: "22%" }} />
             <span className="spark amber" style={{ left: "62%", top: "30%" }} />
             <span className="spark violet" style={{ left: "78%", top: "18%" }} />
@@ -95,7 +107,12 @@ export function Home({
             [ART.goblin, "Гоблин"],
           ].map(([file, label]) => (
             <figure key={file}>
-              <div className="cast-portrait"><img src={artSrc(file)} alt={label} loading="lazy" decoding="async" /></div>
+              <div className="cast-portrait">
+                <picture>
+                  <source type="image/webp" srcSet={artSrc(`small/${file.replace(/\.jpg$/, "-300.webp")}`)} />
+                  <img src={artSrc(file)} alt={label} loading="lazy" decoding="async" />
+                </picture>
+              </div>
               <figcaption>{label}</figcaption>
             </figure>
           ))}
@@ -109,12 +126,12 @@ export function Home({
         <button type="button" className="btn" data-testid="open-training" onClick={() => go("#/training")}>Учебные бои · арена и таверна</button>
         <p className="tiny">Кнопки ниже — контрольные воины для проверки правил. Для первой игры они не нужны.</p>
         {!characters.some((hero) => hero.id === "artefol-pobochka") && (
-          <button type="button" className="btn" data-testid="add-artefol" onClick={() => onCommit([artefolCharacter(), ...characters])}>
+          <button type="button" className="btn" data-testid="add-artefol" disabled={loadingSample} onClick={() => void addSample(async () => (await import("../pf2e/artefol")).artefolCharacter())}>
             Контрольный воин: Артефол Побочка
           </button>
         )}
         {!characters.some((hero) => hero.id === "strazh-ograda") && (
-          <button type="button" className="btn" data-testid="add-guard" onClick={() => onCommit([guardCharacter(), ...characters])}>
+          <button type="button" className="btn" data-testid="add-guard" disabled={loadingSample} onClick={() => void addSample(async () => (await import("../dnd/guard")).guardCharacter())}>
             Контрольный воин: Страж Ограда
           </button>
         )}
