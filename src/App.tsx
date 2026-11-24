@@ -14,7 +14,7 @@ import { MusicControl, SettingsPage } from "./ui/music";
 import { SkinButton, ThemeToggle } from "./ui/theme";
 import { GlossaryPage, QuickStart } from "./ui/beginner";
 import { SkillPicksPage } from "./ui/skill-guide";
-import { Training } from "./ui/training";
+import { Training } from "./ui/tactical-training";
 
 function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "picks" | "settings" | "sheet" | "library" | "lore" | "bestiary" | "table" | "training"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
