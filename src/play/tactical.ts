@@ -8,7 +8,7 @@ import { initiativeOf, saveMod, skillRows, spellNumbers } from "../rules";
 import { resolveCheck, characterHasFeat } from "../skills/guide";
 import { fmt, mod, type Character, type CombatState, type DndCombat } from "../types";
 import { portraitSrc } from "../ui/art";
-import { trainingStats, criticalFormula, damageFormula, type TrainingDifficulty } from "./training";
+import { trainingStats, criticalFormula, damageFormula, weaponGrip, type TrainingDifficulty } from "./training";
 import { battleMap, coneCells, findPath, gridDistance, lineOfSight, pathCost, sameCell, walkable, type Cell } from "./tactical-map";
 import { sightAt, DEFAULT_ENVIRONMENT, type Environment } from "./tactical-vision";
 
@@ -26,14 +26,16 @@ export interface TacticalActor {
   preparedSlots?: Record<string, number>; font?: number;
   caster?: boolean; dummy?: boolean; demoralizedBy: string[];
   extraActionAvailable?: boolean; surgeUsed?: boolean;
+  grip?: 1 | 2;
 }
-export interface TacticalSetup { map: "arena" | "tavern"; scenario: "dummy" | "duel" | "ambush"; difficulty: TrainingDifficulty; environment?: Environment; ally?: "none" | "fighter" | "target" }
+export interface TacticalSetup { map: "arena" | "tavern"; scenario: "dummy" | "duel" | "ambush"; difficulty: TrainingDifficulty; environment?: Environment; ally?: "none" | "fighter" | "target"; grip?: 1 | 2 }
 export interface BattleVisual { kind: "move" | "arrow" | "strike" | "fire" | "cold" | "lightning" | "force" | "heal" | "ward" | "fear"; from: Cell; to: Cell; actor?: string; hit?: boolean; cells?: Cell[]; amount?: number }
 export interface BattleEvent { title: string; detail: string; kind: "roll" | "move" | "damage" | "spell" | "turn" | "effect"; total?: number; formula?: string }
 export interface TacticalState { version: 1; setup: TacticalSetup; actors: TacticalActor[]; order: string[]; cursor: number; round: number; status: "active" | "won" | "lost"; log: BattleEvent[]; hint: string; autoReactions: boolean; visuals?: BattleVisual[] }
 export type TacticalIntent =
   | { type: "move"; to: Cell; step?: boolean }
   | { type: "attack"; target: string; weapon: number }
+  | { type: "grip"; hands: 1 | 2 }
   | { type: "spell"; spell: string; targets: string[]; point?: Cell }
   | { type: "action"; action: "defend" | "dash" | "disengage" | "stand" | "hide" | "demoralize" | "trip" | "grapple" | "shove" | "escape" | "interact"; target?: string }
   | { type: "end" }
@@ -100,6 +102,11 @@ function heroData(hero: Character): TacticalActor {
 export function startTactical(hero: Character, setup: TacticalSetup, roller: BattleRoller): TacticalState {
   requireRule(hero.rules?.edition !== "dnd-2014" && hero.rules?.edition !== "pf-legacy", "Этот учебный стол использует D&D 2024 и Pathfinder Remaster. Выберите учебного героя подходящей редакции.");
   const player = heroData(hero); player.dnd = emptyDndCombat(hero.system === "dnd5e" ? sheetDnd(hero)?.resources : []); const power = setup.difficulty === "hard" ? 2 : setup.difficulty === "easy" ? -2 : 0;
+  if (setup.grip === 2) {
+    const stats = trainingStats(hero);
+    requireRule(hero.system === "pf2e" && stats.weapons[0]?.twoHandDie && !stats.shield, "Для двуручного хвата нужно подходящее оружие и свободная рука.");
+    player.grip = 2;
+  }
   if (hero.system === "pf2e" && ["prepared", "book"].includes(hero.spellcasting?.kind ?? "")) {
     player.preparedSlots = {};
     for (const id of hero.preparedIds) if (hero.spells.find(spell => spell.id === id)?.level === 1) player.preparedSlots[id] = (player.preparedSlots[id] ?? 0) + 1;
@@ -217,7 +224,9 @@ export function effectiveAc(actor: TacticalActor, system: Character["system"]): 
 function attack(state: TacticalState, hero: Character, from: TacticalActor, target: TacticalActor, roller: BattleRoller, weaponIndex = 0, reaction = false, spell?: TutorialSpell) {
   const map = battleMap(state.setup.map), stats = trainingStats(hero);
   requireRule(hero.system !== "pf2e" || !effect(from, "restrained"), "Персонаж скован: атаки недоступны, сначала освободитесь.");
-  const weapon = from.id === "hero" ? stats.weapons[weaponIndex] : undefined;
+  const baseWeapon = from.id === "hero" ? stats.weapons[weaponIndex] : undefined;
+  requireRule(spell || from.id !== "hero" || baseWeapon, "Выберите оружие перед боем.");
+  const weapon = baseWeapon && weaponGrip(baseWeapon, from.grip);
   const ranged = spell ? true : weapon?.ranged ?? Boolean(from.caster);
   const reach = spell?.range ?? (ranged ? weapon?.range ?? 60 : weapon?.reach ?? 5);
   const distance = gridDistance(from.pos, target.pos, hero.system), sight = lineOfSight(map, from.pos, target.pos);
@@ -225,7 +234,7 @@ function attack(state: TacticalState, hero: Character, from: TacticalActor, targ
   requireRule(distance <= reach, `До цели ${distance} футов; дальность ${reach}.`); requireRule(sight.visible, "Стена перекрывает линию атаки.");
   requireRule(!weapon?.limited || Boolean(spell), "Особый эффект этого оружия пока не поддерживается автоматически.");
   const isPf = hero.system === "pf2e";
-  const penalty = isPf && !reaction ? mapPenalty(from.pf.strikes, weapon?.agile) : 0;
+  const penalty = isPf && !reaction ? mapPenalty(from.pf.strikes, !spell && weapon?.agile) : 0;
   if (!reaction && !spell) { if (isPf) { const step = strike(from.pf, { agile: weapon?.agile }); requireRule(step.spent, step.note); from.pf = step.state; } else spend(from, hero, 1, false, true); }
   if (spell && isPf) from.pf.strikes++;
   const innate = spell ? spellNumbers(hero)?.attack ?? 0 : weapon?.attack ?? from.attack;
@@ -253,15 +262,43 @@ function attack(state: TacticalState, hero: Character, from: TacticalActor, targ
     addLog(state, "Реакция · Щит", `Ячейка первого круга потрачена. КБ +5 до следующего хода; новый КБ ${ac}.`);
   }
   const actualHit = hit && (isPf || critical || natural + bonus >= ac);
+  const gripLabel = !spell && weapon?.twoHandDie ? (weapon.hands === 2 ? " · две руки" : " · одна рука") : "";
   cue(state, { kind: spell ? spellVisual(spell.id) : ranged ? "arrow" : "strike", from: from.pos, to: target.pos, hit: actualHit });
-  addLog(state, `${spell?.name ?? weapon?.name ?? "Атака"} · ${from.name}`, `к20 ${natural} ${fmt(bonus)} = ${natural + bonus} против КБ ${ac}${ranged && sight.cover ? `, в том числе укрытие +${sight.cover}` : ""}: ${actualHit ? critical ? "критическое попадание" : "попадание" : "промах"}${penalty ? `; штраф повторной атаки ${penalty}` : ""}${advantage !== disadvantage ? disadvantage ? "; помеха" : "; преимущество" : ""}.`, "roll", { total: natural, formula: "1d20" });
+  addLog(state, `${spell?.name ?? weapon?.name ?? "Атака"} · ${from.name}`, `к20 ${natural} ${fmt(bonus)} = ${natural + bonus} против КБ ${ac}${ranged && sight.cover ? `, в том числе укрытие +${sight.cover}` : ""}: ${actualHit ? critical ? "критическое попадание" : "попадание" : "промах"}${penalty ? `; штраф повторной атаки ${penalty}` : ""}${advantage !== disadvantage ? disadvantage ? "; помеха" : "; преимущество" : ""}${gripLabel}.`, "roll", { total: natural, formula: "1d20" });
   if (actualHit) {
     const formula = spell ? spellDamage(spell, hero) : damageFormula(weapon?.damage ?? from.damage);
     requireRule(formula, "Формула урона не поддерживается.");
-    const rolled = roller(critical ? criticalFormula(formula, hero.system) : formula, `Урон: ${spell?.name ?? weapon?.name ?? from.name}`);
+    const rolled = roller(critical ? criticalFormula(formula, hero.system) : formula, `Урон: ${spell?.name ?? weapon?.name ?? from.name}${gripLabel}`);
     hurt(state, hero, target, Math.max(isPf ? critical ? 2 : 1 : 0, rolled), roller, !spell);
     if (spell?.effect === "cold") addEffect(target, { id: "cold", value: 10, source: from.id, expires: untilNext(from) });
   }
+  return actualHit && critical;
+}
+
+function changeGrip(state: TacticalState, hero: Character, hands: 1 | 2, roller: BattleRoller) {
+  const actor = heroActor(state), stats = trainingStats(hero), weapon = stats.weapons[0];
+  requireRule(hero.system === "pf2e" && weapon?.twoHandDie, "У выбранного оружия нет другого хвата в этой тренировке.");
+  requireRule(hands !== (actor.grip ?? 1), "Этот хват уже выбран.");
+  if (hands === 2) {
+    requireRule(!stats.shield, "Вторая рука занята щитом. Начните тренировку без щита, чтобы взять меч двумя руками.");
+    requireRule(!effect(actor, "restrained"), "Вы скованы: сначала освободитесь.");
+    spend(actor, hero, 1);
+    if (effect(actor, "grabbed") && roller("1d20", "Сменить хват в захвате: чистая проверка СЛ 5") < 5) {
+      addLog(state, "Смена хвата сорвана", "Действие потрачено; хват не изменился.");
+      return;
+    }
+    for (const enemy of state.actors.filter(row => row.team !== actor.team && row.hp > 0 && row.opportunity && row.pf.reaction && !effect(row, "restrained"))) {
+      if (gridDistance(enemy.pos, actor.pos, hero.system) > 5 || !lineOfSight(battleMap(state.setup.map), enemy.pos, actor.pos).visible) continue;
+      enemy.pf.reaction = false;
+      addLog(state, "Провоцированная реакция", `${enemy.name} реагирует на смену хвата.`);
+      if (attack(state, hero, enemy, actor, roller, 0, true) || actor.hp <= 0) {
+        addLog(state, "Смена хвата сорвана", "Действие потрачено; хват не изменился.");
+        return;
+      }
+    }
+  }
+  actor.grip = hands;
+  addLog(state, "Смена хвата", `${weapon.name} · ${hands === 2 ? "две руки · одно действие" : "одна рука · свободное действие"}.`);
 }
 
 export function movePreview(state: TacticalState, hero: Character, to: Cell, step = false): { path: Cell[]; feet: number; allowed: boolean; reason: string } {
@@ -420,16 +457,16 @@ function basicAction(state: TacticalState, hero: Character, action: Extract<Tact
       addLog(state, "Деморализация", `Общий язык предполагается. к20 ${die} ${fmt(bonus)} против СЛ Воли ${dc}: ${verdict}. Повторная попытка недоступна 10 минут.`, "roll", { total: die, formula: "1d20" });
     } else {
       requireRule(distance <= 5, "Подойдите на соседнюю клетку.");
-      const stats = trainingStats(hero); requireRule(!stats.shield && !hero.items.some(row => row.equipped && row.weapon?.twoHanded), "Для этого приёма нужна свободная рука: снимите щит или двуручное оружие до боя.");
+      const stats = trainingStats(hero); requireRule(!stats.shield && actor.grip !== 2 && !stats.weapons.some(row => row.hands === 2), "Для этого приёма нужна свободная рука. Освободите руку или начните бой с другим снаряжением.");
       spend(actor, hero, 1, false, !isPf);
       const bonus = skillRows(hero).find(row => row.id === "athletics")?.mod ?? 0;
       let success = false, critical = false;
       if (isPf) {
-        const penalty = mapPenalty(actor.pf.strikes++), die = roller("1d20", "Атлетика");
+        const penalty = mapPenalty(actor.pf.strikes++, true), die = roller("1d20", "Атлетика");
         const key = action.action === "trip" ? "ref" : "fort", dc = 10 + target.saves[key] - effect(target, "frightened");
         const verdict = resolveCheck("pf2e", die, bonus + penalty, dc).verdict; success = verdict === "успех" || verdict === "критический успех"; critical = verdict === "критический успех";
         if (verdict === "критический провал") addEffect(actor, { id: action.action === "grapple" ? "grabbed" : "prone", value: 1, source: target.id, dc: 10 + target.attack });
-        addLog(state, "Атлетика", `к20 ${die} ${fmt(bonus + penalty)} против СЛ ${dc}: ${verdict}.`, "roll", { total: die, formula: "1d20" });
+        addLog(state, "Атлетика", `к20 ${die} ${fmt(bonus + penalty)} против СЛ ${dc}: ${verdict}${penalty ? `; штраф повторной атаки ${fmt(penalty)}` : ""}.`, "roll", { total: die, formula: "1d20" });
       } else {
         const dc = 8 + mod(hero.abilities.str) + (2 + Math.floor((hero.level - 1) / 4));
         const key = target.saves.str >= target.saves.dex ? "str" : "dex";
@@ -544,7 +581,8 @@ export function executeTactical(hero: Character, previous: TacticalState, intent
     const preview = movePreview(state, hero, intent.to, intent.step); requireRule(preview.allowed, preview.reason);
     if (hero.system === "pf2e") spend(actor, hero, 1); else actor.move -= preview.feet;
     moveActor(state, hero, actor, preview.path, roller, Boolean(intent.step)); state.hint = `Перемещение: ${preview.feet} футов. Проверьте дальность оружия и укрытие новой позиции.`;
-  } else if (intent.type === "attack") { const target = state.actors.find(row => row.id === intent.target); requireRule(target, "Выберите противника на карте."); attack(state, hero, actor, target, roller, intent.weapon); state.hint = "В журнале видны кость, бонус, защита и урон. Перед следующим действием оцените позицию и оставшиеся ресурсы."; }
+  } else if (intent.type === "grip") changeGrip(state, hero, intent.hands, roller);
+  else if (intent.type === "attack") { const target = state.actors.find(row => row.id === intent.target); requireRule(target, "Выберите противника на карте."); attack(state, hero, actor, target, roller, intent.weapon); state.hint = "В журнале видны кость, бонус, защита и урон. Перед следующим действием оцените позицию и оставшиеся ресурсы."; }
   else if (intent.type === "spell") cast(state, hero, intent, roller);
   else if (intent.type === "action") basicAction(state, hero, intent, roller);
   else if (intent.type === "end") { finishTurn(state, hero, actor); advanceNpcs(state, hero, roller); if (state.status === "active") state.hint = "Снова ваш ход. Изучите ответы врагов, оставшиеся эффекты и ячейки; они не восстановились вместе с действиями."; }

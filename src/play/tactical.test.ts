@@ -7,6 +7,7 @@ import { battleMap, findPath, gridDistance, lineOfSight, pathCost } from "./tact
 import { RollRequired, battleRoller, executeTactical, heroActor, movePreview, rollBounds, spellArea, startTactical, type BattleRoller, type TacticalSetup, type TacticalState } from "./tactical";
 import type { Character } from "../types";
 import { readTacticalSave } from "./tactical-storage";
+import { skillRows } from "../rules";
 
 const setup: TacticalSetup = { map: "tavern", scenario: "dummy", difficulty: "easy" };
 function hero(system: "pf2e" | "dnd5e" = "pf2e", role: "боец" | "маг" | "целитель" = "боец"): Character {
@@ -112,6 +113,20 @@ describe("перемещение и экономика", () => {
     const next = executeTactical(row, grabbed, { type: "end" }, fixed(1));
     expect(next.log.some(row => row.title.includes("пытается освободиться"))).toBe(true);
     expect(heroActor(next).hp).toBe(heroActor(state).hp);
+  });
+  it.each([[1, -4], [2, -8]])("сбивание свободной рукой после %i атак применяет штраф %i", (earlier, penalty) => {
+    const row = hero(); row.items = row.items.filter(item => item.kind !== "shield");
+    const state = start(row), foe = foeNear(state), athletics = skillRows(row).find(skill => skill.id === "athletics")!.mod;
+    foe.saves.ref = 12 + athletics + penalty - 10;
+    let next = state;
+    for (let index = 0; index < earlier; index++) next = executeTactical(row, next, { type: "attack", target: "guard", weapon: 0 }, fixed(1));
+    const before = next.actors.find(actor => actor.id === "guard")!.hp;
+    next = executeTactical(row, next, { type: "action", action: "trip", target: "guard" }, fixed(12));
+    const after = next.actors.find(actor => actor.id === "guard")!;
+    expect(after.effects.some(row => row.id === "prone")).toBe(true);
+    expect(after.hp).toBe(before);
+    expect(next.log.find(event => event.title === "Атлетика")?.detail).toContain(`успех; штраф повторной атаки ${penalty}`);
+    expect(heroActor(next).pf.actions).toBe(2 - earlier);
   });
   it("D&D не разрешает уклонение после начала атакующего действия", () => {
     const row = hero("dnd5e"); row.level = 5; const state = start(row); foeNear(state);

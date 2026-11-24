@@ -135,6 +135,7 @@ function SheetTabs({ id, panel }: { id: string; panel: string | null }) {
   const tabs = [
     ["", "Лист"],
     ["inventory", "Сумка"],
+    ["skills", "Навыки"],
     ["spells", "Магия"],
     ["feats", "Черты"],
     ["reminder", "Памятка"],
@@ -291,20 +292,22 @@ function Abilities({ character, commit }: { character: Character; commit: (next:
 function Skills({ character, commit }: { character: Character; commit: (next: Character) => void }) {
   const derived = sheetDerived(character);
   if (derived) {
-    const rows = Object.entries(derived.skills).filter(([, skill]) => skill.rank !== "untrained");
+    const rows = Object.entries(derived.skills).sort(([, a], [, b]) => Number(a.rank === "untrained") - Number(b.rank === "untrained"));
+    const names = new Map(skillRows(character).map(row => [row.id, row.name]));
     return (
       <>
         <p className="tiny">Ранг берётся из истории развития. Модификатор открывает формулу и бросок.</p>
-        {rows.map(([id, skill]) => (
-          <div key={id} className="skill">
+        {rows.map(([id, skill]) => {
+          const name = names.get(id) ?? skill.formula.split(" = ")[0].replace(/\s[+−-]?\d+$/, "");
+          return <div key={id} className="skill" data-testid={`sheet-skill-${id}`}>
             <div>
-              <b>{skill.formula.split(" ")[0]}</b>
-              <span className="tiny">{ABILITY_SHORT[skill.ability]} · {skill.rank}</span>
+              <b>{name}</b>
+              <span className="tiny">{ABILITY_SHORT[skill.ability]} · {rankLabel(character.system, skill.rank)}</span>
             </div>
-            <button type="button" className="mod" onClick={() => rollTo(character, skill.formula.split(" ")[0], skill.value)}>{fmt(skill.value)}</button>
-            <Info title={skill.formula.split(" ")[0]} text={skill.formula} />
-          </div>
-        ))}
+            <button type="button" className="mod" onClick={() => rollTo(character, name, skill.value)}>{fmt(skill.value)}</button>
+            <Info title={name} text={[skill.formula, ...skill.aside].join("\n")} />
+          </div>;
+        })}
       </>
     );
   }

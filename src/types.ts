@@ -66,6 +66,7 @@ export interface WeaponStat {
   /** Группа оружия ремастера: sword, bow, brawling… */
   group?: string;
   hands?: 1 | 2;
+  twoHandDie?: number;
   /** Подпись свойств. Текст не разбирается в механику. */
   traits?: string;
   range?: number;
