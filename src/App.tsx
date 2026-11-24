@@ -14,9 +14,11 @@ import { MusicControl, SettingsPage } from "./ui/music";
 import { SkinButton, ThemeToggle } from "./ui/theme";
 import { GlossaryPage, QuickStart } from "./ui/beginner";
 import { SkillPicksPage } from "./ui/skill-guide";
+import { Training } from "./ui/tactical-training";
 
-function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "picks" | "settings" | "sheet" | "library" | "lore" | "bestiary" | "table"; id?: string; panel?: string | null } {
+function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "picks" | "settings" | "sheet" | "library" | "lore" | "bestiary" | "table" | "training"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
+  if (parts[0] === "training") return { page: "training", id: parts[1] ? decodeURIComponent(parts[1]) : undefined };
   if (parts[0] === "library") return { page: "library" };
   if (parts[0] === "lore") return { page: "lore" };
   if (parts[0] === "bestiary") return { page: "bestiary", id: parts[1] ? decodeURIComponent(parts[1]) : undefined };
@@ -73,6 +75,7 @@ export function App() {
       {route.page === "lore" && <Lore />}
       {route.page === "bestiary" && <Bestiary />}
       {route.page === "table" && <Table characters={characters} />}
+      {route.page === "training" && <Training characters={characters} heroId={route.id} />}
       {route.page === "new" && (
         <Builder
           onDone={(character) => {
@@ -111,15 +114,15 @@ export function App() {
         </div>
       )}
       </div>
-      <QuickBar
+      {route.page !== "new" && <QuickBar
         character={active ?? null}
         roster={characters}
         allowSwitch={route.page !== "sheet"}
-        raised={route.page === "new"}
+        raised={false}
         compact={route.page === "sheet" && !route.panel}
         hash={hash}
         onChange={upsert}
-      />
+      />}
     </InfoProvider>
   );
 }

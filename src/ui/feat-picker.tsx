@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CARD_BY_ID } from "../data/cards";
+import { CARD_BY_ID, cardText } from "../data/cards";
 import { byRu } from "../sort";
 import { Choice } from "./common";
 import { RuleCardView } from "./rule-card";
@@ -81,8 +81,7 @@ export function PickList({
               id={row.id}
               name={row.name}
               hint={row.hint}
-              english={row.english ?? card?.originalName}
-              info={card ? `${row.info}\n\n${card.originalName}` : row.info}
+              info={card ? cardText(card) : row.info}
               on={selected === row.id}
               onPick={() => onPick(row)}
             />

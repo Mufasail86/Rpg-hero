@@ -17,6 +17,7 @@ import { go } from "./common";
 const tracks = new Map(MUSIC_TRACKS.map((track) => [track.id, track]));
 
 class Ambient {
+  private request = 0;
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
   private playing: { scene: MusicScene; source: AudioBufferSourceNode; gain: GainNode } | null = null;
@@ -61,10 +62,13 @@ class Ambient {
   }
 
   async start(scene: MusicScene) {
+    const request = ++this.request;
     this.enabled = true;
     const context = await this.contextOf();
+    if (request !== this.request || !this.enabled) return;
     if (this.playing?.scene === scene) return;
     const audio = await this.buffer(scene);
+    if (request !== this.request || !this.enabled) return;
     const gain = context.createGain();
     gain.gain.value = 0;
     gain.connect(this.master!);
@@ -86,6 +90,7 @@ class Ambient {
   }
 
   stop() {
+    this.request++;
     this.enabled = false;
     if (!this.context || !this.playing) return;
     const now = this.context.currentTime;
@@ -121,6 +126,12 @@ export function MusicControl({ hash }: { hash: string }) {
   }, []);
 
   useEffect(() => {
+    const sync = () => { setOn(readMusicOn(storage)); setVolume(readMusicVolume(storage)); };
+    window.addEventListener("rpg-music-preferences", sync);
+    return () => window.removeEventListener("rpg-music-preferences", sync);
+  }, [storage]);
+
+  useEffect(() => {
     if (!on) {
       ambient.stop();
       return;
@@ -138,6 +149,8 @@ export function MusicControl({ hash }: { hash: string }) {
       /* выбор остаётся до перезагрузки */
     }
     if (!next) ambient.stop();
+    else void ambient.start(scene).catch(() => setError("Не удалось включить музыку. Попробуйте ещё раз."));
+    window.dispatchEvent(new Event("rpg-music-preferences"));
   }
 
   function changeVolume(value: number) {
@@ -148,11 +161,12 @@ export function MusicControl({ hash }: { hash: string }) {
     } catch {
       /* громкость остаётся на этот заход */
     }
+    window.dispatchEvent(new Event("rpg-music-preferences"));
   }
 
   return (
     <div className="music-dock">
-      <button type="button" className={`icon-btn music-toggle ${on ? "on" : ""}`} data-testid="music-toggle" aria-pressed={on} aria-label={on ? "Выключить музыку" : "Включить музыку"} title={on ? "Музыка играет" : "Музыка выключена"} onClick={() => { setOpen((value) => !value); }}>
+      <button type="button" className={`icon-btn music-toggle ${on ? "on" : ""}`} data-testid="music-toggle" aria-expanded={open} aria-label="Музыка и громкость" title="Музыка и громкость" onClick={() => { setOpen((value) => !value); }}>
         {on ? "♪" : "🔇"}
       </button>
       {open && (
@@ -176,6 +190,11 @@ export function SettingsPage() {
   const storage = typeof localStorage === "undefined" ? null : localStorage;
   const [on, setOn] = useState(() => readMusicOn(storage));
   const [volume, setVolume] = useState(() => readMusicVolume(storage));
+  useEffect(() => {
+    const sync = () => { setOn(readMusicOn(storage)); setVolume(readMusicVolume(storage)); };
+    window.addEventListener("rpg-music-preferences", sync);
+    return () => window.removeEventListener("rpg-music-preferences", sync);
+  }, [storage]);
 
   function persist(nextOn: boolean, nextVolume: number) {
     setOn(nextOn);
@@ -189,6 +208,7 @@ export function SettingsPage() {
     }
     if (nextOn) void ambient.start(musicSceneFor(window.location.hash)).catch(() => undefined);
     else ambient.stop();
+    window.dispatchEvent(new Event("rpg-music-preferences"));
   }
 
   return (

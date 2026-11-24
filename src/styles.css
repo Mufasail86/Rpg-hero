@@ -90,7 +90,11 @@ h1, h2, .display { font-family: Palatino, "Iowan Old Style", Georgia, serif; fon
 .screen { padding: 8px 16px 28px; }
 .screen.pad-dock { padding-bottom: calc(118px + env(safe-area-inset-bottom)); }
 .has-quickbar .screen { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
-.has-quickbar.creating .screen.pad-dock { padding-bottom: 190px; }
+.has-quickbar.creating .screen.pad-dock { padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+.creating { padding-left: 0; }
+.builder-app .topbar { display: grid; grid-template-columns: 44px minmax(0, 1fr); }
+.builder-app .step-subtitle { grid-column: 1 / -1; margin: 0; padding-right: 0; }
+.builder-app .grow { min-width: 0; }
 
 .kicker { color: var(--muted); font-size: 0.86rem; margin: 0 0 4px; }
 h1.display { font-size: 2rem; line-height: 1.05; margin: 0 0 8px; letter-spacing: -0.03em; }
@@ -309,6 +313,11 @@ textarea { min-height: 88px; resize: vertical; }
 .portrait-home { display: flex; gap: 12px; align-items: center; }
 .system-card { min-height: 120px; text-align: left; padding: 16px; }
 .system-card b { font-size: 1.2rem; display: block; }
+.step-rail { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 4px; }
+.step-pill { flex: 0 0 auto; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: inherit; }
+.step-pill[data-state="current"] { background: var(--gold-2); border-color: var(--gold); color: var(--gold); }
+.step-pill[data-state="done"] { border-color: var(--teal); }
+.step-pill[data-state="locked"] { opacity: 0.45; }
 .progress { height: 6px; background: #31404f; border-radius: 99px; overflow: hidden; }
 .progress i { display: block; height: 100%; background: var(--teal); }
 
@@ -425,17 +434,17 @@ html:has(.board-app),
 body:has(.board-app),
 #root:has(.board-app),
 .has-quickbar:has(.board-app) {
-  height: 100dvh;
-  max-height: 100dvh;
-  overflow: hidden;
+  height: auto;
+  max-height: none;
+  overflow: visible;
 }
 .app.board-app {
   max-width: none;
   width: 100%;
-  height: 100dvh;
-  max-height: 100dvh;
-  min-height: 0;
-  overflow: hidden;
+  min-height: 100dvh;
+  height: auto;
+  max-height: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   padding-bottom: 0;
@@ -461,13 +470,13 @@ body:has(.board-app),
 .board-tabs button {
   flex: 1;
   min-width: 0;
-  min-height: 26px;
-  padding: 2px 6px;
+  min-height: 44px;
+  padding: 8px 6px;
   border-radius: 8px;
   border: 1px solid var(--line);
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.85rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -480,8 +489,9 @@ body:has(.board-app),
 .board-screen {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
-  padding: 4px 6px 34px;
+  width: 100%;
+  overflow: visible;
+  padding: 12px 16px calc(86px + env(safe-area-inset-bottom));
 }
 .quickbar.slim {
   width: 100%;
@@ -491,28 +501,31 @@ body:has(.board-app),
   border-top: 1px solid var(--line);
 }
 .quickbar.slim .btn {
-  min-height: 26px;
-  padding: 2px 8px;
-  font-size: 12px;
+  min-height: 44px;
+  padding: 8px;
+  font-size: 0.85rem;
   border-radius: 8px;
 }
 .character-board {
-  height: 100%;
+  width: 100%;
+  height: auto;
   min-height: 0;
   display: grid;
-  gap: 3px;
-  overflow: hidden;
-  font-size: 11px;
-  line-height: 1.1;
-  grid-template-columns: 78px minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 0.92fr) minmax(0, 1.2fr) auto auto;
+  gap: 12px;
+  font-size: 1rem;
+  line-height: 1.45;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: none;
+  grid-auto-rows: auto;
   grid-template-areas:
-    "head head"
-    "meta meta"
-    "abil defense"
-    "skills skills"
-    "strikes strikes"
-    "foot foot";
+    "head"
+    "meta"
+    "abil"
+    "defense"
+    "skills"
+    "strikes"
+    "foot"
+    "hint";
 }
 .board-head { grid-area: head; }
 .board-meta { grid-area: meta; }
@@ -523,15 +536,21 @@ body:has(.board-app),
 .board-foot { grid-area: foot; }
 .board-head {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1.3fr) minmax(0, 1fr) auto auto auto;
-  gap: 4px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "portrait name name" "portrait player player" "level xp hero";
+  gap: 10px;
   align-items: center;
-  overflow: hidden;
 }
+.board-head .board-portrait { grid-area: portrait; }
+.board-head .character-name { grid-area: name; }
+.board-head .player-name { grid-area: player; }
+.board-head .board-level { grid-area: level; }
+.board-head > .num { grid-area: xp; }
+.board-head .hexes { grid-area: hero; justify-content: center; }
 .board-portrait {
   position: relative;
-  width: 28px;
-  height: 37px;
+  width: 80px;
+  height: 106px;
   aspect-ratio: 3 / 4;
   border-radius: 8px;
   overflow: hidden;
@@ -556,42 +575,42 @@ body:has(.board-app),
 .board-name { display: flex; flex-direction: column; min-width: 0; }
 .board-name span, .meta-field span, .board-level span, .board-head .num span {
   color: var(--muted);
-  font-size: 9px;
-  line-height: 1;
-  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 .character-board input[type="text"],
 .character-board input:not([type]) {
   width: 100%;
-  min-height: 0;
-  height: 20px;
-  padding: 0 4px;
+  min-height: 40px;
+  height: auto;
+  padding: 6px 8px;
   border-radius: 4px;
   border: 1px solid var(--line);
   background: var(--well);
-  font-size: 12px;
+  font-size: 1rem;
 }
 .board-level { text-align: center; }
-.board-level b { display: block; color: var(--gold); font-size: 15px; line-height: 1; }
+.board-level b { display: block; color: var(--gold); font-size: 1.5rem; line-height: 1.2; }
 .board-head .num { display: flex; flex-direction: column; align-items: center; }
 .hexes { display: flex; gap: 2px; align-items: center; }
 .hex {
-  width: 20px;
-  height: 22px;
+  width: 30px;
+  height: 36px;
   padding: 0;
   min-height: 0;
   border: 0;
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
   background: var(--well);
   color: var(--muted);
-  font-size: 10px;
+  font-size: 1rem;
 }
 .hex.on { background: var(--gold); color: #1a140c; }
 .board-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px;
+  gap: 8px;
 }
 .meta-field {
   display: flex;
@@ -600,42 +619,40 @@ body:has(.board-app),
   min-width: 0;
   min-height: 0;
   text-align: left;
-  padding: 2px 4px;
+  padding: 10px;
   border-radius: 6px;
   border: 1px solid var(--line);
   background: var(--paper);
 }
 .meta-field b {
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 11px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  font-size: 1rem;
   font-weight: 650;
 }
 .board-abil, .board-defense, .board-skills, .board-strikes {
   min-height: 0;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 3px 4px;
+  padding: 12px;
 }
 .board-abil {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 .abil {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 2px;
 }
-.abil span { color: var(--muted); font-size: 10px; }
-.abil small { color: var(--muted); font-size: 9px; grid-column: 2; }
+.abil span { color: var(--muted); font-size: 0.85rem; }
+.abil small { color: var(--muted); font-size: 0.85rem; grid-column: 2; }
 .character-board .num {
   border: 0;
   background: transparent;
@@ -643,17 +660,18 @@ body:has(.board-app),
   font-weight: 750;
   font-variant-numeric: tabular-nums;
   padding: 0 1px;
-  min-height: 0;
-  line-height: 1;
+  min-height: 40px;
+  font-size: 1.15rem;
+  line-height: 1.3;
 }
 .big-num { font-size: 20px; }
 .board-defense {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 2px;
+  gap: 10px;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 .ac-box, .save-row, .sense-row {
   display: grid;
@@ -662,27 +680,27 @@ body:has(.board-app),
   min-width: 0;
 }
 .ac-box { grid-template-columns: auto minmax(0, 1fr) auto; }
-.ac-box small, .sense-row small { color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ac-box small, .sense-row small { color: var(--muted); font-size: 0.85rem; white-space: normal; }
 .save-row { grid-template-columns: minmax(0, 1fr) auto auto; }
 .dnd-saves { display: flex; flex-wrap: wrap; gap: 2px; }
-.dnd-saves .num { flex: 1 1 30%; font-size: 10px; }
+.dnd-saves .num { flex: 1 1 30%; font-size: 0.95rem; }
 .hp-box { display: flex; flex-wrap: wrap; gap: 3px 6px; align-items: center; }
-.hp-box label { display: flex; gap: 3px; align-items: center; color: var(--muted); font-size: 10px; }
-.hp-box input { width: 42px; }
+.hp-box label { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; }
+.hp-box input { width: 64px; }
 .shield, .line-btn {
   border: 1px solid var(--line);
   background: transparent;
   color: var(--muted);
   border-radius: 6px;
-  min-height: 0;
-  padding: 1px 4px;
-  font-size: 10px;
+  min-height: 40px;
+  padding: 6px;
+  font-size: 0.85rem;
 }
 .shield.on { border-color: var(--teal); color: var(--teal); }
 .track { display: inline-flex; align-items: center; gap: 2px; }
 .track button {
-  width: 11px;
-  height: 11px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   min-height: 0;
   border-radius: 50%;
@@ -692,8 +710,9 @@ body:has(.board-app),
 .track button.on { background: var(--copper); color: var(--copper-ink); }
 .track button.fail { border-color: var(--danger); }
 .track button.fail.on { background: var(--danger); }
-.track small { color: var(--muted); font-size: 9px; }
-.sense-row { grid-template-columns: auto auto auto minmax(0, 1fr) auto auto; }
+.track small { color: var(--muted); font-size: 0.85rem; }
+.sense-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+.sense-row small { grid-column: 1 / -1; }
 .line-field, .line-btn {
   display: flex;
   gap: 4px;
@@ -704,21 +723,19 @@ body:has(.board-app),
 .line-btn {
   border: 0;
   padding: 0;
-  min-height: 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-height: 40px;
+  white-space: normal;
 }
-.line-field span { color: var(--muted); flex: none; font-size: 10px; }
+.line-field span { color: var(--muted); flex: none; font-size: 0.85rem; }
 .line-field input { flex: 1; min-width: 0; }
 .board-skills {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.board-skills > b, .skill-head b { flex: none; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.board-skills > b, .skill-head b { flex: none; font-size: 1rem; letter-spacing: 0; color: var(--gold); }
 .skill-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 0; }
-.skill-head .text-btn { min-height: 0; padding: 0; font-size: 11px; }
+.skill-head .text-btn { min-height: 44px; padding: 4px; font-size: 0.85rem; }
 .skill-picks summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; }
 .skill-picks h2 { margin: 8px 0 0; font-size: 1.05rem; }
 [data-testid="level-wizard"] { scroll-margin-top: 72px; }
@@ -726,17 +743,16 @@ body:has(.board-app),
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: minmax(0, 1fr);
-  gap: 0 6px;
-  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: auto;
+  gap: 6px;
 }
 .skill-line {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 20px auto auto;
+  grid-template-columns: minmax(0, 1fr) 28px 44px auto;
   align-items: center;
-  gap: 2px;
-  min-height: 0;
+  gap: 6px;
+  min-height: 44px;
   min-width: 0;
 }
 .skill-roll {
@@ -745,24 +761,23 @@ body:has(.board-app),
   color: var(--ink);
   text-align: left;
   padding: 0;
-  min-height: 0;
+  min-height: 44px;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 11px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  font-size: 1rem;
 }
-.skill-line small { color: var(--muted); font-size: 9px; }
+.skill-line small { color: var(--muted); font-size: 0.85rem; }
 .pips { display: inline-flex; gap: 1px; }
 .pips i {
   font-style: normal;
-  width: 11px;
-  height: 11px;
+  width: 15px;
+  height: 18px;
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 2px;
-  font-size: 7px;
+  font-size: 10px;
   color: transparent;
   line-height: 1;
 }
@@ -771,13 +786,13 @@ body:has(.board-app),
 .pips i:empty.on { background: var(--teal); border-color: var(--teal); }
 .board-strikes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1px 8px;
   align-content: start;
 }
 .board-strikes .save-row, .board-strikes .tiny-ranks { grid-column: 1 / -1; }
 .strike-block { min-width: 0; }
-.strike-block > b { display: block; font-size: 10px; color: var(--gold); letter-spacing: 0.04em; text-transform: uppercase; }
+.strike-block > b { display: block; font-size: 0.85rem; color: var(--gold); letter-spacing: 0; }
 .strike-block .tiny { margin: 0; }
 .strike {
   display: grid;
@@ -788,32 +803,32 @@ body:has(.board-app),
     "traits traits";
   gap: 0 6px;
   width: 100%;
-  min-height: 0;
-  padding: 1px 0;
+  min-height: 44px;
+  padding: 8px 0;
   border: 0;
   background: transparent;
   color: inherit;
   text-align: left;
 }
-.strike span { grid-area: name; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.strike span { grid-area: name; overflow-wrap: anywhere; }
 .strike b { grid-area: attack; }
-.strike small { color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.strike small { color: var(--muted); font-size: 0.85rem; white-space: normal; }
 .strike small:first-of-type { grid-area: damage; }
 .strike small:last-child { grid-area: traits; }
-.tiny-ranks { margin: 0; color: var(--muted); font-size: 9px; white-space: normal; line-height: 1.25; }
+.tiny-ranks { margin: 0; color: var(--muted); font-size: 0.85rem; white-space: normal; line-height: 1.45; }
 .board-foot {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   align-items: center;
   min-height: 34px;
-  overflow: hidden;
+  flex-wrap: wrap;
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.2;
+  font-size: 0.85rem;
+  line-height: 1.45;
 }
 .board-foot p { margin: 0; min-width: 0; }
-.actions-legend { display: flex; gap: 6px; flex: none; }
+.actions-legend { display: flex; flex-wrap: wrap; gap: 6px; }
 .character-board { position: relative; }
 .explain { margin: 0 0 8px; }
 .explain p { margin: 0 0 4px; }
@@ -847,13 +862,9 @@ body:has(.board-app),
 .pill.advise { border-color: var(--gold); }
 .plain-line { margin: 0 0 6px; }
 .hint-layer {
-  position: absolute;
-  z-index: 4;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  max-height: 46%;
-  overflow: auto;
+  grid-area: hint;
+  position: static;
+  max-height: none;
   padding: 8px 10px;
   border-radius: 12px;
   border: 1px solid var(--gold);
@@ -862,17 +873,6 @@ body:has(.board-app),
 }
 .hint-layer p { margin: 4px 0; }
 .hint-layer.collapsed { max-height: none; padding: 4px 10px; overflow: hidden; }
-.character-board.has-hint {
-  grid-template-rows: auto auto minmax(0, 0.9fr) minmax(0, 1.05fr) auto auto auto;
-  grid-template-areas:
-    "head head"
-    "meta meta"
-    "abil defense"
-    "skills skills"
-    "strikes strikes"
-    "foot foot"
-    "hint hint";
-}
 .character-board.has-hint .hint-layer.collapsed {
   position: static;
   grid-area: hint;
@@ -901,9 +901,13 @@ body:has(.board-app),
   border-color: var(--gold);
 }
 @media (max-width: 520px) {
+  .builder-app .topbar { padding-right: 16px; }
+  .builder-app .topbar .grow { grid-column: 1 / -1; }
+  .builder-app .topbar h1 { overflow-wrap: anywhere; letter-spacing: 0; }
   .board-top { flex-wrap: wrap; row-gap: 4px; padding: 4px 8px; }
-  .board-tabs { flex: 1 0 100%; gap: 3px; margin-top: 22px; }
-  .board-tabs button { font-size: 12px; padding: 4px 2px; letter-spacing: 0; }
+  .board-top .icon-btn { width: 44px; height: 44px; min-height: 44px; }
+  .board-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); flex: 1 0 100%; gap: 4px; margin-top: 8px; }
+  .board-tabs button { font-size: 0.85rem; padding: 8px 2px; letter-spacing: 0; }
   body:has(.board-app) .theme-toggle:not(.skin-toggle) {
     width: 36px;
     min-width: 36px;
@@ -929,49 +933,33 @@ body:has(.board-app),
 }
 .tour .info-card h2 { margin-top: 0; }
 
-@media (min-width: 900px), (max-height: 520px) and (min-width: 700px) {
+@media (min-width: 900px) {
   .quickbar.slim { width: 100%; }
-  .board-screen { padding: 4px 10px 36px; }
-  .board-screen { overflow: auto; }
+  .board-screen { padding: 16px 20px 86px; }
   .character-board {
     height: auto;
-    grid-template-columns: 132px minmax(230px, 0.9fr) minmax(280px, 1.25fr) minmax(240px, 1fr);
-    grid-template-rows: auto auto auto auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
     align-content: start;
     align-items: start;
     grid-template-areas:
-      "head head head head"
-      "meta meta meta meta"
-      "abil defense skills strikes"
-      "foot foot foot foot";
+      "head head"
+      "meta meta"
+      "abil skills"
+      "defense skills"
+      "strikes skills"
+      "foot foot"
+      "hint hint";
   }
-  .character-board.has-hint {
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-areas:
-      "head head head head"
-      "meta meta meta meta"
-      "abil defense skills strikes"
-      "foot foot foot foot"
-      "hint hint hint hint";
-  }
+  .board-head { grid-template-columns: 80px minmax(0, 1fr) minmax(0, 1fr) auto auto auto; grid-template-areas: "portrait name player level xp hero"; }
   .board-meta { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .skill-grid { grid-template-columns: 1fr; grid-auto-rows: auto; align-content: start; gap: 1px 6px; }
-  .board-abil { padding: 6px; justify-content: flex-start; gap: 6px; }
+  .board-abil { padding: 12px; gap: 12px; }
   .board-skills { justify-content: flex-start; }
-  .abil { grid-template-columns: 28px minmax(0, 1fr); }
-}
-@media (max-height: 520px) and (min-width: 700px) and (max-width: 980px) {
-  .board-screen { padding: 2px 4px 32px; }
-  .character-board {
-    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.9fr);
-    gap: 2px;
-  }
-  .skill-grid { grid-template-columns: 1fr 1fr; }
-  .skill-roll, .board-foot { font-size: 10px; }
-  .pips i { width: 10px; height: 10px; }
+  .abil { grid-template-columns: minmax(0, 1fr) auto; }
 }
 @media (max-width: 699px) {
-  .board-foot { font-size: 9px; line-height: 1.15; min-height: 36px; }
+  .board-foot { font-size: 0.85rem; line-height: 1.45; min-height: 36px; flex-wrap: wrap; }
   .cast .cast-portrait { height: 72px; }
 }
 .play-scenes {
@@ -1044,7 +1032,9 @@ article.card { border-top: 3px solid var(--gold); }
     border-top: 0;
   }
   .quickbar button { flex: none; min-height: 44px; }
-  .dock { left: 196px; right: 0; width: auto; transform: none; }
+  .dock { left: 220px; right: 0; width: auto; transform: none; }
+  .creating { padding-left: 0; }
+  .creating .dock { left: 0; width: min(1180px, calc(100% - 24px)); }
   .board-screen { padding-bottom: 8px; }
   .has-quickbar .screen { padding-bottom: 28px; }
   .app { max-width: min(1180px, calc(100% - 24px)); }
@@ -1104,6 +1094,278 @@ select {
   border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.4rem;
 }
 .portrait-grid { display: grid; gap: 12px; }
+.choice-entry { min-width: 0; }
+.choice-description { padding: 12px 4px 18px; border-bottom: 1px solid var(--line); }
+.choice-description p { margin: 0; overflow-wrap: anywhere; }
+.development-planner { padding: 18px 0; border-block: 1px solid var(--line); }
+.development-planner h2 { font-size: 1.2rem; margin: 0; }
+.development-planner p { margin: 0; }
+.development-planner select { width: 100%; min-width: 0; }
+.ability-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ability-pick { min-width: 0; min-height: 52px; padding: 8px 3px; font-size: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--well); text-align: center; overflow-wrap: anywhere; }
+.ability-pick.recommended { border-color: var(--gold); }
+.ability-pick.on { background: var(--teal-2); color: var(--ink); box-shadow: inset 0 -4px var(--teal); }
+.builder-app .quick { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.builder-app .ability { grid-template-columns: minmax(0, 1fr) auto; }
+.builder-app .ability > .mod { display: none; }
+.builder-app .ability > div:first-child { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.builder-app .ability b { overflow-wrap: anywhere; }
+.builder-app .ability .stepper { display: grid; grid-template-columns: 36px 26px 36px; gap: 4px; text-align: center; }
+.builder-app .ability .stepper button { width: 36px; height: 44px; border-radius: 6px; }
+.training-app { max-width: 960px; }
+.training-app .topbar { padding-right: 150px; }
+.training-app .topbar h1 { font-size: 1.35rem; }
+.training-app .screen { padding-top: 20px; }
+.training-setup { padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.training-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.training-fields select { width: 100%; min-width: 0; }
+.training-check { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.training-check input { width: 20px; height: 20px; flex: none; }
+.training-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 12px 0; }
+.training-summary span { color: var(--muted); font-size: 14px; }
+.training-summary b { display: block; color: var(--ink); }
+.training-stage { position: relative; min-height: 210px; overflow: hidden; border-radius: 6px; background: #162c2b; }
+.training-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.training-stage-content { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-content: end; gap: 10px 20px; min-height: 210px; padding: 16px; background: linear-gradient(transparent 15%, rgba(5, 12, 15, .9)); color: #fff; }
+.training-health { display: grid; align-content: end; gap: 4px; min-width: 0; font-size: 15px; }
+.training-health span { overflow-wrap: anywhere; }
+.training-portrait { width: 64px; height: 64px; object-fit: contain; border-radius: 4px; background: rgba(5, 12, 15, .6); }
+.training-health progress { width: 100%; height: 14px; accent-color: #71d5aa; }
+.training-health.enemy progress { accent-color: #e09181; }
+.training-distance { grid-column: 1 / -1; grid-row: 1; margin: 0; font-weight: 700; text-shadow: 0 1px 3px #000; }
+.training-economy { font-weight: 700; margin: 0; }
+.training-hint { padding: 12px 0 12px 14px; margin: 0; border-left: 3px solid var(--teal); }
+.training-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.training-actions .btn { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 72px; border-radius: 6px; padding: 8px 4px; font-size: 14px; overflow-wrap: anywhere; }
+.training-actions small { font-size: 12px; color: var(--muted); }
+.training-log { max-height: 360px; overflow-y: auto; padding: 0 0 0 24px; margin: 0; }
+.training-log li { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.training-rules { border-top: 1px solid var(--line); padding: 16px 0; }
+.tactical-app { max-width: 1640px; }
+.tactical-topbar { padding-right: 150px; }
+.tactical-topbar h1 { font-size: 24px; margin: 0; }
+.tactical-topbar .tiny { margin: 2px 0 0; }
+.tactical-screen { padding: 16px 20px 32px; }
+.tactical-app .tactical-hero-picker { max-width: 720px; display: flex; align-items: center; gap: 12px; }
+.tactical-hero-picker > span { flex: none; font-size: 14px; }
+.tactical-app select, .tactical-app input:not([type=checkbox]):not([type=range]) { min-width: 0; width: 100%; }
+.tactical-app .btn { display: inline-flex; gap: 8px; justify-content: center; align-items: center; border-radius: 6px; min-height: 44px; white-space: normal; }
+.tactical-app h2 { font-size: 19px; display: flex; gap: 8px; align-items: center; margin: 0; }
+.tactical-app p { margin: 8px 0; }
+.tactical-setup { border-block: 1px solid var(--line); padding: 10px 0; margin: 10px 0; }
+.tactical-setup summary { font-weight: 700; }
+.tactical-initial-rolls { margin: 16px 0; }
+.tactical-setup-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-top: 16px; }
+.tactical-checkbox { display: flex; gap: 8px; align-items: center; padding: 8px 0; font-size: 14px; }
+.tactical-checkbox input { width: 20px; height: 20px; flex: none; }
+.tactical-preparation { display: flex; flex-wrap: wrap; gap: 12px; border: 1px solid var(--line); margin: 16px 0; padding: 12px; }
+.tactical-preparation .field { flex: 1 1 200px; }
+.tactical-preparation .tiny { flex-basis: 100%; }
+.tactical-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 12px 0; }
+.tactical-toolbar > div:first-child { min-width: 0; }
+.tactical-toolbar b, .tactical-toolbar span { display: block; }
+.tactical-toolbar span { color: var(--muted); font-size: 14px; }
+.tactical-tool-buttons { display: flex; align-items: center; gap: 12px; }
+.tactical-zoom { display: flex; align-items: center; gap: 6px; }
+.tactical-zoom input { width: 100px; }
+.tactical-initiative { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 12px; }
+.tactical-initiative button { display: flex; gap: 8px; align-items: center; flex: 1 0 160px; border: 1px solid var(--line); border-radius: 6px; padding: 8px; background: var(--well); text-align: left; font-size: 14px; }
+.tactical-initiative button.active { border-color: var(--teal); box-shadow: inset 0 -3px var(--teal); }
+.tactical-initiative img { width: 36px; height: 36px; object-fit: cover; border-radius: 50%; flex: none; }
+.tactical-initiative span { flex: 1; min-width: 0; }
+.tactical-initiative small { display: block; color: var(--muted); font-size: 12px; }
+.tactical-initiative .down { opacity: .55; }
+.tactical-layout { display: grid; grid-template-columns: minmax(0, 1fr) 292px; gap: 20px; align-items: start; }
+.tactical-play-area, .tactical-sidebar { min-width: 0; }
+.tactical-economy { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 12px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
+.tactical-economy span { display: flex; align-items: center; gap: 6px; }
+.tactical-map-scroll { overflow: auto; max-width: 100%; background: #171e23; border: 1px solid #465258; border-radius: 4px; scrollbar-gutter: stable; }
+.tactical-map { position: relative; display: grid; width: max-content; margin: 0 auto; isolation: isolate; background-color: #333c3f; background-position: center; background-size: 100% 100%; background-repeat: no-repeat; }
+.tactical-cell { position: relative; width: var(--cell); height: var(--cell); padding: 0; margin: 0; border: 0; border-right: 1px solid #ffffff40; border-bottom: 1px solid #ffffff40; border-radius: 0; background: transparent; }
+.tactical-cell::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.tactical-cell.in-range::after { background: #42c9ba29; }
+.tactical-cell.path::after { background: #43d5ad50; outline: 1px dashed #a8ffda; outline-offset: -3px; }
+.tactical-cell.path-blocked::after { background: #e9626270; }
+.tactical-cell.area::after { background: #ff723a77; outline: 1px solid #ffbb7c; outline-offset: -2px; }
+.tactical-cell.aimed { outline: 3px solid #f5d489; outline-offset: -3px; z-index: 2; }
+.cell-coordinate { position: absolute; top: 0; left: 1px; padding: 1px; font-size: 9px; color: #fff; background: #141a20a6; pointer-events: none; line-height: 1; text-shadow: 0 1px #000; z-index: 1; }
+.cell-rune { position: absolute; inset: 25%; width: 50%; height: 50%; color: #adf1fb; filter: drop-shadow(0 0 4px #24a4ba); }
+.path-dot { position: absolute; top: 45%; left: 45%; width: 10%; height: 10%; border-radius: 50%; background: #d5ffe8; z-index: 1; }
+.tactical-token { display: block; position: absolute; inset: 9%; border: 2px solid #70dfb7; border-radius: 50%; background: #0b171e; z-index: 3; image-rendering: auto; cursor: grab; box-shadow: 0 2px 5px #0008; }
+.tactical-token.enemy { border-color: #e79a8d; }
+.tactical-token.selected { box-shadow: 0 0 0 2px #ffe7ae, 0 0 12px #ffe7ae80; }
+.tactical-token img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.tactical-token.down { filter: grayscale(1); opacity: .5; transform: rotate(-20deg); }
+.token-name { position: absolute; left: -10%; right: -10%; bottom: -5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; line-height: 14px; color: #fff; background: #111d; border-radius: 2px; }
+.token-hp { position: absolute; bottom: -7px; left: 0; height: 3px; background: #70dfb7; border-radius: 1px; }
+.enemy .token-hp { background: #e79a8d; }
+.token-effects { position: absolute; top: -5px; right: -6px; min-width: 14px; height: 14px; border-radius: 50%; background: #e7c480; color: #221c13; font-size: 10px; line-height: 14px; }
+.tactical-map-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); font-size: 12px; padding: 8px 0; }
+.cell-light { position: absolute; inset: 0; pointer-events: none; }
+.cell-light.unseen { background: #02060af0; }
+.cell-light.dim { background: #060a1459; }
+.cell-light.nightvision { background: #07142033; }
+.tactical-night-layer { position: absolute; inset: 0; pointer-events: none; backdrop-filter: grayscale(1) brightness(.8); }
+.tactical-cell:has(.cell-light.nightvision) .tactical-token img { filter: grayscale(1); }
+.tactical-effects { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+.tactical-light-status { margin: 4px 0 10px; color: var(--muted); font-size: 14px; }
+.training-development { padding-block: 12px; border-block: 1px solid var(--line); margin-bottom: 12px; }
+.training-level-row { display: flex; align-items: end; flex-wrap: wrap; gap: 10px; }
+.training-level-row .field { min-width: 180px; }
+.training-level-row .btn { min-height: 44px; white-space: normal; }
+.training-development > details { padding-block: 12px; }
+.training-build-fields { padding: 0; border: 0; min-width: 0; }
+.training-feature-list { display: grid; gap: 8px; }
+.training-feature-list details { padding-block: 8px; border-bottom: 1px solid var(--line); }
+.training-feature-list p { white-space: pre-line; overflow-wrap: anywhere; }
+.training-skill-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; }
+.training-skill-summary span { display: flex; justify-content: space-between; gap: 8px; }
+.tactical-environment { border: 0; border-top: 1px solid var(--line); margin: 10px 0; padding: 10px 0; min-width: 0; }
+@media (max-width: 600px) {
+  .tactical-app .tactical-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tactical-toolbar { align-items: flex-start; flex-wrap: wrap; }
+  .tactical-tool-buttons { flex-wrap: wrap; }
+  .training-level-row { align-items: stretch; }
+  .training-level-row .field { width: 100%; }
+  .training-level-row .btn { flex: 1; }
+}
+.tactical-tabs { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+.tactical-tabs button { min-height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; border-bottom: 3px solid transparent; padding: 6px 2px; font-size: 13px; }
+.tactical-tabs button.on { color: var(--gold); border-bottom-color: var(--gold); background: var(--gold-2); }
+.tactical-controls { display: grid; gap: 12px; padding: 20px 0; min-height: 236px; }
+.tactical-controls .btn { justify-self: start; max-width: 100%; }
+.tactical-selection { color: var(--gold); }
+.tactical-spell-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.tactical-spell-list button { min-width: 0; border-radius: 6px; border: 1px solid var(--line); background: var(--well); padding: 10px; text-align: left; }
+.tactical-spell-list button.on { border-color: var(--teal); background: var(--teal-2); }
+.tactical-spell-list b { font-size: 14px; display: block; }
+.tactical-spell-list small { font-size: 12px; color: var(--muted); display: block; }
+.tactical-turn-bar { display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.tactical-turn-bar .seg { gap: 4px; }
+.tactical-turn-bar .pill { min-width: 0; display: flex; align-items: center; gap: 5px; font-size: 13px; padding: 8px 12px; }
+.tactical-turn-bar .pill.on::before { content: none; }
+.tactical-inspector { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.tactical-effect-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.tactical-effect-list span { font-size: 12px; padding: 3px 6px; background: var(--well); border-radius: 4px; }
+.tactical-coach { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; border-left: 3px solid var(--teal); padding: 12px; margin-top: 16px; background: var(--teal-2); font-size: 14px; }
+.tactical-coach p { margin: 0; }
+.tactical-coach small { grid-column: 2; }
+.tactical-last-die { display: grid; grid-template-columns: 38px 56px minmax(0, 1fr); gap: 8px; align-items: center; padding: 16px 0; }
+.tactical-last-die b { font-size: 28px; color: var(--gold); text-align: center; animation: tactical-die .4s ease-out; }
+.tactical-last-die span { font-size: 12px; overflow-wrap: anywhere; }
+.tactical-journal h2 { margin-bottom: 12px; }
+.tactical-journal ol { list-style: none; padding: 0; margin: 0; max-height: 660px; overflow-y: auto; }
+.tactical-journal li { padding: 10px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.tactical-journal li p { margin: 4px 0 0; color: var(--muted); }
+.tactical-journal .spell > b { color: var(--teal); }
+.tactical-journal .damage > b { color: var(--danger); }
+.tactical-dice-types { display: flex; gap: 6px; flex-wrap: wrap; }
+.tactical-controls .tactical-dice-types .btn { padding: 8px; min-width: 42px; }
+.tactical-save-fields { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.tactical-lessons { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.tactical-lessons li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; }
+.tactical-lessons li > span { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); font-size: 13px; }
+.tactical-lessons .done { background: var(--teal); color: var(--teal-ink); }
+.tactical-roll-layer { z-index: 100; }
+.tactical-roll-dialog { position: relative; z-index: 1; padding: 24px; border-radius: 8px; background: var(--paper); width: min(440px, calc(100vw - 32px)); max-height: 90dvh; overflow: auto; border: 1px solid var(--line); margin: auto; }
+.tactical-roll-dialog h2 { display: flex; align-items: center; gap: 8px; font-size: 22px; }
+.tactical-roll-dialog .roll-formula { font-size: 28px; font-weight: 700; text-align: center; }
+.tactical-roll-dialog input { width: 100%; }
+body:has(.tactical-app) .quickbar { display: none; }
+@keyframes tactical-die { from { transform: rotate(-12deg) scale(.8); opacity: .4; } to { transform: none; opacity: 1; } }
+@media (max-width: 1040px) {
+  .tactical-layout { grid-template-columns: minmax(0, 1fr); }
+  .tactical-sidebar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .tactical-journal { grid-column: 1 / -1; }
+  .tactical-journal ol { max-height: 420px; }
+}
+@media (min-width: 1180px) {
+  .tactical-play-area, .tactical-sidebar { display: contents; }
+  .tactical-economy { grid-column: 1; grid-row: 1; align-self: center; }
+  .tactical-inspector { grid-column: 2; grid-row: 1; padding: 4px 0; }
+  .tactical-inspector .tiny { display: none; }
+  .tactical-map-scroll { grid-column: 1; grid-row: 2; }
+  .tactical-map-legend { grid-column: 1; grid-row: 3; padding: 0; }
+  .tactical-tabs { grid-column: 1; grid-row: 4; }
+  .tactical-controls { grid-column: 2; grid-row: 2 / 5; border-left: 1px solid var(--line); padding: 0 0 0 16px; align-content: start; max-height: 500px; overflow: auto; }
+  .tactical-turn-bar { grid-column: 1; grid-row: 5; }
+  .tactical-last-die { grid-column: 2; grid-row: 5; }
+  .tactical-coach { grid-column: 1 / -1; grid-row: 6; margin-top: 0; }
+  .tactical-journal { grid-column: 1 / -1; grid-row: 7; }
+  .tactical-journal ol { max-height: 300px; }
+  .tactical-spell-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .tactical-screen { padding-inline: 12px; }
+  .tactical-topbar h1 { font-size: 21px; }
+  .tactical-topbar { display: grid; grid-template-columns: 44px minmax(0, 1fr); padding-right: 16px; }
+  .tactical-topbar > .grow { grid-column: 1 / -1; grid-row: 2; }
+  .tactical-setup-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tactical-setup-fields label:nth-child(2) { grid-column: 1 / -1; }
+  .tactical-toolbar { align-items: start; }
+  .tactical-zoom input { width: 64px; }
+  .tactical-tabs span { font-size: 11px; }
+  .tactical-turn-bar { flex-wrap: wrap; }
+  .tactical-sidebar { display: block; }
+  .tactical-spell-list { grid-template-columns: minmax(0, 1fr); }
+  .tactical-initiative button { flex-basis: 152px; }
+}
+@media (prefers-reduced-motion: reduce) { .tactical-last-die b { animation: none; } }
+.tactical-simple [hidden] { display: none !important; }
+.tactical-simple .tactical-quick-setup { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+.tactical-simple .training-development { padding-block: 10px; }
+.tactical-simple .training-development > summary { cursor: pointer; color: var(--muted); }
+.tactical-simple .training-development > .training-level-row { margin-top: 14px; }
+.tactical-simple .tactical-start-button { margin: 16px 0; min-height: 48px; }
+.tactical-simple .tactical-economy { display: block; padding: 10px 0 14px; }
+.tactical-vitals { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 12px; }
+.tactical-resources h2 { font-family: inherit; font-size: 16px; margin: 0 0 10px; }
+.tactical-turn-meters { display: grid; gap: 12px 16px; }
+.tactical-turn-meters.pf { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.tactical-turn-meters.dnd { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tactical-resource { min-width: 0; --resource-color: #70dfb7; }
+.tactical-resource.reaction { --resource-color: #edc786; }
+.tactical-resource.spell { --resource-color: #8ac7ff; }
+.tactical-resource.attack { --resource-color: #e7b79b; }
+.tactical-resource-label { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 28px; font-size: 14px; }
+.tactical-resource-label > span { min-width: 0; overflow-wrap: anywhere; }
+.tactical-resource-label strong { flex: none; font-size: 20px; font-variant-numeric: tabular-nums; }
+.tactical-resource-label small { font-size: 14px; color: var(--muted); }
+.tactical-resource-pips { display: flex; flex-wrap: wrap; gap: 5px; min-height: 26px; margin-top: 3px; }
+.tactical-economy .tactical-resource-pip { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid currentColor; border-radius: 4px; color: var(--resource-color); background: color-mix(in srgb, var(--resource-color) 16%, transparent); }
+.tactical-resource-pip.available svg { fill: currentColor; fill-opacity: .22; }
+.tactical-economy .tactical-resource-pip.spent { color: var(--muted); background: transparent; opacity: .45; }
+.tactical-movement-value { display: flex; align-items: center; gap: 6px; min-height: 26px; margin-top: 3px; font-size: 12px; color: var(--muted); }
+.tactical-extra-action { display: flex; align-items: center; gap: 6px; min-height: 22px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.tactical-extra-action.available { color: #70dfb7; }
+.tactical-slot-meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 10px; margin-top: 12px; }
+@media (min-width: 1180px) { .tactical-turn-meters.dnd { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.tactical-simple .tactical-tabs { grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); }
+.tactical-simple .tactical-tabs button { min-height: 52px; }
+.tactical-simple .tactical-initiative button { flex: 0 0 auto; min-width: 140px; padding: 6px 10px; }
+.tactical-simple .tactical-initiative small { font-size: 11px; }
+.tactical-simple .tactical-initiative { padding-bottom: 4px; }
+.tactical-simple .tactical-map > .tactical-token { inset: auto; top: 0; left: 0; width: calc(var(--cell) * .82); height: calc(var(--cell) * .82); margin: 0; padding: 0; transition: transform 160ms linear; }
+.tactical-simple .tactical-token.nightvision img { filter: grayscale(1); }
+.tactical-simple .tactical-journal > summary { cursor: pointer; padding: 12px 0; }
+.tactical-simple .tactical-controls { min-height: 0; gap: 10px; }
+.tactical-simple .tactical-inspector .tiny { display: block; }
+.tactical-simple .tactical-coach { display: block; background: transparent; border: 0; margin: 0; padding: 8px 0; font-size: 13px; }
+.tactical-simple .tactical-coach > summary, .tactical-simple .tactical-order > summary { cursor: pointer; color: var(--muted); font-size: 13px; padding-block: 4px; }
+.tactical-simple .tactical-map-legend span:not(:first-child) { display: none; }
+.tactical-simple .tactical-dummy-notice { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--line); }
+@media (max-width: 600px) {
+  .tactical-simple .tactical-quick-setup { grid-template-columns: minmax(0, 1fr); }
+  .tactical-simple .tactical-light-status { font-size: 12px; }
+  .tactical-simple .tactical-toolbar { margin-top: 4px; }
+  .tactical-simple .tactical-turn-bar { background: var(--paper); }
+}
+@media (prefers-reduced-motion: reduce) { .tactical-simple .tactical-map > .tactical-token { transition: none; } }
+@media (max-width: 460px) {
+  .ability-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .training-fields { grid-template-columns: 1fr; }
+  .training-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 700px) {
   .portrait-dialog { grid-template-columns: 1fr; }
 }
@@ -1124,7 +1386,7 @@ select {
   }
   .side-nav button.on { background: var(--gold-2); color: var(--gold); }
   .quickbar { display: none; }
-  .has-quickbar { padding-left: 220px; }
+  .has-quickbar:not(.creating) { padding-left: 220px; }
   .catalog-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; align-items: start; }
   .catalog-filters { position: sticky; top: 8px; }
   .filter-toggle { display: none; }

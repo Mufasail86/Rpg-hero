@@ -1,0 +1,12 @@
+{
+  "name": "Kenney Tiny Dungeon 1.0",
+  "author": "Kenney",
+  "license": "CC0-1.0",
+  "primary_source": "https://kenney.nl/assets/tiny-dungeon",
+  "download_mirror": "https://opengameart.org/sites/default/files/kenney_tinydungeon.zip",
+  "retrieved": "2026-11-24",
+  "cost": 0,
+  "files_used": ["tile_0025.png", "tile_0039.png", "tile_0049.png", "tile_0072.png"],
+  "changes": "Original PNG tiles preserved; CSS scaling and tint only. No generative images.",
+  "original_license": "License.txt"
+}

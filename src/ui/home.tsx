@@ -106,6 +106,7 @@ export function Home({
         <button type="button" className="btn" data-testid="new-character" onClick={() => go("#/new")}>
           Новый персонаж, шаг за шагом
         </button>
+        <button type="button" className="btn" data-testid="open-training" onClick={() => go("#/training")}>Учебные бои · арена и таверна</button>
         <p className="tiny">Кнопки ниже — контрольные воины для проверки правил. Для первой игры они не нужны.</p>
         {!characters.some((hero) => hero.id === "artefol-pobochka") && (
           <button type="button" className="btn" data-testid="add-artefol" onClick={() => onCommit([artefolCharacter(), ...characters])}>

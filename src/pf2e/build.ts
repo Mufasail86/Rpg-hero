@@ -109,6 +109,7 @@ const FEATS: Record<string, FeatDef> = {
   "brutish-shove": { name: "Грубый толчок", kind: "class", level: 2, modeled: false },
   toughness: { name: "Живучесть", kind: "general", level: 1, modeled: true },
   fleet: { name: "Быстроногий", kind: "general", level: 1, modeled: true },
+  "nimble-elf": { name: "Лёгкий шаг", kind: "ancestry", level: 1, modeled: true, ancestries: ["elf"] },
   diehard: { name: "Несгибаемый", kind: "general", level: 1, modeled: false },
   "breath-control": { name: "Контроль дыхания", kind: "general", level: 1, modeled: false },
   "canny-acumen": { name: "Дальновидность", kind: "general", level: 1, modeled: true },
@@ -178,7 +179,9 @@ export function derive(input: DeriveInput): Derived {
     if (!byId.has(slot.id)) issues.push({ kind: "build", message: `Не закрыт выбор: ${slot.label} (уровень ${slot.level}).` });
   }
   for (const choice of byId.values()) {
-    if (!slots.some((slot) => slot.id === choice.id)) {
+    const metadata = ["key", "school", "thesis", "font", "deity"].includes(choice.source) && choice.id === `class-${choice.source}`;
+    if (metadata && choice.source !== "key") issues.push({ kind: "limit", message: "Дополнительный выбор класса сохранён в справке. Его специальные эффекты не полностью автоматизированы." });
+    if (!metadata && !slots.some((slot) => slot.id === choice.id)) {
       issues.push({ kind: "build", message: `Лишний выбор «${choiceCaption(choice)}» на уровне ${choice.level}: для него нет положенного слота.` });
     }
   }
@@ -299,9 +302,10 @@ export function derive(input: DeriveInput): Derived {
   const hefty = taken.has("hefty") ? 2 : 0;
   const encLimit = 5 + str + hefty;
   const encumbered = bulk > encLimit;
-  let speed = (ancestry?.speed ?? 25) + (fleet ? 5 : 0) - speedPenalty - (encumbered ? 10 : 0) - curse.speedPenalty;
+  let speed = (ancestry?.speed ?? 25) + (fleet ? 5 : 0) + (taken.has("nimble-elf") ? 5 : 0) - speedPenalty - (encumbered ? 10 : 0) - curse.speedPenalty;
   const speedParts = [`база ${ancestry?.speed ?? 25}`];
   if (fleet) speedParts.push("Быстроногий +5");
+  if (taken.has("nimble-elf")) speedParts.push("Лёгкий шаг +5");
   if (speedPenalty) speedParts.push(`доспех −${speedPenalty}`);
   if (encumbered) speedParts.push("перегрузка −10");
   if (curse.speedPenalty) speedParts.push(`проклятие −${curse.speedPenalty}`);

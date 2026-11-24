@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { ArtButton } from "./lightbox";
+import { learningNote, learningText } from "../data/learning";
 
 const InfoContext = createContext<(title: string, text: string) => void>(() => {});
 
@@ -124,7 +125,9 @@ export function Choice({
   reason?: string;
   chips?: string[];
 }) {
+  const lesson = learningNote(id);
   return (
+    <div className="choice-entry">
     <div className={`option ${on ? "on" : ""} ${disabled ? "locked" : ""}`}>
       {art ? <ArtButton src={art} label={name} description={short || hint || reason} onPick={disabled ? undefined : onPick} /> : null}
       <button type="button" className="option-main" data-testid={testId ?? `opt-${id}`} aria-pressed={on} disabled={disabled} onClick={onPick}>
@@ -137,7 +140,11 @@ export function Choice({
         ) : null}
         {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}
       </button>
-      <Info title={name} text={short ? `${short}\n\n${info}` : info} />
+      <Info title={name} text={learningText(id, short ? `${short}\n\n${info}` : info)} />
+    </div>
+    {on && lesson && <div className="choice-description stack" data-testid={`explanation-${id}`}>
+      <p>{lesson.meaning}</p><p><b>Когда полезно.</b> {lesson.useful}</p><p><b>Пример.</b> {lesson.example}</p><p><b>Ограничение.</b> {lesson.caution}</p>
+    </div>}
     </div>
   );
 }

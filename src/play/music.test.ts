@@ -9,5 +9,13 @@ describe("музыка", () => {
     expect(musicSceneFor("#/c/hero/now", "talk")).toBe("tavern");
     expect(musicSceneFor("#/c/hero/now", "fight")).toBe("combat");
     expect(musicSceneFor("#/bestiary")).toBe("bestiary");
+    expect(musicSceneFor("#/training/hero")).toBe("combat");
+  });
+  it("работает при запрете хранения настроек и ограничивает громкость", () => {
+    const denied = { getItem: () => { throw new Error("denied"); } };
+    expect(readMusicOn(denied)).toBe(false);
+    expect(readMusicVolume(denied)).toBe(0.35);
+    expect(readMusicVolume({ getItem: () => "5" })).toBe(1);
+    expect(readMusicVolume({ getItem: () => "-5" })).toBe(0);
   });
 });

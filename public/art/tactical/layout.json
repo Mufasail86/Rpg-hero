@@ -1,0 +1,41 @@
+{
+  "gridFeet": 5,
+  "origin": "top-left",
+  "indexing": "tiles[y][x] (zero-based)",
+  "maps": [
+    {
+      "id": "tavern",
+      "title": "Таверна «Три кости»",
+      "width": 12,
+      "height": 9,
+      "tiles": [
+        ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],
+        ["wall","floor","floor","floor","floor","floor","floor","table","table","table","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","rune","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","table","table","floor","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","table","table","floor","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","rubble","rubble","table","table","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+        ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
+      ]
+    },
+    {
+      "id": "arena",
+      "title": "Зал испытаний",
+      "width": 12,
+      "height": 9,
+      "tiles": [
+        ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],
+        ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","rune","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","wall","floor","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","wall","floor","floor","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","rubble","rubble","floor","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","floor","floor","wall","floor","floor","wall"],
+        ["wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall"],
+        ["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
+      ]
+    }
+  ]
+}

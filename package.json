@@ -10,11 +10,15 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@dice-roller/rpg-dice-roller": "^5.5.1",
+    "lucide-react": "^1.78.0",
+    "pathfinding": "^0.4.18",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
+    "@types/pathfinding": "^0.1.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.4.1",

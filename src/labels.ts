@@ -1,5 +1,5 @@
-export const SYSTEM_DND = "D&D";
-export const SYSTEM_PF = "Pathfinder";
+export const SYSTEM_DND = "Подземелья и драконы (D&D)";
+export const SYSTEM_PF = "Pathfinder (PF)";
 
 export function systemTitle(system: string): string {
   if (system === "dnd5e") return SYSTEM_DND;

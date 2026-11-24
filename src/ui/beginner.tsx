@@ -29,6 +29,10 @@ import {
 import { createCharacter, type StepId } from "../create";
 import type { Character, Draft } from "../types";
 import { go, useInfo } from "./common";
+import { adviceForOptions, type AdvicePick } from "../data/build-advice";
+import { CARD_BY_ID, cardText } from "../data/cards";
+import { learningText } from "../data/learning";
+import { Info } from "./common";
 
 export function Term({ id }: { id: string }) {
   const open = useInfo();
@@ -308,35 +312,81 @@ export function QuickStart({ onDone }: { onDone: (character: Character) => void 
 }
 
 export function LevelWizard({
+  title,
   level,
-  open,
+  next,
+  gained,
+  choose,
+  adviceAt,
+  slots,
+  selected,
   optionsFor,
   onPick,
+  onRemove,
   advice,
+  complexity = "simple",
 }: {
+  title?: string;
+  complexity?: "simple" | "complex";
   level: number;
-  open: { id: string; level: number; source: string; label: string }[];
+  next?: number;
+  gained?: string[];
+  choose?: { id: string; level: number; source: string; label: string }[];
+  adviceAt: (level: number) => AdvicePick[];
+  slots: { id: string; level: number; source: string; label: string }[];
+  selected: { id: string; pick: string; name: string }[];
   optionsFor: (slot: { id: string; level: number; source: string; label: string }) => { pick: string; name: string }[];
   onPick: (slot: { id: string; level: number; source: string; label: string }, pick: string) => void;
+  onRemove: (id: string) => void;
   advice?: { pick: string; reason: string }[];
 }) {
-  const here = open.filter((slot) => slot.level === level);
-  const slot = here[0] ?? open[0];
+  const target = level > 1 ? level : next ?? level;
+  const future = target > level;
+  const choices = future ? choose ?? [] : slots.filter((slot) => slot.level === target);
   return (
     <section className="card stack" data-testid="level-wizard">
-      <h2>Что нового на этом уровне</h2>
-      {!slot && <p>Новых выборов нет. Когда придёт опыт, нажмите «Повысить уровень».</p>}
-      {slot && (
-        <>
-          <p>{slotTitle(slot.source, slot.label)}. {here.length > 1 ? `Таких шагов сейчас ${here.length}. Этот — первый.` : "Один шаг."}</p>
-          {wizardOptions(slot.source, optionsFor(slot), advice).map((option, index) => (
-            <button key={option.pick} type="button" className="advise-row" data-testid={`wizard-${slot.id}`} data-advised={option.advised || index === 0 ? "1" : "0"} onClick={() => onPick(slot, option.pick)}>
-              <b>{option.advised || index === 0 ? "Советуем. " : ""}{option.name}</b>
-              <small>{option.reason}</small>
-            </button>
-          ))}
-        </>
-      )}
+      <h2>{title ?? `С ${Math.max(1, target - 1)} на ${target} уровень`}</h2>
+      <p className="kicker">Само приходит</p>
+      <ul data-testid="level-gains">
+        {(gained ?? ["Хиты растут вместе с уровнем."]).map((line) => <li key={line}>{line}</li>)}
+      </ul>
+      <p className="kicker">Надо выбрать</p>
+      {future && choices.length > 0 && <p className="tiny">Сначала повысьте уровень — затем можно выбрать варианты ниже.</p>}
+      <div className="stack" data-testid="level-choices">
+        {choices.length === 0 && <p>Новых выборов на этом уровне нет.</p>}
+        {choices.map((slot) => {
+          const chosen = selected.find((row) => row.id === slot.id);
+          const available = optionsFor(slot);
+          const options = chosen && !available.some((option) => option.pick === chosen.pick)
+            ? [...available, { pick: chosen.pick, name: chosen.name }]
+            : available;
+          const specific = adviceForOptions(options, adviceAt(target));
+          const tips = (specific.length ? specific : wizardOptions(slot.source, options, advice)).slice(0, complexity === "complex" ? 6 : 2);
+          const pickedId = chosen?.pick.replace(/^feat:/, "").split("|")[0];
+          const pickedCard = pickedId ? CARD_BY_ID.get(pickedId) : undefined;
+          return (
+            <div key={slot.id} className="level-choice stack" data-testid={`level-choice-${slot.id}`}>
+              <label className="field">
+                <span>{slotTitle(slot.source, slot.label)}</span>
+                <select aria-label={slot.label} value={chosen?.pick ?? ""} disabled={future} onChange={(event) => event.target.value ? onPick(slot, event.target.value) : onRemove(slot.id)}>
+                  <option value="">Не выбрано</option>
+                  {options.map((option) => <option key={option.pick} value={option.pick}>{option.name}</option>)}
+                </select>
+              </label>
+              <div className="advise" data-testid={`advice-${slot.id}`}>
+                {tips.map((option) => (
+                  <button key={option.pick} type="button" className="advise-row" disabled={future} aria-pressed={chosen?.pick === option.pick} data-testid={`wizard-${slot.id}`} data-advised="1" onClick={() => chosen?.pick === option.pick ? onRemove(slot.id) : onPick(slot, option.pick)}>
+                    <b>{option.name}{chosen?.pick === option.pick ? " · выбрано" : ""}</b>
+                    <small>{option.reason}</small>
+                  </button>
+                ))}
+              </div>
+              {chosen && <button type="button" className="text-btn" onClick={() => onRemove(slot.id)}>Отменить выбор</button>}
+              {chosen && pickedId && <div className="row-between"><span>Описание выбранного варианта</span><Info title={chosen.name} text={learningText(pickedId, pickedCard ? cardText(pickedCard) : "Полное правило смотрите в справочнике выбранной редакции.")} /></div>}
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

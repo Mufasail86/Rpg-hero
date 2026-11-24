@@ -1,0 +1,16 @@
+{
+  "package": "BATTLE_MAPS_0_1",
+  "date": "2026-11-24",
+  "visual_authority": "IRIS",
+  "creation": "OpenAI ImageGen, one generation per map, guided by the existing battleMap terrain matrices",
+  "original_evidence": "RPG_HERO_REVIEW_33/BATTLE_MAPS_0_1/IMAGEGEN_PROMPTS.md",
+  "changes_on_integration": "Original WebP files copied unchanged. A single CSS background is scaled over the 12 by 9 interactive grid. No new image generation.",
+  "layout_snapshot": "layout.json",
+  "geometry_verified_at_commit": "8403cf07a54099c1365058a743980116a0e5a4af",
+  "canvas": { "width": 1448, "height": 1086, "columns": 12, "rows": 9 },
+  "assets": [
+    { "file": "tavern.webp", "title": "Таверна «Три кости»", "sha256": "a7d80dcd02c144e97a5ff5d1d762c23cff6015b71bbc7fcae3f6f9ede917bd0b" },
+    { "file": "arena.webp", "title": "Зал испытаний", "sha256": "ff31e2b486b4042048cc15218c2d514e2b4319e9da8ec492026939dc090c3e41" }
+  ],
+  "legacy_tiles": "provenance.json records the earlier CC0 Kenney tiles; those tiles are preserved but are no longer used by the tactical board. This entry does not claim that the generated maps are Kenney assets or CC0."
+}

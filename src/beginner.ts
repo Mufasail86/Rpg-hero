@@ -9,6 +9,7 @@ import {
   type StepId,
 } from "./create";
 import { skillPlan } from "./skills/picks";
+import { developmentAdvice } from "./data/development";
 import {
   ANCESTRIES,
   CLASSES as CL2,
@@ -79,8 +80,8 @@ export function traitPlain(id: string, fallback: string): string {
 
 export const STEP_EXPLAIN: Record<StepId, { what: string; example: string }> = {
   system: {
-    what: "Сначала игра. D&D и Pathfinder считаются по-разному, и старую редакцию с новой не смешивают.",
-    example: "новичку проще начать с Pathfinder, воин, или с D&D, воин.",
+    what: "Сначала выберите игру: «Подземелья и драконы» или «Следопыт». Их правила и редакции не смешиваются.",
+    example: "для первого героя подойдёт воин: он крепкий и у него понятные боевые приёмы.",
   },
   name: {
     what: "Имя — только подпись на листе. На числа оно не влияет, и его можно сменить потом.",
@@ -89,6 +90,10 @@ export const STEP_EXPLAIN: Record<StepId, { what: string; example: string }> = {
   ancestry: {
     what: "Народ — кем герой родился. Он задаёт здоровье, скорость и одну врождённую черту.",
     example: "человек удобен новичкам: мало обязательных штрафов.",
+  },
+  heritage: {
+    what: "Наследие — какая именно семья или кровь. Оно не заменяет народ.",
+    example: "у дварфа скальное наследие помогает устоять, когда толкают.",
   },
   background: {
     what: "Происхождение — жизнь до приключения. Оно даёт навык и чуть поднимает характеристики.",
@@ -127,7 +132,8 @@ export const STEP_EXPLAIN: Record<StepId, { what: string; example: string }> = {
 export const STEP_TERMS: Record<StepId, string[]> = {
   system: ["ac", "dc", "save"],
   name: [],
-  ancestry: ["ancestry", "heritage"],
+  ancestry: ["ancestry"],
+  heritage: ["heritage"],
   background: ["background", "boost"],
   class: ["class", "archetype"],
   abilities: ["ability", "boost"],
@@ -856,7 +862,7 @@ function backgroundAbilities(draft: Draft): Ability[] {
 }
 
 function fillSkills(draft: Draft): Partial<Draft> {
-  const scored = scoresOf({ ...draft, ...fillAbilities(draft) });
+  const scored = scoresOf(draft);
   if (!scored.ok || !draft.system) return {};
   const need = skillNeed(draft, scored.scores);
   const fixed = new Set(fixedSkills(draft));
@@ -875,6 +881,7 @@ function fillSkills(draft: Draft): Partial<Draft> {
     scores: scored.scores,
   });
   const prefer = [
+    ...developmentAdvice(draft.classId, draft.development).map(row => row.id).filter(id => pool.includes(id)),
     ...plan.grow.map((row) => row.id).filter((id) => pool.includes(id)),
     ...PREFER_SKILLS.filter((id) => pool.includes(id)),
     ...pool,
