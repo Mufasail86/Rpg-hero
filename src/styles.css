@@ -1180,19 +1180,15 @@ select {
 .tactical-economy { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 12px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
 .tactical-economy span { display: flex; align-items: center; gap: 6px; }
 .tactical-map-scroll { overflow: auto; max-width: 100%; background: #171e23; border: 1px solid #465258; border-radius: 4px; scrollbar-gutter: stable; }
-.tactical-map { display: grid; width: max-content; margin: 0 auto; isolation: isolate; }
-.tactical-cell { position: relative; width: var(--cell); height: var(--cell); padding: 0; margin: 0; border: 0; border-right: 1px solid #ffffff29; border-bottom: 1px solid #ffffff29; border-radius: 0; background: #5a6366 url("/art/tactical/tile_0039.png") center / 100% 100%; background-blend-mode: multiply; image-rendering: pixelated; }
-.tavern .tactical-cell { background-image: url("/art/tactical/tile_0049.png"); background-color: #8b7560; }
-.tactical-cell.wall { background-image: url("/art/tactical/tile_0025.png"); background-color: #48515e; }
-.tactical-cell.table { background-image: url("/art/tactical/tile_0072.png"); background-color: #8f7454; }
-.tactical-cell.rubble { background-image: url("/art/tactical/tile_0025.png"); background-color: #4e4e4e; }
+.tactical-map { display: grid; width: max-content; margin: 0 auto; isolation: isolate; background-color: #333c3f; background-position: center; background-size: 100% 100%; background-repeat: no-repeat; }
+.tactical-cell { position: relative; width: var(--cell); height: var(--cell); padding: 0; margin: 0; border: 0; border-right: 1px solid #ffffff40; border-bottom: 1px solid #ffffff40; border-radius: 0; background: transparent; }
 .tactical-cell::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
 .tactical-cell.in-range::after { background: #42c9ba29; }
 .tactical-cell.path::after { background: #43d5ad50; outline: 1px dashed #a8ffda; outline-offset: -3px; }
 .tactical-cell.path-blocked::after { background: #e9626270; }
 .tactical-cell.area::after { background: #ff723a77; outline: 1px solid #ffbb7c; outline-offset: -2px; }
 .tactical-cell.aimed { outline: 3px solid #f5d489; outline-offset: -3px; z-index: 2; }
-.cell-coordinate { position: absolute; top: 0; left: 2px; font-size: 9px; color: #fff9; pointer-events: none; line-height: 1; text-shadow: 0 1px #000; z-index: 1; }
+.cell-coordinate { position: absolute; top: 0; left: 1px; padding: 1px; font-size: 9px; color: #fff; background: #141a20a6; pointer-events: none; line-height: 1; text-shadow: 0 1px #000; z-index: 1; }
 .cell-rune { position: absolute; inset: 25%; width: 50%; height: 50%; color: #adf1fb; filter: drop-shadow(0 0 4px #24a4ba); }
 .path-dot { position: absolute; top: 45%; left: 45%; width: 10%; height: 10%; border-radius: 50%; background: #d5ffe8; z-index: 1; }
 .tactical-token { display: block; position: absolute; inset: 9%; border: 2px solid #70dfb7; border-radius: 50%; background: #0b171e; z-index: 3; image-rendering: auto; cursor: grab; box-shadow: 0 2px 5px #0008; }
