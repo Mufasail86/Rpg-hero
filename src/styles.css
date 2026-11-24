@@ -486,6 +486,10 @@ body:has(.board-app),
   color: var(--gold);
   border-color: var(--gold);
 }
+.sheet-feat-entry { border-block-end: 1px solid var(--line); }
+.sheet-feat-entry summary { cursor: pointer; padding: 13px 0; overflow-wrap: anywhere; }
+.sheet-feat-entry summary small { margin-inline-start: 10px; color: var(--muted); white-space: nowrap; }
+.sheet-feat-entry p { white-space: pre-line; overflow-wrap: anywhere; }
 .board-screen {
   flex: 1;
   min-height: 0;
@@ -1313,6 +1317,12 @@ body:has(.tactical-app) .quickbar { display: none; }
 @media (prefers-reduced-motion: reduce) { .tactical-last-die b { animation: none; } }
 .tactical-simple [hidden] { display: none !important; }
 .tactical-simple .tactical-quick-setup { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+.tactical-loadout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); align-items: end; gap: 8px 12px; margin: 0 0 16px; }
+.tactical-loadout-summary { grid-column: 1 / -1; margin: 0; }
+.tactical-attack-stats { display: flex; flex-wrap: wrap; gap: 8px 16px; border-block: 1px solid var(--line); padding: 10px 0; font-size: 14px; }
+.tactical-attack-stats small { display: block; color: var(--muted); }
+.tactical-grip { display: grid; align-items: start; gap: 6px; }
+.tactical-grip small { color: var(--muted); }
 .tactical-simple .training-development { padding-block: 10px; }
 .tactical-simple .training-development > summary { cursor: pointer; color: var(--muted); }
 .tactical-simple .training-development > .training-level-row { margin-top: 14px; }
@@ -1399,3 +1409,12 @@ body:has(.tactical-app) .quickbar { display: none; }
   .catalog-filters .seg button { flex: 1 0 auto; min-width: max-content; min-height: 40px; height: 40px; padding: 0 10px; white-space: nowrap; }
   .portrait-grid .info-btn { position: absolute; top: 6px; right: 6px; border-radius: 999px; background: var(--paper); }
 }
+
+/* Загрузка частей справочника */
+.loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 50vh; text-align: center; }
+.loading-screen .muted { opacity: 0.75; font-size: 0.9em; max-width: 32em; }
+.loading-spinner { width: 36px; height: 36px; border-radius: 50%; border: 3px solid currentColor; border-right-color: transparent; opacity: 0.6; animation: loading-spin 0.9s linear infinite; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .loading-spinner { animation: none; } }
+/* Обёртка лёгких картинок главного экрана не меняет раскладку */
+.banner-art picture, .cast-portrait picture { display: contents; }

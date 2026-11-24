@@ -25,7 +25,7 @@ import {
   blankDraft,
 } from "./types";
 
-export const TOUR_KEY = "rpg-hero-tour";
+export { TOUR_KEY, tourSeen } from "./tour-key";
 export const HINTS_KEY = "rpg-hero-hints";
 export const TURN_SEEN_KEY = "rpg-hero-turn-seen";
 
@@ -1014,13 +1014,5 @@ export function markTurnPanelSeen(): void {
     localStorage.setItem(TURN_SEEN_KEY, "1");
   } catch {
     /* приватный режим */
-  }
-}
-
-export function tourSeen(): boolean {
-  try {
-    return localStorage.getItem(TOUR_KEY) === "1";
-  } catch {
-    return false;
   }
 }

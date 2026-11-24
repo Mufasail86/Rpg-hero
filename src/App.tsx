@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { Character } from "./types";
 import { loadCharacters, saveCharacters } from "./storage";
 import { go, InfoProvider, useHash } from "./ui/common";
 import { Home } from "./ui/home";
-import { Builder } from "./ui/builder";
-import { Sheet } from "./ui/sheet";
-import { Library } from "./ui/library";
-import { Lore } from "./ui/lore";
-import { Bestiary } from "./ui/bestiary";
-import { QuickBar } from "./ui/quickbar";
-import { Table } from "./ui/table";
 import { MusicControl, SettingsPage } from "./ui/music";
 import { SkinButton, ThemeToggle } from "./ui/theme";
-import { GlossaryPage, QuickStart } from "./ui/beginner";
-import { SkillPicksPage } from "./ui/skill-guide";
-import { Training } from "./ui/tactical-training";
+import { LoadFailBoundary, Loading } from "./ui/loading";
+
+// Тяжёлые экраны и справочник грузятся отдельными частями, только когда они нужны.
+const Builder = lazy(() => import("./ui/builder").then((m) => ({ default: m.Builder })));
+const Sheet = lazy(() => import("./ui/sheet").then((m) => ({ default: m.Sheet })));
+const Library = lazy(() => import("./ui/library").then((m) => ({ default: m.Library })));
+const Lore = lazy(() => import("./ui/lore").then((m) => ({ default: m.Lore })));
+const Bestiary = lazy(() => import("./ui/bestiary").then((m) => ({ default: m.Bestiary })));
+const QuickBar = lazy(() => import("./ui/quickbar").then((m) => ({ default: m.QuickBar })));
+const Table = lazy(() => import("./ui/table").then((m) => ({ default: m.Table })));
+const GlossaryPage = lazy(() => import("./ui/beginner").then((m) => ({ default: m.GlossaryPage })));
+const QuickStart = lazy(() => import("./ui/beginner").then((m) => ({ default: m.QuickStart })));
+const SkillPicksPage = lazy(() => import("./ui/skill-guide").then((m) => ({ default: m.SkillPicksPage })));
+const Training = lazy(() => import("./ui/tactical-training").then((m) => ({ default: m.Training })));
 
 function routeOf(hash: string): { page: "home" | "new" | "quick" | "glossary" | "picks" | "settings" | "sheet" | "library" | "lore" | "bestiary" | "table" | "training"; id?: string; panel?: string | null } {
   const parts = hash.replace(/^#/, "").split("/").filter(Boolean);
@@ -38,11 +42,32 @@ export function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [hash]);
+  // На главном экране быструю панель подключаем после первой отрисовки: она тянет справочник.
+  const [idle, setIdle] = useState(false);
+  useEffect(() => {
+    if (idle) return;
+    const ready = () => setIdle(true);
+    const wait = () => {
+      const handle = window.requestIdleCallback ? window.requestIdleCallback(ready, { timeout: 2500 }) : window.setTimeout(ready, 1200);
+      cleanup = () => (window.cancelIdleCallback ? window.cancelIdleCallback(handle) : window.clearTimeout(handle));
+    };
+    let cleanup = () => window.removeEventListener("load", wait);
+    if (document.readyState === "complete") wait();
+    else window.addEventListener("load", wait, { once: true });
+    return () => cleanup();
+  }, [idle]);
   const [characters, setCharacters] = useState<Character[]>(() => loadCharacters());
+  const latestCharacters = useRef(characters);
 
   function write(next: Character[]) {
-    setCharacters(next);
     saveCharacters(next);
+    latestCharacters.current = next;
+    setCharacters(next);
+  }
+
+  function addSample(character: Character) {
+    const current = latestCharacters.current;
+    if (!current.some(item => item.id === character.id)) write([character, ...current]);
   }
 
   function upsert(character: Character) {
@@ -64,9 +89,12 @@ export function App() {
         <ThemeToggle />
       </div>
       <div className={route.page === "new" ? "has-quickbar creating" : "has-quickbar"}>
+      <LoadFailBoundary resetKey={hash}>
+      <Suspense fallback={<Loading />}>
       {route.page === "home" && (
         <Home
           characters={characters}
+          onAddSample={addSample}
           onCommit={write}
           onDelete={(id) => write(characters.filter((item) => item.id !== id))}
         />
@@ -113,8 +141,10 @@ export function App() {
           <button type="button" className="btn" onClick={() => go("#/")}>На главную</button>
         </div>
       )}
+      </Suspense>
+      </LoadFailBoundary>
       </div>
-      {route.page !== "new" && <QuickBar
+      {route.page !== "new" && (route.page !== "home" || idle) && <LoadFailBoundary resetKey={hash} quiet><Suspense fallback={null}><QuickBar
         character={active ?? null}
         roster={characters}
         allowSwitch={route.page !== "sheet"}
@@ -122,7 +152,7 @@ export function App() {
         compact={route.page === "sheet" && !route.panel}
         hash={hash}
         onChange={upsert}
-      />}
+      /></Suspense></LoadFailBoundary>}
     </InfoProvider>
   );
 }

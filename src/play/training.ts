@@ -6,12 +6,12 @@ import { derive, effectsFrom } from "../pf2e/build";
 import { emptyCombat, strike, mapPenalty, newRound as pfRound } from "../pf2e/combat";
 import { armorClass, attackFor, hpMax, speedOf } from "../rules";
 import { resolveCheck } from "../skills/guide";
-import type { Character, CombatState, DndCombat, ItemInst } from "../types";
+import type { Character, CombatState, DndCombat, ItemInst, WeaponStat } from "../types";
 
 export type TrainingAction = "attack" | "approach" | "retreat" | "defend" | "end";
 export type TrainingDifficulty = "easy" | "normal" | "hard";
 export interface TrainingConfig { place: "arena" | "tavern"; difficulty: TrainingDifficulty; enemy: "dummy" | "guard" | "bandit" }
-export interface TrainingWeapon { name: string; attack: number; damage: string; ranged: boolean; agile: boolean; reach: number; range: number; limited: boolean }
+export interface TrainingWeapon { name: string; attack: number; damage: string; ranged: boolean; agile: boolean; reach: number; range: number; limited: boolean; hands: 1 | 2; twoHandDie?: number; unarmed: boolean }
 export interface TrainingStats { hp: number; ac: number; speed: number; perAction: number; shield: boolean; crit: number; weapons: TrainingWeapon[] }
 export interface TrainingState {
   round: number; hp: number; enemyHp: number; enemyMax: number; enemyAc: number; enemyAttack: number;
@@ -32,6 +32,15 @@ export function criticalFormula(formula: string, system: Character["system"]): s
   return system === "pf2e" ? `2*(${formula})` : formula.replace(/(\d+)d(\d+)/g, (_, count, sides) => `${Number(count) * 2}d${sides}`);
 }
 
+export function weaponHands(weapon?: WeaponStat): 1 | 2 {
+  return weapon?.twoHanded || weapon?.hands === 2 ? 2 : 1;
+}
+
+export function weaponGrip(weapon: TrainingWeapon, grip: 1 | 2 = 1): TrainingWeapon {
+  if (grip !== 2 || !weapon.twoHandDie) return weapon;
+  return { ...weapon, hands: 2, damage: weapon.damage.replace(/^(\d+d)\d+/, (_, count: string) => count + weapon.twoHandDie) };
+}
+
 export function trainingStats(hero: Character): TrainingStats {
   const clean = { ...hero, conditions: [], conditionValues: {}, shieldRaised: false };
   const derived = hero.system === "dnd5e" ? sheetDnd(clean) : hero.progress ? derive({ progress: hero.progress, items: hero.items, level: hero.level, conditions: {}, shieldRaised: false, customEffects: effectsFrom(hero) }) : null;
@@ -41,7 +50,7 @@ export function trainingStats(hero: Character): TrainingStats {
     const damage = found?.damage ?? basic.damage;
     const catalogItem = trainingGear(hero).find(row => row.id === item.catalogId);
     const traits = `${item.weapon!.traits ?? ""} ${catalogItem?.info ?? ""}`;
-    return { name: item.name, attack: found?.attack.value ?? basic.attack, damage, ranged: Boolean(item.weapon!.ranged), agile: /agile|быстро|проворн/i.test(traits) || (hero.system === "pf2e" && Boolean(item.weapon?.light)), reach: item.weapon!.reach ?? (item.catalogId === "glaive" ? 10 : 5), range: item.weapon!.range ?? 60, limited: !damageFormula(damage) || (hero.system === "pf2e" && /deadly|fatal|смертонос|смертель|фаталь|перезарядка|reload/i.test(traits)) || (hero.system === "dnd5e" && /перезарядка|loading/i.test(traits)) };
+    return { name: item.name, attack: found?.attack.value ?? basic.attack, damage, hands: weaponHands(item.weapon), twoHandDie: item.weapon?.twoHandDie ?? catalogItem?.weapon?.twoHandDie, unarmed: item.weapon?.category === "unarmed", ranged: Boolean(item.weapon!.ranged), agile: /agile|быстро|проворн/i.test(traits) || (hero.system === "pf2e" && Boolean(item.weapon?.light)), reach: item.weapon!.reach ?? (item.catalogId === "glaive" ? 10 : 5), range: item.weapon!.range ?? 60, limited: !damageFormula(damage) || (hero.system === "pf2e" && /deadly|fatal|смертонос|смертель|фаталь|перезарядка|reload/i.test(traits)) || (hero.system === "dnd5e" && /перезарядка|loading/i.test(traits)) };
   });
   const dnd = hero.system === "dnd5e" ? sheetDnd(clean) : null;
   return { hp: derived?.hp.value ?? hpMax(clean), ac: derived?.ac.value ?? armorClass(clean).value, speed: derived?.speed.value ?? speedOf(clean).value, perAction: dnd?.attacksPerAction ?? 1, crit: Number(dnd?.crit.split("–")[0] ?? 20), shield: hero.items.some(item => item.kind === "shield" && item.equipped), weapons };
@@ -54,17 +63,28 @@ export function trainingGear(hero: Character) {
   });
 }
 
+export function ownedTrainingWeapons(hero: Character, pool = trainingGear(hero)) {
+  return hero.items.flatMap(item => {
+    const alias = hero.system === "pf2e" && /^(?:меч[ -]бастард|бастард|полуторный меч|незаконнорождённый меч|bastard sword)$/i.test(item.name.trim()) ? "bastard-sword" : "";
+    const known = pool.find(row => row.kind === "weapon" && row.id === (item.catalogId || alias));
+    if (!(item.kind === "weapon" && item.weapon) && !known) return [];
+    return [{ ...item, id: `owned:${item.uid}`, kind: "weapon" as const, catalogId: known?.id ?? item.catalogId, weapon: { ...known?.weapon, ...item.weapon } as WeaponStat }];
+  });
+}
+
 export function equipTraining(hero: Character, weaponId: string, armorId: string, shield: boolean): Character {
   const copy = structuredClone(hero);
   const pool = trainingGear(hero);
+  const fromBag = ownedTrainingWeapons(copy, pool).find(item => item.id === weaponId);
   const weapon = pool.find(item => item.id === weaponId && item.kind === "weapon");
   const armor = pool.find(item => item.id === armorId && item.kind === "armor");
-  const ward = shield && !weapon?.weapon?.twoHanded && weapon?.weapon?.hands !== 2 ? pool.find(item => item.kind === "shield") : undefined;
+  const ward = shield && weaponHands(fromBag?.weapon ?? weapon?.weapon) === 1 ? pool.find(item => item.kind === "shield") : undefined;
   const selected = [weapon, armor, ward].filter(item => item != null).map(item => {
     const owned = copy.items.find(row => row.catalogId === item.id && row.equipped);
     return { ...item, ...owned, uid: `training-${item.id}`, catalogId: item.id, qty: 1, equipped: true } as ItemInst;
   });
-  copy.items = [...copy.items.filter(item => !["weapon", "armor", "shield"].includes(item.kind)), ...selected];
+  if (fromBag) selected.unshift({ ...fromBag, qty: 1, equipped: true, placement: "held" });
+  copy.items = [...copy.items.filter(item => !["weapon", "armor", "shield"].includes(item.kind) && `owned:${item.uid}` !== weaponId), ...selected];
   return copy;
 }
 

@@ -1,7 +1,7 @@
 import lists from "./generated/pf-lists.json";
 import wide from "./generated/pf-wide.json";
 import srd2024 from "./generated/srd-2024.json";
-import type { CatalogItem } from "../types";
+import type { CatalogItem, WeaponStat } from "../types";
 
 const GEAR = new Set(["gear", "weapon", "armor", "shield", "alchemical", "rune", "item"]);
 
@@ -50,14 +50,18 @@ export function extraGear(system: "pf2e" | "dnd5e", taken: Set<string>): { price
       noted.push({ id: row.id, name: row.name, info: row.short || row.text });
       continue;
     }
+    const weapon: WeaponStat | undefined = system === "pf2e" && row.id === "bastard-sword"
+      ? { damage: "1d8 рубящего", attr: "str", category: "martial", group: "sword", hands: 1, twoHandDie: 12, traits: "Двуручный хват к12" }
+      : undefined;
     priced.push({
       id: row.id,
-      name: row.name,
-      kind: "gear",
+      name: weapon ? "Меч-бастард" : row.name,
+      kind: weapon ? "weapon" : "gear",
       weight: weightOf(row.text ?? ""),
       costCp: cost,
-      info: row.text,
+      info: weapon ? "Воинский меч. Одной рукой: 1к8 рубящего урона. Двумя руками: 1к12." : row.text,
       short: row.short,
+      ...(weapon && { weapon }),
     });
   }
   return { priced, noted };

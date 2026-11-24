@@ -8,7 +8,9 @@ describe("музыка", () => {
     expect(musicSceneFor("#/")).toBe("tavern");
     expect(musicSceneFor("#/c/hero/now", "talk")).toBe("tavern");
     expect(musicSceneFor("#/c/hero/now", "fight")).toBe("combat");
-    expect(musicSceneFor("#/bestiary")).toBe("bestiary");
+    expect(musicSceneFor("#/bestiary")).toBe("tavern");
+    expect(musicSceneFor("#/new")).toBe("creation");
+    expect(musicSceneFor("#/quick")).toBe("creation");
     expect(musicSceneFor("#/training/hero")).toBe("combat");
   });
   it("работает при запрете хранения настроек и ограничивает громкость", () => {

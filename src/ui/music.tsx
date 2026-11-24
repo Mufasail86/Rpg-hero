@@ -10,6 +10,7 @@ import {
   musicSceneFor,
   readMusicOn,
   readMusicVolume,
+  SCORE_SAMPLE_RATE,
   type MusicScene,
 } from "../play/music";
 import { go } from "./common";
@@ -22,6 +23,7 @@ class Ambient {
   private master: GainNode | null = null;
   private playing: { scene: MusicScene; source: AudioBufferSourceNode; gain: GainNode } | null = null;
   private buffers = new Map<MusicScene, AudioBuffer>();
+  private loading = new Map<MusicScene, Promise<AudioBuffer>>();
   volume = 0.35;
   enabled = false;
 
@@ -42,10 +44,18 @@ class Ambient {
     return this.context;
   }
 
-  private async buffer(scene: MusicScene): Promise<AudioBuffer> {
+  private buffer(scene: MusicScene, context: AudioContext): Promise<AudioBuffer> {
     const cached = this.buffers.get(scene);
-    if (cached) return cached;
-    const file = tracks.get(scene)?.file ?? "music/tavern.ogg";
+    if (cached) return Promise.resolve(cached);
+    const pending = this.loading.get(scene);
+    if (pending) return pending;
+    const request = this.loadBuffer(scene, context).finally(() => this.loading.delete(scene));
+    this.loading.set(scene, request);
+    return request;
+  }
+
+  private async loadBuffer(scene: MusicScene, context: AudioContext): Promise<AudioBuffer> {
+    const file = tracks.get(scene)!.file;
     const url = new URL(file, document.baseURI).toString();
     let response = await fetch(url).catch(() => null);
     if (!response || !response.ok) {
@@ -56,7 +66,7 @@ class Ambient {
       const copy = response.clone();
       caches.open(MUSIC_CACHE).then((cache) => cache.put(url, copy)).catch(() => undefined);
     }
-    const audio = await (await this.contextOf()).decodeAudioData(await response.arrayBuffer());
+    const audio = await context.decodeAudioData(await response.arrayBuffer());
     this.buffers.set(scene, audio);
     return audio;
   }
@@ -67,7 +77,9 @@ class Ambient {
     const context = await this.contextOf();
     if (request !== this.request || !this.enabled) return;
     if (this.playing?.scene === scene) return;
-    const audio = await this.buffer(scene);
+    let audio: AudioBuffer;
+    try { audio = await this.buffer(scene, context); }
+    catch (error) { if (request !== this.request || !this.enabled) return; throw error; }
     if (request !== this.request || !this.enabled) return;
     const gain = context.createGain();
     gain.gain.value = 0;
@@ -75,6 +87,7 @@ class Ambient {
     const source = context.createBufferSource();
     source.buffer = audio;
     source.loop = true;
+    source.loopEnd = Math.min(audio.duration, tracks.get(scene)!.loopFrames / SCORE_SAMPLE_RATE);
     source.connect(gain);
     const now = context.currentTime;
     source.start();
@@ -230,11 +243,16 @@ export function SettingsPage() {
         <section className="card stack" data-testid="music-credits">
           <p className="kicker">Музыка</p>
           {MUSIC_TRACKS.map((track) => (
-            <p key={track.id}><b>{track.title}.</b> {track.note} Файл: {track.file}.</p>
+            <p key={track.id}><b>{track.title}.</b> {track.note}</p>
           ))}
-          <p>{MUSIC_LICENSE_RU}</p>
-          <p className="tiny">{MUSIC_LICENSE_EN}</p>
-          <p><a href={MUSIC_LICENSE_LINK}>Полный текст CC0 1.0</a></p>
+          <p>Оригинальная музыка написана и синтезирована для «Героя», без сторонних записей.</p>
+          <details>
+            <summary>Прежние дорожки и их лицензия</summary>
+            <p>«Спокойный зал», «Три действия», «Чужой след».</p>
+            <p>{MUSIC_LICENSE_RU}</p>
+            <p className="tiny">{MUSIC_LICENSE_EN}</p>
+            <p><a href={MUSIC_LICENSE_LINK}>Полный текст CC0 1.0</a></p>
+          </details>
         </section>
       </main>
     </div>

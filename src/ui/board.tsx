@@ -21,6 +21,8 @@ import { CropDialog } from "./lightbox";
 import { go, useInfo } from "./common";
 import { sheetDerived } from "./remaster";
 import { TurnHints } from "./beginner";
+import { choiceCaption } from "../pf2e/build";
+import { rulesCatalog } from "../data/catalog";
 
 const PF_RANKS = ["untrained", "trained", "expert", "master", "legendary"] as const;
 const PIP_LETTER = ["О", "Э", "М", "Л"];
@@ -349,20 +351,39 @@ export function CharacterBoard({ character, commit, hints = false }: { character
 }
 
 export function FeatsPage({ character }: { character: Character }) {
-  const rows = [
-    ...character.features.map((item) => ({ id: item.name, name: item.name, info: item.info })),
-    ...character.feats.map((item) => ({ id: item.id, name: item.name, info: item.info })),
-  ];
+  const [showArchetypes, setShowArchetypes] = useState(false);
+  const derived = sheetDerived(character);
+  const visible = character.progress?.choices.filter(row => row.level <= character.level && (row.source.endsWith("-feat") || row.source === "free-archetype")) ?? [];
+  const catalogue = derived ? rulesCatalog().filter(row => row.edition === "pf-remaster") : [];
+  const rows = new Map<string, { name: string; info: string; level?: number; archetype?: boolean }>();
+  for (const item of character.features) rows.set(item.name, { name: item.name, info: item.info });
+  for (const item of character.feats) rows.set(item.id, { name: item.name, info: item.info, archetype: item.id.endsWith("-dedication") });
+  for (const item of derived?.feats ?? []) {
+    const data = catalogue.find(row => row.localId === item.id);
+    const choice = visible.find(row => row.pick === item.id);
+    rows.set(item.id, { name: choice ? choiceCaption(choice) : item.name, info: rows.get(item.id)?.info || data?.text || "", level: choice?.level, archetype: choice?.source === "free-archetype" || item.id.endsWith("-dedication") || data?.category === "archetype" });
+  }
+  for (const choice of visible) {
+    if (rows.has(choice.pick)) continue;
+    const data = catalogue.find(row => row.localId === choice.pick);
+    rows.set(choice.pick, { name: choiceCaption(choice), info: data?.text ?? "", level: choice.level, archetype: choice.source === "free-archetype" || choice.pick.endsWith("-dedication") || data?.category === "archetype" });
+  }
+  const entries = [...rows.entries()].sort(([, a], [, b]) => (a.level ?? 0) - (b.level ?? 0));
+  const archetypes = entries.filter(([, row]) => row.archetype);
+  const rowsShown = showArchetypes ? archetypes : entries.filter(([, row]) => !row.archetype);
   return (
     <div className="stack" data-testid="feats-page">
-      <p className="tiny">Черты и умения листа. Число меняется только там, где оно уже есть в формуле.</p>
-      {rows.length === 0 && <p>Черты ещё не записаны.</p>}
-      {rows.map((row) => (
-        <article key={row.id} className="card">
-          <b>{row.name}</b>
-          <p className="tiny">{row.info}</p>
-        </article>
-      ))}
+      {(character.system === "pf2e" || archetypes.length > 0) && <div className="seg" aria-label="Группа черт">
+        <button type="button" className={`pill ${!showArchetypes ? "on" : ""}`} aria-pressed={!showArchetypes} onClick={() => setShowArchetypes(false)}>Черты и умения</button>
+        <button type="button" className={`pill ${showArchetypes ? "on" : ""}`} aria-pressed={showArchetypes} onClick={() => setShowArchetypes(true)}>Архетипы · {archetypes.length}</button>
+      </div>}
+      <section className="sheet-feat-group">
+        {rowsShown.length === 0 && <p>Пока не выбраны.</p>}
+        {rowsShown.map(([id, row]) => <details key={id} className="sheet-feat-entry">
+          <summary><b>{row.name}</b>{row.level !== undefined && <small>{row.level} ур.</small>}</summary>
+          <p>{row.info || "Описание этой черты пока не добавлено в справочник."}</p>
+        </details>)}
+      </section>
     </div>
   );
 }

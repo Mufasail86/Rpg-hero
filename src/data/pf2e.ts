@@ -789,7 +789,7 @@ export const SPELLS: {
 export const ITEMS: CatalogItem[] = [
   weapon("dagger", "Кинжал", 0.1, 20, "1d4 колющего", "finesse", "simple", true, "Простое оружие, 1d4 колющего. Проворное, фехтовальное, метательное на 10 футов, универсальное рубящее. Цена 2 см."),
   weapon("club", "Дубинка", 1, 0, "1d6 дробящего", "str", "simple", false, "Простое оружие без цены, объём 1. Метательное на 10 футов, 1d6 дробящего."),
-  weapon("staff", "Посох", 1, 0, "1d4 дробящего", "str", "simple", false, "Простой посох без цены, объём 1, 1d4 дробящего. Двумя руками кость становится 1d8."),
+  weapon("staff", "Посох", 1, 0, "1d4 дробящего", "str", "simple", false, "Простой посох без цены, объём 1, 1d4 дробящего. Двумя руками кость становится 1d8.", { twoHandDie: 8 }),
   weapon("spear", "Копьё", 1, 10, "1d6 колющего", "str", "simple", false, "Простое оружие, 1d6 колющего, цена 1 см. Метательное на 20 футов."),
   weapon("mace", "Булава", 1, 100, "1d6 дробящего", "str", "simple", false, "Простое оружие, 1d6 дробящего, цена 1 зм. Черта «толчок»."),
   weapon("sickle", "Серп", 0.1, 20, "1d4 рубящего", "finesse", "simple", true, "Простое оружие, 1d4 рубящего, цена 2 см. Проворное, фехтовальное, сбивает с ног."),
@@ -842,6 +842,7 @@ function weapon(
   category: "simple" | "martial" | "unarmed",
   light: boolean,
   info: string,
+  details?: Partial<NonNullable<CatalogItem["weapon"]>>,
 ): CatalogItem {
   return {
     id,
@@ -857,6 +858,7 @@ function weapon(
       light,
       finesse: attr === "finesse",
       ranged: id.includes("bow") || id === "crossbow",
+      ...details,
     },
   };
 }

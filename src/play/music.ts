@@ -1,4 +1,4 @@
-export type MusicScene = "tavern" | "combat" | "bestiary";
+export type MusicScene = "tavern" | "combat" | "creation";
 
 export const MUSIC_ON_KEY = "rpg-hero-music";
 export const MUSIC_VOLUME_KEY = "rpg-hero-music-volume";
@@ -9,26 +9,32 @@ export interface MusicTrack {
   title: string;
   file: string;
   note: string;
+  loopFrames: number;
 }
+
+export const SCORE_SAMPLE_RATE = 48000;
 
 export const MUSIC_TRACKS: MusicTrack[] = [
   {
     id: "tavern",
-    title: "Спокойный зал",
-    file: "music/tavern.ogg",
-    note: "Тихий фон для города, таверны и обычных экранов.",
+    title: "Свет над страницами",
+    file: "music/study-score-v1.m4a",
+    note: "Главная, листы, бестиарий и справочники.",
+    loopFrames: 3637895,
   },
   {
     id: "combat",
-    title: "Три действия",
-    file: "music/combat.ogg",
-    note: "Чуть более собранный фон, когда в «Играю сейчас» выбран бой.",
+    title: "Камень и отвага",
+    file: "music/arena-score-v1.m4a",
+    note: "Учебные бои и сцена боя в «Играю сейчас».",
+    loopFrames: 3124068,
   },
   {
-    id: "bestiary",
-    title: "Чужой след",
-    file: "music/bestiary.ogg",
-    note: "Низкий фон для бестиария.",
+    id: "creation",
+    title: "Перед дорогой",
+    file: "music/creation-score-v1.m4a",
+    note: "Создание персонажа.",
+    loopFrames: 2633143,
   },
 ];
 
@@ -42,9 +48,9 @@ export const MUSIC_LICENSE_LINK = "https://creativecommons.org/publicdomain/zero
 
 export function musicSceneFor(hash: string, playScene = ""): MusicScene {
   const path = hash.replace(/^#/, "");
-  if (path.startsWith("/bestiary") || path.startsWith("bestiary")) return "bestiary";
-  if (path.startsWith("/training")) return "combat";
-  if ((path.includes("/now") || path.endsWith("/now")) && playScene === "fight") return "combat";
+  if (/^\/(new|quick)(?:\/|$)/.test(path)) return "creation";
+  if (/^\/training(?:\/|$)/.test(path)) return "combat";
+  if (/^\/c\/[^/]+\/now(?:\/|$)/.test(path) && playScene === "fight") return "combat";
   return "tavern";
 }
 
