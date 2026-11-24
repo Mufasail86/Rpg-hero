@@ -3,7 +3,7 @@ import type { Character } from "../types";
 import type { BattleVisual, TacticalState } from "../play/tactical";
 import { actorSight, heroActor } from "../play/tactical";
 
-const COLORS: Record<BattleVisual["kind"], string> = { arrow: "#f8e2a3", strike: "#ffefca", fire: "#ff842d", cold: "#b1ecff", lightning: "#b5baff", force: "#df9bff", heal: "#70ffd0", ward: "#ffe7a1", fear: "#d7a0ef" };
+const COLORS: Record<BattleVisual["kind"], string> = { move: "#70dfb7", arrow: "#f8e2a3", strike: "#ffefca", fire: "#ff842d", cold: "#b1ecff", lightning: "#b5baff", force: "#df9bff", heal: "#70ffd0", ward: "#ffe7a1", fear: "#d7a0ef" };
 export function TacticalEffects({ batch, cell, state, hero, enabled }: { batch: { id: number; cues: BattleVisual[] }; cell: number; state: TacticalState; hero: Character; enabled: boolean }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -19,6 +19,7 @@ export function TacticalEffects({ batch, cell, state, hero, enabled }: { batch: 
       for (let y = 0; y < 9; y++) for (let x = 0; x < 12; x++) if (actorSight(state, hero, heroActor(state), { x, y }).visible) ctx!.rect(x * cell, y * cell, cell, cell);
       ctx!.clip();
       batch.cues.forEach((cue, index) => {
+        if (cue.kind === "move") return;
         const time = reduced ? 0.82 : (now - started - index * 160) / 950;
         if (time < 0 || time > 1) return;
         const t = Math.min(1, time * 1.5), fade = time < .7 ? 1 : (1 - time) / .3;

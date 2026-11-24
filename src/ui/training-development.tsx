@@ -45,7 +45,7 @@ export function fillTrainingChoices(source: Character): Character {
   return hero;
 }
 
-export function TrainingDevelopment({ source, children }: { source: Character; children: (hero: Character, onRunning: (running: boolean) => void) => ReactNode }) {
+export function TrainingDevelopment({ source, children, onRunningChange }: { source: Character; children: (hero: Character, onRunning: (running: boolean) => void) => ReactNode; onRunningChange?: (running: boolean) => void }) {
   const signature = trainingSourceKey(source), key = `rpg-training-build-v1-${source.id}`;
   const [master, setMaster] = useState(() => {
     try { const saved = JSON.parse(sessionStorage.getItem(key) ?? "null"); if (saved?.source === signature && saved.hero?.id === source.id && Number.isInteger(saved.hero.level) && saved.hero.level >= 1 && saved.hero.level <= 20 && saved.hero.system === source.system) {
@@ -55,6 +55,7 @@ export function TrainingDevelopment({ source, children }: { source: Character; c
     return structuredClone(source);
   });
   const [level, setLevel] = useState(master.level); const [running, setRunning] = useState(false);
+  useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
   const [revision, setRevision] = useState(0);
   const hero = useMemo(() => atTrainingLevel(master, level), [master, level]);
   const derived = useMemo(() => trainingBuild(hero), [hero]);
@@ -63,7 +64,8 @@ export function TrainingDevelopment({ source, children }: { source: Character; c
   useEffect(() => { try { sessionStorage.setItem(key, JSON.stringify({ source: signature, hero: { ...master, level } })); } catch { /* тренировка работает без записи */ } }, [master, level, key, signature]);
   function change(next: Character) { setMaster(previous => mergeTrainingChoices(previous, next)); setLevel(next.level); setRevision(value => value + 1); sessionStorage.removeItem(`rpg-tactical-v1-${source.id}`); }
   return <>
-    <section className="training-development" data-testid="training-development">
+    <details className="training-development" data-testid="training-development" hidden={running} open={buildIssues.length > 0}>
+      <summary>Персонаж · {level} уровень{buildIssues.length ? ` · выборов к проверке: ${buildIssues.length}` : " · изменить развитие"}</summary>
       <div className="training-level-row"><label className="field"><span>Уровень для тренировки</span><select data-testid="training-level" value={level} disabled={running || (!source.progress && !source.dnd)} onChange={event => { setLevel(Number(event.target.value)); setRevision(value => value + 1); sessionStorage.removeItem(`rpg-tactical-v1-${source.id}`); }}>{Array.from({ length: 20 }, (_, index) => <option value={index + 1} key={index}>{index + 1} уровень</option>)}</select></label>
         <button type="button" className="btn" disabled={running} data-testid="training-fill-build" onClick={() => change(fillTrainingChoices(hero))}><WandSparkles size={18} />Заполнить учебным вариантом</button>
         <button type="button" className="icon-btn" disabled={running} title="Вернуть исходный учебный лист" aria-label="Сбросить учебное развитие" onClick={() => change(structuredClone(source))}><RotateCcw size={18} /></button></div>
@@ -86,7 +88,7 @@ export function TrainingDevelopment({ source, children }: { source: Character; c
         <p className="tiny">Учебный вариант — изменяемый черновик, не обязательная сборка. Расчёт листа не означает автоматизацию каждого особого действия. Неподдерживаемые действия остаются справкой и ручными пробами.</p>
         {derived?.issues.length ? <details><summary>Что требует проверки: {derived.issues.length}</summary>{derived.issues.map((row, index) => <p key={index}>{row.message}</p>)}</details> : null}
       </details>
-    </section>
+    </details>
     <div key={`${source.id}-${level}-${revision}`}>{children(hero, setRunning)}</div>
   </>;
 }

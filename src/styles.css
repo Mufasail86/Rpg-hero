@@ -1311,6 +1311,33 @@ body:has(.tactical-app) .quickbar { display: none; }
   .tactical-initiative button { flex-basis: 152px; }
 }
 @media (prefers-reduced-motion: reduce) { .tactical-last-die b { animation: none; } }
+.tactical-simple [hidden] { display: none !important; }
+.tactical-simple .tactical-quick-setup { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+.tactical-simple .training-development { padding-block: 10px; }
+.tactical-simple .training-development > summary { cursor: pointer; color: var(--muted); }
+.tactical-simple .training-development > .training-level-row { margin-top: 14px; }
+.tactical-simple .tactical-start-button { margin: 16px 0; min-height: 48px; }
+.tactical-simple .tactical-tabs { grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); }
+.tactical-simple .tactical-tabs button { min-height: 52px; }
+.tactical-simple .tactical-initiative button { flex: 0 0 auto; min-width: 140px; padding: 6px 10px; }
+.tactical-simple .tactical-initiative small { font-size: 11px; }
+.tactical-simple .tactical-initiative { padding-bottom: 4px; }
+.tactical-simple .tactical-map > .tactical-token { inset: auto; top: 0; left: 0; width: calc(var(--cell) * .82); height: calc(var(--cell) * .82); margin: 0; padding: 0; transition: transform 160ms linear; }
+.tactical-simple .tactical-token.nightvision img { filter: grayscale(1); }
+.tactical-simple .tactical-journal > summary { cursor: pointer; padding: 12px 0; }
+.tactical-simple .tactical-controls { min-height: 0; gap: 10px; }
+.tactical-simple .tactical-inspector .tiny { display: block; }
+.tactical-simple .tactical-coach { display: block; background: transparent; border: 0; margin: 0; padding: 8px 0; font-size: 13px; }
+.tactical-simple .tactical-coach > summary, .tactical-simple .tactical-order > summary { cursor: pointer; color: var(--muted); font-size: 13px; padding-block: 4px; }
+.tactical-simple .tactical-map-legend span:not(:first-child) { display: none; }
+.tactical-simple .tactical-dummy-notice { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--line); }
+@media (max-width: 600px) {
+  .tactical-simple .tactical-quick-setup { grid-template-columns: minmax(0, 1fr); }
+  .tactical-simple .tactical-light-status { font-size: 12px; }
+  .tactical-simple .tactical-toolbar { margin-top: 4px; }
+  .tactical-simple .tactical-turn-bar { background: var(--paper); }
+}
+@media (prefers-reduced-motion: reduce) { .tactical-simple .tactical-map > .tactical-token { transition: none; } }
 @media (max-width: 460px) {
   .ability-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .training-fields { grid-template-columns: 1fr; }

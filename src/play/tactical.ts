@@ -27,8 +27,8 @@ export interface TacticalActor {
   caster?: boolean; dummy?: boolean; demoralizedBy: string[];
   extraActionAvailable?: boolean; surgeUsed?: boolean;
 }
-export interface TacticalSetup { map: "arena" | "tavern"; scenario: "dummy" | "duel" | "ambush"; difficulty: TrainingDifficulty; environment?: Environment }
-export interface BattleVisual { kind: "arrow" | "strike" | "fire" | "cold" | "lightning" | "force" | "heal" | "ward" | "fear"; from: Cell; to: Cell; hit?: boolean; cells?: Cell[]; amount?: number }
+export interface TacticalSetup { map: "arena" | "tavern"; scenario: "dummy" | "duel" | "ambush"; difficulty: TrainingDifficulty; environment?: Environment; ally?: "none" | "fighter" | "target" }
+export interface BattleVisual { kind: "move" | "arrow" | "strike" | "fire" | "cold" | "lightning" | "force" | "heal" | "ward" | "fear"; from: Cell; to: Cell; actor?: string; hit?: boolean; cells?: Cell[]; amount?: number }
 export interface BattleEvent { title: string; detail: string; kind: "roll" | "move" | "damage" | "spell" | "turn" | "effect"; total?: number; formula?: string }
 export interface TacticalState { version: 1; setup: TacticalSetup; actors: TacticalActor[]; order: string[]; cursor: number; round: number; status: "active" | "won" | "lost"; log: BattleEvent[]; hint: string; autoReactions: boolean; visuals?: BattleVisual[] }
 export type TacticalIntent =
@@ -109,9 +109,11 @@ export function startTactical(hero: Character, setup: TacticalSetup, roller: Bat
   player.shieldHp = shield?.hp ?? 20; player.shieldMax = player.shieldHp;
   if (trainingStats(hero).weapons[0]?.ranged) player.opportunity = false;
   const npc = (id: string, name: string, pos: Cell, team: TacticalActor["team"], caster = false): TacticalActor => ({ ...structuredClone(player), id, name, pos, team, portrait: team === "party" ? "art/elf-portrait.jpg" : caster ? "art/goblin-portrait.jpg" : "art/orc-portrait.jpg", hp: Math.max(8, Math.round(player.maxHp * (setup.difficulty === "hard" ? 1 : 0.7))), maxHp: Math.max(8, Math.round(player.maxHp * (setup.difficulty === "hard" ? 1 : 0.7))), ac: Math.max(10, player.attack + 9 + power), attack: player.ac - 11 + power, damage: `1d6+${Math.floor(hero.level / 3)}`, speed: 25, initiative: 2 + power, saves: Object.fromEntries(Object.keys(SAVES).map(key => [key, Math.max(1, player.attack - 3 + power)])), slots: {}, caster, opportunity: team === "enemy" && !caster && setup.scenario !== "dummy" });
-  const ally = npc("ally", "Союзник Лис", { x: 2, y: 3 }, "party"); ally.hp = Math.max(1, Math.floor(ally.maxHp / 2)); ally.opportunity = false;
-  const guard = npc("guard", setup.scenario === "dummy" ? "Манекен" : "Учебный страж", { x: 8, y: 3 }, "enemy"); guard.dummy = setup.scenario === "dummy";
-  const actors = [player, ally, guard];
+  const ally = npc("ally", "Союзник Лис", { x: 2, y: 3 }, "party");
+  if (setup.ally !== "fighter") ally.hp = Math.max(1, Math.floor(ally.maxHp / 2));
+  ally.opportunity = false;
+  const guard = npc("guard", setup.scenario === "dummy" ? "Манекен" : "Учебный страж", setup.scenario === "duel" ? { x: 7, y: 6 } : { x: 8, y: 3 }, "enemy"); guard.dummy = setup.scenario === "dummy";
+  const actors = setup.ally === "none" ? [player, guard] : [player, ally, guard];
   if (setup.scenario !== "duel") { const caster = npc("caster", setup.scenario === "dummy" ? "Второй манекен" : "Учебный чародей", { x: 9, y: 6 }, "enemy", true); caster.dummy = setup.scenario === "dummy"; actors.push(caster); }
   const state: TacticalState = { version: 1, setup, actors, order: [], cursor: 0, round: 1, status: "active", log: [], hint: "Выберите действие и цель. В журнале раскрывается каждый расчёт.", autoReactions: true };
   for (const actor of actors) {
@@ -285,7 +287,8 @@ function moveActor(state: TacticalState, hero: Character, actor: TacticalActor, 
       }
     }
     if (actor.hp <= 0) break;
-    actor.pos = next;
+    const before = { ...actor.pos }; actor.pos = next;
+    cue(state, { kind: "move", actor: actor.id, from: before, to: next });
     if (map.tiles[next.y][next.x] === "rune") {
       addLog(state, "Учебная руна", "Вход вызывает разряд: спасбросок, затем урон. Эта опасность — авторское упражнение, не официальная ловушка.");
       const degree = savingThrow(state, hero, actor, hero.system === "pf2e" ? "ref" : "dex", 14, roller);
@@ -448,7 +451,7 @@ export const ACTION_NAMES = { defend: "Защита", dash: "Рывок", diseng
 
 function npcTurn(state: TacticalState, hero: Character, npc: TacticalActor, roller: BattleRoller) {
   if (npc.hp === 0 || npc.dummy) return;
-  if (npc.team === "party") { addEffect(npc, { id: hero.system === "pf2e" ? "shield" : "dodge", value: 2, source: npc.id, expires: untilNext(npc) }); addLog(state, "Союзник держит позицию", "Лис защищается и остаётся целью для упражнений в поддержке и лечении."); return; }
+  if (npc.team === "party" && state.setup.ally !== "fighter") { addEffect(npc, { id: hero.system === "pf2e" ? "shield" : "dodge", value: 2, source: npc.id, expires: untilNext(npc) }); addLog(state, "Союзник держит позицию", "Лис защищается и остаётся целью для упражнений в поддержке и лечении."); return; }
   if (hero.system === "pf2e" && effect(npc, "restrained")) {
     const hold = npc.effects.find(row => row.id === "restrained")!; const die = roller("1d20", `Освободиться: ${npc.name}`);
     const result = resolveCheck("pf2e", die, npc.attack - effect(npc, "frightened"), hold.dc ?? 15).verdict;
@@ -456,7 +459,9 @@ function npcTurn(state: TacticalState, hero: Character, npc: TacticalActor, roll
     if (result !== "успех" && result !== "критический успех") return;
     npc.effects = npc.effects.filter(row => row.id !== "restrained");
   }
-  const target = heroActor(state), map = battleMap(state.setup.map);
+  const targets = state.actors.filter(row => row.team !== npc.team && row.hp > 0 && (npc.team === "party" || row.id === "hero" || state.setup.ally === "fighter")).sort((a, b) => gridDistance(npc.pos, a.pos, hero.system) - gridDistance(npc.pos, b.pos, hero.system) || a.id.localeCompare(b.id));
+  const target = targets[0], map = battleMap(state.setup.map); if (!target) return;
+  if (npc.team === "party") addLog(state, "Лис вступает в бой", `Приближается к ${target.name} и атакует, если достаёт. Его действия и реакция отдельны от ваших.`);
   if (effect(npc, "prone")) { npc.effects = npc.effects.filter(row => row.id !== "prone"); if (hero.system === "pf2e") npc.pf.actions--; else npc.move -= Math.floor(npc.speed / 2); addLog(state, `${npc.name} встаёт`, "На подъём потрачен ресурс движения или действие."); }
   if (effect(npc, "fleeing")) {
     const cells = map.tiles.flatMap((row, y) => row.map((_, x) => ({ x, y }))).filter(cell => walkable(map, cell)).sort((a, b) => gridDistance(b, target.pos, hero.system) - gridDistance(a, target.pos, hero.system));
@@ -466,7 +471,7 @@ function npcTurn(state: TacticalState, hero: Character, npc: TacticalActor, roll
   }
   if (effect(npc, "grabbed")) { addLog(state, `${npc.name} связан захватом`, "В учебной логике удерживаемый противник не перемещается, но может атаковать рядом."); }
   const sight = lineOfSight(map, npc.pos, target.pos), rangedReady = npc.caster && sight.visible && actorSight(state, hero, npc, target.pos).visible && gridDistance(npc.pos, target.pos, hero.system) <= 60;
-  if (!rangedReady && gridDistance(npc.pos, target.pos, hero.system) > 5 && !effect(npc, "grabbed")) {
+  if (!rangedReady && gridDistance(npc.pos, target.pos, hero.system) > 5 && !effect(npc, "grabbed") && (hero.system !== "pf2e" || npc.pf.actions > 0)) {
     const occupied = state.actors.filter(row => row.id !== npc.id && row.hp > 0).map(row => row.pos);
     const paths: Cell[][] = [];
     for (let y = target.pos.y - 1; y <= target.pos.y + 1; y++) for (let x = target.pos.x - 1; x <= target.pos.x + 1; x++) { const path = findPath(map, npc.pos, { x, y }, occupied); if (path.length) paths.push(path); }
@@ -482,7 +487,7 @@ function npcTurn(state: TacticalState, hero: Character, npc: TacticalActor, roll
     const damage = roller("2d4", "Учебный разряд: урон");
     cue(state, { kind: "lightning", from: npc.pos, to: target.pos, hit: degree < 3 || hero.system === "dnd5e" });
     hurt(state, hero, target, degree === 3 && hero.system === "pf2e" ? 0 : degree >= 2 ? Math.floor(damage / 2) : degree === 0 && hero.system === "pf2e" ? damage * 2 : damage, roller);
-  } else if (gridDistance(npc.pos, target.pos, hero.system) <= 5) attack(state, hero, npc, target, roller);
+  } else if (gridDistance(npc.pos, target.pos, hero.system) <= 5 && (hero.system !== "pf2e" || npc.pf.actions > 0)) attack(state, hero, npc, target, roller);
 }
 
 function advanceNpcs(state: TacticalState, hero: Character, roller: BattleRoller) {
