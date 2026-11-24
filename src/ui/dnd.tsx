@@ -334,7 +334,7 @@ function structured(name: string, entry: CustomEntry): StructuredEffect | null {
   };
 }
 
-function optionsFor(source: string, character?: Character): { pick: string; name: string }[] {
+export function optionsFor(source: string, character?: Character): { pick: string; name: string }[] {
   if (source === "skill" || source === "expertise") {
     const known = source === "expertise"
       ? SKILLS.filter((skill) => character?.skillRanks[skill.id] === "proficient" || character?.skillRanks[skill.id] === "expertise")

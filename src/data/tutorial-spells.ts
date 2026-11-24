@@ -34,7 +34,7 @@ const pf: TutorialSpell[] = [
 export function tutorialSpells(hero: Character): TutorialSpell[] {
   if (!hero.spellcasting) return [];
   const known = new Set(hero.spells.map(spell => spell.id));
-  return (hero.system === "pf2e" ? pf : dnd).filter(spell => known.has(spell.id) && (!spell.rank || hero.spellcasting?.kind === "known" || hero.spellcasting?.kind === "pact" || hero.preparedIds.includes(spell.id) || hero.bonusSpellIds.includes(spell.id) || (hero.system === "pf2e" && spell.id === "heal" && hero.slots.some(slot => slot.note === "шрифт" && slot.max > 0))));
+  return (hero.system === "pf2e" ? pf : dnd).filter(spell => known.has(spell.id) && (!spell.rank || hero.spellcasting?.kind === "known" || hero.spellcasting?.kind === "pact" || hero.preparedIds.includes(spell.id) || hero.bonusSpellIds.includes(spell.id) || (hero.system === "pf2e" && spell.id === "heal" && hero.slots.some(slot => slot.note === "шрифт" && slot.max > 0)))).map(spell => hero.system === "pf2e" && spell.id === "shield" ? { ...spell, explanation: `+1 обстоятельственный бонус к КБ до следующего хода. Автоматический блок поглощает до ${5 * Math.ceil(hero.level / 4)} урона на вашем уровне, после чего щит недоступен до новой тренировки.` } : spell);
 }
 
 export function tutorialSpellPool(system: Character["system"], classId: string): TutorialSpell[] {

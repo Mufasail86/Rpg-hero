@@ -44,7 +44,9 @@ export function pathCost(map: BattleMap, path: Cell[], system: "pf2e" | "dnd5e",
 }
 
 export function lineOfSight(map: BattleMap, a: Cell, b: Cell): { visible: boolean; cover: number } {
-  const line = PF.Util.expandPath([[a.x, a.y], [b.x, b.y]]).slice(1, -1);
+  // Resolve raster ties in one direction so two tokens agree on the same ray.
+  const [from, to] = a.x < b.x || a.x === b.x && a.y <= b.y ? [a, b] : [b, a];
+  const line = PF.Util.expandPath([[from.x, from.y], [to.x, to.y]]).slice(1, -1);
   return { visible: !line.some(([x, y]) => map.tiles[y]?.[x] === "wall"), cover: line.some(([x, y]) => map.tiles[y]?.[x] === "table") ? 2 : 0 };
 }
 

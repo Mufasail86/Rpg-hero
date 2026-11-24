@@ -312,6 +312,7 @@ export function QuickStart({ onDone }: { onDone: (character: Character) => void 
 }
 
 export function LevelWizard({
+  title,
   level,
   next,
   gained,
@@ -325,6 +326,7 @@ export function LevelWizard({
   advice,
   complexity = "simple",
 }: {
+  title?: string;
   complexity?: "simple" | "complex";
   level: number;
   next?: number;
@@ -343,7 +345,7 @@ export function LevelWizard({
   const choices = future ? choose ?? [] : slots.filter((slot) => slot.level === target);
   return (
     <section className="card stack" data-testid="level-wizard">
-      <h2>С {Math.max(1, target - 1)} на {target} уровень</h2>
+      <h2>{title ?? `С ${Math.max(1, target - 1)} на ${target} уровень`}</h2>
       <p className="kicker">Само приходит</p>
       <ul data-testid="level-gains">
         {(gained ?? ["Хиты растут вместе с уровнем."]).map((line) => <li key={line}>{line}</li>)}

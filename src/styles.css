@@ -1180,7 +1180,7 @@ select {
 .tactical-economy { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 12px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
 .tactical-economy span { display: flex; align-items: center; gap: 6px; }
 .tactical-map-scroll { overflow: auto; max-width: 100%; background: #171e23; border: 1px solid #465258; border-radius: 4px; scrollbar-gutter: stable; }
-.tactical-map { display: grid; width: max-content; margin: 0 auto; isolation: isolate; background-color: #333c3f; background-position: center; background-size: 100% 100%; background-repeat: no-repeat; }
+.tactical-map { position: relative; display: grid; width: max-content; margin: 0 auto; isolation: isolate; background-color: #333c3f; background-position: center; background-size: 100% 100%; background-repeat: no-repeat; }
 .tactical-cell { position: relative; width: var(--cell); height: var(--cell); padding: 0; margin: 0; border: 0; border-right: 1px solid #ffffff40; border-bottom: 1px solid #ffffff40; border-radius: 0; background: transparent; }
 .tactical-cell::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
 .tactical-cell.in-range::after { background: #42c9ba29; }
@@ -1201,7 +1201,35 @@ select {
 .enemy .token-hp { background: #e79a8d; }
 .token-effects { position: absolute; top: -5px; right: -6px; min-width: 14px; height: 14px; border-radius: 50%; background: #e7c480; color: #221c13; font-size: 10px; line-height: 14px; }
 .tactical-map-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); font-size: 12px; padding: 8px 0; }
-.tactical-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+.cell-light { position: absolute; inset: 0; pointer-events: none; }
+.cell-light.unseen { background: #02060af0; }
+.cell-light.dim { background: #060a1459; }
+.cell-light.nightvision { background: #07142033; }
+.tactical-night-layer { position: absolute; inset: 0; pointer-events: none; backdrop-filter: grayscale(1) brightness(.8); }
+.tactical-cell:has(.cell-light.nightvision) .tactical-token img { filter: grayscale(1); }
+.tactical-effects { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+.tactical-light-status { margin: 4px 0 10px; color: var(--muted); font-size: 14px; }
+.training-development { padding-block: 12px; border-block: 1px solid var(--line); margin-bottom: 12px; }
+.training-level-row { display: flex; align-items: end; flex-wrap: wrap; gap: 10px; }
+.training-level-row .field { min-width: 180px; }
+.training-level-row .btn { min-height: 44px; white-space: normal; }
+.training-development > details { padding-block: 12px; }
+.training-build-fields { padding: 0; border: 0; min-width: 0; }
+.training-feature-list { display: grid; gap: 8px; }
+.training-feature-list details { padding-block: 8px; border-bottom: 1px solid var(--line); }
+.training-feature-list p { white-space: pre-line; overflow-wrap: anywhere; }
+.training-skill-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; }
+.training-skill-summary span { display: flex; justify-content: space-between; gap: 8px; }
+.tactical-environment { border: 0; border-top: 1px solid var(--line); margin: 10px 0; padding: 10px 0; min-width: 0; }
+@media (max-width: 600px) {
+  .tactical-app .tactical-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tactical-toolbar { align-items: flex-start; flex-wrap: wrap; }
+  .tactical-tool-buttons { flex-wrap: wrap; }
+  .training-level-row { align-items: stretch; }
+  .training-level-row .field { width: 100%; }
+  .training-level-row .btn { flex: 1; }
+}
+.tactical-tabs { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-block: 1px solid var(--line); }
 .tactical-tabs button { min-height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; border-bottom: 3px solid transparent; padding: 6px 2px; font-size: 13px; }
 .tactical-tabs button.on { color: var(--gold); border-bottom-color: var(--gold); background: var(--gold-2); }
 .tactical-controls { display: grid; gap: 12px; padding: 20px 0; min-height: 236px; }
