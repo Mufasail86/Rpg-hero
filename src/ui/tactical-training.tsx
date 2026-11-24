@@ -17,6 +17,7 @@ import { trainingBuild } from "../play/training-character";
 import { skillRows } from "../rules";
 import { TacticalEffects } from "./tactical-effects";
 import { useTacticalPlayback } from "./tactical-playback";
+import { TacticalResources } from "./tactical-resources";
 
 function guest(system: Character["system"], role: BeginnerRole, name: string): Character {
   const made = createCharacter(starterDraft(system, role, name).draft);
@@ -137,7 +138,7 @@ function TacticalTable({ source, onRunning }: { source: Character; onRunning: (r
       <p className="tactical-light-status" hidden={environment.light === "bright" && !environment.torch}>{environment.light === "bright" ? "Яркий свет" : environment.light === "dim" ? "Сумрак" : "Полная темнота"} · {environment.vision === "character" ? hero.senses : environment.vision === "normal" ? "Обычное зрение" : environment.vision === "low-light" ? "Сумеречное зрение" : "Тёмное зрение"}{environment.torch ? " · факел включён" : ""}</p>
       <details className="tactical-order"><summary>Очередь ходов</summary><div className="tactical-initiative" aria-label="Порядок ходов">{state.order.map(id => { const actor = state.actors.find(row => row.id === id)!; return <button type="button" key={id} className={`${currentActor(state).id === id ? "active" : ""} ${actor.hp === 0 ? "down" : ""}`} onClick={() => setTarget(id)}><img src={actor.portrait} alt="" /><span>{actor.name}<small>Инициатива {actor.initiative}</small></span><b>{actor.hp}</b></button>; })}</div></details>
       <div className="tactical-layout" data-testid="tactical-layout" data-replaying={playback.busy}><section className="tactical-play-area">
-        <div className="tactical-economy" data-testid="tactical-economy"><span><Heart size={16} />{player.hp}/{player.maxHp}</span><span><Shield size={16} />КБ {effectiveAc(player, hero.system)}</span><span>{hero.system === "pf2e" ? `Действия: ${player.pf.actions} / 3` : `Действие: ${player.dnd.action ? "есть" : "нет"} · бонусное: ${player.dnd.bonus ? "есть" : "нет"}`}</span><span>Реакция: {(hero.system === "pf2e" ? player.pf.reaction : player.dnd.reaction) ? "есть" : "нет"}</span></div>
+        <div className="tactical-economy" data-testid="tactical-economy"><div className="tactical-vitals"><span><Heart size={16} />{player.hp}/{player.maxHp}</span><span><Shield size={16} />КБ {effectiveAc(player, hero.system)}</span></div><TacticalResources hero={hero} actor={player} perAction={stats.perAction} /></div>
         <div className="tactical-map-scroll" data-testid="tactical-map-scroll"><div className={`tactical-map ${setup.map}`} role="group" aria-label="Карта боя, одна клетка 5 футов" data-testid="tactical-map" style={{ "--cell": `${zoom}px`, gridTemplateColumns: `repeat(${map.width}, var(--cell))`, backgroundImage: `url("${import.meta.env.BASE_URL}art/tactical/${setup.map}.webp")` } as CSSProperties}>
           <div className="tactical-night-layer" aria-hidden="true" hidden={!nightPath} style={{ clipPath: nightPath ? `path("${nightPath}")` : "inset(100%)" }} />
           {map.tiles.flatMap((row, y) => row.map((tile, x) => {

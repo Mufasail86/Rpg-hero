@@ -1317,6 +1317,29 @@ body:has(.tactical-app) .quickbar { display: none; }
 .tactical-simple .training-development > summary { cursor: pointer; color: var(--muted); }
 .tactical-simple .training-development > .training-level-row { margin-top: 14px; }
 .tactical-simple .tactical-start-button { margin: 16px 0; min-height: 48px; }
+.tactical-simple .tactical-economy { display: block; padding: 10px 0 14px; }
+.tactical-vitals { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 12px; }
+.tactical-resources h2 { font-family: inherit; font-size: 16px; margin: 0 0 10px; }
+.tactical-turn-meters { display: grid; gap: 12px 16px; }
+.tactical-turn-meters.pf { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.tactical-turn-meters.dnd { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tactical-resource { min-width: 0; --resource-color: #70dfb7; }
+.tactical-resource.reaction { --resource-color: #edc786; }
+.tactical-resource.spell { --resource-color: #8ac7ff; }
+.tactical-resource.attack { --resource-color: #e7b79b; }
+.tactical-resource-label { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 28px; font-size: 14px; }
+.tactical-resource-label > span { min-width: 0; overflow-wrap: anywhere; }
+.tactical-resource-label strong { flex: none; font-size: 20px; font-variant-numeric: tabular-nums; }
+.tactical-resource-label small { font-size: 14px; color: var(--muted); }
+.tactical-resource-pips { display: flex; flex-wrap: wrap; gap: 5px; min-height: 26px; margin-top: 3px; }
+.tactical-economy .tactical-resource-pip { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid currentColor; border-radius: 4px; color: var(--resource-color); background: color-mix(in srgb, var(--resource-color) 16%, transparent); }
+.tactical-resource-pip.available svg { fill: currentColor; fill-opacity: .22; }
+.tactical-economy .tactical-resource-pip.spent { color: var(--muted); background: transparent; opacity: .45; }
+.tactical-movement-value { display: flex; align-items: center; gap: 6px; min-height: 26px; margin-top: 3px; font-size: 12px; color: var(--muted); }
+.tactical-extra-action { display: flex; align-items: center; gap: 6px; min-height: 22px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.tactical-extra-action.available { color: #70dfb7; }
+.tactical-slot-meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 10px; margin-top: 12px; }
+@media (min-width: 1180px) { .tactical-turn-meters.dnd { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .tactical-simple .tactical-tabs { grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); }
 .tactical-simple .tactical-tabs button { min-height: 52px; }
 .tactical-simple .tactical-initiative button { flex: 0 0 auto; min-width: 140px; padding: 6px 10px; }
