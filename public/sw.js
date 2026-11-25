@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "rpg-hero-shell-";
-const CACHE = CACHE_PREFIX + "20261124-2";
+const CACHE = CACHE_PREFIX + "20261125-1";
 const SCOPE = new URL(self.registration.scope);
 const STATIC_SHELL = [
   "./", "./index.html", "./favicon.svg", "./manifest.webmanifest",

@@ -344,6 +344,7 @@ export interface DndProgress {
   /** Значения после народа и происхождения, до классовых повышений. */
   base: Record<Ability, number>;
   speed: number;
+  grantedSkills?: string[];
   choices: BuildChoice[];
   toggles: string[];
 }

@@ -41,6 +41,11 @@ export function tutorialSpellPool(system: Character["system"], classId: string):
   return (system === "pf2e" ? pf : dnd).filter(spell => spell.classes.includes(classId));
 }
 
+export function tutorialSpellStatus(hero: Character, id: string, playable: readonly TutorialSpell[]): string {
+  if (!hero.spellcasting || !(hero.system === "pf2e" ? pf : dnd).some(spell => spell.id === id)) return "На учебном столе пока не автоматизировано.";
+  return playable.some(spell => spell.id === id) ? "Можно сотворить при наличии ресурса." : "Не подготовлено к этому бою.";
+}
+
 export function spellDamage(spell: TutorialSpell, hero: Character): string {
   if (!spell.dice) return "0";
   if (spell.rank > 0) return spell.dice;

@@ -184,12 +184,12 @@ export function DndAdvance({ character, onChange }: { character: Character; onCh
       {knownSubclass.length > 0 && (
         <label className="field">
           <span>Подкласс с 3 уровня</span>
-          <select data-testid="dnd-subclass" value={progress.subclassId} onChange={(event) => {
+          <select data-testid="dnd-subclass" disabled={character.level < 3} value={character.level >= 3 ? progress.subclassId : ""} onChange={(event) => {
             const id = event.target.value;
             const name = knownSubclass.find((row) => row.id === id)?.name ?? "";
-            commit({ ...character, subclassName: name || character.subclassName, dnd: { ...progress, subclassId: id } });
+            commit({ ...character, subclassName: name, dnd: { ...progress, subclassId: id } });
           }}>
-            <option value="">Не выбран</option>
+            <option value="">{character.level < 3 ? "Откроется на 3-м уровне" : "Не выбран"}</option>
             {knownSubclass.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}
           </select>
         </label>

@@ -56,7 +56,7 @@ describe("регрессия конструктора", () => {
     draft.ancestryId = "human";
     draft.choices.size = "Средний";
     draft.choices.humanSkill = "perception";
-    draft.choices.humanFeat = "alert";
+    draft.choices.humanFeat = "savage";
     draft.backgroundId = "criminal";
     draft.choices.abilityMethod = "standard";
     draft.choices.boostMode = "split";
@@ -181,7 +181,7 @@ describe("регрессия конструктора", () => {
     expect(dndSpellBudget("wizard", 4, "dnd-2024", 3).cantrips).toBe(4);
     expect(dndSpellBudget("wizard", 9, "dnd-2024", 3).cantrips).toBe(4);
     expect(dndSpellBudget("wizard", 10, "dnd-2024", 3).cantrips).toBe(5);
-    expect(dndSpellBudget("sorcerer", 1, "dnd-2024", 3)).toMatchObject({ kind: "prepared", prepare: 4, cantrips: 4 });
+    expect(dndSpellBudget("sorcerer", 1, "dnd-2024", 3)).toMatchObject({ kind: "prepared", prepare: 2, cantrips: 4 });
     expect(dndSpellBudget("sorcerer", 5, "dnd-2024", 3)).toMatchObject({ prepare: 8, cantrips: 5 });
     expect(dndSpellBudget("sorcerer", 1, "dnd-2014", 3)).toMatchObject({ kind: "known", known: 2, prepare: 0 });
     expect(dndSpellBudget("sorcerer", 10, "dnd-2014", 3).known).toBe(11);
@@ -192,13 +192,13 @@ describe("регрессия конструктора", () => {
     expect(dndSpellBudget("warlock", 10, "dnd-2024", 3).known).toBe(11);
     expect(dndSpellBudget("ranger", 1, "dnd-2014", 2)).toMatchObject({ kind: "known", known: 0, prepare: 0 });
     expect(dndSpellBudget("ranger", 5, "dnd-2014", 3).known).toBe(4);
-    expect(dndSpellBudget("ranger", 1, "dnd-2024", 3)).toMatchObject({ kind: "prepared", prepare: 3 });
+    expect(dndSpellBudget("ranger", 1, "dnd-2024", 3)).toMatchObject({ kind: "prepared", prepare: 2 });
     expect(dndSpellBudget("paladin", 1, "dnd-2014", 3).prepare).toBe(0);
     expect(dndSpellBudget("paladin", 2, "dnd-2014", 3).prepare).toBe(4);
     expect(dndSpellBudget("paladin", 5, "dnd-2024", 3).prepare).toBe(5);
   });
 
-  it("волшебник D&D готовит Интеллект плюс уровень и пишет шесть заклинаний в книгу", () => {
+  it("волшебник D&D 2024 готовит четыре заклинания и пишет шесть в книгу на 1 уровне", () => {
     const draft = blankDraft();
     draft.system = "dnd5e";
     draft.edition = "dnd-2024";
@@ -206,7 +206,7 @@ describe("регрессия конструктора", () => {
     draft.ancestryId = "human";
     draft.choices.size = "Средний";
     draft.choices.humanSkill = "perception";
-    draft.choices.humanFeat = "alert";
+    draft.choices.humanFeat = "savage";
     draft.backgroundId = "criminal";
     draft.choices.abilityMethod = "standard";
     draft.choices.boostMode = "split";

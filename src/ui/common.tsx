@@ -110,6 +110,7 @@ export function Choice({
   disabled,
   reason,
   chips,
+  facts,
 }: {
   id: string;
   name: string;
@@ -124,6 +125,7 @@ export function Choice({
   disabled?: boolean;
   reason?: string;
   chips?: string[];
+  facts?: string;
 }) {
   const lesson = learningNote(id);
   return (
@@ -138,6 +140,7 @@ export function Choice({
             {chips.map((chip) => <span key={chip} className="chip">{chip}</span>)}
           </span>
         ) : null}
+        {facts && <small>{facts}</small>}
         {reason ? <small>{reason}</small> : hint ? <small>{hint}</small> : null}
       </button>
       <Info title={name} text={learningText(id, short ? `${short}\n\n${info}` : info)} />

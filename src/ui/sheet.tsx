@@ -829,17 +829,17 @@ function Experience({ character, commit }: { character: Character; commit: (next
       </label>
       <p>{need == null ? "Дальше 20-го уровня лист не ведёт." : `До следующего уровня: ${need}. Сейчас ${character.level}.`}</p>
       <Info title="Опыт" text={character.system === "pf2e" ? "В ремастере уровень стоит 1000 опыта. Когда набираете их, уровень растёт, а 1000 списываются. На 5, 10, 15 и 20-м уровне четыре повышения. До +4 это +1 к модификатору. На +4 первое повышение частичное: броски и хиты не меняются, пока следующее отдельное повышение той же характеристики не закроет его." : "Пороги опыта берутся из открытой таблицы. На новом уровне прибавляются хиты: среднее кости или ваш бросок, плюс Телосложение, минимум 1. На 4, 8, 12, 16 и 19-м — черта или прибавка характеристик. Подкласс открытого справочника записывается на 3-м уровне."} />
-      {character.system === "dnd5e" && (
+      {character.system === "dnd5e" && rulesOf(character).edition === "dnd-2024" && (
         <label className="field">
           <span>Подкласс открытого справочника</span>
-          <select data-testid="sheet-subclass" value={character.dnd?.subclassId || subclassIdOf(character.subclassName)} onChange={(event) => {
+          <select data-testid="sheet-subclass" disabled={character.level < 3} value={character.level >= 3 ? character.dnd?.subclassId || subclassIdOf(character.subclassName) : ""} onChange={(event) => {
             const id = event.target.value;
             const known = KNOWN_SUBCLASSES.find((row) => row.id === id);
             const next = { ...character, subclassName: known?.name ?? "" };
             if (next.dnd) next.dnd = { ...next.dnd, subclassId: id };
             commit(next);
           }}>
-            <option value="">Не выбран</option>
+            <option value="">{character.level < 3 ? "Откроется на 3-м уровне" : "Не выбран"}</option>
             {KNOWN_SUBCLASSES.filter((row) => row.classId === character.classId).map((row) => (
               <option key={row.id} value={row.id}>{row.name}</option>
             ))}

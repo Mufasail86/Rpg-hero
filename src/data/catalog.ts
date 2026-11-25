@@ -170,7 +170,8 @@ function rulesEntries(): RuleEntry[] {
   for (const item of SK5) list.push(make(dnd, "skill", "Навык", item.id, item.name, item.short, item.info));
   for (const [id, item] of Object.entries(MASTERY)) list.push(make(dnd, "mastery", "Свойство оружия", id, item.name, item.short, item.info));
   for (const item of COND5) list.push(make(dnd, "condition", "Состояние", item.id, item.name, item.short, item.info));
-  for (const item of SP5) list.push(make(dnd, "spell", "Заклинание", item.id, item.name, item.short, item.info, item.level));
+  const packedSpells = new Set((srd2024Pack as PackedEntry[]).filter(row => row.category === "spell").map(row => row.id));
+  for (const item of SP5) if (!packedSpells.has(item.id)) list.push(make(dnd, "spell", "Заклинание", item.id, item.name, item.short, item.info, item.level));
   for (const item of ITEMS5) list.push(make(dnd, "item", "Предмет", item.id, item.name, item.short, item.info));
   for (const extra of DND_2024_MORE) list.push(fromPacked(extra, "dnd5e", "dnd-2024"));
   for (const extra of srd2024Pack as PackedEntry[]) list.push(fromPacked(extra, "dnd5e", "dnd-2024"));

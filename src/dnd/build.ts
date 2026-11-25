@@ -83,7 +83,7 @@ export function slotsForProgress(progress: DndProgress, level: number): Slot[] {
   const push = (id: string, at: number, source: string, label: string) => {
     if (at <= level) slots.push({ id, level: at, source, label });
   };
-  if (edition !== "dnd-2014") push("origin-feat", 1, "feat", "Черта происхождения");
+  if (edition !== "dnd-2014" && progress.backgroundId !== "custom") push("origin-feat", 1, "feat", "Черта происхождения");
   if (speciesPicksSkill(progress.speciesId)) push("skill-species", 1, "skill", "Навык народа");
   const skills = classSkillCount(progress.classId);
   for (let i = 0; i < skills; i += 1) push(`skill-class-${i}`, 1, "skill", "Навык класса");
@@ -115,6 +115,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
   const feats = new Set<string>();
   if (progress.backgroundId === "soldier") feats.add("savage");
   for (const id of BACKGROUND_SKILLS[progress.backgroundId] ?? []) skills.set(id, "proficient");
+  for (const id of progress.grantedSkills ?? []) if (SKILLS.some(skill => skill.id === id)) skills.set(id, "proficient");
   if (!BACKGROUND_SKILLS[progress.backgroundId]) {
     issues.push({ kind: "limit", message: "Навыки этого происхождения справочник не знает, они не добавлены сами." });
   }

@@ -2,6 +2,9 @@ import { skillFeatBlock } from "./pf2e/eligibility";
 import { levelOneClassFeats } from "./data/pf-index";
 import {
   classKey,
+  creationClassSkills,
+  creationMasteryOptions,
+  creationSpellOptions,
   fixedSkills,
   scoresOf,
   skillNeed,
@@ -15,10 +18,9 @@ import {
   CLASSES as CL2,
   SKILL_FEATS,
   SKILLS as SK2,
-  SPELLS as SP2,
   backgroundById,
 } from "./data/pf2e";
-import { CLASSES as CL5, SKILLS as SK5, SPELLS as SP5 } from "./data/dnd5e";
+import { CLASSES as CL5, SKILLS as SK5 } from "./data/dnd5e";
 import {
   type Ability,
   type Draft,
@@ -320,7 +322,7 @@ export interface Premade {
 const PF_CANTRIP = ["shield", "electric-arc", "light", "telekinetic-projectile", "detect-magic"];
 const PF_BOOK = ["fear", "magic-missile", "mystic-armor", "sure-strike", "sleep", "grease", "breathe-fire", "hydraulic-push", "runic-weapon", "alarm"];
 const DIVINE_CANTRIP = ["guidance", "light", "stabilize", "shield", "forbidding-ward"];
-const BARD_CANTRIP = ["courageous-anthem", "guidance", "light", "telekinetic-projectile", "shield"];
+const BARD_CANTRIP = ["detect-magic", "guidance", "light", "telekinetic-projectile", "shield"];
 
 function base(system: "pf2e" | "dnd5e", name: string): Draft {
   const draft = blankDraft();
@@ -867,11 +869,11 @@ function fillSkills(draft: Draft): Partial<Draft> {
   const need = skillNeed(draft, scored.scores);
   const fixed = new Set(fixedSkills(draft));
   const catalog = draft.system === "pf2e" ? SK2 : SK5;
-  const allowed = draft.system === "dnd5e" ? CL5.find((item) => item.id === draft.classId)?.skillChoices : "any";
+  const allowed = new Set(creationClassSkills(draft));
   const pool = catalog
     .map((skill) => skill.id)
     .filter((id) => !fixed.has(id))
-    .filter((id) => allowed === "any" || !allowed || allowed.includes(id));
+    .filter((id) => allowed.has(id));
   const key = classKey(draft) ?? "str";
   const plan = skillPlan({
     system: draft.system,
@@ -900,15 +902,19 @@ function fillFeats(draft: Draft): Partial<Draft> {
   if (draft.system === "dnd5e") {
     const cls = CL5.find((item) => item.id === draft.classId);
     if (cls?.fightingStyle && !choices.style) choices.style = "defense";
-    if (cls?.mastery && (multi.mastery ?? []).length !== cls.mastery) {
+    if (cls?.mastery) {
       const weapons = ["longsword", "longbow", "greatsword", "shortsword", "dagger", "mace"];
-      multi.mastery = weapons.slice(0, cls.mastery);
+      const allowed = creationMasteryOptions(draft).map(item => item.id);
+      multi.mastery = [...new Set([...(multi.mastery ?? []), ...weapons, ...allowed].filter(id => allowed.includes(id)))].slice(0, cls.mastery);
     }
     if (cls?.expertise && (multi.expertise ?? []).length !== cls.expertise) {
       const have = [...new Set([...fixedSkills(draft), ...(draft.multi.skills ?? [])])];
       multi.expertise = have.slice(0, cls.expertise);
     }
-    if (draft.ancestryId === "human" && !choices.humanFeat) choices.humanFeat = "alert";
+    if (draft.ancestryId === "human" && (!choices.humanFeat || (draft.backgroundId === "criminal" && choices.humanFeat === "alert") || (draft.backgroundId === "soldier" && choices.humanFeat === "savage"))) {
+      choices.humanFeat = draft.backgroundId === "criminal" ? "savage" : "alert";
+    }
+    if (draft.classId === "warlock" && !choices.invocation) choices.invocation = "eldritch-mind";
     if (choices.humanFeat === "skilled" && (multi.hskilled ?? []).length !== 3) {
       const blocked = new Set([...fixedSkills({ ...draft, choices: { ...choices, humanFeat: "" } }), ...(multi.skills ?? [])]);
       multi.hskilled = SK5.map((skill) => skill.id).filter((id) => !blocked.has(id)).slice(0, 3);
@@ -940,21 +946,13 @@ function fillFeats(draft: Draft): Partial<Draft> {
 function fillSpells(draft: Draft): Partial<Draft> {
   const budget = spellBudget(draft);
   if (!budget || !draft.system) return {};
-  const spells = draft.system === "pf2e"
-    ? SP2.filter((spell) => {
-      const tradition = CL2.find((item) => item.id === draft.classId)?.spell?.tradition;
-      return !tradition || spell.traditions.includes(tradition);
-    })
-    : SP5.filter((spell) => spell.classes.includes(draft.classId) || draft.classId === "custom");
+  const spells = creationSpellOptions(draft);
   const cantrips = spells.filter((spell) => spell.level === 0).map((spell) => spell.id);
   const leveled = spells.filter((spell) => spell.level === 1).map((spell) => spell.id);
   const known = [...cantrips.slice(0, budget.cantrips)];
   const bookCount = budget.kind === "book" ? budget.known : budget.kind === "known" || budget.kind === "pact" ? budget.known : 0;
   known.push(...leveled.slice(0, bookCount));
   const prepared = budget.kind === "prepared" || budget.kind === "book" ? leveled.slice(0, budget.prepare) : [];
-  if (budget.kind === "prepared") {
-    for (const id of prepared) if (!known.includes(id)) known.push(id);
-  }
   return { knownSpells: known, preparedSpells: prepared };
 }
 
