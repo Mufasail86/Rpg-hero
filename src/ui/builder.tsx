@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { VERSATILE } from "../data/versatile";
 import { CALLINGS, COMPANIONS, englishName } from "../data/roster";
 import { featChoices, featInfo } from "../data/pf-index";
@@ -7,14 +7,20 @@ import { ruSort } from "../sort";
 import { PickList } from "./feat-picker";
 import { EDITION_NAME, PACKS, editionsFor, filledEdition, resolveEdition, type RulesEdition } from "../data/editions";
 import { ART, artSrc, portraitSrc } from "./art";
-import { BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014, CLASSES as CL5, GENERAL_FEATS, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY } from "../data/dnd5e";
-import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, SPELLS as SP2, TRADITION_NAME } from "../data/pf2e";
+import { BACKGROUNDS as BG5, BACKGROUNDS_2014 as BG2014, CLASSES as CL5, GENERAL_FEATS, MASTERY, SKILLS as SK5, SPECIES, SPELLS as SP5, STANDARD_ARRAY, WARLOCK_INVOCATIONS } from "../data/dnd5e";
+import { ANCESTRIES, BACKGROUNDS as BG2, CLASSES as CL2, SKILLS as SK2, TRADITION_NAME } from "../data/pf2e";
 import {
   blankScoresFor,
   catalog,
   notedGear,
   classKey,
   createCharacter,
+  creationClassSkills,
+  creationMasteryOptions,
+  creationSpellSelection,
+  creationSpellTradition,
+  creationSpellBlock,
+  dndGrantedSpellIds,
   reviewSummary,
   creationMeters,
   fixedSkills,
@@ -24,6 +30,8 @@ import {
   skillFeatAtCreation,
   skillNeed,
   spellBudget,
+  toggleCreationSpell,
+  tomeSpellOptions,
   STEP_HINT,
   STEP_TITLE,
   stepLocked,
@@ -67,8 +75,8 @@ const ORDER5 = {
     {
       id: "thaumaturge",
       name: "Чудотворец",
-      short: "Лишний заговор жреца и навык Магия, доспех не тяжелее среднего.",
-      info: "Божественный порядок чудотворца. Вы знаете ещё один заговор из списка жреца и владеете навыком Магия. Доспехи остаются лёгкими и средними, тяжёлых порядок не даёт. Заклинаний 1-го круга от этого выбора не прибавляется.",
+      short: "Ещё один заговор жреца и бонус Мудрости к проверкам Магии и Религии.",
+      info: "Дополнительный заговор из списка жреца. К проверкам Магии и Религии добавляется модификатор Мудрости, минимум +1. Владение навыком не выдаётся. Ситуативный бонус пока отмечается в описании, а не в числах листа.",
     },
   ],
   druid: [
@@ -362,6 +370,10 @@ function UnfilledNote({ edition, ancestry = false }: { edition: RulesEdition; an
   );
 }
 
+function ancestryFacts(item: { speed: number; senses: string; hp?: number }) {
+  return [`Скорость: ${item.speed} фт.`, item.senses, item.hp ? `Хиты народа: ${item.hp}` : ""].filter(Boolean).join(" · ");
+}
+
 function AncestryStep({
   draft,
   update,
@@ -381,14 +393,14 @@ function AncestryStep({
         <p className="kicker">Советуем новичку</p>
         <div className="portrait-grid">
         {recommended.map((item) => (
-          <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
+          <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "dnd5e", item.id)} facts={ancestryFacts(item)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
         </div>
         {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
         <p className="kicker">Все народы</p>
         <div className="portrait-grid">
         {all.map((item) => (
-          <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
+          <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} facts={ancestryFacts(item)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, choices: { ...draft.choices, lineage: "", lineageAbility: "", elfSkill: "", size: "" } })} />
         ))}
         </div>
         <Choice id="custom" name="Своя запись" hint="Народ, которого нет в открытом справочнике" info="Вы сами пишете название, скорость и размер. Прибавки к характеристикам всё равно даёт происхождение, как в правилах 2024 года." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom" })} />
@@ -406,14 +418,14 @@ function AncestryStep({
       <p className="kicker">Советуем новичку</p>
       <div className="portrait-grid">
       {recommended.map((item) => (
-        <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+        <Choice key={`top-${item.id}`} id={item.id} testId={`advise-${item.id}`} name={item.name} hint={item.hint} reason={reasonFor("ancestry", "pf2e", item.id)} facts={ancestryFacts(item)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       </div>
       {draft.ancestryId === "custom" && <CustomAncestry draft={draft} update={update} speedLabel="Скорость, футы" />}
       <p className="kicker">Все народы</p>
       <div className="portrait-grid">
       {all.map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} facts={ancestryFacts(item)} info={item.info} short={item.short} art={portraitSrc(item.id) ?? undefined} on={draft.ancestryId === item.id} onPick={() => update({ ancestryId: item.id, heritageId: "", choices: { ...draft.choices, ancestryMode: item.boosts.length ? "listed" : "free", ancFree: "" } })} />
       ))}
       </div>
       <Choice id="custom" name="Своя запись" hint="Свой народ" info="Название, хиты народа, скорость и размер. Два свободных повышения без изъяна задаются на шаге характеристик." on={draft.ancestryId === "custom"} onPick={() => update({ ancestryId: "custom", heritageId: "custom", choices: { ...draft.choices, ancestryMode: "free" } })} />
@@ -558,17 +570,29 @@ function BackgroundStep({ draft, update, setChoice }: { draft: Draft; update: (p
   const game = draft.system === "dnd5e" ? "dnd5e" : "pf2e";
   const advice = backgroundAdvice(game);
   const advised = new Set(advice.map((item) => item.id));
+  function factsFor(id: string): string | undefined {
+    if (draft.system === "dnd5e" && !legacyDnd) {
+      const row = BG5.find(item => item.id === id);
+      if (!row) return;
+      const feat = ORIGIN_FEATS.find(item => item.id === row.feat);
+      return [row.abilities.map(ability => ABILITY_NAME[ability]).join(", "), row.skills.map(skill => skillTitle("dnd5e", skill)).join(", "), feat?.name].filter(Boolean).join(" · ");
+    }
+    const row = draft.system === "pf2e" ? BG2.find(item => item.id === id) : undefined;
+    if (!row) return;
+    return [...row.skills.map(skill => skillTitle("pf2e", skill)), ...row.feats.map(feat => feat.name)].join(" · ");
+  }
   return (
     <>
       {legacyDnd && <p className="lead">В справочнике 5.1 одно происхождение. Классы 2014 года в расчёт не входят и с правилами 2024 года не смешиваются.</p>}
       {unfilled && <UnfilledNote edition={edition} />}
+      {edition === "dnd-2024" && <p className="tiny">Готовые происхождения из открытых правил: {BG5.length}. Остальные можно записать вручную по правилам вашей игры.</p>}
       <p className="kicker">Советуем новичку</p>
       {list.filter((item) => advised.has(item.id)).map((item) => (
-        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("background", game, item.id)} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+        <Choice key={`top-${item.id}`} id={item.id} name={item.name} hint={item.hint} reason={reasonFor("background", game, item.id)} facts={factsFor(item.id)} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
-      <p className="kicker">Все происхождения</p>
+      {list.some(item => !advised.has(item.id)) && <p className="kicker">Другие происхождения</p>}
       {list.filter((item) => !advised.has(item.id)).map((item) => (
-        <Choice key={item.id} id={item.id} name={item.name} hint={item.hint} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
+        <Choice key={item.id} id={item.id} name={item.name} hint={factsFor(item.id) ? undefined : item.hint} facts={factsFor(item.id)} info={item.info} short={item.short} on={draft.backgroundId === item.id} onPick={() => update({ backgroundId: item.id, choices: { ...draft.choices, bgSkill: "", bgFeat: "", bgCraft: "" } })} />
       ))}
       {picked && skillOptions.length > 0 && (
         <>
@@ -652,7 +676,7 @@ function ClassStep({ draft, update, setChoice }: { draft: Draft; update: (partia
       if (!item) return null;
       const face = classChips("dnd5e", item.id);
       return (
-        <Choice key={id} id={item.id} name={item.name} chips={face.chips} reason={face.reason} info={`${item.info} Подкласс справочника: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], multi: { ...draft.multi, skills: [], mastery: [], expertise: [] } })} testId={recommended ? `advise-${item.id}` : undefined} />
+        <Choice key={id} id={item.id} name={item.name} chips={face.chips} reason={face.reason} info={`${item.info} Подкласс открывается на 3-м уровне. В открытых правилах: ${item.subclass.name}. ${item.subclass.info}`} short={item.short} on={draft.classId === item.id} onPick={() => { if (draft.classId !== item.id) update({ classId: item.id, gearMode: "", knownSpells: [], preparedSpells: [], choices: { ...draft.choices, order: "", style: "", invocation: "" }, multi: { ...draft.multi, skills: [], mastery: [], expertise: [], tomeSpells: [] } }); }} testId={recommended ? `advise-${item.id}` : undefined} />
       );
     }
     return (
@@ -1010,9 +1034,8 @@ function SkillStep({ draft, update, toggleMulti }: { draft: Draft; update: (part
   const fixed = new Set(fixedSkills(draft));
   const picked = draft.multi.skills ?? [];
   const skills = draft.system === "pf2e" ? SK2 : SK5;
-  const cls = CL5.find((item) => item.id === draft.classId);
-  const allowed = draft.system === "dnd5e" && cls && cls.skillChoices !== "any" ? new Set(cls.skillChoices) : null;
-  const visible = skills.filter((skill) => !allowed || allowed.has(skill.id));
+  const allowed = new Set(creationClassSkills(draft));
+  const visible = skills.filter(skill => allowed.has(skill.id) || fixed.has(skill.id) || picked.includes(skill.id));
   const plan = draft.system && draft.classId
     ? planForDraft({
       system: draft.system,
@@ -1027,7 +1050,7 @@ function SkillStep({ draft, update, toggleMulti }: { draft: Draft; update: (part
   const ordered = [...visible].sort((left, right) => Number(recommended(right.id)) - Number(recommended(left.id)) || left.name.localeCompare(right.name, "ru"));
   return (
     <>
-      <p className="lead">Нужно выбрать {need}. Уже дано и повторно брать нельзя: {[...fixed].map((id) => skills.find((skill) => skill.id === id)?.name ?? id).join(", ") || "пока ничего"}.</p>
+      <p className="lead">Навыки на выбор: {picked.length} из {need}. Уже полученные навыки не занимают эти места.</p>
       {plan && (
         <div className="card stack" data-testid="builder-skill-plan">
           <b>Тебе советуем развивать</b>
@@ -1044,17 +1067,22 @@ function SkillStep({ draft, update, toggleMulti }: { draft: Draft; update: (part
           key={skill.id}
           id={skill.id}
           name={skill.name}
-          hint={fixed.has(skill.id) ? "уже есть" : ABILITY_SHORT[skill.ability]}
-          reason={recommended(skill.id) ? reason.get(skill.id) : undefined}
+          hint={fixed.has(skill.id) ? "Уже получен" : !allowed.has(skill.id) ? "Уберите: недоступен как навык класса" : ABILITY_SHORT[skill.ability]}
+          reason={allowed.has(skill.id) && recommended(skill.id) ? reason.get(skill.id) : undefined}
           info={skill.info} short={skill.short}
           on={picked.includes(skill.id)}
-          disabled={fixed.has(skill.id)}
+          disabled={fixed.has(skill.id) && !picked.includes(skill.id)}
           onPick={() => {
-            if (fixed.has(skill.id)) return;
+            if (picked.includes(skill.id)) {
+              update({ multi: { ...draft.multi, skills: picked.filter(id => id !== skill.id), expertise: (draft.multi.expertise ?? []).filter(id => id !== skill.id) } });
+              return;
+            }
+            if (fixed.has(skill.id) || !allowed.has(skill.id)) return;
             toggleMulti("skills", skill.id, need);
           }}
         />
       ))}
+      {draft.system === "dnd5e" && <details className="card"><summary>Другие навыки</summary><p className="tiny">Из этого списка класс не даёт владение. Его могут дать народ, происхождение или черта.</p>{skills.filter(skill => !allowed.has(skill.id) && !fixed.has(skill.id)).map(skill => <p key={skill.id}>{skill.name}</p>)}</details>}
     </>
   );
 }
@@ -1087,6 +1115,7 @@ const FEAT_NAME: Record<string, string> = {
 
 function FeatAdvise({ draft, setChoice }: { draft: Draft; setChoice: (key: string, value: string) => void }) {
   const rows = featAdvice().filter((row) => draft.system === "dnd5e" ? row.id === "defense" || row.id === "alert" : row.id !== "defense" && row.id !== "alert").slice(0, 5);
+  if (draft.system === "dnd5e") return null;
   return (
     <Advise
       items={rows.map((row) => ({ id: row.id, name: FEAT_NAME[row.id] ?? row.id }))}
@@ -1115,15 +1144,16 @@ function FeatStep({
     const cls = CL5.find((item) => item.id === draft.classId);
     const bg = BG5.find((item) => item.id === draft.backgroundId);
     const proficient = [...new Set([...fixedSkills(draft), ...(draft.multi.skills ?? [])])];
+    const originFeat = ORIGIN_FEATS.find(feat => feat.id === bg?.feat);
+    const humanCanPick = (id: string) => id !== bg?.feat || id === "skilled";
     return (
       <>
-        <FeatAdvise draft={draft} setChoice={setChoice} />
-        {bg && <p className="tiny">Происхождение уже даёт черту. Её не выбирают второй раз, если народ не человек.</p>}
+        {originFeat && <p className="lead">От происхождения: <b>{originFeat.name}</b>{originFeat.hint && ` · ${originFeat.hint}`}</p>}
         {draft.ancestryId === "human" && (
           <>
             <p className="kicker">Вторая черта происхождения</p>
             {ORIGIN_FEATS.map((feat) => (
-              <Choice key={feat.id} id={feat.id} name={feat.name} hint={feat.hint} info={feat.info} short={feat.short} on={draft.choices.humanFeat === feat.id} onPick={() => setChoice("humanFeat", feat.id)} />
+              <Choice key={feat.id} id={feat.id} name={feat.name} hint={humanCanPick(feat.id) ? feat.hint : "Уже получена от происхождения"} info={feat.info} short={feat.short} disabled={!humanCanPick(feat.id)} on={draft.choices.humanFeat === feat.id} onPick={() => setChoice("humanFeat", feat.id)} />
             ))}
             {draft.choices.humanFeat === "skilled" && (
               <>
@@ -1137,6 +1167,14 @@ function FeatStep({
           </>
         )}
         {bg && <MagicPicks draft={draft} featId={bg.feat} prefix="bg" setChoice={setChoice} />}
+        {draft.classId === "warlock" && (
+          <section className="stack" data-testid="warlock-invocations">
+            <p className="kicker">Мистическое воззвание · одно на 1-м уровне</p>
+            {WARLOCK_INVOCATIONS.map(row => <Choice key={row.id} id={row.id} name={row.name} info={row.info} hint={row.info} on={draft.choices.invocation === row.id}
+              onPick={() => setChoice("invocation", row.id)} />)}
+            {draft.choices.invocation === "pact-of-the-tome" && <TomePicks draft={draft} update={update} />}
+          </section>
+        )}
         {cls?.fightingStyle && (
           <>
             <p className="kicker">Боевой стиль</p>
@@ -1148,8 +1186,7 @@ function FeatStep({
         {cls?.mastery && (
           <>
             <p className="kicker">Мастерство оружия: {draft.multi.mastery?.length ?? 0} из {cls.mastery}</p>
-            {catalog("dnd5e")
-              .filter((item) => item.kind === "weapon" && item.weapon?.mastery && (cls.id !== "rogue" || item.weapon.category === "simple" || (item.weapon.category === "martial" && (item.weapon.finesse || item.weapon.light))))
+            {creationMasteryOptions(draft)
               .map((item) => (
                 <Choice key={item.id} id={item.id} name={item.name} hint={MASTERY[item.weapon?.mastery ?? ""]?.name} info={`${item.info} ${MASTERY[item.weapon?.mastery ?? ""]?.info ?? ""}`} short={item.short ?? MASTERY[item.weapon?.mastery ?? ""]?.short} on={(draft.multi.mastery ?? []).includes(item.id)} onPick={() => toggleMulti("mastery", item.id, cls.mastery ?? 0)} />
               ))}
@@ -1166,18 +1203,12 @@ function FeatStep({
             })}
           </>
         )}
-        <PickList
-          title="Черты справочника"
-          testId="feat-picker"
-          rows={ruSort([...ORIGIN_FEATS, ...GENERAL_FEATS, ...STYLE_FEATS], (item) => item.name).map((item) => ({ id: item.id, name: item.name, info: item.info, hint: item.hint }))}
-          selected={draft.choices.humanFeat || draft.choices.style || ""}
-          onPick={(row) => {
-            if (draft.ancestryId === "human" && ORIGIN_FEATS.some((item) => item.id === row.id)) setChoice("humanFeat", row.id);
-            else if (STYLE_FEATS.some((item) => item.id === row.id)) setChoice("style", row.id);
-            else update({ customFeats: [...draft.customFeats, { name: row.name, info: row.info }] });
-          }}
-          note="Происхождение, общие черты и боевые стили открытого справочника. Подкласс класса уже подписан на шаге класса."
-        />
+        <details className="card"><summary>Черты справочника · без добавления</summary>
+          {ruSort([...ORIGIN_FEATS, ...GENERAL_FEATS, ...STYLE_FEATS], item => item.name).map(item => <div className="row" key={item.id}>
+            <span className="grow">{item.name}<small className="tiny"> · {GENERAL_FEATS.includes(item) ? "с 4-го уровня при доступном выборе" : STYLE_FEATS.includes(item) ? "нужна особенность боевого стиля" : "даётся происхождением или особенностью"}</small></span>
+            <Info title={item.name} text={item.info} />
+          </div>)}
+        </details>
         <CustomFeats draft={draft} update={update} />
       </>
     );
@@ -1301,6 +1332,27 @@ function FeatStep({
   );
 }
 
+function TomePicks({ draft, update }: { draft: Draft; update: (partial: Partial<Draft>) => void }) {
+  const picked = draft.multi.tomeSpells ?? [];
+  const pool = new Set(tomeSpellOptions(draft).map(row => row.id));
+  function toggle(id: string) {
+    update({ multi: { ...draft.multi, tomeSpells: picked.includes(id) ? picked.filter(row => row !== id) : [...picked, id] } });
+  }
+  return <section className="card stack" data-testid="warlock-tome">
+    <b>Книга теней</b>
+    {[0, 1].map(rank => {
+      const count = picked.filter(id => SP5.some(spell => spell.id === id && spell.level === rank)).length;
+      const need = rank === 0 ? 3 : 2;
+      return <details key={rank} open={count < need}><summary>{rank === 0 ? "Заговоры книги" : "Ритуалы книги"}: {count} из {need}</summary>
+        {ruSort(SP5.filter(spell => spell.level === rank && (pool.has(spell.id) || picked.includes(spell.id))), spell => spell.name).map(spell => (
+          <Choice key={spell.id} id={`tome-${spell.id}`} name={spell.name} info={spell.info} hint={!pool.has(spell.id) ? "Уже известно из другого источника. Уберите из книги." : undefined}
+            on={picked.includes(spell.id)} disabled={!picked.includes(spell.id) && count >= need} onPick={() => toggle(spell.id)} />
+        ))}
+      </details>;
+    })}
+  </section>;
+}
+
 function MagicPicks({ draft, featId, prefix, setChoice }: { draft: Draft; featId: string; prefix: string; setChoice: (key: string, value: string) => void }) {
   if (!featId.startsWith("magic")) return null;
   const list = featId.endsWith("wizard") ? "wizard" : featId.endsWith("druid") ? "druid" : "cleric";
@@ -1336,11 +1388,14 @@ function MagicPicks({ draft, featId, prefix, setChoice }: { draft: Draft; featId
 function CustomFeats({ draft, update }: { draft: Draft; update: (partial: Partial<Draft>) => void }) {
   return (
     <div className="card stack">
-      <b>Своя черта</b>
+      <b>Своя черта · запись с мастером игры</b>
       {draft.customFeats.map((feat, index) => (
-        <p key={index} className="tiny">{feat.name}</p>
+        <div className="row" key={index}><span className="grow">{feat.name}</span><button type="button" className="btn" onClick={() => update({ customFeats: draft.customFeats.filter((_, i) => i !== index) })} aria-label={`Убрать: ${feat.name}`}>Убрать</button></div>
       ))}
-      <FeatForm onAdd={(feat) => update({ customFeats: [...draft.customFeats, feat] })} />
+      <FeatForm onAdd={(feat) => {
+        if (draft.customFeats.some(row => row.name.trim().toLocaleLowerCase("ru") === feat.name.toLocaleLowerCase("ru"))) return;
+        update({ customFeats: [...draft.customFeats, feat] });
+      }} />
     </div>
   );
 }
@@ -1484,95 +1539,81 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
   const [query, setQuery] = useState("");
   const [shown, setShown] = useState(24);
   const [rank, setRank] = useState(-1);
-  const cls2 = CL2.find((item) => item.id === draft.classId);
-  const tradition = cls2?.spell?.tradition ?? "arcane";
+  const tradition = creationSpellTradition(draft);
   const unfilled = draft.system ? !filledEdition(edition) : false;
-  const packed = useMemo(() => {
-    if (unfilled || !draft.system) return [];
-    const needle = query.trim().toLocaleLowerCase("ru");
-    return ruSort(
-      rulesCatalog().filter((entry) => entry.system === draft.system && entry.edition === edition && (entry.category === "spell" || entry.category === "ritual")),
-      (entry) => entry.name,
-    )
-      .filter((entry) => rank < 0 || entry.rank === rank)
-      .filter((entry) => !needle || entry.name.toLocaleLowerCase("ru").includes(needle))
-      .map((entry) => ({ id: entry.localId, name: entry.name, level: entry.rank ?? 0, info: entry.text }));
-  }, [draft.system, edition, query, rank, unfilled]);
-  const catalogSpells = unfilled ? [] : draft.system === "pf2e"
-    ? SP2.filter((spell) => draft.classId === "custom" || spell.traditions.includes(tradition)).map((spell) => ({ id: spell.id, name: spell.name, level: spell.level, info: `${spell.time}. ${spell.info}` }))
-    : SP5.filter((spell) => draft.classId === "custom" || spell.classes.includes(draft.classId)).map((spell) => ({ id: spell.id, name: spell.name, level: spell.level, info: spell.info }));
-  const custom = draft.customSpells.map((spell, index) => ({ id: `custom:${index}`, name: spell.name, level: Number(spell.level) || 0, info: spell.info }));
-  const seenSpell = new Set(catalogSpells.map((spell) => spell.id));
-  const spells = [...catalogSpells, ...packed.filter((spell) => !seenSpell.has(spell.id)), ...custom];
-  const visible = spells.filter((spell) => rank < 0 || spell.level === rank).slice(0, shown);
-  function toggle(list: "knownSpells" | "preparedSpells", id: string) {
-    const current = draft[list];
-    update({ [list]: current.includes(id) ? current.filter((item) => item !== id) : [...current, id] });
-  }
-  const cantrips = budget ? draft.knownSpells.filter((id) => (spells.find((spell) => spell.id === id)?.level ?? 0) === 0).length : 0;
-  const leveled = budget ? draft.knownSpells.filter((id) => (spells.find((spell) => spell.id === id)?.level ?? 0) > 0).length : 0;
-  const prepared = draft.preparedSpells.length;
+  const selection = creationSpellSelection(draft);
+  const { options: spells, cantrips, leveled, prepared, invalid } = selection;
+  const queryText = query.trim().toLocaleLowerCase("ru");
+  const matches = ruSort(spells.filter(spell => (rank < 0 || spell.level === rank) && spell.name.toLocaleLowerCase("ru").includes(queryText)), spell => spell.name);
+  const visible = matches.slice(0, shown);
+  const granted = SP5.filter(spell => dndGrantedSpellIds(draft).includes(spell.id));
+  const picked = spells.filter(spell => draft.knownSpells.includes(spell.id) || draft.preparedSpells.includes(spell.id));
+  const spellList = (id: string) => spells.find(spell => spell.id === id)?.level === 1 && budget?.kind === "prepared" ? "preparedSpells" : "knownSpells";
+  const select = (id: string, list: "knownSpells" | "preparedSpells" = spellList(id)) => update(toggleCreationSpell(draft, list, id));
   return (
     <>
       {unfilled && <UnfilledNote edition={edition} />}
-      {draft.system === "dnd5e" && edition === "dnd-2024" && <p className="tiny">В стартовый лист обычно входят заговоры и 1-й круг. Остальные круги справочника тоже в списке: выберите круг или оставьте «все».</p>}
-      <Advise
-        items={spells}
-        advice={draft.system === "pf2e" || draft.system === "dnd5e" ? spellAdvice(draft.system) : []}
-        onPick={(id) => {
-          const spell = spells.find((item) => item.id === id);
-          const known = draft.knownSpells.includes(id) ? draft.knownSpells : [...draft.knownSpells, id];
-          const prepare = Boolean(spell && spell.level > 0 && (budget?.kind === "prepared" || budget?.kind === "book"));
-          const prepared = prepare && !draft.preparedSpells.includes(id) ? [...draft.preparedSpells, id] : draft.preparedSpells;
-          update({ knownSpells: known, preparedSpells: prepared });
-        }}
-      />
+      <p className="tiny">В этом шаге только доступные заклинания из проверенного стартового списка. Другие круги, заклинания и ритуалы можно <a href="#/library">посмотреть в справочнике</a>.</p>
       {budget && (
-        <p className="lead">
-          Заговоры {cantrips} из {budget.cantrips}. Заклинания 1-го круга в запасе {leveled}
-          {budget.kind === "book" ? `, нужно не меньше ${budget.known}` : budget.kind === "prepared" ? "" : ` из ${budget.known}`}.
-          {(budget.kind === "prepared" || budget.kind === "book") && ` Подготовлено ${prepared} из ${budget.prepare}.`}
-          {draft.system === "pf2e" && cls2?.spell ? ` Традиция: ${TRADITION_NAME[tradition] ?? tradition}.` : ""}
+        <p className="lead" data-testid="spell-selection-count">
+          {budget.cantrips > 0 && `Заговоры класса: ${cantrips} из ${budget.cantrips}. `}
+          {budget.kind === "book" ? `В книге: ${leveled}, нужно не меньше ${budget.known}. ` : budget.kind === "prepared" ? "" : `Заклинания 1-го круга: ${leveled} из ${budget.known}. `}
+          {(budget.kind === "prepared" || budget.kind === "book") && `Подготовлено: ${prepared} из ${budget.prepare}. `}
+          {draft.system === "pf2e" && TRADITION_NAME[tradition] ? `Традиция: ${TRADITION_NAME[tradition]}.` : ""}
         </p>
       )}
+      {granted.length > 0 && <div className="card"><b>Дано особенностями · отдельно от выбора класса</b><p>{granted.map(row => row.name).join(", ")}</p></div>}
+      {invalid.length > 0 && <section className="card stack" aria-label="Недоступные выборы" data-testid="unavailable-spell-picks">
+        <b>Недоступные записи в черновике</b>
+        {invalid.map(row => <div key={row.id} className="row"><span className="grow">{row.name === "запись из справочника" ? rulesCatalog().find(entry => entry.edition === edition && entry.localId === row.id)?.name ?? row.name : row.name}</span>
+          <button type="button" className="btn" onClick={() => update({ knownSpells: draft.knownSpells.filter(id => id !== row.id), preparedSpells: draft.preparedSpells.filter(id => id !== row.id) })}>Убрать</button></div>)}
+      </section>}
+      {picked.length > 0 && <details className="card"><summary>Выбранное · {picked.length}</summary>{picked.map(spell => <div key={spell.id} className="row"><span className="grow">{spell.name}</span>
+        <button type="button" className="btn" onClick={() => select(spell.id, draft.knownSpells.includes(spell.id) ? "knownSpells" : "preparedSpells")}>Убрать</button></div>)}</details>}
+      <Advise items={spells.filter(spell => !creationSpellBlock(draft, spell.id, spellList(spell.id), selection))} advice={draft.system ? spellAdvice(draft.system) : []} onPick={id => select(id)} />
       <input className="search" type="search" placeholder="Найти заклинание или ритуал" value={query} onChange={(event) => { setQuery(event.target.value); setShown(24); }} />
       <label className="field">
         <span>Круг</span>
         <select value={rank} onChange={(event) => { setRank(Number(event.target.value)); setShown(24); }}>
           <option value={-1}>Все круги</option>
-          {Array.from({ length: 11 }, (_, index) => index).map((value) => <option key={value} value={value}>{value === 0 ? "Заговоры" : value}</option>)}
+          {budget?.cantrips ? <option value={0}>Заговоры</option> : null}
+          <option value={1}>1-й круг</option>
         </select>
       </label>
-      <p className="tiny" data-testid="spell-picker">Показано {visible.length} из {spells.filter((spell) => rank < 0 || spell.level === rank).length}</p>
-      {visible.map((spell) => (
-        <div key={spell.id} className="spell-row">
+      <p className="tiny" data-testid="spell-picker">Показано {visible.length} из {matches.length}</p>
+      {!visible.length && <p className="tiny">По этому запросу нет доступных заклинаний.</p>}
+      {visible.map((spell) => {
+        const list = spellList(spell.id);
+        const chosen = draft[list].includes(spell.id);
+        const block = creationSpellBlock(draft, spell.id, list, selection);
+        const showPrepare = spell.level > 0 && budget?.kind === "book";
+        const prepareBlock = showPrepare ? creationSpellBlock(draft, spell.id, "preparedSpells", selection) : null;
+        return <div key={spell.id} className="spell-row">
           <div>
             <b>{spell.name}</b>
             <span className="tiny">{spell.level === 0 ? "заговор" : `${spell.level} круг`}</span>
+            {block && <span className="tiny">{block}</span>}
           </div>
           <Info title={spell.name} text={spell.info} />
           <div className="wrap">
-            <button type="button" className={`pill ${draft.knownSpells.includes(spell.id) ? "on" : ""}`} data-testid={`spell-${spell.id}`} onClick={() => toggle("knownSpells", spell.id)}>
-              Знаю
+            <button type="button" className={`pill ${chosen ? "on" : ""}`} data-testid={`spell-${spell.id}`} aria-pressed={chosen} disabled={!!block} onClick={() => select(spell.id, list)}>
+              {list === "preparedSpells" ? (chosen ? "Готово" : "Подготовить") : showPrepare ? (chosen ? "В книге" : "Записать") : chosen ? "Выбрано" : "Выбрать"}
             </button>
-            {spell.level > 0 && (budget?.kind === "prepared" || budget?.kind === "book") && (
-              <button type="button" className={`pill ${draft.preparedSpells.includes(spell.id) ? "on" : ""}`} data-testid={`prep-${spell.id}`} onClick={() => {
-                if (!draft.knownSpells.includes(spell.id)) update({ knownSpells: [...draft.knownSpells, spell.id], preparedSpells: [...draft.preparedSpells, spell.id] });
-                else toggle("preparedSpells", spell.id);
-              }}>
-                Готовлю
+            {showPrepare && (
+              <button type="button" className={`pill ${draft.preparedSpells.includes(spell.id) ? "on" : ""}`} data-testid={`prep-${spell.id}`} aria-pressed={draft.preparedSpells.includes(spell.id)} disabled={!!prepareBlock} title={prepareBlock ?? undefined} onClick={() => select(spell.id, "preparedSpells")}>
+                {draft.preparedSpells.includes(spell.id) ? "Готово" : "Подготовить"}
               </button>
             )}
           </div>
-        </div>
-      ))}
-      {shown < spells.length && (
+        </div>;
+      })}
+      {shown < matches.length && (
         <button type="button" className="btn" onClick={() => setShown((value) => value + 24)}>Показать ещё</button>
       )}
-      <div className="card stack">
+      {draft.classId === "custom" && <div className="card stack">
         <b>Своё заклинание</b>
         <input placeholder="Название" value={name} onChange={(event) => setName(event.target.value)} />
-        <input inputMode="numeric" value={level} onChange={(event) => setLevel(event.target.value)} />
+        <label className="field"><span>Круг</span><select value={level} onChange={(event) => setLevel(event.target.value)}><option value="0">Заговор</option><option value="1">1-й круг</option></select></label>
         <textarea placeholder="Что делает" value={info} onChange={(event) => setInfo(event.target.value)} />
         <button type="button" className="btn" onClick={() => {
           if (!name.trim()) return;
@@ -1582,7 +1623,7 @@ function SpellStep({ draft, update }: { draft: Draft; update: (partial: Partial<
         }}>
           Добавить
         </button>
-      </div>
+      </div>}
     </>
   );
 }
@@ -1628,7 +1669,10 @@ function ReviewStep({ draft, update, error }: { draft: Draft; update: (partial: 
         <p data-testid="review-ancestry">{summary.ancestry}</p>
         <p data-testid="review-background">{summary.background}</p>
         <p data-testid="review-class">{summary.className}</p>
-        {scored.ok && <p>{ABILITIES.map((ability) => `${ABILITY_SHORT[ability]} ${scored.scores[ability]}`).join(" · ")}</p>}
+        {scored.ok && <p data-testid="review-ability-totals">{ABILITIES.map((ability) => {
+          const base = draft.scores[ability], value = scored.scores[ability];
+          return draft.system === "dnd5e" && value > base ? `${ABILITY_SHORT[ability]} ${base} + ${value - base} от происхождения = ${value}` : `${ABILITY_SHORT[ability]} ${value}`;
+        }).join(" · ")}</p>}
       </div>
       {error && <p className="warn">{error}</p>}
     </>

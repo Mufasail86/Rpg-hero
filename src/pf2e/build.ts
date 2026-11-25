@@ -59,7 +59,7 @@ export interface Derived {
   skills: Record<string, SkillStat>;
   classDc: (Stat & { rank: Rank }) | null;
   spell: (Stat & { rank: Rank }) | null;
-  attacks: { name: string; group: string; category: string; rank: Rank; attack: Stat; damage: string; equipped: boolean; traits: string; ranged: boolean }[];
+  attacks: { uid: string; name: string; group: string; category: string; rank: Rank; attack: Stat; damage: string; equipped: boolean; traits: string; ranged: boolean }[];
   armorRank: Rank;
   armorName: string;
   weaponRanks: Record<"simple" | "martial" | "unarmed" | "advanced", Rank>;
@@ -429,6 +429,7 @@ export function derive(input: DeriveInput): Derived {
       traits: item.weapon?.traits ?? "",
       ranged: Boolean(item.weapon?.ranged),
       attack: { value: attack, formula: line(item.name, attack, parts), aside: [...(item.equipped ? [] : ["Оружие не в руках и не надето: бонус показан так, как если его взять."]), ...(property.length ? [`Свойства: ${property.map((rune) => rune.name).join(", ")}. Их карточка в число удара не входит.`] : [])] },
+      uid: item.uid,
       damage: `${dice}${damageMod ? ` ${fmt(damageMod)}` : ""}${ragePart ? ` ярость ${fmt(ragePart)}` : ""}${spec ? ` спец. ${fmt(spec)}` : ""}`,
     };
   });

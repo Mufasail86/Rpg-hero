@@ -15,6 +15,8 @@ import { bestiaryPackCounts } from "./bestiary";
 import { LINKS, REVIEW } from "./review";
 import { polishName, polishProse } from "./voice";
 import { VERSATILE } from "./versatile";
+import { CARD_BY_ID, cardText } from "./cards";
+import { reviewedPfText } from "./pf-reviewed-text";
 
 export interface RuleEntry {
   token: string;
@@ -100,16 +102,18 @@ function fromPacked(entry: PackedEntry, system: "dnd5e" | "pf2e", edition: Rules
     entry.text,
     entry.rank,
   );
+  const checked = edition === "pf-remaster" ? reviewedPfText(entry.id) : undefined;
+  const card = checked && CARD_BY_ID.get(entry.id);
   return {
     ...base,
-    name: polishName(entry.name, entry.originalName || base.originalName),
+    name: checked?.name ?? polishName(entry.name, entry.originalName || base.originalName),
     originalName: entry.originalName || base.originalName,
-    short: polishProse(entry.short || base.short),
-    text: polishProse(entry.text || base.text),
+    short: checked?.summary ?? polishProse(entry.short || base.short),
+    text: card ? cardText(card) : polishProse(entry.text || base.text),
     altNames: entry.altNames,
-    prereq: entry.prereq,
+    prereq: checked?.prereqNote ?? entry.prereq,
     location: entry.location || base.location,
-    link: entry.link || base.link,
+    link: checked?.link ?? (entry.link || base.link),
     status: base.checkedOn ? base.status : (entry.status ?? base.status),
     checkedOn: base.checkedOn || entry.checkedOn || "",
     sourceVersion: base.sourceVersion || entry.sourceVersion || "",
@@ -170,7 +174,8 @@ function rulesEntries(): RuleEntry[] {
   for (const item of SK5) list.push(make(dnd, "skill", "Навык", item.id, item.name, item.short, item.info));
   for (const [id, item] of Object.entries(MASTERY)) list.push(make(dnd, "mastery", "Свойство оружия", id, item.name, item.short, item.info));
   for (const item of COND5) list.push(make(dnd, "condition", "Состояние", item.id, item.name, item.short, item.info));
-  for (const item of SP5) list.push(make(dnd, "spell", "Заклинание", item.id, item.name, item.short, item.info, item.level));
+  const packedSpells = new Set((srd2024Pack as PackedEntry[]).filter(row => row.category === "spell").map(row => row.id));
+  for (const item of SP5) if (!packedSpells.has(item.id)) list.push(make(dnd, "spell", "Заклинание", item.id, item.name, item.short, item.info, item.level));
   for (const item of ITEMS5) list.push(make(dnd, "item", "Предмет", item.id, item.name, item.short, item.info));
   for (const extra of DND_2024_MORE) list.push(fromPacked(extra, "dnd5e", "dnd-2024"));
   for (const extra of srd2024Pack as PackedEntry[]) list.push(fromPacked(extra, "dnd5e", "dnd-2024"));

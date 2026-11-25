@@ -8,13 +8,13 @@ import { initiativeOf, saveMod, skillRows, spellNumbers } from "../rules";
 import { resolveCheck, characterHasFeat } from "../skills/guide";
 import { fmt, mod, type Character, type CombatState, type DndCombat } from "../types";
 import { portraitSrc } from "../ui/art";
-import { trainingStats, criticalFormula, damageFormula, weaponGrip, type TrainingDifficulty } from "./training";
+import { trainingStats, criticalFormula, damageFormula, weaponGrip, type TrainingDifficulty, type TrainingStats, type TrainingWeapon } from "./training";
 import { battleMap, coneCells, findPath, gridDistance, lineOfSight, pathCost, sameCell, walkable, type Cell } from "./tactical-map";
 import { sightAt, DEFAULT_ENVIRONMENT, type Environment } from "./tactical-vision";
 
-export type EffectId = "prone" | "frightened" | "poisoned" | "grabbed" | "restrained" | "shield" | "magic-shield" | "cold" | "bless" | "fortune" | "hidden" | "dodge" | "fleeing";
+export type EffectId = "prone" | "frightened" | "poisoned" | "grabbed" | "restrained" | "shield" | "magic-shield" | "cold" | "bless" | "fortune" | "hidden" | "dodge" | "fleeing" | "enfeebled";
 export interface TacticalEffect { id: EffectId; value: number; source: string; dc?: number; expires?: { actor: string; turn: number; phase: "start" | "end" } }
-export const EFFECTS: Record<EffectId, string> = { prone: "Лежит", frightened: "Испуг", poisoned: "Отравлен", grabbed: "Схвачен", restrained: "Скован", shield: "Щит поднят", "magic-shield": "Магический щит", cold: "Замедлен холодом", bless: "Благословение", fortune: "Верный удар", hidden: "Прячется", dodge: "Уклонение", fleeing: "Бежит в страхе" };
+export const EFFECTS: Record<EffectId, string> = { prone: "Лежит", frightened: "Испуг", poisoned: "Отравлен", grabbed: "Схвачен", restrained: "Скован", shield: "Щит поднят", "magic-shield": "Магический щит", cold: "Замедлен холодом", bless: "Благословение", fortune: "Верный удар", hidden: "Прячется", dodge: "Уклонение", fleeing: "Бежит в страхе", enfeebled: "Ослаблен" };
 export const SAVES: Record<SaveKey, string> = { str: "Сила", dex: "Ловкость", con: "Телосложение", int: "Интеллект", wis: "Мудрость", cha: "Харизма", fort: "Стойкость", ref: "Рефлексы", will: "Воля" };
 export interface TacticalActor {
   id: string; name: string; team: "party" | "enemy"; pos: Cell; hp: number; maxHp: number; ac: number;
@@ -27,6 +27,8 @@ export interface TacticalActor {
   caster?: boolean; dummy?: boolean; demoralizedBy: string[];
   extraActionAvailable?: boolean; surgeUsed?: boolean;
   grip?: 1 | 2;
+  activeWeapon?: 0 | 1; weaponSwapUsed?: boolean;
+  lightAttacks?: number; lightExtraUsed?: boolean; sneakAttackTurn?: string;
 }
 export interface TacticalSetup { map: "arena" | "tavern"; scenario: "dummy" | "duel" | "ambush"; difficulty: TrainingDifficulty; environment?: Environment; ally?: "none" | "fighter" | "target"; grip?: 1 | 2 }
 export interface BattleVisual { kind: "move" | "arrow" | "strike" | "fire" | "cold" | "lightning" | "force" | "heal" | "ward" | "fear"; from: Cell; to: Cell; actor?: string; hit?: boolean; cells?: Cell[]; amount?: number }
@@ -34,7 +36,8 @@ export interface BattleEvent { title: string; detail: string; kind: "roll" | "mo
 export interface TacticalState { version: 1; setup: TacticalSetup; actors: TacticalActor[]; order: string[]; cursor: number; round: number; status: "active" | "won" | "lost"; log: BattleEvent[]; hint: string; autoReactions: boolean; visuals?: BattleVisual[] }
 export type TacticalIntent =
   | { type: "move"; to: Cell; step?: boolean }
-  | { type: "attack"; target: string; weapon: number }
+  | { type: "attack"; target: string; weapon: number; extra?: boolean }
+  | { type: "swap"; weapon: 0 | 1 }
   | { type: "grip"; hands: 1 | 2 }
   | { type: "spell"; spell: string; targets: string[]; point?: Cell }
   | { type: "action"; action: "defend" | "dash" | "disengage" | "stand" | "hide" | "demoralize" | "trip" | "grapple" | "shove" | "escape" | "interact"; target?: string }
@@ -71,6 +74,46 @@ export function battleRoller(manual: boolean, values: number[], automatic: numbe
 
 export const currentActor = (state: TacticalState) => state.actors.find(actor => actor.id === state.order[state.cursor])!;
 export const heroActor = (state: TacticalState) => state.actors.find(actor => actor.id === "hero")!;
+const RUNE_DC = 14;
+export function runeHint(system: Character["system"]) {
+  return system === "pf2e"
+    ? `Учебная руна: вход вызывает разряд. Рефлексы СЛ ${RUNE_DC}, 1к6 урона: 0 / половина / полный / двойной по ступени.`
+    : `Учебная руна: вход вызывает разряд. Спасбросок Ловкости СЛ ${RUNE_DC}, 1к6 урона (половина при успехе).`;
+}
+
+export function lightPair(hero: Character, stats: TrainingStats) {
+  return hero.system === "dnd5e" && !stats.shield && stats.weapons.length === 2 &&
+    stats.weapons.every(weapon => weapon.light && !weapon.unarmed && !weapon.ranged && weapon.hands === 1);
+}
+
+export function lightExtraBlock(hero: Character, actor: TacticalActor, stats: TrainingStats, index: number): string {
+  if (!lightPair(hero, stats) || !stats.weapons[index]) return "Нужны два разных лёгких оружия в руках.";
+  if (actor.lightExtraUsed) return "Дополнительная атака лёгким оружием уже сделана в этом ходу.";
+  if (!((actor.lightAttacks ?? 0) & (index === 0 ? 2 : 1))) return "Сначала атакуйте другим лёгким оружием основным действием.";
+  if (!stats.weapons[index].nick && !actor.dnd.bonus) return "Нужно свободное бонусное действие.";
+  return "";
+}
+
+export function lightExtraDamage(hero: Character, weapon: TrainingWeapon): string | null {
+  const formula = damageFormula(weapon.damage);
+  const style = hero.fightingStyle === "twf" || hero.dnd?.choices.some(row => row.level <= hero.level && row.source === "style" && row.pick === "twf");
+  const omitted = style ? 0 : Math.max(0, weapon.abilityBonus ?? 0);
+  if (!formula || !omitted) return formula;
+  const flat = formula.match(/([+-]\d+)$/);
+  if (!flat) return `${formula}-${omitted}`;
+  const remainder = Number(flat[0]) - omitted;
+  return formula.slice(0, -flat[0].length) + (remainder > 0 ? `+${remainder}` : remainder < 0 ? String(remainder) : "");
+}
+
+export function tacticalStats(hero: Character, active: number): TrainingStats {
+  const spare = hero.items.find(item => item.uid === "training-spare");
+  if (!spare || spare.equipped || active === 0) return trainingStats(hero);
+  const primary = hero.items.find(item => item.kind === "weapon" && item.equipped);
+  const stats = trainingStats({ ...hero, items: hero.items.map(item => item === primary ? { ...item, equipped: false } : item === spare ? { ...item, equipped: true } : item) });
+  if (!primary) return stats;
+  const original = trainingStats(hero);
+  return { ...stats, weapons: [original.weapons[0], stats.weapons[0]] };
+}
 const effect = (actor: TacticalActor, id: EffectId) => Math.max(0, ...actor.effects.filter(row => row.id === id).map(row => row.value));
 function requireRule(condition: unknown, message: string): asserts condition { if (!condition) throw new Error(message); }
 function addLog(state: TacticalState, title: string, detail: string, kind: BattleEvent["kind"] = "effect", extra?: Partial<BattleEvent>) { state.log.push({ title, detail, kind, ...extra }); state.log = state.log.slice(-150); }
@@ -141,6 +184,7 @@ function beginTurn(state: TacticalState, actor: TacticalActor, hero: Character) 
   actor.turns++; expire(state, actor, "start"); actor.pf = pfRound(actor.pf).state; actor.dnd = dndRound(actor.dnd).state; actor.diagonals = 0; actor.disengaged = false; actor.slotSpent = false;
   actor.escapeLocked = false;
   actor.extraActionAvailable = false; actor.surgeUsed = false;
+  actor.lightAttacks = 0; actor.lightExtraUsed = false; actor.weaponSwapUsed = false;
   actor.move = Math.max(0, actor.speed - effect(actor, "cold"));
   if (actor.hp > 0) addLog(state, `Ход · ${actor.name}`, hero.system === "pf2e" ? "Три действия и реакция обновились. Здоровье и ячейки не восстановились." : "Действие, бонусное действие, реакция и движение обновились. Здоровье и ячейки не восстановились.", "turn");
 }
@@ -166,13 +210,14 @@ function spend(actor: TacticalActor, hero: Character, cost: number, bonus = fals
   else throw new Error(magic && actor.extraActionAvailable ? "Всплеском действий нельзя взять магическое действие." : "Основное действие уже занято атакой или потрачено.");
 }
 
-function bonusFor(state: TacticalState, hero: Character, actor: TacticalActor, roller: BattleRoller, save = false): number {
-  let bonus = hero.system === "pf2e" ? -effect(actor, "frightened") : 0;
+function bonusFor(state: TacticalState, hero: Character, actor: TacticalActor, roller: BattleRoller, save = false, strength = false): number {
+  const penalty = hero.system === "pf2e" ? Math.max(effect(actor, "frightened"), strength ? effect(actor, "enfeebled") : 0) : 0;
+  let bonus = -penalty;
   for (const bless of actor.effects.filter(row => row.id === "bless")) {
     const source = state.actors.find(row => row.id === bless.source);
     if (!source || source.hp <= 0) continue;
     if (hero.system === "dnd5e") bonus += roller("1d4", `Благословение: ${actor.name}`);
-    else if (!save && gridDistance(actor.pos, source.pos, hero.system) <= 15) bonus = Math.max(bonus, 1 - effect(actor, "frightened"));
+    else if (!save && gridDistance(actor.pos, source.pos, hero.system) <= 15) bonus = Math.max(bonus, 1 - penalty);
   }
   return bonus;
 }
@@ -221,12 +266,18 @@ export function effectiveAc(actor: TacticalActor, system: Character["system"]): 
   return actor.ac + shield - (system === "pf2e" ? effect(actor, "frightened") + (effect(actor, "prone") || effect(actor, "grabbed") || effect(actor, "restrained") ? 2 : 0) : 0);
 }
 
-function attack(state: TacticalState, hero: Character, from: TacticalActor, target: TacticalActor, roller: BattleRoller, weaponIndex = 0, reaction = false, spell?: TutorialSpell) {
-  const map = battleMap(state.setup.map), stats = trainingStats(hero);
+function attack(state: TacticalState, hero: Character, from: TacticalActor, target: TacticalActor, roller: BattleRoller, weaponIndex = 0, reaction = false, spell?: TutorialSpell, extra = false) {
+  const map = battleMap(state.setup.map), stats = tacticalStats(hero, weaponIndex);
   requireRule(hero.system !== "pf2e" || !effect(from, "restrained"), "Персонаж скован: атаки недоступны, сначала освободитесь.");
   const baseWeapon = from.id === "hero" ? stats.weapons[weaponIndex] : undefined;
   requireRule(spell || from.id !== "hero" || baseWeapon, "Выберите оружие перед боем.");
-  const weapon = baseWeapon && weaponGrip(baseWeapon, from.grip);
+  const swapping = from.id === "hero" && !spell && !reaction && !lightPair(hero, stats) && weaponIndex !== (from.activeWeapon ?? 0);
+  if (swapping) {
+    requireRule(hero.system === "dnd5e", "Сначала поменяйте оружие действием «Сменить оружие».");
+    requireRule(!from.weaponSwapUsed, "В этом ходу учебная смена оружия уже использована.");
+    requireRule(!effect(from, "restrained"), "Вы скованы: сначала освободитесь.");
+  }
+  const weapon = baseWeapon && weaponGrip(baseWeapon, swapping ? 1 : from.grip);
   const ranged = spell ? true : weapon?.ranged ?? Boolean(from.caster);
   const reach = spell?.range ?? (ranged ? weapon?.range ?? 60 : weapon?.reach ?? 5);
   const distance = gridDistance(from.pos, target.pos, hero.system), sight = lineOfSight(map, from.pos, target.pos);
@@ -235,10 +286,30 @@ function attack(state: TacticalState, hero: Character, from: TacticalActor, targ
   requireRule(!weapon?.limited || Boolean(spell), "Особый эффект этого оружия пока не поддерживается автоматически.");
   const isPf = hero.system === "pf2e";
   const penalty = isPf && !reaction ? mapPenalty(from.pf.strikes, !spell && weapon?.agile) : 0;
-  if (!reaction && !spell) { if (isPf) { const step = strike(from.pf, { agile: weapon?.agile }); requireRule(step.spent, step.note); from.pf = step.state; } else spend(from, hero, 1, false, true); }
+  if (!reaction && !spell) {
+    if (extra) {
+      const blocked = lightExtraBlock(hero, from, stats, weaponIndex);
+      requireRule(!blocked, blocked);
+      if (!weapon?.nick) spend(from, hero, 1, true);
+      from.lightExtraUsed = true;
+      addLog(state, "Дополнительная атака лёгким оружием", weapon?.nick ? "Рассечение (Nick): часть действия «Атака». Бонусное действие не потрачено." : "Потрачено бонусное действие.");
+    } else if (isPf) {
+      const step = strike(from.pf, { agile: weapon?.agile }); requireRule(step.spent, step.note); from.pf = step.state;
+    } else {
+      spend(from, hero, 1, false, true);
+      if (lightPair(hero, stats) && weapon?.light) from.lightAttacks = (from.lightAttacks ?? 0) | (1 << weaponIndex);
+      if (swapping) {
+        from.activeWeapon = weaponIndex === 1 ? 1 : 0;
+        from.weaponSwapUsed = true;
+        from.opportunity = !ranged;
+        addLog(state, "Смена оружия", `${weapon!.name}: убрать прежнее оружие свободным взаимодействием и достать новое в составе атаки.`);
+      }
+    }
+  }
   if (spell && isPf) from.pf.strikes++;
   const innate = spell ? spellNumbers(hero)?.attack ?? 0 : weapon?.attack ?? from.attack;
-  let bonus = innate + penalty + bonusFor(state, hero, from, roller);
+  const strength = !spell && (weapon?.strengthAttack ?? !ranged);
+  let bonus = innate + penalty + bonusFor(state, hero, from, roller, false, strength);
   const seen = actorSight(state, hero, from, target.pos), seenByTarget = actorSight(state, hero, target, from.pos);
   const advantage = !isPf && ((effect(target, "prone") > 0 && distance <= 5) || effect(from, "hidden") > 0 || !seenByTarget.visible);
   const disadvantage = !isPf && (!seen.visible || Boolean(effect(from, "poisoned") || effect(from, "prone") || effect(from, "frightened") || (effect(target, "dodge") && !effect(target, "grabbed"))) || Boolean(from.effects.find(row => row.id === "grabbed" && row.source !== target.id)) || (effect(target, "prone") > 0 && distance > 5) || (ranged && state.actors.some(actor => actor.team !== from.team && actor.hp > 0 && gridDistance(actor.pos, from.pos, hero.system) <= 5)));
@@ -266,35 +337,58 @@ function attack(state: TacticalState, hero: Character, from: TacticalActor, targ
   cue(state, { kind: spell ? spellVisual(spell.id) : ranged ? "arrow" : "strike", from: from.pos, to: target.pos, hit: actualHit });
   addLog(state, `${spell?.name ?? weapon?.name ?? "Атака"} · ${from.name}`, `к20 ${natural} ${fmt(bonus)} = ${natural + bonus} против КБ ${ac}${ranged && sight.cover ? `, в том числе укрытие +${sight.cover}` : ""}: ${actualHit ? critical ? "критическое попадание" : "попадание" : "промах"}${penalty ? `; штраф повторной атаки ${penalty}` : ""}${advantage !== disadvantage ? disadvantage ? "; помеха" : "; преимущество" : ""}${gripLabel}.`, "roll", { total: natural, formula: "1d20" });
   if (actualHit) {
-    const formula = spell ? spellDamage(spell, hero) : damageFormula(weapon?.damage ?? from.damage);
+    const formula = spell ? spellDamage(spell, hero) : extra && weapon ? lightExtraDamage(hero, weapon) : damageFormula(weapon?.damage ?? from.damage);
     requireRule(formula, "Формула урона не поддерживается.");
-    const rolled = roller(critical ? criticalFormula(formula, hero.system) : formula, `Урон: ${spell?.name ?? weapon?.name ?? from.name}${gripLabel}`);
+    const turnKey = `${state.round}:${state.cursor}`;
+    const allyAtTarget = state.actors.some(row => row.id !== from.id && row.team === from.team && row.hp > 0 && gridDistance(row.pos, target.pos, hero.system) <= 5);
+    const sneak = !isPf && !spell && from.id === "hero" && hero.classId === "rogue" && (weapon?.finesse || weapon?.ranged) &&
+      from.sneakAttackTurn !== turnKey && (advantage && !disadvantage || allyAtTarget && !(disadvantage && !advantage));
+    const weakened = isPf && !spell && !ranged ? effect(from, "enfeebled") : 0;
+    const damage = formula + (weakened ? `-${weakened}` : "") + (sneak ? `+${Math.ceil(hero.level / 2)}d6` : "");
+    if (sneak) {
+      from.sneakAttackTurn = turnKey;
+      addLog(state, "Скрытая атака плута", `${critical ? 2 * Math.ceil(hero.level / 2) : Math.ceil(hero.level / 2)}к6 дополнительно: ${advantage && !disadvantage ? "преимущество" : "союзник рядом с целью"}. Один раз за ход.`);
+    }
+    const rolled = roller(critical ? criticalFormula(damage, hero.system) : damage, `Урон: ${spell?.name ?? weapon?.name ?? from.name}${gripLabel}`);
     hurt(state, hero, target, Math.max(isPf ? critical ? 2 : 1 : 0, rolled), roller, !spell);
     if (spell?.effect === "cold") addEffect(target, { id: "cold", value: 10, source: from.id, expires: untilNext(from) });
   }
   return actualHit && critical;
 }
 
+function pfInteractWithWeapon(state: TacticalState, hero: Character, actor: TacticalActor, roller: BattleRoller): boolean {
+  requireRule(!effect(actor, "restrained"), "Вы скованы: сначала освободитесь.");
+  spend(actor, hero, 1);
+  if (effect(actor, "grabbed") && roller("1d20", "Взаимодействие в захвате: чистая проверка СЛ 5") < 5) return false;
+  for (const enemy of state.actors.filter(row => row.team !== actor.team && row.hp > 0 && row.opportunity && row.pf.reaction && !effect(row, "restrained"))) {
+    if (gridDistance(enemy.pos, actor.pos, hero.system) > 5 || !lineOfSight(battleMap(state.setup.map), enemy.pos, actor.pos).visible) continue;
+    enemy.pf.reaction = false;
+    addLog(state, "Провоцированная реакция", `${enemy.name} реагирует на взаимодействие с оружием.`);
+    if (attack(state, hero, enemy, actor, roller, 0, true) || actor.hp <= 0) return false;
+  }
+  return true;
+}
+
+function swapWeapon(state: TacticalState, hero: Character, next: 0 | 1, roller: BattleRoller) {
+  const actor = heroActor(state), stats = trainingStats(hero), weapon = stats.weapons[next];
+  requireRule(hero.system === "pf2e" && weapon && next !== (actor.activeWeapon ?? 0), "Выберите другое оружие из снаряжения боя.");
+  requireRule(!stats.shield || weapon.hands === 1, "Для двуручного оружия рука не должна быть занята щитом.");
+  if (!pfInteractWithWeapon(state, hero, actor, roller)) { addLog(state, "Смена оружия сорвана", "Действие потрачено; прежнее оружие остаётся в руке."); return; }
+  actor.activeWeapon = next;
+  actor.grip = 1;
+  actor.opportunity = !weapon.ranged && (characterHasFeat(hero, "reactive-strike") || hero.classId === "fighter");
+  addLog(state, "Смена оружия", `${weapon.name} · одно действие. Штраф повторных атак не сбрасывается.`);
+}
+
 function changeGrip(state: TacticalState, hero: Character, hands: 1 | 2, roller: BattleRoller) {
-  const actor = heroActor(state), stats = trainingStats(hero), weapon = stats.weapons[0];
+  const actor = heroActor(state), stats = trainingStats(hero), weapon = stats.weapons[actor.activeWeapon ?? 0];
   requireRule(hero.system === "pf2e" && weapon?.twoHandDie, "У выбранного оружия нет другого хвата в этой тренировке.");
   requireRule(hands !== (actor.grip ?? 1), "Этот хват уже выбран.");
   if (hands === 2) {
     requireRule(!stats.shield, "Вторая рука занята щитом. Начните тренировку без щита, чтобы взять меч двумя руками.");
-    requireRule(!effect(actor, "restrained"), "Вы скованы: сначала освободитесь.");
-    spend(actor, hero, 1);
-    if (effect(actor, "grabbed") && roller("1d20", "Сменить хват в захвате: чистая проверка СЛ 5") < 5) {
+    if (!pfInteractWithWeapon(state, hero, actor, roller)) {
       addLog(state, "Смена хвата сорвана", "Действие потрачено; хват не изменился.");
       return;
-    }
-    for (const enemy of state.actors.filter(row => row.team !== actor.team && row.hp > 0 && row.opportunity && row.pf.reaction && !effect(row, "restrained"))) {
-      if (gridDistance(enemy.pos, actor.pos, hero.system) > 5 || !lineOfSight(battleMap(state.setup.map), enemy.pos, actor.pos).visible) continue;
-      enemy.pf.reaction = false;
-      addLog(state, "Провоцированная реакция", `${enemy.name} реагирует на смену хвата.`);
-      if (attack(state, hero, enemy, actor, roller, 0, true) || actor.hp <= 0) {
-        addLog(state, "Смена хвата сорвана", "Действие потрачено; хват не изменился.");
-        return;
-      }
     }
   }
   actor.grip = hands;
@@ -320,7 +414,7 @@ function moveActor(state: TacticalState, hero: Character, actor: TacticalActor, 
       if (ready && gridDistance(enemy.pos, actor.pos, hero.system) <= 5 && (hero.system === "pf2e" || gridDistance(enemy.pos, next, hero.system) > 5)) {
         if (hero.system === "pf2e") enemy.pf.reaction = false; else enemy.dnd.reaction = false;
         addLog(state, "Провоцированная реакция", `${actor.name} движется рядом с ${enemy.name}. ${hero.system === "pf2e" ? "Осторожный шаг" : "Отход отдельным действием"} позволил бы избежать реакции.`);
-        attack(state, hero, enemy, actor, roller, 0, true);
+        attack(state, hero, enemy, actor, roller, enemy.activeWeapon ?? 0, true);
       }
     }
     if (actor.hp <= 0) break;
@@ -328,7 +422,7 @@ function moveActor(state: TacticalState, hero: Character, actor: TacticalActor, 
     cue(state, { kind: "move", actor: actor.id, from: before, to: next });
     if (map.tiles[next.y][next.x] === "rune") {
       addLog(state, "Учебная руна", "Вход вызывает разряд: спасбросок, затем урон. Эта опасность — авторское упражнение, не официальная ловушка.");
-      const degree = savingThrow(state, hero, actor, hero.system === "pf2e" ? "ref" : "dex", 14, roller);
+      const degree = savingThrow(state, hero, actor, hero.system === "pf2e" ? "ref" : "dex", RUNE_DC, roller);
       const damage = roller("1d6", "Урон учебной руны");
       hurt(state, hero, actor, hero.system === "pf2e" ? degree === 3 ? 0 : degree === 2 ? Math.floor(damage / 2) : degree === 0 ? damage * 2 : damage : degree >= 2 ? Math.floor(damage / 2) : damage, roller);
     }
@@ -356,6 +450,7 @@ function cast(state: TacticalState, hero: Character, intent: Extract<TacticalInt
   const area = intent.point && (spell.cone || spell.burst) ? spellArea(state, hero, spell, intent.point) : [];
   if (area.length) targets = state.actors.filter(row => row.hp > 0 && area.some(cell => sameCell(cell, row.pos)));
   requireRule(targets.length > 0, "Выберите цель или область на карте."); requireRule(targets.length <= spell.targets, `Максимум целей: ${spell.targets}.`);
+  if (spell.id === "void-warp") requireRule(targets.every(target => !target.dummy), "Искажение пустоты действует на живых. Выберите упражнение с живым противником.");
   const friendly = ["heal", "bless", "shield", "fortune"].includes(spell.kind);
   if (!area.length) for (const target of targets) {
     requireRule(friendly ? target.team === actor.team : target.team !== actor.team && target.hp > 0, friendly ? "Нужна согласная союзная цель." : "Нужна живая враждебная цель.");
@@ -395,7 +490,7 @@ function cast(state: TacticalState, hero: Character, intent: Extract<TacticalInt
   } else if (spell.kind === "auto") {
     const target = targets[0]; const damage = roller(spell.dice!, spell.name); hurt(state, hero, target, damage, roller);
   } else {
-    const damage = spell.kind === "fear" ? 0 : roller(spellDamage(spell, hero), `Урон области: ${spell.name}`);
+    const damage = spell.kind === "fear" ? 0 : roller(spellDamage(spell, hero), `Урон: ${spell.name}`);
     for (const target of targets) {
       const degree = savingThrow(state, hero, target, spell.save!, dc, roller);
       if (spell.kind === "fear") {
@@ -404,6 +499,10 @@ function cast(state: TacticalState, hero: Character, intent: Extract<TacticalInt
       } else {
         const dealt = hero.system === "pf2e" ? degree === 3 ? 0 : degree === 2 ? Math.floor(damage / 2) : degree === 0 ? damage * 2 : damage : degree >= 2 ? spell.half ? Math.floor(damage / 2) : 0 : damage;
         hurt(state, hero, target, dealt, roller);
+        if (spell.id === "void-warp" && degree === 0 && target.hp > 0) {
+          addEffect(target, { id: "enfeebled", value: 1, source: actor.id, expires: untilNext(actor) });
+          addLog(state, "Ослаблен 1", `${target.name}: −1 к броскам и СЛ на Силе до начала следующего хода заклинателя.`);
+        }
       }
     }
   }
@@ -457,16 +556,17 @@ function basicAction(state: TacticalState, hero: Character, action: Extract<Tact
       addLog(state, "Деморализация", `Общий язык предполагается. к20 ${die} ${fmt(bonus)} против СЛ Воли ${dc}: ${verdict}. Повторная попытка недоступна 10 минут.`, "roll", { total: die, formula: "1d20" });
     } else {
       requireRule(distance <= 5, "Подойдите на соседнюю клетку.");
-      const stats = trainingStats(hero); requireRule(!stats.shield && actor.grip !== 2 && !stats.weapons.some(row => row.hands === 2), "Для этого приёма нужна свободная рука. Освободите руку или начните бой с другим снаряжением.");
+      const stats = trainingStats(hero); requireRule(!stats.shield && !lightPair(hero, stats) && actor.grip !== 2 && stats.weapons[actor.activeWeapon ?? 0]?.hands !== 2, "Для этого приёма нужна свободная рука. Освободите руку или начните бой с другим снаряжением.");
       spend(actor, hero, 1, false, !isPf);
       const bonus = skillRows(hero).find(row => row.id === "athletics")?.mod ?? 0;
       let success = false, critical = false;
       if (isPf) {
         const penalty = mapPenalty(actor.pf.strikes++, true), die = roller("1d20", "Атлетика");
         const key = action.action === "trip" ? "ref" : "fort", dc = 10 + target.saves[key] - effect(target, "frightened");
-        const verdict = resolveCheck("pf2e", die, bonus + penalty, dc).verdict; success = verdict === "успех" || verdict === "критический успех"; critical = verdict === "критический успех";
+        const adjusted = bonus + penalty - Math.max(effect(actor, "enfeebled"), effect(actor, "frightened"));
+        const verdict = resolveCheck("pf2e", die, adjusted, dc).verdict; success = verdict === "успех" || verdict === "критический успех"; critical = verdict === "критический успех";
         if (verdict === "критический провал") addEffect(actor, { id: action.action === "grapple" ? "grabbed" : "prone", value: 1, source: target.id, dc: 10 + target.attack });
-        addLog(state, "Атлетика", `к20 ${die} ${fmt(bonus + penalty)} против СЛ ${dc}: ${verdict}${penalty ? `; штраф повторной атаки ${fmt(penalty)}` : ""}.`, "roll", { total: die, formula: "1d20" });
+        addLog(state, "Атлетика", `к20 ${die} ${fmt(adjusted)} против СЛ ${dc}: ${verdict}${penalty ? `; штраф повторной атаки ${fmt(penalty)}` : ""}.`, "roll", { total: die, formula: "1d20" });
       } else {
         const dc = 8 + mod(hero.abilities.str) + (2 + Math.floor((hero.level - 1) / 4));
         const key = target.saves.str >= target.saves.dex ? "str" : "dex";
@@ -582,7 +682,8 @@ export function executeTactical(hero: Character, previous: TacticalState, intent
     if (hero.system === "pf2e") spend(actor, hero, 1); else actor.move -= preview.feet;
     moveActor(state, hero, actor, preview.path, roller, Boolean(intent.step)); state.hint = `Перемещение: ${preview.feet} футов. Проверьте дальность оружия и укрытие новой позиции.`;
   } else if (intent.type === "grip") changeGrip(state, hero, intent.hands, roller);
-  else if (intent.type === "attack") { const target = state.actors.find(row => row.id === intent.target); requireRule(target, "Выберите противника на карте."); attack(state, hero, actor, target, roller, intent.weapon); state.hint = "В журнале видны кость, бонус, защита и урон. Перед следующим действием оцените позицию и оставшиеся ресурсы."; }
+  else if (intent.type === "swap") swapWeapon(state, hero, intent.weapon, roller);
+  else if (intent.type === "attack") { const target = state.actors.find(row => row.id === intent.target); requireRule(target, "Выберите противника на карте."); attack(state, hero, actor, target, roller, intent.weapon, false, undefined, intent.extra); state.hint = "В журнале видны кость, бонус, защита и урон. Перед следующим действием оцените позицию и оставшиеся ресурсы."; }
   else if (intent.type === "spell") cast(state, hero, intent, roller);
   else if (intent.type === "action") basicAction(state, hero, intent, roller);
   else if (intent.type === "end") { finishTurn(state, hero, actor); advanceNpcs(state, hero, roller); if (state.status === "active") state.hint = "Снова ваш ход. Изучите ответы врагов, оставшиеся эффекты и ячейки; они не восстановились вместе с действиями."; }

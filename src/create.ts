@@ -30,9 +30,11 @@ import {
   GENERAL_FEATS,
   ITEMS as ITEMS5,
   ORIGIN_FEATS,
+  SKILLS as SK5,
   SPECIES,
   SPELLS as SP5,
   STYLE_FEATS,
+  WARLOCK_INVOCATIONS,
   dndSpellBudget,
   itemById as item5,
   skillById as skill5,
@@ -43,6 +45,7 @@ import {
   CONDITIONS as COND2,
   ITEMS as ITEMS2,
   SKILL_FEATS,
+  SKILLS as SK2,
   SPELLS as SP2,
   backgroundBoostCount,
   backgroundById,
@@ -80,7 +83,7 @@ export const STEP_HINT: Record<StepId, string> = {
   skills: "Берите только то, что ещё не закрыто.",
   feats: "Серая черта объясняет, почему её нельзя взять.",
   gear: "Лавка не обрезается: листайте список вниз.",
-  spells: "Если класс не колдует, шаг сам пропустится.",
+  spells: "Выберите заклинания, доступные вашему герою.",
   review: "Проверьте имя и числа, затем создайте лист.",
 };
 
@@ -254,6 +257,8 @@ function validateSkills(d: Draft): string | null {
   const picked = m(d, "skills");
   if (picked.length !== need) return `Выберите навыки: ${picked.length} из ${need}.`;
   if (new Set(picked).size !== picked.length) return "Навыки не должны повторяться.";
+  const allowed = new Set(creationClassSkills(d));
+  if (picked.some(id => !allowed.has(id))) return "В списке есть навык, недоступный как выбор этого класса.";
   const fixed = new Set(fixedSkills(d));
   if (picked.some((id) => fixed.has(id))) return "Этот навык уже дан народом, происхождением или классом. Выберите другой.";
   return null;
@@ -263,15 +268,28 @@ function validateFeats(d: Draft): string | null {
   if (!editionOpen(d)) return null;
   if (d.system === "dnd5e") {
     const cls = CL5.find((x) => x.id === d.classId);
-    if (cls?.fightingStyle && !c(d, "style")) return "Выберите боевой стиль.";
-    if (cls?.mastery && m(d, "mastery").length !== cls.mastery) return `Отметьте оружие мастерства: ${cls.mastery}.`;
-    if (cls?.expertise && m(d, "expertise").length !== cls.expertise) return "Выберите два навыка экспертизы среди тех, которыми владеете.";
-    if (d.ancestryId === "human" && !c(d, "humanFeat")) return "Выберите вторую черту происхождения.";
+    if (cls?.fightingStyle && !STYLE_FEATS.some(feat => feat.id === c(d, "style"))) return "Выберите боевой стиль.";
+    if (cls?.mastery && (new Set(m(d, "mastery")).size !== cls.mastery || m(d, "mastery").length !== cls.mastery || m(d, "mastery").some(id => !creationMasteryOptions(d).some(item => item.id === id)))) return `Выберите ${cls.mastery} разных видов оружия, которыми владеет класс.`;
+    const proficient = new Set([...fixedSkills(d), ...m(d, "skills")]);
+    if (cls?.expertise && (new Set(m(d, "expertise")).size !== cls.expertise || m(d, "expertise").length !== cls.expertise || m(d, "expertise").some(id => !proficient.has(id)))) return "Выберите два разных навыка экспертизы среди тех, которыми владеете.";
+    if (d.ancestryId === "human" && !ORIGIN_FEATS.some(feat => feat.id === c(d, "humanFeat"))) return "Выберите вторую черту происхождения.";
+    if (d.ancestryId === "human" && c(d, "humanFeat") === bg5(d)?.feat && !c(d, "humanFeat").startsWith("magic") && c(d, "humanFeat") !== "skilled") return "Эта черта уже дана происхождением. Выберите другую.";
+    if (d.ancestryId === "human" && c(d, "humanFeat") === bg5(d)?.feat && c(d, "humanFeat").startsWith("magic")) return "Повторное посвящение в магию должно быть из списка другого класса.";
     if (d.ancestryId === "human" && c(d, "humanFeat") === "skilled" && m(d, "hskilled").length !== 3) return "Одарённый даёт три навыка или инструмента. Отметьте три.";
     const magicError = magicPicks(d, bg5(d)?.feat ?? "", "bg");
     if (magicError) return magicError;
     const humanMagic = magicPicks(d, c(d, "humanFeat"), "h");
-    if (humanMagic) return humanMagic;
+    if (d.ancestryId === "human" && humanMagic) return humanMagic;
+    if (d.classId === "warlock") {
+      if (!WARLOCK_INVOCATIONS.some(row => row.id === c(d, "invocation"))) return "Выберите одно мистическое воззвание колдуна.";
+      if (c(d, "invocation") === "pact-of-the-tome") {
+        const tome = m(d, "tomeSpells");
+        const candidates = new Map(tomeSpellOptions(d).map(spell => [spell.id, spell]));
+        if (new Set(tome).size !== 5 || tome.length !== 5 || tome.some(id => !candidates.has(id)) || tome.filter(id => candidates.get(id)?.level === 0).length !== 3) {
+          return "Для Договора книги выберите три заговора и два разных ритуала 1-го круга, которых ещё нет у героя.";
+        }
+      }
+    }
     return null;
   }
   if (d.heritageId === "skilled" && !c(d, "humanSkill")) return "Умелое наследие: выберите дополнительный навык.";
@@ -321,18 +339,18 @@ function validateSpells(d: Draft): string | null {
   const scores = scoresOf(d);
   if (!scores.ok) return scores.error;
   const limits = spellLimits(d, scores.scores);
-  const known = d.knownSpells.filter((id) => spellLevel(d, id) === 0);
-  const leveled = d.knownSpells.filter((id) => spellLevel(d, id) > 0);
-  if (known.length !== limits.cantrips && limits.cantrips > 0) return `Заговоры: ${known.length} из ${limits.cantrips}.`;
+  const { cantrips, leveled, prepared, invalid } = creationSpellSelection(d);
+  if (invalid.length) return `Уберите недоступные заклинания: ${invalid.map(row => row.name).join(", ")}.`;
+  if (new Set(d.knownSpells).size !== d.knownSpells.length || new Set(d.preparedSpells).size !== d.preparedSpells.length) return "Уберите повторный выбор заклинания.";
+  if (cantrips !== limits.cantrips) return `Заговоры класса: ${cantrips} из ${limits.cantrips}.`;
   if (limits.kind === "known" || limits.kind === "pact") {
-    if (leveled.length !== limits.known) return `Известные заклинания 1-го круга: ${leveled.length} из ${limits.known}.`;
+    if (leveled !== limits.known) return `Заклинания 1-го круга: ${leveled} из ${limits.known}.`;
   }
   if (limits.kind === "book") {
-    if (leveled.length < limits.known) return `В книгу нужно записать заклинания: ${leveled.length} из ${limits.known}.`;
+    if (leveled < limits.known) return `Заклинания в книге: ${leveled}, нужно не меньше ${limits.known}.`;
   }
   if (limits.kind === "prepared" || limits.kind === "book") {
-    const prepared = d.preparedSpells.filter((id) => spellLevel(d, id) > 0);
-    if (prepared.length !== limits.prepare) return `Подготовьте заклинания 1-го круга: ${prepared.length} из ${limits.prepare}.`;
+    if (prepared !== limits.prepare) return `Подготовленные заклинания 1-го круга: ${prepared} из ${limits.prepare}.`;
   }
   return null;
 }
@@ -512,14 +530,11 @@ export function creationMeters(d: Draft): ChoiceMeter[] {
     meters.push({ id: "origin-feat", label: "Черта происхождения", have: c(d, "humanFeat") ? 1 : 0, need: 1 });
   }
   const budget = spellBudget(d);
-  if (budget && budget.cantrips > 0) {
-    const extra = budget.kind === "known" || budget.kind === "pact" ? budget.known : budget.kind === "book" ? budget.known : budget.prepare;
-    meters.push({
-      id: "spells",
-      label: budget.kind === "prepared" ? "Подготовленные и заговоры" : "Известные заклинания",
-      have: d.knownSpells.length,
-      need: budget.cantrips + extra,
-    });
+  if (budget && needsSpells(d)) {
+    const { cantrips, leveled, prepared } = creationSpellSelection(d);
+    if (budget.cantrips) meters.push({ id: "cantrips", label: "Заговоры класса", have: cantrips, need: budget.cantrips });
+    if (budget.kind !== "prepared") meters.push({ id: "spells", label: budget.kind === "book" ? "В книге" : "Заклинания 1-го круга", have: leveled, need: budget.known });
+    if (budget.kind === "book" || budget.kind === "prepared") meters.push({ id: "prepared", label: "Подготовлено", have: prepared, need: budget.prepare });
   }
   return meters;
 }
@@ -536,6 +551,23 @@ export function skillNeed(d: Draft, scores: Record<Ability, number>): number {
   return Math.max(0, (cls?.extraSkills ?? 2) + mod(scores.int));
 }
 
+export function creationClassSkills(d: Draft): string[] {
+  if (d.system === "pf2e") return SK2.map(skill => skill.id);
+  const allowed = CL5.find(row => row.id === d.classId)?.skillChoices;
+  return !allowed || allowed === "any" ? SK5.map(skill => skill.id) : allowed;
+}
+
+export function creationMasteryOptions(d: Draft) {
+  const rules = CL5.find(row => row.id === d.classId)?.weaponRules;
+  return ITEMS5.filter(({ weapon }) => weapon?.mastery && (weapon.category === "simple" && rules?.simple
+    || weapon.category === "martial" && (rules?.martial || rules?.martialFinesseOrLight && (weapon.finesse || weapon.light) || rules?.martialLight && weapon.light)));
+}
+
+export function tomeSpellOptions(d: Draft) {
+  const unavailable = new Set([...d.knownSpells, ...d.preparedSpells, ...dndGrantedSpellIds(d, false)]);
+  return SP5.filter(spell => !unavailable.has(spell.id) && (spell.level === 0 || spell.level === 1 && spell.ritual));
+}
+
 export function fixedSkills(d: Draft): string[] {
   const list: string[] = [];
   if (d.system === "dnd5e") {
@@ -543,9 +575,8 @@ export function fixedSkills(d: Draft): string[] {
     if (bg) list.push(...bg.skills);
     if (d.ancestryId === "elf" && c(d, "elfSkill")) list.push(c(d, "elfSkill"));
     if (d.ancestryId === "human" && c(d, "humanSkill")) list.push(c(d, "humanSkill"));
-    if (c(d, "order") === "thaumaturge") list.push("arcana");
     if (d.backgroundId === "custom" && c(d, "customSkill")) list.push(c(d, "customSkill"));
-    if (c(d, "humanFeat") === "skilled") list.push(...m(d, "hskilled"));
+    if (d.ancestryId === "human" && c(d, "humanFeat") === "skilled") list.push(...m(d, "hskilled"));
     return list;
   }
   const bg = bg2(d);
@@ -606,7 +637,7 @@ function spellLimits(d: Draft, scores: Record<Ability, number>) {
     };
   }
   const cls = CL5.find((x) => x.id === d.classId);
-  const extra = c(d, "order") === "thaumaturge" || c(d, "order") === "magician" ? 1 : 0;
+  const extra = d.classId === "cleric" && c(d, "order") === "thaumaturge" || d.classId === "druid" && c(d, "order") === "magician" ? 1 : 0;
   const ability = cls?.caster ? mod(scores[cls.caster.ability]) : 0;
   const edition = activeEdition(d) === "dnd-2014" ? "dnd-2014" : "dnd-2024";
   const budget = dndSpellBudget(d.classId, 1, edition, ability);
@@ -618,13 +649,71 @@ function spellLimits(d: Draft, scores: Record<Ability, number>) {
   };
 }
 
-function spellLevel(d: Draft, id: string): number {
-  if (id.startsWith("custom:")) {
-    const index = Number(id.slice(7));
-    return Number(d.customSpells[index]?.level ?? 0);
+export function creationSpellTradition(d: Draft): string {
+  return d.classId === "sorcerer" && ["arcane", "divine", "occult", "primal"].includes(c(d, "bloodline"))
+    ? c(d, "bloodline") : CL2.find(row => row.id === d.classId)?.spell?.tradition ?? "";
+}
+
+function pfSpellInst(spell: (typeof SP2)[number]): SpellInst {
+  return { id: spell.id, name: spell.name, level: spell.level, info: spell.info, school: spell.traditions.join(", "), time: spell.time, range: "по тексту", duration: "по тексту" };
+}
+
+function customSpellInst(d: Draft): SpellInst[] {
+  return d.customSpells.flatMap((spell, index) => {
+    const level = Number(spell.level);
+    return spell.name.trim() && Number.isInteger(level) && level >= 0 && level <= 10
+      ? [{ id: `custom:${index}`, name: spell.name.trim(), level, info: spell.info || "Своё заклинание.", school: "своё", time: "действие", range: "—", duration: "—" }] : [];
+  });
+}
+
+export function creationSpellOptions(d: Draft): SpellInst[] {
+  if (!d.system || !classCasts(d)) return [];
+  const tradition = creationSpellTradition(d);
+  const custom = d.classId === "custom";
+  const grants = new Set(d.system !== "dnd5e" ? [] : d.classId === "ranger" ? ["hunters-mark"] : d.classId === "warlock" && c(d, "invocation") === "pact-of-the-tome" ? m(d, "tomeSpells") : []);
+  const spells = !editionOpen(d) ? [] : d.system === "pf2e"
+    ? SP2.filter(spell => !["courageous-anthem", "protect-companion"].includes(spell.id) && (custom || spell.traditions.includes(tradition))).map(pfSpellInst)
+    : SP5.filter(spell => custom || spell.classes.includes(d.classId)).map(toSpell5);
+  if (custom) spells.push(...customSpellInst(d));
+  return spells.filter(spell => spell.level <= 1 && !grants.has(spell.id));
+}
+
+export function creationSpellSelection(d: Draft) {
+  const options = creationSpellOptions(d);
+  const byId = new Map(options.map(spell => [spell.id, spell]));
+  const kind = spellBudget(d)?.kind;
+  const knownIds = [...new Set(d.knownSpells)];
+  const preparedIds = [...new Set(d.preparedSpells)];
+  const existing = [ ...(d.system === "pf2e" ? SP2 : SP5), ...customSpellInst(d) ];
+  const invalid = [...new Set([
+    ...knownIds.filter(id => !byId.has(id)),
+    ...preparedIds.filter(id => byId.get(id)?.level !== 1 || (kind !== "prepared" && (kind !== "book" || !knownIds.includes(id)))),
+  ])].map(id => ({ id, name: existing.find(spell => spell.id === id)?.name ?? "запись из справочника" }));
+  return { options, invalid, cantrips: knownIds.filter(id => byId.get(id)?.level === 0).length,
+    leveled: knownIds.filter(id => byId.get(id)?.level === 1).length, prepared: preparedIds.filter(id => byId.get(id)?.level === 1).length };
+}
+
+export function creationSpellBlock(d: Draft, id: string, list: "knownSpells" | "preparedSpells", selection = creationSpellSelection(d)): string | null {
+  if (d[list].includes(id)) return null;
+  const spell = selection.options.find(row => row.id === id);
+  const budget = spellBudget(d);
+  if (!spell || !budget) return "Недоступно для этого класса, традиции или круга.";
+  if (list === "preparedSpells") {
+    if (spell.level !== 1 || !["prepared", "book"].includes(budget.kind)) return "Это заклинание не требует отдельной подготовки.";
+    if (budget.kind === "book" && !d.knownSpells.includes(id)) return "Сначала запишите заклинание в книгу.";
+    return selection.prepared >= budget.prepare ? "Все места подготовки заняты. Снимите один выбор." : null;
   }
-  if (d.system === "pf2e") return SP2.find((s) => s.id === id)?.level ?? 0;
-  return SP5.find((s) => s.id === id)?.level ?? 0;
+  if (spell.level === 0 && selection.cantrips >= budget.cantrips) return "Все места заговоров заняты. Снимите один выбор.";
+  if (spell.level === 1 && budget.kind === "prepared") return "Выберите это заклинание в подготовку.";
+  if (spell.level === 1 && ["known", "pact"].includes(budget.kind) && selection.leveled >= budget.known) return "Все места заклинаний 1-го круга заняты. Снимите один выбор.";
+  return null;
+}
+
+export function toggleCreationSpell(d: Draft, list: "knownSpells" | "preparedSpells", id: string): Partial<Draft> {
+  if (d[list].includes(id)) return list === "knownSpells"
+    ? { knownSpells: d.knownSpells.filter(row => row !== id), preparedSpells: d.preparedSpells.filter(row => row !== id) }
+    : { preparedSpells: d.preparedSpells.filter(row => row !== id) };
+  return creationSpellBlock(d, id, list) ? {} : { [list]: [...d[list], id] };
 }
 
 export function gearPreview(d: Draft) {
@@ -759,11 +848,12 @@ function seedDnd(d: Draft, scores: Record<Ability, number>, speed: number): DndP
   const push = (id: string, source: string, pick: string) => {
     if (pick) choices.push({ id, level: 1, source, pick });
   };
-  const speciesSkill = c(d, "humanSkill") || c(d, "elfSkill");
+  const cls = CL5.find(row => row.id === d.classId);
+  const speciesSkill = d.ancestryId === "human" ? c(d, "humanSkill") : d.ancestryId === "elf" ? c(d, "elfSkill") : "";
   if (speciesSkill) push("skill-species", "skill", speciesSkill);
   m(d, "skills").forEach((pick, index) => push(`skill-class-${index}`, "skill", pick));
   m(d, "expertise").forEach((pick, index) => push(`expertise-${index}`, "expertise", pick));
-  if (c(d, "style")) push("style-1", "style", c(d, "style"));
+  if (cls?.fightingStyle) push("style-1", "style", c(d, "style"));
   m(d, "mastery").forEach((pick, index) => push(`mastery-${index}`, "mastery", pick));
   const feat = activeBackground5(d)?.feat;
   if (feat && edition !== "dnd-2014") push("origin-feat", "feat", `feat:${feat}`);
@@ -775,6 +865,7 @@ function seedDnd(d: Draft, scores: Record<Ability, number>, speed: number): DndP
     edition,
     base: { ...scores },
     speed,
+    grantedSkills: [...new Set(fixedSkills(d).filter(id => id !== speciesSkill && !activeBackground5(d)?.skills.includes(id)))],
     choices,
     toggles: [],
   };
@@ -789,8 +880,10 @@ function build5(d: Draft, scores: Record<Ability, number>): Character {
   const size = species?.sizeChoice ? c(d, "size") || "Средний" : custom ? d.customAncestry.size || "Средний" : species?.size ?? "Средний";
   const feats: FeatInst[] = [];
   const features = [...(cls?.features ?? [])];
+  const invocation = d.classId === "warlock" && activeEdition(d) === "dnd-2024" ? WARLOCK_INVOCATIONS.find(row => row.id === c(d, "invocation")) : undefined;
+  if (invocation) features.push({ name: invocation.name, info: invocation.info });
   if (c(d, "order") === "protector") features.push({ name: "Защитник", info: "Владение воинским оружием и тяжёлыми доспехами." });
-  if (c(d, "order") === "thaumaturge") features.push({ name: "Дополнительный заговор", info: "Чудотворец знает ещё один заговор жреца и владеет навыком Магия." });
+  if (c(d, "order") === "thaumaturge") features.push({ name: "Чудотворец", info: "Ещё один заговор жреца. К проверкам Магии и Религии прибавляется модификатор Мудрости (минимум +1) сверх Интеллекта. Само владение навыком порядок не даёт." });
   if (c(d, "order") === "magician") features.push({ name: "Дополнительный заговор", info: "Порядок мага даёт ещё один заговор друида." });
   if (c(d, "order") === "warden") features.push({ name: "Страж", info: "Владение воинским оружием и средними доспехами." });
   if (bg) {
@@ -896,7 +989,7 @@ function build5(d: Draft, scores: Record<Ability, number>): Character {
     shieldRaised: false,
     weaponRules,
     armorTraining: [...armor],
-    fightingStyle: c(d, "style"),
+    fightingStyle: cls?.fightingStyle ? c(d, "style") : "",
     unarmored: cls?.unarmored ?? "none",
     keyAbility: cls?.caster?.ability ?? cls?.primary[0] ?? d.customClass.key,
     armorRanks: {},
@@ -1197,56 +1290,54 @@ function spellcasting2(d: Draft): Character["spellcasting"] {
 }
 
 function collectSpells(d: Draft, system: "dnd5e" | "pf2e"): SpellInst[] {
-  const spells: SpellInst[] = [];
-  const push = (spell: SpellInst) => {
-    if (!spells.some((s) => s.id === spell.id)) spells.push(spell);
-  };
-  for (const id of [...d.knownSpells, ...d.preparedSpells, ...bonusIds(d)]) {
-    if (id.startsWith("custom:")) continue;
-    if (system === "dnd5e") {
-      const spell = SP5.find((s) => s.id === id);
-      if (spell) push(toSpell5(spell));
-    } else {
-      const spell = SP2.find((s) => s.id === id);
-      if (spell) push({ id: spell.id, name: spell.name, level: spell.level, info: spell.info, school: spell.traditions.join(", "), time: spell.time, range: "по тексту", duration: "по тексту" });
-    }
-  }
-  d.customSpells.forEach((spell, index) => {
-    if (!spell.name.trim()) return;
-    push({ id: `custom:${index}`, name: spell.name.trim(), level: Number(spell.level) || 0, info: spell.info || "Своё заклинание.", school: "своё", time: "действие", range: "—", duration: "—" });
-  });
+  const taken = new Set([...d.knownSpells, ...d.preparedSpells]);
+  const spells = creationSpellOptions(d).filter(spell => taken.has(spell.id));
   if (system === "dnd5e") {
-    const species = SPECIES.find((s) => s.id === d.ancestryId);
-    const lineage = c(d, "lineage");
-    const auto: string[] = [];
-    if (species?.id === "elf" && lineage === "drow") auto.push("dancing-lights");
-    if (species?.id === "elf" && lineage === "high") auto.push("prestidigitation");
-    if (species?.id === "elf" && lineage === "wood") auto.push("druidcraft");
-    if (species?.id === "gnome" && lineage === "forest") auto.push("minor-illusion", "speak-animals");
-    if (species?.id === "gnome" && lineage === "rock") auto.push("mending", "prestidigitation");
-    if (species?.id === "tiefling") auto.push("thaumaturgy");
-    if (species?.id === "tiefling" && lineage === "abyssal") auto.push("poison-spray");
-    if (species?.id === "tiefling" && lineage === "chthonic") auto.push("chill-touch");
-    if (species?.id === "tiefling" && lineage === "infernal") auto.push("fire-bolt");
-    for (const prefix of ["bg", "h"]) {
-      for (const key of [`${prefix}c1`, `${prefix}c2`, `${prefix}Spell`]) {
-        if (c(d, key)) auto.push(c(d, key));
-      }
-    }
-    for (const id of auto) {
-      const spell = SP5.find((s) => s.id === id);
-      if (spell) push(toSpell5(spell));
-    }
+    const grants = dndGrantedSpellIds(d);
+    spells.push(...SP5.filter(spell => grants.includes(spell.id) && !spells.some(row => row.id === spell.id)).map(toSpell5));
+  } else if (d.classId === "bard") {
+    const anthem = SP2.find(spell => spell.id === "courageous-anthem");
+    if (anthem) spells.push(pfSpellInst(anthem));
   }
   return spells;
 }
 
+function magicPrefixes(d: Draft): string[] {
+  return [
+    ...((bg5(d)?.feat ?? "").startsWith("magic") ? ["bg"] : []),
+    ...(d.ancestryId === "human" && c(d, "humanFeat").startsWith("magic") ? ["h"] : []),
+  ];
+}
+
+export function dndGrantedSpellIds(d: Draft, includeTome = true): string[] {
+  if (d.system !== "dnd5e" || activeEdition(d) !== "dnd-2024") return [];
+  const lineage = c(d, "lineage");
+  const auto: string[] = [];
+  if (d.ancestryId === "elf" && lineage === "drow") auto.push("dancing-lights");
+  if (d.ancestryId === "elf" && lineage === "high") auto.push("prestidigitation");
+  if (d.ancestryId === "elf" && lineage === "wood") auto.push("druidcraft");
+  if (d.ancestryId === "gnome" && lineage === "forest") auto.push("minor-illusion", "speak-animals");
+  if (d.ancestryId === "gnome" && lineage === "rock") auto.push("mending", "prestidigitation");
+  if (d.ancestryId === "tiefling") auto.push("thaumaturgy");
+  if (d.ancestryId === "tiefling" && lineage === "abyssal") auto.push("poison-spray");
+  if (d.ancestryId === "tiefling" && lineage === "chthonic") auto.push("chill-touch");
+  if (d.ancestryId === "tiefling" && lineage === "infernal") auto.push("fire-bolt");
+  for (const prefix of magicPrefixes(d)) auto.push(c(d, `${prefix}c1`), c(d, `${prefix}c2`), c(d, `${prefix}Spell`));
+  if (d.classId === "ranger") auto.push("hunters-mark");
+  if (d.classId === "warlock") {
+    if (c(d, "invocation") === "pact-of-the-chain") auto.push("find-familiar");
+    if (includeTome && c(d, "invocation") === "pact-of-the-tome") auto.push(...m(d, "tomeSpells"));
+  }
+  return [...new Set(auto.filter(Boolean))];
+}
+
 function bonusIds(d: Draft): string[] {
-  return [c(d, "bgSpell"), c(d, "hSpell")].filter(Boolean);
+  return d.system === "dnd5e" ? dndGrantedSpellIds(d).filter(id => SP5.some(spell => spell.id === id && spell.level === 1)) : [];
 }
 
 function preparedIds(d: Draft): string[] {
-  return [...new Set([...d.preparedSpells, ...bonusIds(d)])];
+  const personal = spellBudget(d)?.kind === "pact" && activeEdition(d) === "dnd-2024" ? d.knownSpells.filter(id => SP5.some(spell => spell.id === id && spell.level === 1)) : d.preparedSpells;
+  return [...new Set([...personal, ...bonusIds(d)])];
 }
 
 function toSpell5(spell: (typeof SP5)[number]): SpellInst {

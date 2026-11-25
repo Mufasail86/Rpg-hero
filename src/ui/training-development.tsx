@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { RotateCcw, WandSparkles } from "lucide-react";
 import { atTrainingLevel, mergeTrainingChoices, trainingBuild, trainingSourceKey } from "../play/training-character";
 import { choiceCaption, optionsForSlot, slotsForProgress as pfSlots } from "../pf2e/build";
@@ -45,7 +45,7 @@ export function fillTrainingChoices(source: Character): Character {
   return hero;
 }
 
-export function TrainingDevelopment({ source, children, onRunningChange }: { source: Character; children: (hero: Character, onRunning: (running: boolean) => void) => ReactNode; onRunningChange?: (running: boolean) => void }) {
+export function TrainingDevelopment({ source, children, onRunningChange }: { source: Character; children: (hero: Character, onRunning: (running: boolean) => void, openChoices: () => void) => ReactNode; onRunningChange?: (running: boolean) => void }) {
   const signature = trainingSourceKey(source), key = `rpg-training-build-v1-${source.id}`;
   const [master, setMaster] = useState(() => {
     try { const saved = JSON.parse(sessionStorage.getItem(key) ?? "null"); if (saved?.source === signature && saved.hero?.id === source.id && Number.isInteger(saved.hero.level) && saved.hero.level >= 1 && saved.hero.level <= 20 && saved.hero.system === source.system) {
@@ -55,6 +55,9 @@ export function TrainingDevelopment({ source, children, onRunningChange }: { sou
     return structuredClone(source);
   });
   const [level, setLevel] = useState(master.level); const [running, setRunning] = useState(false);
+  const fields = useRef<HTMLDetailsElement>(null);
+  const development = useRef<HTMLDetailsElement>(null);
+  const allChoices = useRef<HTMLDetailsElement>(null);
   useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
   const [revision, setRevision] = useState(0);
   const hero = useMemo(() => atTrainingLevel(master, level), [master, level]);
@@ -63,21 +66,40 @@ export function TrainingDevelopment({ source, children, onRunningChange }: { sou
   const buildIssues = derived?.issues.filter(row => row.kind === "build") ?? [];
   useEffect(() => { try { sessionStorage.setItem(key, JSON.stringify({ source: signature, hero: { ...master, level } })); } catch { /* тренировка работает без записи */ } }, [master, level, key, signature]);
   function change(next: Character) { setMaster(previous => mergeTrainingChoices(previous, next)); setLevel(next.level); setRevision(value => value + 1); sessionStorage.removeItem(`rpg-tactical-v1-${source.id}`); }
+  function openChoices() {
+    if (development.current) development.current.open = true;
+    if (!fields.current) return;
+    fields.current.open = true;
+    if (allChoices.current) allChoices.current.open = true;
+    fields.current.querySelector("summary")?.focus();
+    fields.current.scrollIntoView({ block: "nearest" });
+  }
   return <>
-    <details className="training-development" data-testid="training-development" hidden={running} open={buildIssues.length > 0}>
+    <details ref={development} className="training-development" data-testid="training-development" hidden={running} open={buildIssues.length > 0}>
       <summary>Персонаж · {level} уровень{buildIssues.length ? ` · выборов к проверке: ${buildIssues.length}` : " · изменить развитие"}</summary>
       <div className="training-level-row"><label className="field"><span>Уровень для тренировки</span><select data-testid="training-level" value={level} disabled={running || (!source.progress && !source.dnd)} onChange={event => { setLevel(Number(event.target.value)); setRevision(value => value + 1); sessionStorage.removeItem(`rpg-tactical-v1-${source.id}`); }}>{Array.from({ length: 20 }, (_, index) => <option value={index + 1} key={index}>{index + 1} уровень</option>)}</select></label>
         <button type="button" className="btn" disabled={running} data-testid="training-fill-build" onClick={() => change(fillTrainingChoices(hero))}><WandSparkles size={18} />Заполнить учебным вариантом</button>
         <button type="button" className="icon-btn" disabled={running} title="Вернуть исходный учебный лист" aria-label="Сбросить учебное развитие" onClick={() => change(structuredClone(source))}><RotateCcw size={18} /></button></div>
       {!source.progress && !source.dnd && <p className="warn">У этого листа нет истории развития. Можно проверить его текущий уровень; для сравнения уровней выберите учебного героя с историей.</p>}
       {source.progress?.choices.some(row => ["nimble", "dwarf-lore"].includes(row.pick) || row.id === "class-doctrine") && <p className="tiny">Старые обозначения черт и доктрины переведены в текущий формат только в учебной копии. Исходный лист сохранён.</p>}
-      {buildIssues.length > 0 && <p className="warn" data-testid="training-build-warning">Открытых или неверных выборов: {buildIssues.length}. Числа предварительные. Заполните учебным вариантом или выберите сами.</p>}
-      <details><summary>Развитие · черты, умения и навыки</summary><fieldset disabled={running} className="training-build-fields">
+      {buildIssues.length > 0 && <section className="warn" data-testid="training-build-warning">
+        <b>Чтобы начать бой, проверьте выборы:</b>
+        <ul>{[...new Set(buildIssues.map(row => row.message))].map(message => <li key={message}>{message}</li>)}</ul>
+        <button type="button" className="btn" onClick={openChoices}>Открыть выборы для исправления</button>
+      </section>}
+      <details ref={fields}><summary>Развитие · черты, умения и навыки</summary><fieldset disabled={running} className="training-build-fields">
         {hero.system === "dnd5e" && hero.dnd && level >= 3 && <label className="field"><span>Подкласс</span><select data-testid="training-subclass" value={hero.dnd.subclassId} onChange={event => change({ ...hero, dnd: { ...hero.dnd!, subclassId: event.target.value } })}><option value="">Не выбран</option>{KNOWN_SUBCLASSES.filter(row => row.classId === hero.classId).map(row => <option value={row.id} key={row.id}>{row.name}</option>)}</select></label>}
         <LevelWizard title={`Выборы ${level} уровня`} level={level} slots={slots(hero)} selected={choices(hero).map(row => ({ id: row.id, pick: row.detail?.ability ? `${row.pick}|${row.detail.ability}` : row.pick, name: hero.system === "pf2e" ? choiceCaption(row) : describeDndChoice(row) }))} optionsFor={slot => options(hero, slot)} adviceAt={at => { const row = levelAdvice(hero.system === "pf2e" ? "pf-remaster" : "dnd-2024", hero.classId, at); return [...(row?.skills ?? []), ...(row?.feats ?? []), ...(row?.archetypes ?? [])]; }} onPick={(slot, value) => change(pick(hero, slot, value))} onRemove={id => { const copy = structuredClone(hero), progress = copy.system === "pf2e" ? copy.progress : copy.dnd; if (progress) progress.choices = progress.choices.filter(row => row.id !== id); change(copy); }} />
-        <details><summary>Все выборы до {level} уровня</summary>{slots(hero).map(slot => {
+        <details ref={allChoices}><summary>Все выборы до {level} уровня</summary>{slots(hero).map(slot => {
           const chosen = choices(hero).find(row => row.id === slot.id), value = chosen ? chosen.detail?.ability ? `${chosen.pick}|${chosen.detail.ability}` : chosen.pick : "", list = options(hero, slot);
-          return <label className="field" key={slot.id}><span>{slot.level} уровень · {slot.label}</span><select aria-label={`${slot.level} уровень · ${slot.label}`} value={value} onChange={event => { if (event.target.value) change(pick(hero, slot, event.target.value)); }}><option value="">Не выбрано</option>{chosen && !list.some(row => row.pick === value) && <option value={value}>{hero.system === "pf2e" ? choiceCaption(chosen) : describeDndChoice(chosen)}</option>}{list.map(row => <option value={row.pick} key={row.pick}>{row.name}</option>)}</select></label>;
+          return <label className="field" key={slot.id}><span>{slot.level} уровень · {slot.label}</span><select aria-label={`${slot.level} уровень · ${slot.label}`} value={value} onChange={event => {
+            if (event.target.value) change(pick(hero, slot, event.target.value));
+            else {
+              const copy = structuredClone(hero), progress = copy.system === "pf2e" ? copy.progress : copy.dnd;
+              if (progress) progress.choices = progress.choices.filter(row => row.id !== slot.id);
+              change(copy);
+            }
+          }}><option value="">Не выбрано</option>{chosen && !list.some(row => row.pick === value) && <option value={value}>{hero.system === "pf2e" ? choiceCaption(chosen) : describeDndChoice(chosen)}</option>}{list.map(row => <option value={row.pick} key={row.pick}>{row.name}</option>)}</select></label>;
         })}</details>
       </fieldset>
         <h3>Выбранные способности</h3><div className="training-feature-list">{choices(hero).filter(row => /feat|archetype|style|epic/.test(row.source)).map(row => {
@@ -89,6 +111,6 @@ export function TrainingDevelopment({ source, children, onRunningChange }: { sou
         {derived?.issues.length ? <details><summary>Что требует проверки: {derived.issues.length}</summary>{derived.issues.map((row, index) => <p key={index}>{row.message}</p>)}</details> : null}
       </details>
     </details>
-    <div key={`${source.id}-${level}-${revision}`}>{children(hero, setRunning)}</div>
+    <div key={`${source.id}-${level}-${revision}`}>{children(hero, setRunning, openChoices)}</div>
   </>;
 }

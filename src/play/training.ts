@@ -6,12 +6,12 @@ import { derive, effectsFrom } from "../pf2e/build";
 import { emptyCombat, strike, mapPenalty, newRound as pfRound } from "../pf2e/combat";
 import { armorClass, attackFor, hpMax, speedOf } from "../rules";
 import { resolveCheck } from "../skills/guide";
-import type { Character, CombatState, DndCombat, ItemInst, WeaponStat } from "../types";
+import { mod, type Character, type CombatState, type DndCombat, type ItemInst, type WeaponStat } from "../types";
 
 export type TrainingAction = "attack" | "approach" | "retreat" | "defend" | "end";
 export type TrainingDifficulty = "easy" | "normal" | "hard";
 export interface TrainingConfig { place: "arena" | "tavern"; difficulty: TrainingDifficulty; enemy: "dummy" | "guard" | "bandit" }
-export interface TrainingWeapon { name: string; attack: number; damage: string; ranged: boolean; agile: boolean; reach: number; range: number; limited: boolean; hands: 1 | 2; twoHandDie?: number; unarmed: boolean }
+export interface TrainingWeapon { name: string; attack: number; damage: string; ranged: boolean; agile: boolean; reach: number; range: number; limited: boolean; hands: 1 | 2; twoHandDie?: number; unarmed: boolean; light?: boolean; finesse?: boolean; nick?: boolean; abilityBonus?: number; strengthAttack?: boolean }
 export interface TrainingStats { hp: number; ac: number; speed: number; perAction: number; shield: boolean; crit: number; weapons: TrainingWeapon[] }
 export interface TrainingState {
   round: number; hp: number; enemyHp: number; enemyMax: number; enemyAc: number; enemyAttack: number;
@@ -43,16 +43,21 @@ export function weaponGrip(weapon: TrainingWeapon, grip: 1 | 2 = 1): TrainingWea
 
 export function trainingStats(hero: Character): TrainingStats {
   const clean = { ...hero, conditions: [], conditionValues: {}, shieldRaised: false };
-  const derived = hero.system === "dnd5e" ? sheetDnd(clean) : hero.progress ? derive({ progress: hero.progress, items: hero.items, level: hero.level, conditions: {}, shieldRaised: false, customEffects: effectsFrom(hero) }) : null;
-  const weapons = hero.items.filter(item => item.kind === "weapon" && item.equipped && item.weapon).map(item => {
-    const found = derived?.attacks.find(attack => attack.name === item.name);
+  const dnd = hero.system === "dnd5e" ? sheetDnd(clean) : null;
+  const derived = hero.system === "dnd5e" ? dnd : hero.progress ? derive({ progress: hero.progress, items: hero.items, level: hero.level, conditions: {}, shieldRaised: false, customEffects: effectsFrom(hero) }) : null;
+  const gear = trainingGear(hero);
+  const weapons = hero.items.filter(item => item.kind === "weapon" && (item.equipped || item.uid === "training-spare") && item.weapon).map(item => {
+    const { weapon } = item;
+    const found = derived?.attacks.find(attack => attack.uid === item.uid);
     const basic = attackFor(clean, item)!;
     const damage = found?.damage ?? basic.damage;
-    const catalogItem = trainingGear(hero).find(row => row.id === item.catalogId);
-    const traits = `${item.weapon!.traits ?? ""} ${catalogItem?.info ?? ""}`;
-    return { name: item.name, attack: found?.attack.value ?? basic.attack, damage, hands: weaponHands(item.weapon), twoHandDie: item.weapon?.twoHandDie ?? catalogItem?.weapon?.twoHandDie, unarmed: item.weapon?.category === "unarmed", ranged: Boolean(item.weapon!.ranged), agile: /agile|быстро|проворн/i.test(traits) || (hero.system === "pf2e" && Boolean(item.weapon?.light)), reach: item.weapon!.reach ?? (item.catalogId === "glaive" ? 10 : 5), range: item.weapon!.range ?? 60, limited: !damageFormula(damage) || (hero.system === "pf2e" && /deadly|fatal|смертонос|смертель|фаталь|перезарядка|reload/i.test(traits)) || (hero.system === "dnd5e" && /перезарядка|loading/i.test(traits)) };
+    const catalogItem = gear.find(row => row.id === item.catalogId);
+    const traits = `${weapon!.traits ?? ""} ${catalogItem?.info ?? ""}`;
+    const str = dnd?.abilities.str.mod ?? mod(hero.abilities.str), dex = dnd?.abilities.dex.mod ?? mod(hero.abilities.dex);
+    const abilityBonus = weapon!.ranged && !weapon!.thrown || weapon!.attr === "dex" ? dex : weapon!.attr === "finesse" ? Math.max(str, dex) : str;
+    const nick = weapon!.mastery === "nick" && hero.dnd?.choices.some(row => row.level <= hero.level && row.source === "mastery" && row.pick === item.catalogId);
+    return { name: item.name, attack: found?.attack.value ?? basic.attack, damage, hands: weaponHands(weapon), twoHandDie: weapon?.twoHandDie ?? catalogItem?.weapon?.twoHandDie, unarmed: weapon?.category === "unarmed", ranged: Boolean(weapon!.ranged), light: weapon?.light, finesse: weapon?.finesse || weapon?.attr === "finesse", nick, abilityBonus, strengthAttack: weapon?.attr === "str" || weapon?.attr === "finesse" && str >= dex, agile: /agile|быстро|проворн/i.test(traits) || (hero.system === "pf2e" && Boolean(weapon?.light)), reach: weapon!.reach ?? (item.catalogId === "glaive" ? 10 : 5), range: weapon!.range ?? 60, limited: !damageFormula(damage) || (hero.system === "pf2e" && /deadly|fatal|смертонос|смертель|фаталь|перезарядка|reload/i.test(traits)) || (hero.system === "dnd5e" && /перезарядка|loading/i.test(traits)) };
   });
-  const dnd = hero.system === "dnd5e" ? sheetDnd(clean) : null;
   return { hp: derived?.hp.value ?? hpMax(clean), ac: derived?.ac.value ?? armorClass(clean).value, speed: derived?.speed.value ?? speedOf(clean).value, perAction: dnd?.attacksPerAction ?? 1, crit: Number(dnd?.crit.split("–")[0] ?? 20), shield: hero.items.some(item => item.kind === "shield" && item.equipped), weapons };
 }
 
@@ -72,7 +77,15 @@ export function ownedTrainingWeapons(hero: Character, pool = trainingGear(hero))
   });
 }
 
-export function equipTraining(hero: Character, weaponId: string, armorId: string, shield: boolean): Character {
+export function trainingSpareOptions(hero: Character, weaponId: string, shield: boolean) {
+  const pool = trainingGear(hero);
+  return [...ownedTrainingWeapons(hero, pool), ...pool.filter(row => row.kind === "weapon")].filter(item =>
+    item.weapon?.category !== "unarmed" && (!shield || weaponHands(item.weapon) === 1) &&
+    (item.id !== weaponId || ("qty" in item && Number(item.qty) >= 2)),
+  );
+}
+
+export function equipTraining(hero: Character, weaponId: string, armorId: string, shield: boolean, spareId = ""): Character {
   const copy = structuredClone(hero);
   const pool = trainingGear(hero);
   const fromBag = ownedTrainingWeapons(copy, pool).find(item => item.id === weaponId);
@@ -84,7 +97,14 @@ export function equipTraining(hero: Character, weaponId: string, armorId: string
     return { ...item, ...owned, uid: `training-${item.id}`, catalogId: item.id, qty: 1, equipped: true } as ItemInst;
   });
   if (fromBag) selected.unshift({ ...fromBag, qty: 1, equipped: true, placement: "held" });
-  copy.items = [...copy.items.filter(item => !["weapon", "armor", "shield"].includes(item.kind) && `owned:${item.uid}` !== weaponId), ...selected];
+  const spare = (fromBag || weapon) && trainingSpareOptions(copy, weaponId, Boolean(ward)).find(row => row.id === spareId);
+  if (spare) {
+    const primary = fromBag?.weapon ?? weapon?.weapon;
+    const paired = hero.system === "dnd5e" && !ward && primary?.category !== "unarmed" && primary?.light && spare.weapon?.light &&
+      !primary.ranged && !spare.weapon.ranged && weaponHands(primary) === 1 && weaponHands(spare.weapon) === 1;
+    selected.push({ ...spare, uid: "training-spare", catalogId: "catalogId" in spare ? spare.catalogId : spare.id, qty: 1, equipped: Boolean(paired), placement: paired ? "held" : "stowed" });
+  }
+  copy.items = [...copy.items.filter(item => !["weapon", "armor", "shield"].includes(item.kind) && `owned:${item.uid}` !== weaponId && `owned:${item.uid}` !== spareId), ...selected];
   return copy;
 }
 

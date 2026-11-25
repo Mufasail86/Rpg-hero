@@ -299,6 +299,14 @@ export interface ClassDef extends Opt {
   subclass: { name: string; info: string; short?: string };
 }
 
+export const WARLOCK_INVOCATIONS = [
+  { id: "armor-of-shadows", name: "Доспех теней", info: "Можете сотворить «Доспех мага» на себя без расхода ячейки." },
+  { id: "eldritch-mind", name: "Мистический разум", info: "Преимущество на спасброски Телосложения для сохранения концентрации." },
+  { id: "pact-of-the-blade", name: "Договор клинка", info: "Связь с оружием позволяет использовать Харизму для атаки и урона этим оружием. Лист автоматически связь с конкретным оружием не назначает." },
+  { id: "pact-of-the-chain", name: "Договор цепи", info: "Даёт «Поиск фамильяра». Можно сотворить его действием без ячейки. Управление фамильяром на учебном столе пока не разыгрывается." },
+  { id: "pact-of-the-tome", name: "Договор книги", info: "Книга теней даёт три заговора и два ритуала 1-го круга из списков любых классов. Эти заклинания не занимают места в обычном списке колдуна." },
+] as const;
+
 export const CLASSES: ClassDef[] = [
   {
     id: "barbarian",
@@ -657,6 +665,7 @@ export const SPELLS: SpellDef[] = [
   { id: "dancing-lights", name: "Пляшущие огоньки", level: 0, school: "Иллюзия", time: "действие", range: "120 футов", duration: "1 минута", classes: ["bard", "sorcerer", "wizard"], info: "До четырёх огоньков или один светящийся силуэт Среднего размера. Каждый даёт тусклый свет в радиусе 10 футов. Огоньки держатся не дальше 20 футов друг от друга. Бонусным действием двигаете их до 60 футов в пределах дистанции. Концентрация." },
   { id: "druidcraft", name: "Искусство друида", level: 0, school: "Преобразование", time: "действие", range: "30 футов", duration: "мгновенно", classes: ["druid"], info: "Малое чудо природы: предсказать погоду на сутки, заставить цветок раскрыться, зажечь или погасить маленький огонь, короткий сенсорный эффект. Боевого урона нет." },
   { id: "eldritch-blast", name: "Мистический заряд", level: 0, school: "Воплощение", time: "действие", range: "120 футов", duration: "мгновенно", classes: ["warlock"], info: "Дальняя атака заклинанием, 1d10 силового урона. На 5, 11 и 17-м уровнях лучей становится больше: каждый луч — отдельная атака, можно по разным целям." },
+  { id: "elementalism", name: "Стихийность", level: 0, school: "Преобразование", time: "действие", range: "30 футов", duration: "мгновенно", classes: ["druid", "sorcerer", "wizard"], info: "Малый бытовой эффект одной из четырёх стихий: ветерок, пыль, искры или немного воды. Сам заговор не наносит урона." },
   { id: "fire-bolt", name: "Огненный снаряд", level: 0, school: "Воплощение", time: "действие", range: "120 футов", duration: "мгновенно", classes: ["sorcerer", "wizard"], info: "Дальняя атака заклинанием, 1d10 огня. Горючий предмет, который никто не несёт, загорается. Урон растёт до 4d10." },
   { id: "guidance", name: "Указание", level: 0, school: "Прорицание", time: "действие", range: "касание", duration: "1 минута", classes: ["cleric", "druid"], info: "Касаетесь согласного существа и выбираете один навык. Пока заклинание действует, оно добавляет 1d4 к проверкам характеристики этим навыком. Концентрация." },
   { id: "light", name: "Свет", level: 0, school: "Воплощение", time: "действие", range: "касание", duration: "1 час", classes: ["bard", "cleric", "sorcerer", "wizard"], info: "Касаетесь предмета не крупнее Большого, который никто не носит и не держит. Яркий свет на 20 футов и тусклый ещё на 20. Непрозрачная накидка свет перекрывает. Повторное сотворение гасит предыдущий свет." },
@@ -969,6 +978,13 @@ export function dndSpellBudget(classId: string, level: number, edition: "dnd-201
   const bumps = cantripBumps(rank);
   const prepared = Math.max(1, abilityMod + rank);
   const halfPrepared = edition === "dnd-2014" && rank < 2 ? 0 : Math.max(1, abilityMod + Math.floor(rank / 2));
+  if (edition === "dnd-2024" && rank === 1) {
+    if (classId === "wizard") return { cantrips: 3, known: 6, prepare: 4, kind: "book" };
+    if (classId === "bard" || classId === "druid") return { cantrips: 2, known: 99, prepare: 4, kind: "prepared" };
+    if (classId === "cleric") return { cantrips: 3, known: 99, prepare: 4, kind: "prepared" };
+    if (classId === "sorcerer") return { cantrips: 4, known: 99, prepare: 2, kind: "prepared" };
+    if (classId === "paladin" || classId === "ranger") return { cantrips: 0, known: 99, prepare: 2, kind: "prepared" };
+  }
   if (classId === "wizard") return { cantrips: 3 + bumps, known: 4 + rank * 2, prepare: prepared, kind: "book" };
   if (classId === "cleric") return { cantrips: 3 + bumps, known: 99, prepare: prepared, kind: "prepared" };
   if (classId === "druid") return { cantrips: 2 + bumps, known: 99, prepare: prepared, kind: "prepared" };

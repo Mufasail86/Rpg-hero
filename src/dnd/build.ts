@@ -37,7 +37,7 @@ export interface DndDerived {
   initiative: Stat;
   saves: Record<Ability, Stat & { proficient: boolean }>;
   skills: Record<string, Stat & { ability: Ability; rank: string; name: string }>;
-  attacks: { name: string; attack: Stat; damage: string; equipped: boolean; traits: string; ranged: boolean }[];
+  attacks: { uid: string; name: string; attack: Stat; damage: string; equipped: boolean; traits: string; ranged: boolean }[];
   attacksPerAction: number;
   resources: { id: string; name: string; max: number; info: string }[];
   slots: { rank: number; max: number }[];
@@ -83,7 +83,7 @@ export function slotsForProgress(progress: DndProgress, level: number): Slot[] {
   const push = (id: string, at: number, source: string, label: string) => {
     if (at <= level) slots.push({ id, level: at, source, label });
   };
-  if (edition !== "dnd-2014") push("origin-feat", 1, "feat", "Черта происхождения");
+  if (edition !== "dnd-2014" && progress.backgroundId !== "custom") push("origin-feat", 1, "feat", "Черта происхождения");
   if (speciesPicksSkill(progress.speciesId)) push("skill-species", 1, "skill", "Навык народа");
   const skills = classSkillCount(progress.classId);
   for (let i = 0; i < skills; i += 1) push(`skill-class-${i}`, 1, "skill", "Навык класса");
@@ -115,6 +115,7 @@ export function deriveProgress(progress: DndProgress, items: ItemInst[], conditi
   const feats = new Set<string>();
   if (progress.backgroundId === "soldier") feats.add("savage");
   for (const id of BACKGROUND_SKILLS[progress.backgroundId] ?? []) skills.set(id, "proficient");
+  for (const id of progress.grantedSkills ?? []) if (SKILLS.some(skill => skill.id === id)) skills.set(id, "proficient");
   if (!BACKGROUND_SKILLS[progress.backgroundId]) {
     issues.push({ kind: "limit", message: "Навыки этого происхождения справочник не знает, они не добавлены сами." });
   }
@@ -361,7 +362,7 @@ function deriveNumbers(input: NumberInput): DndDerived {
     const weapon = item.weapon!;
     const abilityMod = weapon.ranged && !weapon.thrown ? dex : weapon.attr === "dex" ? dex : weapon.attr === "finesse" ? Math.max(str, dex) : str;
     const abilityName = weapon.ranged && !weapon.thrown ? "Ловкость" : weapon.attr === "finesse" && dex > str ? "Ловкость" : weapon.attr === "dex" ? "Ловкость" : "Сила";
-    const proficient = weaponProficient(input.classId, weapon.category);
+    const proficient = weaponProficient(input.classId, weapon, input.edition);
     const magic = item.magicBonus ?? 0;
     const archery = input.styles.includes("archery") && weapon.ranged ? 2 : 0;
     let attack = abilityMod + (proficient ? pb : 0) + magic + archery - penalty;
@@ -381,6 +382,7 @@ function deriveNumbers(input: NumberInput): DndDerived {
     if (input.feats.has("savage")) aside.push("Дикий натиск не меняет записанный урон: раз за ход можно взять лучший из двух бросков костей оружия.");
     if (!item.equipped) aside.push("Оружие не в руках. Бонус показан так, как если его взять.");
     return {
+      uid: item.uid,
       name: item.name,
       equipped: item.equipped,
       traits: [weapon.traits, weapon.mastery ? MASTERY[weapon.mastery]?.name : ""].filter(Boolean).join(", "),
@@ -613,10 +615,13 @@ function spellSlots(classId: string, level: number, edition: RulesEdition = "dnd
   return table.map((max, index) => ({ rank: index + 1, max }));
 }
 
-function weaponProficient(classId: string, category: string): boolean {
-  if (category === "simple") return true;
-  if (category === "martial") return ["barbarian", "fighter", "paladin", "ranger"].includes(classId);
-  return category === "unarmed";
+function weaponProficient(classId: string, weapon: NonNullable<ItemInst["weapon"]>, edition?: RulesEdition): boolean {
+  if (weapon.category === "unarmed") return true;
+  if (edition === "dnd-2014") return weapon.category === "simple" || weapon.category === "martial" && ["barbarian", "fighter", "paladin", "ranger"].includes(classId);
+  const rules = CLASSES.find(row => row.id === classId)?.weaponRules;
+  if (weapon.category === "simple") return rules?.simple ?? true;
+  if (weapon.category !== "martial") return false;
+  return Boolean(rules?.martial || rules?.martialLight && weapon.light || rules?.martialFinesseOrLight && (weapon.finesse || weapon.light || weapon.attr === "finesse"));
 }
 
 function duelingReady(items: ItemInst[]): boolean {

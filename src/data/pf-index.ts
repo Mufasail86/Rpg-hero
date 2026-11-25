@@ -3,6 +3,7 @@ import featIndex from "./generated/pf-feat-index.json";
 import featWide from "./generated/pf-feat-wide.json";
 import paths from "./generated/pf-paths.json";
 import { CARD_BY_ID, cardText } from "./cards";
+import { reviewedPfText } from "./pf-reviewed-text";
 import { byRu } from "../sort";
 
 export interface IndexedFeat {
@@ -38,7 +39,11 @@ export interface PathGroup {
 }
 
 const seenFeat = new Set((featIndex as IndexedFeat[]).map((feat) => feat.id));
-export const FEAT_INDEX = [...(featIndex as IndexedFeat[]), ...(featWide as IndexedFeat[]).filter((feat) => !seenFeat.has(feat.id)), ...FEY_INDEX.filter((feat) => !seenFeat.has(feat.id))];
+export const FEAT_INDEX = [...(featIndex as IndexedFeat[]), ...(featWide as IndexedFeat[]).filter((feat) => !seenFeat.has(feat.id)), ...FEY_INDEX.filter((feat) => !seenFeat.has(feat.id))]
+  .map(feat => {
+    const checked = reviewedPfText(feat.id);
+    return checked ? { ...feat, name: checked.name } : feat;
+  });
 export const FEAT_BY_ID = new Map(FEAT_INDEX.map((feat) => [feat.id, feat]));
 export const PATHS = paths as PathGroup[];
 

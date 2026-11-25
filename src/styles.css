@@ -1205,6 +1205,8 @@ select {
 .enemy .token-hp { background: #e79a8d; }
 .token-effects { position: absolute; top: -5px; right: -6px; min-width: 14px; height: 14px; border-radius: 50%; background: #e7c480; color: #221c13; font-size: 10px; line-height: 14px; }
 .tactical-map-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); font-size: 12px; padding: 8px 0; }
+.tactical-rune-note { flex-basis: 100%; min-width: 0; }
+.tactical-rune-note p { margin: 4px 0; }
 .cell-light { position: absolute; inset: 0; pointer-events: none; }
 .cell-light.unseen { background: #02060af0; }
 .cell-light.dim { background: #060a1459; }
