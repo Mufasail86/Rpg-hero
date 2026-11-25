@@ -4,13 +4,14 @@ import { starterDraft } from "../beginner";
 import { createCharacter } from "../create";
 import { tutorialSpellPool, tutorialSpells } from "../data/tutorial-spells";
 import { battleMap, findPath, gridDistance, lineOfSight, pathCost } from "./tactical-map";
-import { RollRequired, battleRoller, executeTactical, heroActor, movePreview, rollBounds, spellArea, startTactical, type BattleRoller, type TacticalSetup, type TacticalState } from "./tactical";
+import { RollRequired, battleRoller, executeTactical, heroActor, lightExtraDamage, movePreview, rollBounds, runeHint, spellArea, startTactical, type BattleRoller, type TacticalSetup, type TacticalState } from "./tactical";
+import { equipTraining, ownedTrainingWeapons, trainingStats } from "./training";
 import type { Character } from "../types";
 import { readTacticalSave } from "./tactical-storage";
 import { skillRows } from "../rules";
 
 const setup: TacticalSetup = { map: "tavern", scenario: "dummy", difficulty: "easy" };
-function hero(system: "pf2e" | "dnd5e" = "pf2e", role: "боец" | "маг" | "целитель" = "боец"): Character {
+function hero(system: "pf2e" | "dnd5e" = "pf2e", role: "боец" | "маг" | "целитель" | "разведчик" = "боец"): Character {
   const made = createCharacter(starterDraft(system, role, "Ученик").draft); if (!made.ok) throw new Error(made.error);
   const row = made.character;
   if (row.spellcasting) for (const spell of tutorialSpellPool(system, row.classId)) if (!row.spells.some(known => known.id === spell.id)) row.spells.push({ id: spell.id, name: spell.name, level: spell.rank, info: spell.explanation, school: "", time: "", range: "", duration: "" });
@@ -19,6 +20,114 @@ function hero(system: "pf2e" | "dnd5e" = "pf2e", role: "боец" | "маг" | "
 const fixed = (natural = 12): BattleRoller => formula => formula === "1d20" ? natural : new DiceRoll(formula).minTotal;
 function start(row: Character, config = setup) { let index = 0; return startTactical(row, config, () => index++ === 0 ? 20 : 1); }
 function foeNear(state: TacticalState, x = 3, y = 6) { const foe = state.actors.find(row => row.id === "guard")!; foe.pos = { x, y }; foe.hp = 100; foe.maxHp = 100; foe.ac = 12; return foe; }
+
+describe("оружие и классы по редакциям", () => {
+  const attack = (row: Character, state: TacticalState, weapon: number, extra = false, values = [12, 5]) =>
+    executeTactical(row, state, { type: "attack", target: "guard", weapon, extra }, battleRoller(true, values));
+
+  it("даёт плуту владение рапирой и не превращает запасной кинжал в лишнюю атаку", () => {
+    const source = hero("dnd5e", "разведчик"), original = structuredClone(source);
+    const row = equipTraining(source, "rapier", "leather", false, "dagger"), state = start(row);
+    foeNear(state);
+    expect(trainingStats(row).weapons[0]).toMatchObject({ attack: 5, damage: expect.stringContaining("+3") });
+    expect(trainingStats(equipTraining(source, "greatsword", "leather", false)).weapons[0].attack).toBe(-1);
+    const next = attack(row, state, 0);
+    expect(() => attack(row, next, 1, true)).toThrow("два разных лёгких");
+    expect(() => attack(row, next, 1)).toThrow("Атаки этого хода закончены");
+    const swap = attack(row, state, 1);
+    expect(heroActor(swap).activeWeapon).toBe(1);
+    expect(swap.log.some(event => event.title === "Смена оружия")).toBe(true);
+    expect(source).toEqual(original);
+  });
+
+  it("требует предшествующий удар другим клинком; Nick не тратит бонус и не даёт третьего удара", () => {
+    const row = equipTraining(hero("dnd5e", "разведчик"), "shortsword", "leather", false, "dagger");
+    const state = start(row);
+    foeNear(state);
+    expect(() => attack(row, state, 1, true)).toThrow("другим лёгким");
+    const first = attack(row, state, 0, false, [1]); // Even a miss opens the Light attack.
+    expect(() => attack(row, first, 0, true)).toThrow("другим лёгким");
+    const next = attack(row, first, 1, true, [12, 4]);
+    expect(heroActor(next).dnd.bonus).toBe(true);
+    expect(next.actors.find(actor => actor.id === "guard")?.hp).toBe(96);
+    expect(next.log.some(event => event.detail.includes("Рассечение"))).toBe(true);
+    expect(() => attack(row, next, 1, true)).toThrow("уже сделана");
+    const save = { source: "rogue", state: next, preferences: { weapon: "shortsword", spare: "dagger", armor: "leather", shield: false, setup, prepared: [] } };
+    expect(readTacticalSave(JSON.stringify(save), "rogue")?.state).toEqual(next);
+  });
+
+  it("расходует бонус без освоенного Nick; два кинжала из одной пачки считаются разными", () => {
+    const source = hero("dnd5e", "разведчик");
+    source.dnd!.choices = source.dnd!.choices.filter(choice => choice.source !== "mastery");
+    const dagger = ownedTrainingWeapons(source).find(item => item.catalogId === "dagger")!;
+    const row = equipTraining(source, dagger.id, "leather", false, dagger.id);
+    expect(trainingStats(row).weapons).toHaveLength(2);
+    const state = start(row);
+    foeNear(state);
+    const first = attack(row, state, 0, false, [1]);
+    heroActor(first).dnd.bonus = false;
+    expect(() => attack(row, first, 1, true)).toThrow("бонусное действие");
+    heroActor(first).dnd.bonus = true;
+    expect(heroActor(attack(row, first, 1, true, [12, 3])).dnd.bonus).toBe(false);
+  });
+
+  it("из урона лёгкой допатаки убирает только положительную характеристику, не магию", () => {
+    const row = equipTraining(hero("dnd5e", "разведчик"), "shortsword", "leather", false, "dagger");
+    const dagger = trainingStats(row).weapons[1];
+    expect(lightExtraDamage(row, { ...dagger, damage: "1d4 колющего+4" })).toBe("1d4+1");
+    expect(lightExtraDamage(row, { ...dagger, damage: "1d4 колющего-1", abilityBonus: -1 })).toBe("1d4-1");
+    expect(lightExtraDamage({ ...row, fightingStyle: "twf" }, dagger)).toBe("1d4+3");
+  });
+
+  it("Скрытая атака зависит от преимущества или союзника, удваивает кости на крите и не повторяется в тот же ход", () => {
+    const row = equipTraining(hero("dnd5e", "разведчик"), "shortsword", "leather", false, "dagger");
+    const state = start(row, { ...setup, ally: "fighter" });
+    foeNear(state);
+    const ally = state.actors.find(actor => actor.id === "ally")!;
+    ally.pos = { x: 4, y: 6 };
+    const blind = structuredClone(state);
+    heroActor(blind).effects.push({ id: "poisoned", source: "test", value: 1 });
+    expect(attack(row, blind, 0, false, [12, 11, 4]).log.some(event => event.title === "Скрытая атака плута")).toBe(false);
+    const first = attack(row, state, 0, false, [20, 12]);
+    expect(first.log.find(event => event.title === "Скрытая атака плута")?.detail).toContain("2к6");
+    const next = attack(row, first, 1, true, [12, 1]);
+    expect(next.log.filter(event => event.title === "Скрытая атака плута")).toHaveLength(1);
+    ally.hp = 0;
+    heroActor(state).effects.push({ id: "hidden", source: "test", value: 1 });
+    expect(attack(row, state, 0, false, [10, 12, 5]).log.find(event => event.title === "Скрытая атака плута")?.detail).toContain("преимущество");
+  });
+
+  it("в PF меняет оружие за действие и сохраняет штраф повторной атаки", () => {
+    const row = equipTraining(hero(), "bastard-sword", "", false, "shortsword"), state = start(row);
+    foeNear(state);
+    const first = attack(row, state, 0);
+    expect(() => attack(row, first, 1)).toThrow("Сначала поменяйте оружие");
+    const swapped = executeTactical(row, first, { type: "swap", weapon: 1 }, fixed());
+    expect(heroActor(swapped)).toMatchObject({ activeWeapon: 1, grip: 1, pf: { actions: 1, strikes: 1 } });
+    const last = executeTactical(row, swapped, { type: "attack", target: "guard", weapon: 1 }, fixed(2));
+    expect(last.log.at(-1)?.detail).toContain("штраф повторной атаки -4");
+    expect(() => attack(row, state, 1, true)).toThrow();
+  });
+
+  it("у руны разные спасброски по системам; Искажение пустоты разыгрывает лист без ячейки", () => {
+    expect(runeHint("pf2e")).toContain("Рефлексы СЛ 14");
+    expect(runeHint("dnd5e")).toContain("Ловкости СЛ 14");
+    const row = hero("pf2e", "маг"), state = start(row, { ...setup, scenario: "duel" });
+    const foe = foeNear(state);
+    foe.saves.fort = 0;
+    const spell = { type: "spell" as const, spell: "void-warp", targets: ["guard"] };
+    const after = executeTactical(row, state, spell, battleRoller(true, [5, 1]));
+    expect(heroActor(after).pf.actions).toBe(1);
+    expect(heroActor(after).slots).toEqual(heroActor(state).slots);
+    const target = after.actors.find(actor => actor.id === "guard");
+    expect(target?.hp).toBe(90);
+    expect(target?.effects.some(effect => effect.id === "enfeebled")).toBe(true);
+    const following = executeTactical(row, after, { type: "end" }, fixed(1));
+    expect(following.actors.find(actor => actor.id === "guard")?.effects).toEqual([]);
+    foe.dummy = true;
+    expect(() => executeTactical(row, state, spell, fixed())).toThrow("действует на живых");
+  });
+});
 
 describe("клетчатая карта", () => {
   it("не ведёт через стены, столы, занятые клетки и закрытые углы", () => {

@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ArrowLeft, BookOpen, Check, Crosshair, Dice5, Footprints, Grid2X2, Hand, Heart, MoreHorizontal, Move, RotateCcw, Shield, Sparkles, Sword, X, ZoomIn } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, BookOpen, Check, Crosshair, Dice5, Footprints, Grid2X2, Hand, Heart, MoreHorizontal, Move, RotateCcw, Shield, Sparkles, Sword, X, ZoomIn } from "lucide-react";
 import { createCharacter } from "../create";
 import { starterDraft, type BeginnerRole } from "../beginner";
 import { systemTitle } from "../labels";
 import { fmt, type Character } from "../types";
 import { tutorialSpellPool, tutorialSpells, tutorialSpellStatus, type SaveKey } from "../data/tutorial-spells";
-import { equipTraining, ownedTrainingWeapons, trainingGear, trainingStats, weaponGrip, weaponHands } from "../play/training";
+import { equipTraining, ownedTrainingWeapons, trainingGear, trainingSpareOptions, weaponGrip, weaponHands } from "../play/training";
 import { mapPenalty } from "../pf2e/combat";
 import { battleMap, cellKey, gridDistance, lineOfSight, sameCell, type Cell } from "../play/tactical-map";
-import { ACTION_NAMES, EFFECTS, SAVES, RollRequired, actorSight, battleRoller, currentActor, effectiveAc, executeTactical, heroActor, movePreview, spellArea, startTactical, type BattleRoller, type EffectId, type TacticalIntent, type TacticalSetup, type TacticalState } from "../play/tactical";
+import { ACTION_NAMES, EFFECTS, SAVES, RollRequired, actorSight, battleRoller, currentActor, effectiveAc, executeTactical, heroActor, lightExtraBlock, lightExtraDamage, lightPair, movePreview, runeHint, spellArea, startTactical, tacticalStats, type BattleRoller, type EffectId, type TacticalIntent, type TacticalSetup, type TacticalState } from "../play/tactical";
 import { go, Info } from "./common";
 import { readTacticalSave } from "../play/tactical-storage";
 import { DEFAULT_ENVIRONMENT } from "../play/tactical-vision";
@@ -48,6 +48,8 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
   const pool = useMemo(() => trainingGear(source), [source]);
   const owned = useMemo(() => ownedTrainingWeapons(source, pool), [source, pool]);
   const [weaponId, setWeapon] = useState(owned.find(row => row.equipped)?.id ?? owned[0]?.id ?? pool.find(row => row.kind === "weapon")?.id ?? "");
+  const [spareId, setSpare] = useState("");
+  const [attackChoice, setAttackChoice] = useState<0 | 1>(0);
   const [armorId, setArmor] = useState(source.items.find(row => row.kind === "armor" && row.equipped)?.catalogId ?? "");
   const [shield, setShield] = useState(source.items.some(row => row.kind === "shield" && row.equipped));
   const [prepared, setPrepared] = useState(source.preparedIds);
@@ -57,8 +59,9 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
   const playback = useTacticalPlayback();
   const [confirmMove, setConfirmMove] = useState(false), [moreActions, setMoreActions] = useState(false);
   const [skill, setSkill] = useState("perception"), [skillVisual, setSkillVisual] = useState(false);
-  const hero = useMemo(() => ({ ...equipTraining(source, weaponId, armorId, shield), preparedIds: prepared }), [source, weaponId, armorId, shield, prepared]);
-  const stats = useMemo(() => trainingStats(hero), [hero]);
+  const spareOptions = useMemo(() => trainingSpareOptions(source, weaponId, shield), [source, weaponId, shield]);
+  const equippedSpare = spareOptions.some(row => row.id === spareId) ? spareId : "";
+  const hero = useMemo(() => ({ ...equipTraining(source, weaponId, armorId, shield, equippedSpare), preparedIds: prepared }), [source, weaponId, armorId, shield, equippedSpare, prepared]);
   const [state, setState] = useState<TacticalState | null>(null);
   const [tab, setTab] = useState<Tab>("move"); const [target, setTarget] = useState("guard");
   const [targets, setTargets] = useState<string[]>([]); const [point, setPoint] = useState<Cell | null>(null); const [hover, setHover] = useState<Cell | null>(null);
@@ -71,8 +74,12 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
   const map = useMemo(() => battleMap(setup.map), [setup.map]);
   const viewState = state && playback.busy ? { ...state, actors: state.actors.map(row => ({ ...row, pos: playback.positions[row.id] ?? row.pos, hp: playback.before?.actors.find(old => old.id === row.id)?.hp ?? row.hp })) } : state;
   const player = viewState ? heroActor(viewState) : null; const inspectedSource = viewState?.actors.find(row => row.id === target) ?? player;
-  const flexibleGrip = hero.system === "pf2e" && Boolean(stats.weapons[0]?.twoHandDie);
-  const weapon = stats.weapons[0] && weaponGrip(stats.weapons[0], state ? player?.grip : setup.grip);
+  const activeWeapon = player?.activeWeapon ?? 0;
+  const attackIndex = state && hero.system === "dnd5e" && equippedSpare ? attackChoice : activeWeapon;
+  const stats = useMemo(() => tacticalStats(hero, attackIndex), [hero, attackIndex]);
+  const paired = lightPair(hero, stats);
+  const flexibleGrip = hero.system === "pf2e" && Boolean(stats.weapons[attackIndex]?.twoHandDie);
+  const weapon = stats.weapons[attackIndex] && weaponGrip(stats.weapons[attackIndex], state ? player?.grip : setup.grip);
   const weaponDamage = weapon?.damage.replace(/\s+(?:ярость|спец\.)\s*[+−-]?\d+/g, "").replace(/d(?=\d)/g, "к");
   const twoHands = weapon?.hands === 2;
   const penalty = hero.system === "pf2e" && player && weapon ? mapPenalty(player.pf.strikes, weapon.agile) : 0;
@@ -92,10 +99,10 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
   useEffect(() => {
     try {
       const saved = readTacticalSave(sessionStorage.getItem(storageKey), sourceSignature);
-      if (saved) { setWeapon(saved.preferences.weapon); setArmor(saved.preferences.armor); setShield(saved.preferences.shield); setPrepared(saved.preferences.prepared); setSetup(saved.preferences.setup); setState(saved.state); setRestored(true); }
+      if (saved) { setWeapon(saved.preferences.weapon); setSpare(saved.preferences.spare ?? ""); setAttackChoice(heroActor(saved.state).activeWeapon ?? 0); setArmor(saved.preferences.armor); setShield(saved.preferences.shield); setPrepared(saved.preferences.prepared); setSetup(saved.preferences.setup); setState(saved.state); setRestored(true); }
     } catch { /* повреждённая учебная запись не меняет настоящий лист */ }
   }, []);
-  useEffect(() => { if (state) try { sessionStorage.setItem(storageKey, JSON.stringify({ source: sourceSignature, preferences: { weapon: weaponId, armor: armorId, shield, prepared, setup }, state })); } catch { /* стол работает без хранилища */ } }, [state, sourceSignature, storageKey, weaponId, armorId, shield, prepared, setup]);
+  useEffect(() => { if (state) try { sessionStorage.setItem(storageKey, JSON.stringify({ source: sourceSignature, preferences: { weapon: weaponId, spare: equippedSpare, armor: armorId, shield, prepared, setup }, state })); } catch { /* стол работает без хранилища */ } }, [state, sourceSignature, storageKey, weaponId, equippedSpare, armorId, shield, prepared, setup]);
   useEffect(() => { if (pending) dialogInput.current?.focus(); }, [pending]);
   function run(intent?: TacticalIntent, values: number[] = []) {
     if (playback.busy) return;
@@ -114,13 +121,16 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
   function apply() {
     if (tab === "spell" && spell && !spell.cone && !spell.burst && spell.range > 0 && !inspected && !targets.some(id => { const actor = state?.actors.find(row => row.id === id); return actor && state && player && actorSight(state, hero, player, actor.pos).visible; })) { setError("Цель не видна. Нужны свет, другое зрение или доступная цель на карте."); return; }
     if (tab === "move" && point) run({ type: "move", to: point, step: hero.system === "pf2e" && step });
-    else if (tab === "attack") run({ type: "attack", target, weapon: 0 });
+    else if (tab === "attack") run({ type: "attack", target, weapon: attackIndex });
     else if (tab === "spell" && spell) run({ type: "spell", spell: spell.id, targets: targets.length ? targets : [spell.range === 0 ? "hero" : target], point: point ?? undefined });
     else if (tab === "action") run({ type: "action", action, target });
   }
-  function reset() { playback.play(null, null, false); setState(null); setPoint(null); setTargets([]); setPending(null); setRestored(false); try { sessionStorage.removeItem(storageKey); } catch { /* нет доступа */ } }
+  function reset() { playback.play(null, null, false); setState(null); setAttackChoice(0); setPoint(null); setTargets([]); setPending(null); setRestored(false); try { sessionStorage.removeItem(storageKey); } catch { /* нет доступа */ } }
   const ready = Boolean(state && state.status === "active" && currentActor(state).id === "hero" && !pending && !playback.busy);
-  const canAttack = ready && !!weapon && !weapon.limited && !!player && (hero.system === "pf2e" ? player.pf.actions > 0 : player.dnd.action || player.extraActionAvailable);
+  const dndSwap = hero.system === "dnd5e" && !paired && attackIndex !== activeWeapon;
+  const canAttack = ready && !!weapon && !weapon.limited && !!player && (hero.system === "pf2e" ? player.pf.actions > 0 : (player.dnd.action || player.extraActionAvailable) && !(dndSwap && player.weaponSwapUsed));
+  const extraBlock = paired && player ? lightExtraBlock(hero, player, stats, attackIndex) : "";
+  const extraDamage = paired && weapon ? lightExtraDamage(hero, weapon)?.replace(/d(?=\d)/g, "к") : undefined;
   const normalSlots = source.slots.filter(row => row.rank === 1 && row.note !== "шрифт").reduce((sum, row) => sum + row.max, 0);
   const poolSpells = tutorialSpellPool(source.system, source.classId).filter(row => source.spells.some(known => known.id === row.id) && row.rank === 1);
   const environment = setup.environment ?? DEFAULT_ENVIRONMENT;
@@ -139,8 +149,11 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
         {owned.length > 0 && <optgroup label="Из вашей сумки">{owned.map(row => <option value={row.id} key={row.id}>{row.name}</option>)}</optgroup>}
         <optgroup label="Учебное оружие">{pool.filter(row => row.kind === "weapon").map(row => <option value={row.id} key={row.id}>{row.name}</option>)}</optgroup>
       </select></label>
+      <label className="field"><span>Второе оружие</span><select data-testid="training-spare" value={equippedSpare} onChange={event => setSpare(event.target.value)}><option value="">Без второго оружия</option>
+        {spareOptions.map(row => <option key={row.id} value={row.id}>{row.name} · {row.id.startsWith("owned:") ? "из сумки" : "учебное"}</option>)}
+      </select></label>
       {flexibleGrip && <label className="field"><span>Хват перед боем</span><select data-testid="training-grip" value={setup.grip ?? 1} onChange={event => { const grip = event.target.value === "2" ? 2 : 1; setSetup({ ...setup, grip }); if (grip === 2) setShield(false); }}><option value={1}>Одна рука</option><option value={2}>Две руки</option></select></label>}
-      {weapon && <p className="tiny tactical-loadout-summary" data-testid="loadout-summary">Попадание {fmt(weapon.attack)} · урон {weaponDamage} · {weapon.unarmed ? "без оружия" : twoHands ? "обе руки заняты, без щита" : stats.shield ? "оружие и щит" : "одна рука свободна"}</p>}
+      {weapon && <p className="tiny tactical-loadout-summary" data-testid="loadout-summary">Попадание {fmt(weapon.attack)} · урон {weaponDamage} · {paired ? "два лёгких оружия в руках" : weapon.unarmed ? "без оружия" : twoHands ? "обе руки заняты, без щита" : stats.shield ? "оружие и щит" : "одна рука свободна"}{stats.weapons[1] && !paired ? ` · в запасе: ${stats.weapons[1].name}` : ""}</p>}
     </div>}
     <details className="tactical-setup" hidden={Boolean(state)}><summary>Снаряжение, свет и свои кости</summary><div className="tactical-setup-fields">
       <label className="field"><span>Сложность</span><select disabled={Boolean(locked)} value={setup.difficulty} onChange={event => setSetup({ ...setup, difficulty: event.target.value as TacticalSetup["difficulty"] })}><option value="easy">Знакомство</option><option value="normal">Равные силы</option><option value="hard">Вызов</option></select></label>
@@ -165,7 +178,7 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
             const cell = { x, y }, sight = actorSight(viewState!, hero, player, cell), actor = viewState!.actors.find(row => sameCell(row.pos, cell) && (row.id === "hero" || sight.visible)), inPath = path?.path.some(row => sameCell(row, cell)), inArea = area.some(row => sameCell(row, cell));
             const range = tab === "spell" ? spell?.range ?? 0 : tab === "attack" ? weapon?.ranged ? weapon.range : weapon?.reach ?? 5 : 0;
             const inRange = range > 0 && sight.visible && gridDistance(player.pos, cell, hero.system) <= range && lineOfSight(map, player.pos, cell).visible;
-            return <button type="button" key={cellKey(cell)} data-testid={`cell-${x}-${y}`} data-tile={tile} title={`${String.fromCharCode(65 + x)}${y + 1} · ${actor?.name ?? ({ floor: "Пол", wall: "Стена", table: "Стол · укрытие", rubble: "Завалы · двойная цена движения", rune: "Учебная руна · спасбросок" }[tile])}`} aria-label={`${String.fromCharCode(65 + x)}${y + 1}${actor ? `, ${actor.name}` : ""}`} className={`tactical-cell ${tile} ${inPath ? path?.allowed ? "path" : "path-blocked" : ""} ${inArea ? "area" : ""} ${inRange ? "in-range" : ""} ${point && sameCell(point, cell) ? "aimed" : ""}`} onClick={() => choose(cell)} onMouseEnter={() => setHover(cell)} onMouseLeave={() => setHover(null)} onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (event.dataTransfer.getData("text/plain") === "hero") run({ type: "move", to: cell, step: hero.system === "pf2e" && step }); }}>
+            return <button type="button" key={cellKey(cell)} data-testid={`cell-${x}-${y}`} data-tile={tile} title={`${String.fromCharCode(65 + x)}${y + 1} · ${actor?.name ?? (tile === "rune" ? sight.visible ? runeHint(hero.system) : "Клетка не видна" : { floor: "Пол", wall: "Стена", table: "Стол · укрытие", rubble: "Завалы · двойная цена движения" }[tile])}`} aria-label={`${String.fromCharCode(65 + x)}${y + 1}${actor ? `, ${actor.name}` : tile === "rune" && sight.visible ? `, ${runeHint(hero.system)}` : ""}`} className={`tactical-cell ${tile} ${inPath ? path?.allowed ? "path" : "path-blocked" : ""} ${inArea ? "area" : ""} ${inRange ? "in-range" : ""} ${point && sameCell(point, cell) ? "aimed" : ""}`} onClick={() => choose(cell)} onMouseEnter={() => setHover(cell)} onMouseLeave={() => setHover(null)} onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (event.dataTransfer.getData("text/plain") === "hero") run({ type: "move", to: cell, step: hero.system === "pf2e" && step }); }}>
               <span className={`cell-light ${!sight.visible ? "unseen" : sight.monochrome ? "nightvision" : sight.light === "dim" && !sight.note.includes("ясно") ? "dim" : "clear"}`} />{coordinates && <small className="cell-coordinate">{String.fromCharCode(65 + x)}{y + 1}</small>}{tile === "rune" && sight.visible && <Sparkles className="cell-rune" size={20} />}
               {inPath && !actor && <span className="path-dot" />}
             </button>;
@@ -173,17 +186,24 @@ function TacticalTable({ source, onRunning, openChoices }: { source: Character; 
           {viewState!.actors.filter(actor => actor.id === "hero" || actorSight(viewState!, hero, player, actor.pos).visible).map(actor => <button type="button" key={actor.id} data-testid={`token-${actor.id}`} title={actor.name} aria-label={actor.name} className={`tactical-token ${actor.team} ${target === actor.id ? "selected" : ""} ${actor.hp === 0 ? "down" : ""} ${actorSight(viewState!, hero, player, actor.pos).monochrome ? "nightvision" : ""}`} style={{ transform: `translate(${(actor.pos.x + .09) * zoom}px, ${(actor.pos.y + .09) * zoom}px)` }} onClick={() => choose(actor.pos)} draggable={actor.id === "hero" && ready} onDragStart={event => event.dataTransfer.setData("text/plain", actor.id)}><img src={actor.portrait} alt="" /><span className="token-name">{actor.name}</span><span className="token-hp" style={{ width: `${100 * actor.hp / actor.maxHp}%` }} />{actor.effects.length > 0 && <span className="token-effects" title={actor.effects.map(row => `${EFFECTS[row.id]} ${row.value}`).join(", ")}>{actor.effects.length}</span>}</button>)}
           <TacticalEffects batch={playback.batch} cell={zoom} state={viewState!} hero={hero} enabled={effects} />
         </div></div>
-        <div className="tactical-map-legend"><span>Клетка · 5 футов</span><span>Пунктир · путь</span><span>Бирюзовый · дальность</span><span>Красный · область</span></div>
+        <div className="tactical-map-legend"><span>Клетка · 5 футов</span><span>Пунктир · путь</span><span>Бирюзовый · дальность</span><span>Красный · область</span>
+          {map.tiles.some((row, y) => row.some((tile, x) => tile === "rune" && actorSight(viewState!, hero, player, { x, y }).visible)) && <details className="tactical-order tactical-rune-note" data-testid="tactical-rune"><summary>Синяя метка · учебная руна</summary><p>{runeHint(hero.system)}</p></details>}
+        </div>
         <nav className="tactical-tabs" aria-label="Действия персонажа">{visibleTabs.map(row => <button type="button" key={row.id} data-testid={`tactical-tab-${row.id}`} aria-pressed={tab === row.id} className={tab === row.id ? "on" : ""} onClick={() => { setTab(row.id); setPoint(null); setTargets([]); setMoreActions(false); }}><row.icon size={18} /><span>{row.name}</span></button>)}<button type="button" data-testid="tactical-more" aria-expanded={moreActions} title="Другие действия" onClick={() => setMoreActions(!moreActions)}><MoreHorizontal size={18} /><span>Ещё</span></button></nav>
         <section className="tactical-controls">
           {error && !pending && <p className="warn" role="alert" data-testid="tactical-error">{error}</p>}
           {tab === "move" && <><h2>Передвижение</h2><p>{hero.system === "pf2e" ? `Скорость ${stats.speed} футов за действие.` : `Осталось ${player.move} футов.`}</p>{hero.system === "pf2e" && <label className="tactical-checkbox"><input type="checkbox" checked={step} onChange={event => setStep(event.target.checked)} />Осторожный шаг · 5 футов, без провокации</label>}<p className="tactical-selection">{path ? `${path.feet} футов · ${path.allowed ? "путь доступен" : path.reason}` : "Свободная клетка — место назначения."}</p>{confirmMove && <button type="button" className="btn primary" data-testid="tactical-move-confirm" disabled={!ready || !path?.allowed || !point} onClick={apply}><Footprints size={18} />Переместиться</button>}</>}
           {tab === "attack" && <><h2>{weapon?.name ?? "Оружие не выбрано"}</h2>
+            {stats.weapons.length === 2 && (hero.system === "dnd5e"
+              ? <label className="field"><span>{paired ? "Оружие в руках" : "Оружие для атаки"}</span><select data-testid="tactical-weapon-choice" value={attackIndex} onChange={event => setAttackChoice(event.target.value === "1" ? 1 : 0)}>{stats.weapons.map((row, index) => <option key={index} value={index}>{index + 1}. {row.name}</option>)}</select></label>
+              : <button type="button" className="btn" data-testid="tactical-swap" disabled={!ready || player.pf.actions < 1} onClick={() => run({ type: "swap", weapon: activeWeapon === 0 ? 1 : 0 })}><ArrowRightLeft size={16} />Сменить на {stats.weapons[1 - activeWeapon].name} · 1 действие</button>)}
             {weapon && <div className="tactical-attack-stats" data-testid="tactical-attack-stats"><span>Попадание <b>{fmt(weapon.attack + penalty)}</b>{penalty !== 0 && <small>Повторная атака {fmt(penalty)}</small>}</span><span>Урон <b>{weaponDamage}</b></span><span>{weapon.ranged ? "Дальность" : "Досягаемость"} <b>{weapon.ranged ? weapon.range : weapon.reach} фт</b></span></div>}
             {flexibleGrip && <div className="tactical-grip"><b>Хват: {twoHands ? "две руки" : "одна рука"}</b><button type="button" className="btn" data-testid="tactical-grip" disabled={!ready || (!twoHands && (stats.shield || player.pf.actions < 1))} onClick={() => run({ type: "grip", hands: twoHands ? 1 : 2 })}><Hand size={16} />{twoHands ? "Отпустить руку · бесплатно" : "Взять двумя руками · 1 действие"}</button>{stats.shield && <small>Вторая рука занята щитом.</small>}</div>}
             <label className="field"><span>Цель</span><select data-testid="tactical-attack-target" value={attackTargets.some(row => row.id === target) ? target : ""} onChange={event => setTarget(event.target.value)}><option value="">Выберите противника</option>{attackTargets.map(row => <option value={row.id} key={row.id}>{row.name} · {gridDistance(player.pos, row.pos, hero.system)} фт</option>)}</select></label>
             {weapon?.limited && <p className="warn">Особые свойства этого оружия пока не разыгрываются автоматически. Выберите другое оружие до боя.</p>}
-            <div className="wrap"><button type="button" className="btn primary" data-testid="tactical-attack" disabled={!canAttack || inspected?.team !== "enemy" || inspected.hp <= 0} onClick={apply}><Sword size={18} />{weapon?.ranged ? "Выстрел" : "Удар"}{twoHands && flexibleGrip ? " двумя руками" : ""}</button><button type="button" className="btn" onClick={() => { setTab("action"); setPoint(null); }}><Hand size={16} />Боевые приёмы</button></div>
+            {paired && <div className="stack"><button type="button" className="btn" data-testid="tactical-light-extra" disabled={!ready || !!extraBlock || weapon?.limited || inspected?.team !== "enemy" || inspected.hp <= 0} onClick={() => run({ type: "attack", target, weapon: attackIndex, extra: true })}><Sword size={16} />Дополнительный удар · {weapon?.nick ? "Рассечение" : "бонусное действие"}</button>{extraDamage && <p className="tiny" data-testid="light-extra-damage">Урон дополнительного удара: <b>{extraDamage}</b></p>}{extraBlock && <p className="tiny">{extraBlock}</p>}</div>}
+            {hero.system === "dnd5e" && hero.classId === "rogue" && <p className="tiny"><b>Скрытая атака · {Math.ceil(hero.level / 2)}к6.</b> Раз за ход при подходящем попадании: преимущество или союзник рядом с целью без помехи.</p>}
+            <div className="wrap"><button type="button" className="btn primary" data-testid="tactical-attack" disabled={!canAttack || inspected?.team !== "enemy" || inspected.hp <= 0} onClick={apply}><Sword size={18} />{dndSwap ? weapon?.ranged ? "Сменить и выстрелить" : "Сменить и ударить" : weapon?.ranged ? "Выстрел" : "Удар"}{twoHands && flexibleGrip ? " двумя руками" : ""}</button><button type="button" className="btn" onClick={() => { setTab("action"); setPoint(null); }}><Hand size={16} />Боевые приёмы</button></div>
             {lastAttack && <p className="tiny" data-testid="tactical-last-attack"><b>Последняя атака.</b> {lastAttack.detail}</p>}
           </>}
           {tab === "spell" && <><h2>Заклинания</h2>{availableSpells.length === 0 ? <p>Сейчас нет заклинаний, которые можно разыграть автоматически.</p> : <><div className="tactical-spell-list">{availableSpells.map(row => <button type="button" key={row.id} data-testid={`spell-${row.id}`} aria-pressed={spell?.id === row.id} className={spell?.id === row.id ? "on" : ""} onClick={() => { setSpell(row.id); setTargets([]); setPoint(null); }}><b>{row.name}</b><small>{row.rank ? `1 круг · ${player.preparedSlots ? player.preparedSlots[row.id] ?? 0 : player.slots[1] ?? 0} ячеек${row.id === "heal" && player.font ? ` + шрифт ${player.font}` : ""}` : "Заговор · без ячейки"}</small></button>)}</div>{spell && <><p><b>{spell.name}.</b> {spell.explanation}</p><p className="tiny">{hero.system === "pf2e" ? `${spell.cost} действия` : spell.bonus ? "Бонусное действие" : "Действие"} · {spell.range ? `${spell.range} футов` : "на себя"} · {spell.cone || spell.burst ? "выберите область" : `цели: ${targets.length ? targets.map(id => state.actors.find(row => row.id === id)?.name).join(", ") : inspected?.name}`}</p><button type="button" className="btn primary" disabled={!ready} data-testid="tactical-cast" onClick={apply}><Sparkles size={18} />Сотворить</button></>}</>}
