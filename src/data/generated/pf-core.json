@@ -1693,7 +1693,7 @@
   },
   {
     "id": "harmonize-self",
-    "name": "Согласование себя",
+    "name": "Внутренняя гармония",
     "originalName": "Harmonize Self",
     "altNames": [],
     "category": "spell",
@@ -4447,7 +4447,7 @@
   },
   {
     "id": "chain-lightning",
-    "name": "Цепная молния",
+    "name": "Молния кольчуги",
     "originalName": "Chain Lightning",
     "altNames": [],
     "category": "spell",
@@ -4807,7 +4807,7 @@
   },
   {
     "id": "control-water",
-    "name": "Власть над водой",
+    "name": "Вода контроля",
     "originalName": "Control Water",
     "altNames": [],
     "category": "spell",
@@ -4825,7 +4825,7 @@
   },
   {
     "id": "control-weather",
-    "name": "Власть над погодой",
+    "name": "Погода контроля",
     "originalName": "Control Weather",
     "altNames": [],
     "category": "spell",
@@ -4915,7 +4915,7 @@
   },
   {
     "id": "create-undead",
-    "name": "Сотворение нежити",
+    "name": "Создание нежити",
     "originalName": "Create Undead",
     "altNames": [],
     "category": "spell",
@@ -5419,7 +5419,7 @@
   },
   {
     "id": "dispel-magic",
-    "name": "Рассеивание магии",
+    "name": "Развеивание магии",
     "originalName": "Dispel Magic",
     "altNames": [],
     "category": "spell",
@@ -5959,7 +5959,7 @@
   },
   {
     "id": "enthrall",
-    "name": "Увлечение",
+    "name": "Завораживание",
     "originalName": "Enthrall",
     "altNames": [],
     "category": "spell",
@@ -7543,7 +7543,7 @@
   },
   {
     "id": "lightning-bolt",
-    "name": "Молния",
+    "name": "Грозовой болт",
     "originalName": "Lightning Bolt",
     "altNames": [],
     "category": "spell",
@@ -8029,7 +8029,7 @@
   },
   {
     "id": "mislead",
-    "name": "Ложный след",
+    "name": "Обманный двойник",
     "originalName": "Mislead",
     "altNames": [],
     "category": "spell",
@@ -8857,7 +8857,7 @@
   },
   {
     "id": "plant-growth",
-    "name": "Рост растений",
+    "name": "Растение роста",
     "originalName": "Plant Growth",
     "altNames": [],
     "category": "spell",
@@ -8947,7 +8947,7 @@
   },
   {
     "id": "project-image",
-    "name": "Проекция образа",
+    "name": "Образ проекта",
     "originalName": "Project Image",
     "altNames": [],
     "category": "spell",
@@ -9127,7 +9127,7 @@
   },
   {
     "id": "raise-dead",
-    "name": "Возвращение мёртвых",
+    "name": "Воскрешение мёртвых",
     "originalName": "Raise Dead",
     "altNames": [],
     "category": "spell",
@@ -9613,7 +9613,7 @@
   },
   {
     "id": "scrying",
-    "name": "Наблюдение",
+    "name": "Наблюдение издалека",
     "originalName": "Scrying",
     "altNames": [],
     "category": "spell",
@@ -10045,7 +10045,7 @@
   },
   {
     "id": "speak-with-plants",
-    "name": "Разговор с растениями",
+    "name": "Речь с растениями",
     "originalName": "Speak with Plants",
     "altNames": [],
     "category": "spell",
@@ -10585,7 +10585,7 @@
   },
   {
     "id": "sunburst",
-    "name": "Солнечная вспышка",
+    "name": "Солнечный взрыв",
     "originalName": "Sunburst",
     "altNames": [],
     "category": "spell",
@@ -11773,7 +11773,7 @@
   },
   {
     "id": "water-breathing",
-    "name": "Подводное дыхание",
+    "name": "Водное дыхание",
     "originalName": "Water Breathing",
     "altNames": [],
     "category": "spell",
@@ -11791,7 +11791,7 @@
   },
   {
     "id": "water-walk",
-    "name": "Хождение по воде",
+    "name": "Водная поступь",
     "originalName": "Water Walk",
     "altNames": [],
     "category": "spell",

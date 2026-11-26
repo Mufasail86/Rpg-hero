@@ -531,7 +531,7 @@ def main() -> None:
         freq = frequency_struct(system.get("frequency")) or phrase_or_stub(labels.get("frequency", ""))
         trigger = phrase_or_stub(labels.get("trigger", ""))
         requirements = phrase_or_stub(labels.get("requirements", ""))
-        composed = ru.compose(english)
+        composed = ru.compose_agreed(english)
         cards.append({
             "id": feat_id,
             "kind": kind,
@@ -583,7 +583,7 @@ def main() -> None:
         heightened = heightened_text(system)
         range_text = measure(str((system.get("range") or {}).get("value") or ""), "range") if isinstance(system.get("range"), dict) else ""
         target_text = measure(str(target.get("value") or ""), "target")
-        composed = ru.compose(english)
+        composed = ru.compose_agreed(english)
         ritual_note = ""
         if ritual and isinstance(system.get("ritual"), dict):
             primary = (system["ritual"].get("primary") or {}).get("check")
@@ -635,7 +635,7 @@ def main() -> None:
             level = item.get("level")
             if not english or not isinstance(level, int):
                 continue
-            composed = ru.compose(english)
+            composed = ru.compose_agreed(english)
             features.append({
                 "classId": path.stem,
                 "level": level,

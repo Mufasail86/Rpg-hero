@@ -73,7 +73,7 @@
  },
  {
   "id": "eldritch-debilitations",
-  "name": "Потусторонний ослабления",
+  "name": "Потусторонние ослабления",
   "originalName": "Eldritch Debilitations",
   "altNames": [],
   "category": "class-feat",
@@ -91,7 +91,7 @@
  },
  {
   "id": "minor-magic",
-  "name": "Малое магия",
+  "name": "Малая магия",
   "originalName": "Minor Magic",
   "altNames": [],
   "category": "class-feat",
@@ -163,7 +163,7 @@
  },
  {
   "id": "improved-command-undead",
-  "name": "Улучшенный приказ нежить",
+  "name": "Улучшенная нежить приказа",
   "originalName": "Improved Command Undead",
   "altNames": [],
   "category": "class-feat",
@@ -199,7 +199,7 @@
  },
  {
   "id": "command-undead",
-  "name": "Приказ нежить",
+  "name": "Нежить приказа",
   "originalName": "Command Undead",
   "altNames": [],
   "category": "class-feat",
@@ -235,7 +235,7 @@
  },
  {
   "id": "green-empathy",
-  "name": "Зелёный эмпатия",
+  "name": "Зелёная эмпатия",
   "originalName": "Green Empathy",
   "altNames": [],
   "category": "class-feat",
@@ -325,7 +325,7 @@
  },
  {
   "id": "greater-merciful-elixir",
-  "name": "Большое меркифул эликсир",
+  "name": "Большой милосердный эликсир",
   "originalName": "Greater Merciful Elixir",
   "altNames": [],
   "category": "class-feat",
@@ -415,7 +415,7 @@
  },
  {
   "id": "perpetual-breadth",
-  "name": "Перпетуал широта",
+  "name": "Вечная широта",
   "originalName": "Perpetual Breadth",
   "altNames": [],
   "category": "class-feat",
@@ -469,7 +469,7 @@
  },
  {
   "id": "impossible-snares",
-  "name": "Невозможный силки",
+  "name": "Невозможные силки",
   "originalName": "Impossible Snares",
   "altNames": [],
   "category": "class-feat",
@@ -541,7 +541,7 @@
  },
  {
   "id": "magic-hide",
-  "name": "Магия шкура",
+  "name": "Магическая шкура",
   "originalName": "Magic Hide",
   "altNames": [],
   "category": "class-feat",
@@ -595,7 +595,7 @@
  },
  {
   "id": "quick-snares",
-  "name": "Быстрый силки",
+  "name": "Быстрые силки",
   "originalName": "Quick Snares",
   "altNames": [],
   "category": "class-feat",
@@ -685,7 +685,7 @@
  },
  {
   "id": "greater-interpose",
-  "name": "Большое интерпосе",
+  "name": "Большое заслонение",
   "originalName": "Greater Interpose",
   "altNames": [],
   "category": "class-feat",
@@ -703,7 +703,7 @@
  },
  {
   "id": "aura-of-vengeance",
-  "name": "Аура месть",
+  "name": "Аура мести",
   "originalName": "Aura of Vengeance",
   "altNames": [],
   "category": "class-feat",
@@ -793,7 +793,7 @@
  },
  {
   "id": "resilient-touch",
-  "name": "Стойкая касание",
+  "name": "Стойкое касание",
   "originalName": "Resilient Touch",
   "altNames": [],
   "category": "class-feat",
@@ -847,7 +847,7 @@
  },
  {
   "id": "sacrifice-armor",
-  "name": "Жертва доспех",
+  "name": "Доспех жертвы",
   "originalName": "Sacrifice Armor",
   "altNames": [],
   "category": "class-feat",
@@ -883,7 +883,7 @@
  },
  {
   "id": "ancestral-blood-magic",
-  "name": "Родовой кровь магия",
+  "name": "Магия родовой крови",
   "originalName": "Ancestral Blood Magic",
   "altNames": [],
   "category": "class-feat",
@@ -955,7 +955,7 @@
  },
  {
   "id": "entreat-with-forebears",
-  "name": "Ентреат форебеарс",
+  "name": "Мольба к предкам",
   "originalName": "Entreat with Forebears",
   "altNames": [],
   "category": "class-feat",
@@ -1045,7 +1045,7 @@
  },
  {
   "id": "animal-rage",
-  "name": "Звериный ярость",
+  "name": "Звериная ярость",
   "originalName": "Animal Rage",
   "altNames": [],
   "category": "class-feat",
@@ -1081,7 +1081,7 @@
  },
  {
   "id": "gorilla-stance",
-  "name": "Горилла стойка",
+  "name": "Стойка гориллы",
   "originalName": "Gorilla Stance",
   "altNames": [],
   "category": "class-feat",
@@ -1099,7 +1099,7 @@
  },
  {
   "id": "deadly-strikes",
-  "name": "Смертельный удары",
+  "name": "Смертельные удары",
   "originalName": "Deadly Strikes",
   "altNames": [],
   "category": "class-feat",
@@ -1297,7 +1297,7 @@
  },
  {
   "id": "expert-spellcasting",
-  "name": "Эксперт колдовство",
+  "name": "Опытное колдовство",
   "originalName": "Expert Spellcasting",
   "altNames": [],
   "category": "class-feat",
@@ -1315,7 +1315,7 @@
  },
  {
   "id": "dragon-arcana",
-  "name": "Драконий аркана",
+  "name": "Драконьи арканы",
   "originalName": "Dragon Arcana",
   "altNames": [],
   "category": "class-feat",
@@ -1333,7 +1333,7 @@
  },
  {
   "id": "breath-of-the-dragon-dragon-disciple",
-  "name": "Дыхание драконий (драконий дискипле)",
+  "name": "Дыхание дракона (драконий ученик)",
   "originalName": "Breath of the Dragon (Dragon Disciple)",
   "altNames": [],
   "category": "class-feat",
@@ -1351,7 +1351,7 @@
  },
  {
   "id": "draconic-scent-dragon-disciple",
-  "name": "Драконий скент (драконий дискипле)",
+  "name": "Драконий запах (драконий ученик)",
   "originalName": "Draconic Scent (Dragon Disciple)",
   "altNames": [],
   "category": "class-feat",
@@ -1369,7 +1369,7 @@
  },
  {
   "id": "dragon-disciple-dedication",
-  "name": "Драконий дискипле посвящение",
+  "name": "Посвящение драконьего ученика",
   "originalName": "Dragon Disciple Dedication",
   "altNames": [],
   "category": "class-feat",
@@ -1405,7 +1405,7 @@
  },
  {
   "id": "mighty-dragon-shape",
-  "name": "Мигхти драконий форма",
+  "name": "Могучая драконья форма",
   "originalName": "Mighty Dragon Shape",
   "altNames": [],
   "category": "class-feat",
@@ -1423,7 +1423,7 @@
  },
  {
   "id": "wings-of-the-dragon",
-  "name": "Крылья драконий",
+  "name": "Крылья дракона",
   "originalName": "Wings of the Dragon",
   "altNames": [],
   "category": "class-feat",
@@ -1441,7 +1441,7 @@
  },
  {
   "id": "claws-of-the-dragon",
-  "name": "Когти драконий",
+  "name": "Когти дракона",
   "originalName": "Claws of the Dragon",
   "altNames": [],
   "category": "class-feat",
@@ -1477,7 +1477,7 @@
  },
  {
   "id": "shape-of-the-dragon",
-  "name": "Форма драконий",
+  "name": "Форма дракона",
   "originalName": "Shape of the Dragon",
   "altNames": [],
   "category": "class-feat",
@@ -1567,7 +1567,7 @@
  },
  {
   "id": "loremaster-dedication",
-  "name": "Лоремастер посвящение",
+  "name": "Посвящение знатока преданий",
   "originalName": "Loremaster Dedication",
   "altNames": [],
   "category": "class-feat",
@@ -1585,7 +1585,7 @@
  },
  {
   "id": "quick-change",
-  "name": "Быстрый чанге",
+  "name": "Быстрая перемена",
   "originalName": "Quick Change",
   "altNames": [],
   "category": "class-feat",
@@ -1603,7 +1603,7 @@
  },
  {
   "id": "shadow-master",
-  "name": "Теневая мастер",
+  "name": "Мастер тени",
   "originalName": "Shadow Master",
   "altNames": [],
   "category": "class-feat",
@@ -1639,7 +1639,7 @@
  },
  {
   "id": "shadowdancer-dedication",
-  "name": "Шадовданкер посвящение",
+  "name": "Посвящение танцующего с тенями",
   "originalName": "Shadowdancer Dedication",
   "altNames": [],
   "category": "class-feat",
@@ -1657,7 +1657,7 @@
  },
  {
   "id": "shadow-sneak-attack",
-  "name": "Теневая скрытный атака",
+  "name": "Скрытная теневая атака",
   "originalName": "Shadow Sneak Attack",
   "altNames": [],
   "category": "class-feat",
@@ -1819,7 +1819,7 @@
  },
  {
   "id": "horizon-walker-dedication",
-  "name": "Хоризон валкер посвящение",
+  "name": "Посвящение ходока горизонта",
   "originalName": "Horizon Walker Dedication",
   "altNames": [],
   "category": "class-feat",
@@ -1927,7 +1927,7 @@
  },
  {
   "id": "elven-aloofness",
-  "name": "Эльфийский алуфнесс",
+  "name": "Эльфийская отстранённость",
   "originalName": "Elven Aloofness",
   "altNames": [],
   "category": "ancestry-feat",
@@ -2035,7 +2035,7 @@
  },
  {
   "id": "celestial-strikes",
-  "name": "Небожитель удары",
+  "name": "Удары небожителя",
   "originalName": "Celestial Strikes",
   "altNames": [],
   "category": "ancestry-feat",
@@ -2269,7 +2269,7 @@
  },
  {
   "id": "feather-token-whip",
-  "name": "Перо жетон (кнут)",
+  "name": "Жетон пера (кнут)",
   "originalName": "Feather Token (Whip)",
   "altNames": [],
   "category": "gear",
@@ -2287,7 +2287,7 @@
  },
  {
   "id": "ring-of-the-ram",
-  "name": "Кольцо таран",
+  "name": "Кольцо тарана",
   "originalName": "Ring of the Ram",
   "altNames": [],
   "category": "gear",
@@ -2377,7 +2377,7 @@
  },
  {
   "id": "hand-of-the-mage",
-  "name": "Ручной маг",
+  "name": "Ручной мага",
   "originalName": "Hand of the Mage",
   "altNames": [],
   "category": "gear",
@@ -2395,7 +2395,7 @@
  },
  {
   "id": "wondrous-figurine-marble-elephant",
-  "name": "Чудесный фигурка (марбле елефант)",
+  "name": "Чудесная фигурка (мраморный слон)",
   "originalName": "Wondrous Figurine (Marble Elephant)",
   "altNames": [],
   "category": "gear",
@@ -2449,7 +2449,7 @@
  },
  {
   "id": "dust-of-appearance",
-  "name": "Пыль облик",
+  "name": "Пыль облика",
   "originalName": "Dust of Appearance",
   "altNames": [],
   "category": "gear",
@@ -2539,7 +2539,7 @@
  },
  {
   "id": "holy-prayer-beads",
-  "name": "Святой молитва беадс",
+  "name": "Бусы святой молитвы",
   "originalName": "Holy Prayer Beads",
   "altNames": [],
   "category": "gear",
@@ -2593,7 +2593,7 @@
  },
  {
   "id": "boots-of-elvenkind",
-  "name": "Сапоги эльфийского рода",
+  "name": "Сапоги эльфийских родов",
   "originalName": "Boots of Elvenkind",
   "altNames": [],
   "category": "gear",
@@ -2611,7 +2611,7 @@
  },
  {
   "id": "robe-of-eyes",
-  "name": "Одеяние глаза",
+  "name": "Одеяние глаз",
   "originalName": "Robe of Eyes",
   "altNames": [],
   "category": "gear",
@@ -2629,7 +2629,7 @@
  },
  {
   "id": "wondrous-figurine-golden-lions",
-  "name": "Чудесный фигурка (голден лионс)",
+  "name": "Чудесная фигурка (золотые львы)",
   "originalName": "Wondrous Figurine (Golden Lions)",
   "altNames": [],
   "category": "gear",
@@ -2845,7 +2845,7 @@
  },
  {
   "id": "luck-blade",
-  "name": "Удача клинок",
+  "name": "Клинок удачи",
   "originalName": "Luck Blade",
   "altNames": [],
   "category": "weapon",
@@ -2863,7 +2863,7 @@
  },
  {
   "id": "potion-of-fire-resistance-moderate",
-  "name": "Зелье огня устойчивость (среднее)",
+  "name": "Зелье огненной устойчивости (среднее)",
   "originalName": "Potion of Fire Resistance (Moderate)",
   "altNames": [],
   "category": "gear",
@@ -2899,7 +2899,7 @@
  },
  {
   "id": "dragon-bile",
-  "name": "Драконий биле",
+  "name": "Драконья желчь",
   "originalName": "Dragon Bile",
   "altNames": [],
   "category": "alchemical",
@@ -2971,7 +2971,7 @@
  },
  {
   "id": "boots-of-dancing",
-  "name": "Сапоги танцующий",
+  "name": "Сапоги танцующего",
   "originalName": "Boots of Dancing",
   "altNames": [],
   "category": "gear",
@@ -3115,7 +3115,7 @@
  },
  {
   "id": "feather-token-chest-ammunition",
-  "name": "Перо жетон (сундук) (боеприпасы)",
+  "name": "Жетон пера (сундук) (боеприпасы)",
   "originalName": "Feather Token (Chest) (Ammunition)",
   "altNames": [],
   "category": "gear",
@@ -3223,7 +3223,7 @@
  },
  {
   "id": "wondrous-figurine-jade-serpent",
-  "name": "Чудесный фигурка (нефрит серпент)",
+  "name": "Чудесная фигурка (змей нефрита)",
   "originalName": "Wondrous Figurine (Jade Serpent)",
   "altNames": [],
   "category": "gear",
@@ -3259,7 +3259,7 @@
  },
  {
   "id": "feather-token-fan",
-  "name": "Перо жетон (веер)",
+  "name": "Жетон пера (веер)",
   "originalName": "Feather Token (Fan)",
   "altNames": [],
   "category": "gear",
@@ -3439,7 +3439,7 @@
  },
  {
   "id": "holy-prayer-beads-greater",
-  "name": "Святой молитва беадс (большое)",
+  "name": "Бусы святой молитвы (большие)",
   "originalName": "Holy Prayer Beads (Greater)",
   "altNames": [],
   "category": "gear",
@@ -3475,7 +3475,7 @@
  },
  {
   "id": "cloak-of-the-bat-greater",
-  "name": "Плащ летучая мышь (большое)",
+  "name": "Плащ летучей мыши (большой)",
   "originalName": "Cloak of the Bat (Greater)",
   "altNames": [],
   "category": "gear",
@@ -3511,7 +3511,7 @@
  },
  {
   "id": "wondrous-figurine-obsidian-steed",
-  "name": "Чудесный фигурка (обсидиан скакун)",
+  "name": "Чудесная фигурка (скакун обсидиана)",
   "originalName": "Wondrous Figurine (Obsidian Steed)",
   "altNames": [],
   "category": "gear",
@@ -3529,7 +3529,7 @@
  },
  {
   "id": "cloak-of-the-bat",
-  "name": "Плащ летучая мышь",
+  "name": "Плащ летучей мыши",
   "originalName": "Cloak of the Bat",
   "altNames": [],
   "category": "gear",
@@ -3547,7 +3547,7 @@
  },
  {
   "id": "wondrous-figurine-onyx-dog",
-  "name": "Чудесный фигурка (оникс дог)",
+  "name": "Чудесная фигурка (пёс оникса)",
   "originalName": "Wondrous Figurine (Onyx Dog)",
   "altNames": [],
   "category": "gear",
@@ -3637,7 +3637,7 @@
  },
  {
   "id": "boots-of-elvenkind-greater",
-  "name": "Сапоги эльфийского рода (большое)",
+  "name": "Сапоги эльфийских родов (большие)",
   "originalName": "Boots of Elvenkind (Greater)",
   "altNames": [],
   "category": "gear",
@@ -3691,7 +3691,7 @@
  },
  {
   "id": "elven-absinthe",
-  "name": "Эльфийский абсинте",
+  "name": "Эльфийский абсент",
   "originalName": "Elven Absinthe",
   "altNames": [],
   "category": "alchemical",
@@ -3817,7 +3817,7 @@
  },
  {
   "id": "belt-of-giant-strength",
-  "name": "Пояс великаний сила",
+  "name": "Пояс великаньей силы",
   "originalName": "Belt of Giant Strength",
   "altNames": [],
   "category": "gear",
@@ -3943,7 +3943,7 @@
  },
  {
   "id": "feather-token-tree-ammunition",
-  "name": "Перо жетон (дерево) (боеприпасы)",
+  "name": "Жетон пера (дерево) (боеприпасы)",
   "originalName": "Feather Token (Tree) (Ammunition)",
   "altNames": [],
   "category": "gear",
@@ -4015,7 +4015,7 @@
  },
  {
   "id": "staff-of-power",
-  "name": "Посох сила",
+  "name": "Посох силы",
   "originalName": "Staff of Power",
   "altNames": [],
   "category": "weapon",
@@ -4087,7 +4087,7 @@
  },
  {
   "id": "ring-of-the-ram-greater",
-  "name": "Кольцо таран (большое)",
+  "name": "Кольцо тарана (большое)",
   "originalName": "Ring of the Ram (Greater)",
   "altNames": [],
   "category": "gear",
@@ -4105,7 +4105,7 @@
  },
  {
   "id": "dust-of-disappearance",
-  "name": "Пыль исчезновение",
+  "name": "Пыль исчезновения",
   "originalName": "Dust of Disappearance",
   "altNames": [],
   "category": "gear",
@@ -4159,7 +4159,7 @@
  },
  {
   "id": "feather-token-ladder-ammunition",
-  "name": "Перо жетон (лестница) (боеприпасы)",
+  "name": "Жетон пера (лестница) (боеприпасы)",
   "originalName": "Feather Token (Ladder) (Ammunition)",
   "altNames": [],
   "category": "gear",
@@ -4231,7 +4231,7 @@
  },
  {
   "id": "horn-of-blasting",
-  "name": "Рог взрывной",
+  "name": "Рог взрывного",
   "originalName": "Horn of Blasting",
   "altNames": [],
   "category": "gear",
@@ -4285,7 +4285,7 @@
  },
  {
   "id": "cloak-of-elvenkind",
-  "name": "Плащ эльфийского рода",
+  "name": "Плащ эльфийских родов",
   "originalName": "Cloak of Elvenkind",
   "altNames": [],
   "category": "gear",
@@ -4303,7 +4303,7 @@
  },
  {
   "id": "cloak-of-elvenkind-greater",
-  "name": "Плащ эльфийского рода (большое)",
+  "name": "Плащ эльфийских родов (большой)",
   "originalName": "Cloak of Elvenkind (Greater)",
   "altNames": [],
   "category": "gear",
@@ -4339,7 +4339,7 @@
  },
  {
   "id": "talisman-of-the-sphere",
-  "name": "Талисман сфера",
+  "name": "Талисман сферы",
   "originalName": "Talisman of the Sphere",
   "altNames": [],
   "category": "gear",
@@ -4447,7 +4447,7 @@
  },
  {
   "id": "bloodeye-coffee",
-  "name": "Блудеие коффи",
+  "name": "Кофе «Кровавый глаз»",
   "originalName": "Bloodeye Coffee",
   "altNames": [],
   "category": "alchemical",
@@ -4501,7 +4501,7 @@
  },
  {
   "id": "feather-token-tree",
-  "name": "Перо жетон (дерево)",
+  "name": "Жетон пера (дерево)",
   "originalName": "Feather Token (Tree)",
   "altNames": [],
   "category": "gear",
@@ -4555,7 +4555,7 @@
  },
  {
   "id": "aeon-stone-black-pearl",
-  "name": "Эон камень (чёрный жемчуг)",
+  "name": "Камень эона (чёрный жемчуг)",
   "originalName": "Aeon Stone (Black Pearl)",
   "altNames": [],
   "category": "gear",
