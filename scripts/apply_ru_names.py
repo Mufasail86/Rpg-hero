@@ -49,7 +49,7 @@ def apply_list(path: Path, renamed: dict, left: list) -> None:
         english = str(row.get("originalName") or "")
         if not english or "name" not in row:
             continue
-        fresh = ru.compose(english)
+        fresh = ru.compose_agreed(english)
         current = str(row.get("name") or "")
         phrase = english in ru.PHRASE_LOCK
         if fresh and not LATIN.search(fresh) and (phrase or needs_rename(english, current)):
@@ -85,7 +85,7 @@ def heritage_name(heritage_id: str, ancestry_name: str) -> str | None:
     if len(parts) >= 2:
         parts = parts[:-1]
     english = " ".join(parts)
-    fresh = ru.compose(english)
+    fresh = ru.compose_agreed(english)
     if not fresh or LATIN.search(fresh):
         return None
     return f"{fresh} {ancestry_name[:1].lower() + ancestry_name[1:]}" if ancestry_name else fresh
@@ -101,7 +101,7 @@ def apply_roster(path: Path, renamed: dict, left: list) -> None:
                 renamed["count"] += 1
             english = {"yaoguai": "Yaoguai", "exemplar": "Exemplar", "champion": "Champion"}.get(row.get("id"), "")
             if english and needs_rename(english, row.get("name") or ""):
-                fresh = ru.compose(english)
+                fresh = ru.compose_agreed(english)
                 if fresh:
                     row["name"] = fresh
                     renamed["count"] += 1
@@ -124,7 +124,7 @@ def apply_features(path: Path, renamed: dict, left: list) -> None:
         return
     for row in rows:
         english = str(row.get("originalName") or "")
-        fresh = ru.compose(english) if english else None
+        fresh = ru.compose_agreed(english) if english else None
         if fresh and not LATIN.search(fresh):
             if fresh != row.get("name"):
                 row["name"] = fresh

@@ -283,3 +283,18 @@ def translit_tokens(english: str) -> list[str]:
 
 
 load()
+
+
+def compose_agreed(english: str) -> str | None:
+    """Имя с согласованием слов (scripts/ru_grammar.py) и ручным списком pf_names_3.json.
+    Если pymorphy3 не установлен, остаётся старая пословная сборка."""
+    manual = ROOT / "scripts" / "pf_names_3.json"
+    if manual.exists():
+        value = json.loads(manual.read_text()).get(english)
+        if isinstance(value, str):
+            return value
+    try:
+        import ru_grammar  # noqa: PLC0415
+    except ImportError:
+        return compose(english)
+    return ru_grammar.compose(english) or compose(english)
